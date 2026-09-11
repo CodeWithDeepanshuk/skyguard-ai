@@ -1,0 +1,124 @@
+{
+  "iteration": 8,
+  "archive_date": "2026-08-29",
+  "source": "user-returned completed Colab artifacts",
+  "immutable_checkpoint": true,
+  "file_count": 23,
+  "files": [
+    {
+      "name": "dwd_phase10_climatology.joblib",
+      "bytes": 108034,
+      "sha256": "cadb3ac93c3bcc13e26e076a0f26dc437cb89a82d5a56a9ed1427953e5f819b3"
+    },
+    {
+      "name": "iteration8_causal_lstm_autoencoder.pt",
+      "bytes": 322242,
+      "sha256": "ff5dd96e991a824ed28ce6deca4bc019f74165467f17a011a6513b093a1076b8"
+    },
+    {
+      "name": "iteration8_curriculum_events.csv",
+      "bytes": 108077,
+      "sha256": "d5a9b42037c9e132dca433574e2d2322f47b0aae2f8215bcb58ad8db50f252c3"
+    },
+    {
+      "name": "iteration8_data_curriculum_receipt.json",
+      "bytes": 1581,
+      "sha256": "f5f6f66eccf1e68ab482beb7c7925b1c4a60fabd5ead1197e6925e78f4d62631"
+    },
+    {
+      "name": "iteration8_fault_catboost.cbm",
+      "bytes": 3257072,
+      "sha256": "3f4b60c4afcb41a3fce551e34ed6e4a110fbe35da3ceac6f642cde5124908f0d"
+    },
+    {
+      "name": "iteration8_fault_episode_recall.csv",
+      "bytes": 1882,
+      "sha256": "c12d698355d722aa919d92a704d35a5540d4b3a980f0b9a7df8826473b027a5c"
+    },
+    {
+      "name": "iteration8_fault_lightgbm_seed17.joblib",
+      "bytes": 3095956,
+      "sha256": "633fbc0cc3fba6cc8cc713b694731138e11709bac9b2a88eb01d2860360ee9ef"
+    },
+    {
+      "name": "iteration8_fault_lightgbm_seed41.joblib",
+      "bytes": 3461796,
+      "sha256": "294700ede0bb00f5ef60bcbb5c1375a1f2ccbbc88a84429b2258fd4becfab483"
+    },
+    {
+      "name": "iteration8_fault_policy_frontier.csv",
+      "bytes": 32777,
+      "sha256": "7a4ab1499211a1b646432a10fc4cee1094cf33c568e59e35038f29344d46787e"
+    },
+    {
+      "name": "iteration8_feature_contract.json",
+      "bytes": 5689,
+      "sha256": "19fe41559702d86ca5222c6b8a0b4ad6f2504feae902815cad8311a34cbf512a"
+    },
+    {
+      "name": "iteration8_feature_importance.csv",
+      "bytes": 3464,
+      "sha256": "0581e5d5ec050ae34efdc53f3e5aa92ef847437e550890e42facf8ea315cfb7f"
+    },
+    {
+      "name": "iteration8_isolation_forest.joblib",
+      "bytes": 6157491,
+      "sha256": "a05451cc6eefd1a6230fbbb76305e4b671f66fbdc654dcbc4f590a3ffe6778f3"
+    },
+    {
+      "name": "iteration8_multidomain_confirmation.csv",
+      "bytes": 2596,
+      "sha256": "447e03227cbd2d4f4d9ecdfff172bb1215194000bdb292c7933eac74f728c971"
+    },
+    {
+      "name": "iteration8_result_block.json",
+      "bytes": 8713,
+      "sha256": "952c64ac71546bcac63b09b9e4eb8334f112d283ac6405ba3fac6990c9d3b5a8"
+    },
+    {
+      "name": "iteration8_root_cause_catboost.cbm",
+      "bytes": 12118568,
+      "sha256": "afeec3a0a791b83776b707322acf1c0d4003d29c9e9005d17757d904c677761c"
+    },
+    {
+      "name": "iteration8_training_history.csv",
+      "bytes": 195,
+      "sha256": "79b0eb40c6beb42ef1893c1f94d6ec6051d5ba70dc3525265aa16188ab353836"
+    },
+    {
+      "name": "iteration8_unsupervised_training_history.csv",
+      "bytes": 116,
+      "sha256": "9ffbd3707b2294ece8c82db879199ec3a3e89015643348cef2042d2dda20eeb7"
+    },
+    {
+      "name": "iteration8_weather_by_cluster.csv",
+      "bytes": 2711,
+      "sha256": "bc08e1d2942c1822a56dce541df923927aad872e78a88ac8c51eb5c8b986e714"
+    },
+    {
+      "name": "iteration8_weather_catboost.cbm",
+      "bytes": 3271928,
+      "sha256": "d5e54185a45744c0e1314e2ab31ef03220346d44789ccb66dc59b1c3eabfd99b"
+    },
+    {
+      "name": "iteration8_weather_lightgbm_seed17.joblib",
+      "bytes": 4979396,
+      "sha256": "51e3ee4846d94228ae4a3d63df2653a23362139623dd13c87e3edd947062b396"
+    },
+    {
+      "name": "iteration8_weather_lightgbm_seed41.joblib",
+      "bytes": 6438356,
+      "sha256": "dd68b0b469b213f692fc0df3f3dabd957e6da8baa87287b86d828a19d2c7594a"
+    },
+    {
+      "name": "iteration8_weather_policy_frontier.csv",
+      "bytes": 3987,
+      "sha256": "12cb2d0e26fdce23385683c8b6660e37aa5584015cb6be7b321b5767ecc800bc"
+    },
+    {
+      "name": "SkyGuard_AI_GPU_Iteration_08_MultiClimate_Data_Curriculum_Colab.ipynb",
+      "bytes": 667187,
+      "sha256": "348c9ff3a23d552dddad96ca5784e20fc9708c73a716abfc4e5e2d1614b9dcdb"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+metric,returned_iteration10,best_reliable_evidence,current_india_data_realistic_target,richer_india_data_target,decision_rule
+fault_incident_precision,0.0299,0.83-0.90,0.75-0.90,0.85-0.95,minimum 0.80 for promotion
+fault_incident_recall,0.8939 inflated by blanket alerts,0.67-0.81,0.60-0.80,0.75-0.90,minimum 0.70 preferred
+fault_incident_f1,0.0579,0.6526 India and 0.7273 blind station,0.65-0.78,0.78-0.90,minimum 0.70 overall
+fault_point_f1,0.0111,0.5511 India,0.50-0.63,0.65-0.82,no material regression below retained reference
+false_alerts_per_station_day,0.2196,0.0125-0.0187,0.00-0.02,0.00-0.01,maximum 0.02 every domain
+weather_incident_f1,0.6120 overall but heavy overlap,0.34-0.78 India split dependent,0.50-0.72,0.75-0.90,inspect every climate and station holdout
+fault_ece,0.3460,not previously reliable,0.00-0.08,0.00-0.05,maximum 0.08
+communication_mean_recall,0.8750,duplicate recall 1.00,0.80-0.95,0.90-0.99,automatic dropout only with verified heartbeat
+weak_fault_episode_recall,0.9250 inflated,0.33-0.56 reliable,0.45-0.70,0.65-0.85,must retain precision and false-alarm budget
+root_cause_macro_f1,0.0879,0.6200 India detected rows,0.45-0.65,0.65-0.80,evaluate only matched true fault incidents
+throughput_rows_per_second,28152.9,28152.9,greater than 1000,greater than 1000,already excellent
+pressure_interval_coverage,0.4537,0.4537,0.80-0.93 after conformal repair,0.88-0.93,target 0.90 marginal coverage

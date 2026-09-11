@@ -1,0 +1,36 @@
+{
+  "status": "frozen_on_2023_before_2024_loading",
+  "input_contract": [
+    "temperature_c",
+    "pressure_hpa",
+    "relative_humidity_pct"
+  ],
+  "dew_point_used": false,
+  "fault_threshold": 0.9697956961831872,
+  "persistence_decay": 0.0,
+  "weather_threshold": 0.31371246158413996,
+  "root_threshold": 0.4678407954493642,
+  "validation_policy_half": {
+    "fault": {
+      "threshold": 0.9697956961831872,
+      "precision": 0.7801608579088471,
+      "recall": 0.34397163120567376,
+      "f1": 0.47744052502050865,
+      "false_alarms_per_station_day": 0.022386022386022386,
+      "weather_false_fault_rate": 0.0,
+      "constraints_met": 1.0,
+      "persistence_decay": 0.0
+    },
+    "weather": {
+      "threshold": 0.31371246158413996,
+      "precision": 0.768595041322314,
+      "recall": 0.3110367892976589,
+      "f1": 0.4428571428571429
+    },
+    "root": {
+      "threshold": 0.4678407954493642,
+      "coverage": 0.4879725085910653,
+      "accepted_accuracy": 0.9295774647887324
+    }
+  }
+}

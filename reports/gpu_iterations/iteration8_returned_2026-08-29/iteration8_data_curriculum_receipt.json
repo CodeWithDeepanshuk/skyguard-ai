@@ -1,0 +1,66 @@
+{
+  "development_bundle_sha256": "7f47466805309faf528d6abc8f04a588c4accbaf454989e36a2b4ff5b31681d4",
+  "original_bundle_sha256": "9329f02c1a05241b109c50b0ed3ba5bc59761eb92652f77509bda7409faf182a",
+  "source_validation_status": "PASS",
+  "dwd_2024_opened": false,
+  "noaa_2024_opened": false,
+  "any_2025_opened": false,
+  "train_curriculum": {
+    "status": "PASS",
+    "rows": 139684,
+    "event_rows": 11498,
+    "event_row_fraction": 0.0823143667134389,
+    "weather_events": 96,
+    "fault_events": 160,
+    "weather_families": [
+      "dry_intrusion",
+      "humidity_surge",
+      "multivariate_storm",
+      "pressure_front",
+      "regional_cold_surge",
+      "regional_heatwave"
+    ],
+    "fault_families": [
+      "bias",
+      "drift",
+      "frozen_sensor",
+      "noise",
+      "spike"
+    ],
+    "errors": []
+  },
+  "validation_curriculum": {
+    "status": "PASS",
+    "rows": 139716,
+    "event_rows": 7241,
+    "event_row_fraction": 0.0518265624552664,
+    "weather_events": 72,
+    "fault_events": 60,
+    "weather_families": [
+      "dry_intrusion",
+      "humidity_surge",
+      "multivariate_storm",
+      "pressure_front",
+      "regional_cold_surge",
+      "regional_heatwave"
+    ],
+    "fault_families": [
+      "bias",
+      "drift",
+      "frozen_sensor",
+      "noise",
+      "spike"
+    ],
+    "errors": []
+  },
+  "pseudo_unseen_stations": [
+    "DWD-05839",
+    "DWD-01684",
+    "DWD-04336",
+    "DWD-00232"
+  ],
+  "future_features_used": false,
+  "dew_point_used": false,
+  "isolation_forest_fit_on_evaluation": false,
+  "lstm_bidirectional": false
+}

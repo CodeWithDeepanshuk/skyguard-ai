@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071521">
+  <meta name="description" content="SkyGuard AI live and offline weather-station anomaly detection dashboard for SIH 26073.">
+  <title>SkyGuard AI · Weather Network Command Centre</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css">
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body data-mode="live">
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#overview" aria-label="SkyGuard home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span><strong>SkyGuard AI</strong><small>Weather Network Command Centre</small></span>
+      </a>
+      <nav aria-label="Dashboard sections">
+        <a href="#network">Live network</a>
+        <a href="#incidents">Incidents</a>
+        <a href="#validation">Accuracy</a>
+        <a href="#data-proof">Data proof</a>
+      </nav>
+      <div class="system-state"><span class="pulse"></span><span><b id="connection-text">Connecting</b><small>Live + offline ready</small></span></div>
+    </header>
+
+    <main>
+      <section class="hero" id="overview">
+        <div class="hero-copy">
+          <span class="eyebrow">SIH 26073 · Three-parameter research baseline</span>
+          <h1>Trust every weather reading.</h1>
+          <p>Detect sensor faults using temperature, pressure and relative humidity; preserve genuine weather events, explain every alert and recommend safe corrections—with live data or fully offline.</p>
+          <div class="hero-badges">
+            <span data-offline-only><b>578,448</b> historical observations</span>
+            <span data-offline-only><b>24</b> benchmark stations</span>
+            <span data-offline-only><b>2022–2024</b> benchmark timeline</span>
+            <span data-live-only><b id="hero-live-count">—</b> current-feed observations</span>
+            <span data-live-only><b id="hero-live-stations">—</b> reporting stations</span>
+            <span data-live-only><b id="hero-live-time">Waiting for source</b></span>
+          </div>
+        </div>
+        <div class="replay-card" aria-labelledby="replay-title">
+          <div class="card-heading">
+            <div><span class="section-kicker">METAR observation monitoring</span><h2 id="replay-title">Anomaly review dashboard</h2></div>
+            <span class="status-pill" id="replay-state">Connecting</span>
+          </div>
+          <div class="mode-switch" id="mode-selector" aria-label="Data source mode">
+            <button class="active" data-mode="live"><span></span>Live observations</button>
+            <button data-mode="replay"><span></span>Offline replay (Backup)</button>
+          </div>
+          <div id="live-controls">
+            <div class="live-source"><span class="live-orb"></span><div><b>Official live METAR weather observations</b><small>AviationWeather.gov · airport reports, not direct IMD AWS telemetry · humidity derived</small></div></div>
+            <div class="live-stat-grid"><div><span>Reporting stations</span><b id="live-stations">—</b></div><div><span>Observations</span><b id="live-observations">—</b></div><div><span>Newest report age</span><b id="live-age">—</b></div></div>
+            <p class="scenario-description" id="live-interpretation">Periodic airport observations, scored by a research model. Check each station's timestamp; a successful fetch does not guarantee a fresh report or healthy sensor.</p>
+            <div class="live-actions"><button class="primary" id="refresh-live">Refresh live data</button><label class="auto-refresh"><input type="checkbox" id="auto-refresh" checked> Auto-refresh (5 min)</label></div>
+
+            <div class="live-fault-injection-box">
+              <div class="injection-header">
+                <span class="live-orb warning"></span>
+                <div>
+                  <b>Synthetic fault demonstration</b>
+                  <small>Modify a copy of source values to inspect model behaviour. Not real sensor faults, measured accuracy or physical self-healing.</small>
+                </div>
+              </div>
+              <div class="injection-controls-grid">
+                <div class="field-item">
+                  <label for="inject-station-select">Target Live Station</label>
+                  <select id="inject-station-select"></select>
+                </div>
+                <div class="field-item">
+                  <label for="inject-fault-select">Anomaly / Fault Type</label>
+                  <select id="inject-fault-select">
+                    <option value="temp_spike">🔥 Temperature Spike (+24°C Abrupt Jump)</option>
+                    <option value="press_drop">📉 Pressure Sudden Drop (-38 hPa Transducer Fault)</option>
+                    <option value="humidity_spike">💧 Relative Humidity Distortion (+45% RH Jump)</option>
+                    <option value="temp_bounds">⚠️ Physical Range Boundary Violation (68.5°C)</option>
+                    <option value="sensor_drift">📈 Calibration Drift (+14°C Slow Accumulation)</option>
+                    <option value="frozen_sensor">❄️ Frozen Sensor Flatline (Constant Reading)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="injection-actions">
+                <button class="warning-btn" id="inject-live-fault">⚡ Simulate fault</button>
+                <button class="ghost-btn" id="clear-live-faults">↺ Remove simulation</button>
+              </div>
+              <div class="injection-status-badge" id="injection-status-badge">
+                Waiting for source and simulation status. Sensor health is unverified.
+              </div>
+            </div>
+          </div>
+          <div id="replay-controls" class="hidden">
+            <label for="scenario-select">Choose a controlled scenario</label>
+            <select id="scenario-select"></select>
+            <p class="scenario-description" id="scenario-description">Loading local scenario catalogue…</p>
+            <div class="replay-actions">
+              <button class="primary" id="load-scenario">Load preview</button>
+              <button id="step-scenario">Step +25</button>
+              <button id="run-scenario">Run to end</button>
+              <button class="icon-button" id="reset-scenario" title="Reset replay" aria-label="Reset replay">↻</button>
+            </div>
+          </div>
+          <div class="progress-track" aria-label="Replay progress"><span id="progress-bar"></span></div>
+          <div class="replay-meta"><span id="replay-position">0 / 0 packets</span><span id="replay-throughput">Waiting</span></div>
+        </div>
+      </section>
+
+      <section class="kpi-grid" aria-label="Current network summary">
+        <article class="kpi accent-cyan"><span>Emitted readings</span><strong id="kpi-readings">—</strong><small id="kpi-readings-note">Replay database</small></article>
+        <article class="kpi accent-red"><span>Model fault signals</span><strong id="kpi-faults">—</strong><small id="kpi-faults-note">Current replay window</small></article>
+        <article class="kpi accent-amber"><span>Transport alerts</span><strong id="kpi-alerts">—</strong><small>Stateful stream checks</small></article>
+        <article class="kpi accent-green"><span>Healthy sensors</span><strong id="kpi-healthy">—</strong><small>Frozen 2024 health audit</small></article>
+        <article class="kpi accent-violet"><span>Unseen-station F1</span><strong id="kpi-f1">—</strong><small>Fault detection</small></article>
+      </section>
+
+      <section id="network" class="section-block">
+        <div class="section-title"><div><span class="section-kicker">Observation network</span><h2>Network observability</h2></div><p>Each point uses station coordinates. Live colours indicate review signals or unverified health; replay scores are historical evidence.</p></div>
+        <div class="network-grid">
+          <article class="panel map-panel">
+            <div class="panel-head">
+              <div>
+                <h3>All-India Automatic Weather Station (AWS) Network</h3>
+                <p>545 Indian weather stations indexed across 8 climate zones · <span id="station-count-badge" class="count-badge">545 stations plotted</span></p>
+              </div>
+              <div class="legend">
+                <span class="dot benchmark-dot"></span>Benchmark cluster (24)
+                <span class="dot active-dot"></span>Active 2024+ (410)
+                <span class="dot historical-dot"></span>Historical network
+              </div>
+            </div>
+            <div class="map-controls-bar">
+              <div class="map-filter-group">
+                <button id="filter-all-stations" class="toolbar-pill active" type="button">All India (545)</button>
+                <button id="filter-active-stations" class="toolbar-pill" type="button">Active 2024+ (410)</button>
+                <button id="filter-benchmark-stations" class="toolbar-pill" type="button">Benchmark (24)</button>
+              </div>
+              <div class="map-filter-group right">
+                <select id="climate-zone-filter" class="map-select" aria-label="Filter by Climate Zone">
+                  <option value="all">All Climate Zones (8)</option>
+                  <option value="Central Plateau">Central Plateau (89)</option>
+                  <option value="Coastal Plains">Coastal Plains (80)</option>
+                  <option value="Indo-Gangetic Plains">Indo-Gangetic Plains (78)</option>
+                  <option value="Deccan Plateau">Deccan Plateau (72)</option>
+                  <option value="Northeast Hills">Northeast Hills (46)</option>
+                  <option value="Western Arid/Semi-Arid">Western Arid (42)</option>
+                  <option value="Northern Himalayas">Northern Himalayas (33)</option>
+                  <option value="Island Territories">Island Territories (12)</option>
+                </select>
+                <button id="map-fit" type="button">Fit India</button>
+                <button id="map-world" type="button">World view</button>
+                <label class="street-map-label"><input id="map-detail" type="checkbox" checked> Street map</label>
+              </div>
+            </div>
+            <div class="station-search-container">
+              <input type="text" id="station-search-input" placeholder="🔍 Search 545 Indian weather stations by name, city, state, or ID..." aria-label="Search weather stations">
+            </div>
+            <div class="station-map" id="station-map" role="region" aria-label="Interactive map of Indian Automatic Weather Stations"></div>
+            <p id="map-status" role="status">Drag to pan · + / − to zoom · click any station marker to inspect telemetry</p>
+            <p>Live health is advisory, not sensor certification. Numerical health scores in replay mode are historical benchmark evidence.</p>
+            <div class="station-directory" id="station-directory" aria-label="All station coordinates and health"></div>
+            <div class="selected-station" id="selected-station">Select a station point to inspect it.</div>
+          </article>
+          <article class="panel chart-panel">
+            <div class="panel-head"><div><h3>Live sensor trace</h3><p id="chart-subtitle">Latest emitted readings</p></div><div class="legend"><span class="line temp"></span>Temperature <span class="line pressure"></span>Pressure <span class="line humidity"></span>Humidity</div></div>
+            <div class="trace-controls"><label>Station <select id="chart-city" aria-label="Sensor trace station"></select></label><button id="trace-refresh" type="button">Refresh observations ↻</button><span id="trace-status" role="status">CONNECTING</span></div>
+            <p id="trace-time" class="trace-time"></p>
+            <div id="sensor-chart" aria-label="Selected station temperature, pressure and humidity time series"></div>
+            <p class="trace-note">Actual observation times · separate scales for °C, hPa and % RH · reports change only when the station publishes new measurements.</p>
+            <div class="current-values">
+              <div><span>Temperature</span><b id="current-temp">—</b><small>°C</small></div>
+              <div><span>Pressure</span><b id="current-pressure">—</b><small>hPa</small></div>
+              <div><span>Humidity</span><b id="current-humidity">—</b><small>% RH</small></div>
+              <div><span>Fault probability</span><b id="current-probability">—</b><small id="current-decision">No reading</small></div>
+            </div>
+          </article>
+        </div>
+
+        <article class="panel readings-panel">
+          <div class="panel-head"><div><h3>Latest observations</h3><p id="observations-subtitle">Reported values and model decision from the active scenario</p></div><span class="table-count" id="reading-count">0 rows</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Time (UTC)</th><th>Station</th><th>Temperature</th><th>Pressure</th><th>Humidity</th><th>Fault probability</th><th>Decision</th><th>Root cause</th></tr></thead><tbody id="readings-body"></tbody></table></div>
+        </article>
+      </section>
+
+      <section id="incidents" class="section-block">
+        <div class="section-title"><div><span class="section-kicker">Decision support</span><h2>Alerts, explanations & repair</h2></div><a class="download-button" href="/api/export/incidents.csv" download>Download incident report</a></div>
+        <div class="incident-grid">
+          <article class="panel queue-panel">
+            <div class="panel-head"><div><h3>Active alert queue</h3><p>Model decisions plus stateful communication checks</p></div><span class="status-pill" id="queue-count">0 active</span></div>
+            <div class="alert-list" id="alert-list"></div>
+          </article>
+          <article class="panel explanation-panel" id="incident-detail">
+            <div class="panel-head"><div><span class="section-kicker">Selected evidence record</span><h3 id="incident-title">Loading incident…</h3><p id="incident-record-time">Waiting for station evidence</p></div><span class="severity" id="incident-severity">—</span></div>
+            <p class="explanation" id="incident-explanation"></p>
+            <div class="confidence-row"><div><span>Fault confidence</span><b id="fault-confidence">—</b></div><div><span>Root-cause confidence</span><b id="root-confidence">—</b></div><div><span>Affected sensor</span><b id="affected-sensor">—</b></div></div>
+            <div class="evidence-layout">
+              <div><h4>Why it was flagged</h4><div id="evidence-list" class="bar-list"></div></div>
+              <div><h4>Local feature contribution</h4><div id="contribution-list" class="bar-list"></div></div>
+            </div>
+            <div class="correction-box" id="correction-box"></div>
+            <div class="maintenance"><span>Recommended action</span><p id="maintenance-action">—</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" id="health">
+        <div class="section-title"><div><span class="section-kicker">Predictive maintenance</span><h2>Sensor health registry</h2></div><div class="segmented" id="health-filter"><button class="active" data-filter="all">All</button><button data-filter="critical">Critical</button><button data-filter="degrading">Degrading</button></div></div>
+        <article class="panel"><div class="table-wrap health-table"><table><thead><tr><th>Station</th><th>Sensor</th><th>Health score</th><th>Status</th><th>Trend</th><th>Projected health · 7d</th><th>Maintenance horizon</th><th>Incidents</th><th>Last incident</th><th>Action</th></tr></thead><tbody id="health-body"></tbody></table></div></article>
+      </section>
+
+      <section id="training-story" class="section-block" data-offline-only>
+        <div class="section-title"><h2>How this deployed model was developed</h2></div>
+        <article class="panel">
+          <h3>Historical development → controlled fault injection → held-out evaluation</h3>
+          <p>Real NOAA/NCEI station observations provide the historical weather context. Temperature and pressure are parsed with source conventions preserved; relative humidity is derived from temperature and dew point. Simulated sensor faults supply known evaluation labels; these are not confirmed real equipment failures.</p>
+          <p>The deployed Phase 10 detector uses 108 features from temperature, pressure and humidity, including temporal change and neighbouring-station evidence. LightGBM-gated decisions use known/new-station policies. The causal TCN remains advisory because its fusion exceeded the unseen-station false-alarm limit.</p>
+          <p>Tests below separate unseen time and unseen stations in 2024. Precision measures how many flags are correct; recall measures how many faults are found; F1 balances them. Episode recall measures whether an incident was detected at least once—not whether every faulty row was detected. These are historical injected-fault results, not live accuracy.</p>
+          <p>This approach is suitable for a computer-only SIH demonstration because it combines genuine observations, reproducible fault labels, causal processing and measurable false alarms. It is not proven to be the best method. Missed weak faults, source differences and limited real fault labels remain limitations. Later experimental notebooks are not automatically the deployed model.</p>
+        </article>
+      </section>
+      <section id="validation" class="section-block validation-section">
+        <div class="section-title"><div><span class="section-kicker">Frozen evaluation · no random row split</span><h2>Model accuracy & safety</h2></div><div class="segmented" id="split-selector"><button class="active" data-split="time_test">Unseen time · 2024</button><button data-split="station_test">Unseen stations · 2024</button></div></div>
+        <div class="accuracy-strip" id="accuracy-strip"></div>
+        <div class="validation-grid">
+          <article class="panel"><div class="panel-head"><div><h3>Fault detection</h3><p>Point and complete-episode performance</p></div><span class="verified">Validated</span></div><div id="detection-metrics" class="metric-list"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Weather-event protection</h3><p>Regional agreement avoids false sensor alarms</p></div><span class="verified">Validated</span></div><div id="weather-metrics" class="metric-list"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Root-cause diagnosis</h3><p>Conservative confidence-gated classification</p></div><span class="verified">Validated</span></div><div id="root-metrics" class="metric-list"></div></article>
+        </div>
+
+        <article class="panel wide-panel">
+          <div class="panel-head"><div><h3>Correction accuracy and uncertainty</h3><p>Supporting repair benchmark: only detected and inferred affected sensors receive an advisory proposal</p></div><span class="advisory">Advisory research output</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Sensor</th><th>Eligible fault points</th><th>Corrections produced</th><th>Coverage</th><th>Reported MAE</th><th>Corrected MAE</th><th>Corrected RMSE</th><th>Error reduction</th><th>90% interval coverage</th></tr></thead><tbody id="correction-body"></tbody></table></div>
+        </article>
+
+        <article class="panel wide-panel">
+          <div class="panel-head"><div><h3>Safe-repair gates</h3><p>Review coverage is broad; automatic eligibility is deliberately narrow and high precision</p></div><span class="safety-lock">Safety lock active</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Sensor</th><th>Review proposals</th><th>Review precision</th><th>Review coverage</th><th>Automatic proposals</th><th>Automatic precision</th><th>Automatic coverage</th><th>Policy</th></tr></thead><tbody id="safe-repair-body"></tbody></table></div>
+        </article>
+
+        <div class="validation-grid lower">
+          <article class="panel span-two"><div class="panel-head"><div><h3>Episode recall by fault type</h3><p>How many complete injected fault episodes were detected</p></div></div><div class="fault-grid" id="fault-grid"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Offline performance</h3><p>Measured on this replay platform</p></div></div><div class="profile-list" id="profile-list"></div></article>
+        </div>
+        <details class="raw-details panel"><summary>View every frozen metric and parameter (JSON)</summary><pre id="raw-metrics"></pre></details>
+      </section>
+
+      <section id="data-proof" class="section-block">
+        <div class="section-title"><div><span class="section-kicker">Genuine source evidence</span><h2>Dataset provenance & integrity</h2></div><span class="source-badge">NOAA / NCEI · Global Hourly ISD</span></div>
+        <div class="data-proof-grid">
+          <article class="panel proof-card"><span>Processed observations</span><strong id="data-rows">—</strong><small>Deduplicated rows</small></article>
+          <article class="panel proof-card"><span>Official source files</span><strong id="data-files">—</strong><small>72 observations + metadata + format</small></article>
+          <article class="panel proof-card"><span>Clean candidates</span><strong id="data-clean">—</strong><small>Ready for controlled faults</small></article>
+          <article class="panel proof-card"><span>Integrity checks</span><strong id="data-checks">—</strong><small>Source, hashes, schema and coverage</small></article>
+        </div>
+        <div class="data-grid">
+          <article class="panel"><h3>Measured ranges</h3><div id="range-list" class="metric-list compact"></div></article>
+          <article class="panel"><h3>Missingness</h3><div id="missing-list" class="metric-list compact"></div></article>
+          <article class="panel"><h3>Evaluation design</h3><ul class="check-list"><li>Train: 2022</li><li>Threshold selection: 2023</li><li>Locked time test: 2024</li><li>Four unseen station holdouts</li><li>Episodes never split across sets</li></ul></article>
+        </div>
+        <div class="honesty-note"><span>Scientific limitation</span><p id="data-limitation">—</p></div>
+        <div class="safety-note"><span>Deployment position</span><p id="policy-statement">—</p></div>
+      </section>
+    </main>
+
+    <footer><div><b>SkyGuard AI</b><span>Weather quality-control research prototype</span></div><div><a href="/docs" target="_blank">Developer API</a><span>Three-parameter model · Live-source + offline demonstration</span></div></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/assets/vendor/leaflet/leaflet.js" defer></script>
+  <script src="/assets/station-map.js" defer></script>
+  <script src="/assets/sensor-trace.js" defer></script>
+  <script src="/assets/live-qc.js" defer></script>
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

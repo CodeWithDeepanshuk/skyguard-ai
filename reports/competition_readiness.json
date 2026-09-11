@@ -1,0 +1,54 @@
+{
+  "status": "complete",
+  "model_version": "SkyGuard-P10-compliant",
+  "detector_inputs": [
+    "temperature",
+    "pressure",
+    "relative_humidity"
+  ],
+  "dew_point_used_by_detector": false,
+  "benchmark": {
+    "rows": 400,
+    "model_alerts": 1,
+    "wall_seconds": 1.9541035000002012,
+    "cpu_seconds": 4.390625,
+    "throughput_rows_per_second": 204.69744821600227,
+    "mean_wall_latency_ms_per_row": 4.885258750000503,
+    "cpu_seconds_per_1000_rows": 10.9765625,
+    "peak_traced_python_mib": 6.534720420837402,
+    "scope": "normalization-independent causal temporal, neighbour, Phase 10 trend, event, weather and root-cause inference"
+  },
+  "scalability_projection": {
+    "network_stations": 10000,
+    "assumed_cadence_minutes": 30,
+    "required_rows_per_second": 5.555555555555555,
+    "single_process_capacity_factor": 36.84554067888041,
+    "interpretation": "Capacity projection compares measured batch throughput with observation arrival rate; it is not a distributed load test."
+  },
+  "artifacts": {
+    "deployed_phase10_bundle": {
+      "bytes": 5378346,
+      "mib": 5.129190444946289
+    },
+    "advisory_tcn": {
+      "bytes": 97180,
+      "mib": 0.09267807006835938
+    },
+    "climatology": {
+      "bytes": 77924,
+      "mib": 0.07431411743164062
+    },
+    "sensor_repair_bundle": {
+      "bytes": 3411357,
+      "mib": 3.253323554992676
+    },
+    "deployed_detection_total_bytes": 5456270,
+    "deployed_detection_total_mib": 5.20350456237793
+  },
+  "energy": {
+    "measured_joules": null,
+    "proxy": "CPU seconds per 1,000 complete inferences and deployed artifact size",
+    "claim": "No joule or battery-life claim is made because the laptop has no calibrated power meter.",
+    "esp32_status": "Not deployed; ESP32 is a suggested technology, while the submitted category is software."
+  }
+}

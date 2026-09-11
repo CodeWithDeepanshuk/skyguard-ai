@@ -1,0 +1,53 @@
+test,variant,anomaly_type,point_recall,evaluation_mode
+blind_time,Iteration3 reference,bias,0.1963927855711423,static_causal_stream
+blind_time,Iteration3 reference,communication_corruption,1.0,static_causal_stream
+blind_time,Iteration3 reference,drift,0.19769874476987448,static_causal_stream
+blind_time,Iteration3 reference,dropout,,not_point_evaluable_packet_absence
+blind_time,Iteration3 reference,duplicate_packet,1.0,operational_replay
+blind_time,Iteration3 reference,frozen_sensor,0.14644351464435146,static_causal_stream
+blind_time,Iteration3 reference,multi_sensor_failure,0.7041800643086816,static_causal_stream
+blind_time,Iteration3 reference,noise,0.2723404255319149,static_causal_stream
+blind_time,Iteration3 reference,scaling_error,0.9333333333333333,static_causal_stream
+blind_time,Iteration3 reference,spike,0.8,static_causal_stream
+blind_time,Iteration3 reference,sudden_drop,0.8,static_causal_stream
+blind_time,Iteration3 reference,timestamp_error,0.8076923076923077,static_causal_stream
+blind_time,Iteration3 reference,unit_error,1.0,static_causal_stream
+blind_time,Iteration5 weak consensus,bias,0.1963927855711423,static_causal_stream
+blind_time,Iteration5 weak consensus,communication_corruption,1.0,static_causal_stream
+blind_time,Iteration5 weak consensus,drift,0.21338912133891214,static_causal_stream
+blind_time,Iteration5 weak consensus,dropout,,not_point_evaluable_packet_absence
+blind_time,Iteration5 weak consensus,duplicate_packet,1.0,operational_replay
+blind_time,Iteration5 weak consensus,frozen_sensor,0.2301255230125523,static_causal_stream
+blind_time,Iteration5 weak consensus,multi_sensor_failure,0.7041800643086816,static_causal_stream
+blind_time,Iteration5 weak consensus,noise,0.2723404255319149,static_causal_stream
+blind_time,Iteration5 weak consensus,scaling_error,0.9333333333333333,static_causal_stream
+blind_time,Iteration5 weak consensus,spike,0.8,static_causal_stream
+blind_time,Iteration5 weak consensus,sudden_drop,0.8,static_causal_stream
+blind_time,Iteration5 weak consensus,timestamp_error,0.8076923076923077,static_causal_stream
+blind_time,Iteration5 weak consensus,unit_error,1.0,static_causal_stream
+blind_station,Iteration3 reference,bias,0.3870967741935484,static_causal_stream
+blind_station,Iteration3 reference,communication_corruption,1.0,static_causal_stream
+blind_station,Iteration3 reference,drift,0.13761467889908258,static_causal_stream
+blind_station,Iteration3 reference,dropout,,not_point_evaluable_packet_absence
+blind_station,Iteration3 reference,duplicate_packet,1.0,operational_replay
+blind_station,Iteration3 reference,frozen_sensor,0.2619047619047619,static_causal_stream
+blind_station,Iteration3 reference,multi_sensor_failure,0.5227272727272727,static_causal_stream
+blind_station,Iteration3 reference,noise,0.41379310344827586,static_causal_stream
+blind_station,Iteration3 reference,scaling_error,0.8333333333333334,static_causal_stream
+blind_station,Iteration3 reference,spike,0.8333333333333334,static_causal_stream
+blind_station,Iteration3 reference,sudden_drop,0.8333333333333334,static_causal_stream
+blind_station,Iteration3 reference,timestamp_error,0.375,static_causal_stream
+blind_station,Iteration3 reference,unit_error,1.0,static_causal_stream
+blind_station,Iteration5 weak consensus,bias,0.3870967741935484,static_causal_stream
+blind_station,Iteration5 weak consensus,communication_corruption,1.0,static_causal_stream
+blind_station,Iteration5 weak consensus,drift,0.13761467889908258,static_causal_stream
+blind_station,Iteration5 weak consensus,dropout,,not_point_evaluable_packet_absence
+blind_station,Iteration5 weak consensus,duplicate_packet,1.0,operational_replay
+blind_station,Iteration5 weak consensus,frozen_sensor,0.2619047619047619,static_causal_stream
+blind_station,Iteration5 weak consensus,multi_sensor_failure,0.5227272727272727,static_causal_stream
+blind_station,Iteration5 weak consensus,noise,0.41379310344827586,static_causal_stream
+blind_station,Iteration5 weak consensus,scaling_error,0.8333333333333334,static_causal_stream
+blind_station,Iteration5 weak consensus,spike,0.8333333333333334,static_causal_stream
+blind_station,Iteration5 weak consensus,sudden_drop,0.8333333333333334,static_causal_stream
+blind_station,Iteration5 weak consensus,timestamp_error,0.375,static_causal_stream
+blind_station,Iteration5 weak consensus,unit_error,1.0,static_causal_stream

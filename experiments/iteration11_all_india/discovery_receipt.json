@@ -1,0 +1,18 @@
+{
+  "version": "iteration11-v1",
+  "created_at_utc": "2026-09-11T15:12:04.529723+00:00",
+  "source": "NOAA ISD Indian-station historical proxy; not IMD AWS network",
+  "indian_metadata_station_ids": 545,
+  "with_coordinates": 543,
+  "candidate_station_ids_with_any_listed_file": 441,
+  "listed_station_year_files": 1596,
+  "listed_by_year": {
+    "2020": 407,
+    "2021": 404,
+    "2022": 389,
+    "2023": 396
+  },
+  "usable_T_P_RH_station_count": "NOT KNOWN until raw downloads and quality profiling complete",
+  "imd_1008": "Separate IMD network count, NOT denominator for NOAA archive coverage",
+  "no_2024_or_2025_data": true
+}

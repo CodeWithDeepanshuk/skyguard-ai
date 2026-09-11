@@ -1,0 +1,19 @@
+{
+  "blind_2025_opened": false,
+  "former_final_tests_opened": false,
+  "development_partitions": [
+    "2022 train",
+    "2023 tune/discovery/confirmation"
+  ],
+  "pseudo_unseen_stations": [
+    "43321099999",
+    "43329099999",
+    "42361099999",
+    "43213099999"
+  ],
+  "future_features_used": false,
+  "dew_point_used": false,
+  "communication_stream_action_used_by_detector": false,
+  "result_sha256": "412b4a21e3d8480fd58061343fef152ee6a75b130de23fa5a67b491681408239",
+  "feature_contract_sha256": "ad14a639ba8135081c90cee04fe99e47c1993d496c6c64828a79cd6227236372"
+}

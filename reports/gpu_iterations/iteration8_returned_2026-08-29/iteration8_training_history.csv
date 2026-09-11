@@ -1,0 +1,3 @@
+target,fit_rows,fit_positives,tune_rows,tune_positives,catboost_best_iteration,lightgbm_best_iterations
+fault,286952,5228,92327,845,1490,"857,959"
+weather,286952,6341,92327,1679,1498,"1371,1779"

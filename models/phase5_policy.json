@@ -1,0 +1,33 @@
+{
+  "status": "frozen_before_2024_evaluation",
+  "selection_split": "validation (2023)",
+  "fault_probability_threshold": 0.37778048039958023,
+  "weather_probability_threshold": 0.014594543474253404,
+  "event_abstain_threshold": 0.501505499984115,
+  "root_abstain_threshold": 0.5589137509896355,
+  "validation_selection": {
+    "fault": {
+      "threshold": 0.37778048039958023,
+      "precision": 0.6902985074626866,
+      "recall": 0.3617992177314211,
+      "f1": 0.47476475620188197
+    },
+    "weather": {
+      "threshold": 0.014594543474253404,
+      "precision": 0.8199445983379502,
+      "recall": 0.5792563600782779,
+      "f1": 0.6788990825688073
+    },
+    "event_abstention": {
+      "threshold": 0.501505499984115,
+      "coverage": 0.8293103448275863,
+      "accepted_accuracy": 0.8024948024948025
+    },
+    "root_abstention": {
+      "threshold": 0.5589137509896355,
+      "coverage": 0.29986962190352023,
+      "accepted_accuracy": 0.7608695652173914
+    }
+  },
+  "dropout_handling": "deferred to Phase 7 stateful stream-gap detection"
+}

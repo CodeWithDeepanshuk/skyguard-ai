@@ -1,0 +1,13 @@
+anomaly_type,episode_recall
+duplicate_packet,0.0
+frozen_sensor,0.16666666666666666
+drift,0.375
+bias,0.42857142857142855
+noise,0.8571428571428571
+sudden_drop,0.875
+multi_sensor_failure,1.0
+communication_corruption,1.0
+scaling_error,1.0
+spike,1.0
+timestamp_error,1.0
+unit_error,1.0

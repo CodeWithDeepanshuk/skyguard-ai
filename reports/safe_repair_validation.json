@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "error_count": 0,
+  "errors": [],
+  "policy_frozen_on_2023": true,
+  "humidity_automatic_repair_disabled": true,
+  "files": {
+    "validation": {
+      "actions": 1788,
+      "auto_actions": 21,
+      "sha256": "096eef1c68680fea1864f50eaa64ae611d06e45ae50998943640f3f5311353c3"
+    },
+    "time_test": {
+      "actions": 2156,
+      "auto_actions": 39,
+      "sha256": "d93c6270e1b313c3af40f8c058f341fc5254bb94faa3f885e977d8164cbb2769"
+    },
+    "station_test": {
+      "actions": 210,
+      "auto_actions": 10,
+      "sha256": "5c2f27d648b69cbc684ea7fe03ffa46a8384091019439be1b1b7237cd3fa3d0c"
+    }
+  },
+  "review_coverage_absolute_gain": {
+    "time_test": {
+      "temperature": 0.04037558685446008,
+      "pressure": 0.07757404795486611,
+      "humidity": 0.12562814070351758
+    },
+    "station_test": {
+      "temperature": 0.0847457627118644,
+      "pressure": 0.11940298507462688,
+      "humidity": 0.10185185185185186
+    }
+  },
+  "automatic_repair_safety": {
+    "time_test": {
+      "temperature": true,
+      "pressure": true,
+      "humidity": true
+    },
+    "station_test": {
+      "temperature": true,
+      "pressure": true,
+      "humidity": true
+    }
+  }
+}

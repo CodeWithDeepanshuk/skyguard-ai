@@ -1,0 +1,72 @@
+{
+  "status": "frozen_before_2024_evaluation",
+  "selection_split": "validation (2023)",
+  "input_contract": [
+    "temperature_c",
+    "pressure_hpa",
+    "relative_humidity_pct"
+  ],
+  "dew_point_used_by_detector": false,
+  "review_target_precision": 0.7,
+  "auto_target_precision": 0.98,
+  "auto_safety": "three causal candidates and sensor-specific maximum interval half-width",
+  "review_fusion": "union of compliant detector proposals and sensor-specific rescue probability",
+  "automatic_repair_enabled": {
+    "temperature": true,
+    "pressure": true,
+    "humidity": false
+  },
+  "sensors": {
+    "temperature": {
+      "review": {
+        "threshold": 0.3051288347175892,
+        "precision": 0.7005494505494505,
+        "recall": 0.38288288288288286,
+        "target_precision": 0.7
+      },
+      "auto": {
+        "threshold": 0.8950480699199278,
+        "precision": 0.9844961240310077,
+        "recall": 0.1906906906906907,
+        "target_precision": 0.98
+      },
+      "validation_ece": 0.00019463033956420358,
+      "interval_half_width_limit": 4.0,
+      "automatic_repair_enabled": true
+    },
+    "pressure": {
+      "review": {
+        "threshold": 0.11560769715176904,
+        "precision": 0.7029360967184801,
+        "recall": 0.8075396825396826,
+        "target_precision": 0.7
+      },
+      "auto": {
+        "threshold": 0.8440341092833684,
+        "precision": 1.0,
+        "recall": 0.005952380952380952,
+        "target_precision": 0.98
+      },
+      "validation_ece": 0.00029372229284750694,
+      "interval_half_width_limit": 6.0,
+      "automatic_repair_enabled": true
+    },
+    "humidity": {
+      "review": {
+        "threshold": 0.20932278749993158,
+        "precision": 0.714975845410628,
+        "recall": 0.387434554973822,
+        "target_precision": 0.7
+      },
+      "auto": {
+        "threshold": 0.9330249998864779,
+        "precision": 0.9844961240310077,
+        "recall": 0.1662303664921466,
+        "target_precision": 0.98
+      },
+      "validation_ece": 0.00016469944953906656,
+      "interval_half_width_limit": 15.0,
+      "automatic_repair_enabled": false
+    }
+  }
+}

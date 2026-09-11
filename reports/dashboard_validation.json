@@ -1,0 +1,42 @@
+{
+  "phase": 8,
+  "status": "complete",
+  "checks": {
+    "dashboard_root_is_html": true,
+    "judge_views_present": true,
+    "local_assets_available": true,
+    "phase10_compliant_model_exposed": true,
+    "genuine_dataset_ready": true,
+    "dataset_scope_complete": true,
+    "all_source_validation_checks_pass": true,
+    "both_locked_holdouts_exposed": true,
+    "all_detection_metrics_exposed": true,
+    "all_sensor_correction_metrics_exposed": true,
+    "safe_repair_policy_exposed": true,
+    "full_inference_profile_exposed": true,
+    "degradation_forecast_exposed": true,
+    "incident_report_download_valid": true,
+    "pressure_drift_preview_has_fault_signal": true,
+    "regional_weather_preview_preserves_weather": true
+  },
+  "details": {
+    "dashboard_url": "http://127.0.0.1:8000/",
+    "developer_docs_url": "http://127.0.0.1:8000/docs",
+    "processed_rows": 578448,
+    "stations": 24,
+    "time_test_fault_f1": 0.525085910652921,
+    "station_test_fault_f1": 0.47197640117994105,
+    "full_inference_rows_per_second": 204.69744821600227,
+    "single_process_capacity_factor": 36.84554067888041,
+    "pressure_drift_preview_decisions": {
+      "normal": 213,
+      "sensor_fault": 7
+    },
+    "regional_weather_preview_decisions": {
+      "genuine_weather": 117,
+      "sensor_fault": 2,
+      "normal": 101
+    },
+    "downloaded_incident_rows": 1069
+  }
+}

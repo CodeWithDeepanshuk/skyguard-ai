@@ -1,0 +1,15 @@
+{
+  "opened_at_utc": "2026-08-29T09:16:00.279879+00:00",
+  "archive_sha256": "5f8bbad22342295f62c97d9b47628800eaa43df7aec5650ea91b814c6854d859",
+  "manifest_rows": 8,
+  "frozen_iteration5_policy": {
+    "score_col": "weak_consensus_min",
+    "threshold": 0.35,
+    "min_points": 4,
+    "max_gap_minutes": 180,
+    "weather_guard": true
+  },
+  "weather_threshold": 0.24,
+  "feature_count": 108,
+  "no_tuning_attestation": "No blind threshold search, model fitting, calibration, feature selection, or policy selection is performed by this notebook."
+}

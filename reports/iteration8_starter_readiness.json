@@ -1,0 +1,66 @@
+{
+  "status": "READY_FOR_T4_DEVELOPMENT_RUN",
+  "iteration": "08_multiclimate_new_data_curriculum",
+  "baseline": "frozen_iteration5_development_reference",
+  "iterations_6_or_7_rerun": false,
+  "source_validation": {
+    "status": "PASS",
+    "provider": "Deutscher Wetterdienst (DWD)",
+    "stations": 16,
+    "climate_clusters": 4,
+    "cadence_minutes": 10,
+    "development_rows_2022": 838126,
+    "development_rows_2023": 838307,
+    "locked_rows_2024": 841805,
+    "development_contains_2024": false,
+    "development_contains_2025": false
+  },
+  "curriculum_smoke": {
+    "status": "PASS",
+    "training_hourly_rows": 139684,
+    "training_weather_episodes": 96,
+    "training_fault_episodes": 160,
+    "validation_hourly_rows": 139716,
+    "validation_weather_episodes": 72,
+    "validation_fault_episodes": 60,
+    "required_coverage_cells": 132,
+    "minimum_events_per_required_cell": 1
+  },
+  "notebook_static_audit": {
+    "status": "PASS",
+    "cells": 87,
+    "code_cells": 44,
+    "syntax_errors": 0,
+    "stale_outputs": 0,
+    "locked_2024_bundle_referenced_by_code": false,
+    "clean_only_isolation_forest": true,
+    "causal_lstm_autoencoder": true,
+    "fault_score_variants": 4
+  },
+  "unsupervised_runtime_smoke": {
+    "status": "PASS",
+    "features": 34,
+    "sequence_window": 24,
+    "variants": [
+      "tree_only",
+      "tree_plus_isolation_forest",
+      "tree_plus_lstm_autoencoder",
+      "tree_if_lstm_consensus"
+    ]
+  },
+  "repository_tests": {
+    "passed": 66,
+    "failed": 0,
+    "warnings": 1,
+    "warning_scope": "third-party Starlette/httpx deprecation"
+  },
+  "artifacts": {
+    "development_bundle_sha256": "7f47466805309faf528d6abc8f04a588c4accbaf454989e36a2b4ff5b31681d4",
+    "locked_2024_bundle_sha256": "cdc1983d26bb08565dc35448dfa1fd89d47e37fdb2eb1a4e075295f7ef915901",
+    "notebook_sha256": "7c72f6862c393610e1cbc894745ea7d35bf0e1f04db2de3ae8b57ffbc616416b",
+    "development_zip_integrity": "PASS",
+    "locked_zip_integrity": "PASS"
+  },
+  "accuracy_claim": "PENDING_T4_RUN",
+  "next_action": "Run the Iteration 8 Colab notebook with only the original and Iteration 8 development bundles; return the eleven printed result files."
+}

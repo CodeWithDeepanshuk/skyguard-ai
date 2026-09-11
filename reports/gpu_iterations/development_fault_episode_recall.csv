@@ -1,0 +1,12 @@
+,episode_recall
+frozen_sensor,0.0
+bias,0.5
+drift,0.5
+noise,0.6666666666666666
+communication_corruption,1.0
+multi_sensor_failure,1.0
+scaling_error,1.0
+spike,1.0
+sudden_drop,1.0
+timestamp_error,1.0
+unit_error,1.0

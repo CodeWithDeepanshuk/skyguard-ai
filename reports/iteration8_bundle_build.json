@@ -1,0 +1,14 @@
+{
+  "development": {
+    "path": "deliverables/SkyGuard_Iteration8_Development_Data_Bundle.zip",
+    "bytes": 22038883,
+    "sha256": "7f47466805309faf528d6abc8f04a588c4accbaf454989e36a2b4ff5b31681d4",
+    "members": 20
+  },
+  "locked_2024": {
+    "path": "deliverables/SkyGuard_Iteration8_Locked_2024_Confirmation.zip",
+    "bytes": 10976392,
+    "sha256": "cdc1983d26bb08565dc35448dfa1fd89d47e37fdb2eb1a4e075295f7ef915901",
+    "members": 3
+  }
+}

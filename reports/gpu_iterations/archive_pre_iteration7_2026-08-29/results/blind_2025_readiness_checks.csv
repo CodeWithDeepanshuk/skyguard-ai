@@ -1,0 +1,13 @@
+test,criterion,actual,target,passed
+blind_time,precision,0.8779620853080569,0.8,True
+blind_time,point_f1,0.45996275605214154,0.65,False
+blind_time,operational_episode_recall,0.8205128205128205,0.85,False
+blind_time,operational_false_alarm_rate,0.7056609607951408,0.02,False
+blind_time,weather_f1,0.5302491103202847,0.8,False
+blind_time,weather_to_fault_rate,0.0,0.01,True
+blind_station,precision,0.9015151515151515,0.8,True
+blind_station,point_f1,0.5096359743040685,0.65,False
+blind_station,operational_episode_recall,0.7692307692307693,0.85,False
+blind_station,operational_false_alarm_rate,0.12508281436332316,0.02,False
+blind_station,weather_f1,0.13636363636363635,0.8,False
+blind_station,weather_to_fault_rate,0.030303030303030304,0.01,False

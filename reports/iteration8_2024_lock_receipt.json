@@ -1,0 +1,8 @@
+{
+  "status": "LOCKED",
+  "year": 2024,
+  "role": "external_confirmation_locked",
+  "open_only_after_model_and_threshold_freeze": true,
+  "contains_2025_observations": false,
+  "data_sha256": "42ec860a0befbe12b4abcc1ac2c0bf91233d893d34afc42093284948c3924011"
+}

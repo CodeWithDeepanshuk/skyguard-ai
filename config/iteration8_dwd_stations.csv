@@ -1,0 +1,17 @@
+station_id,dwd_numeric_id,cluster,evaluation_role,station_name,latitude,longitude,elevation_m,archive_file
+DWD-01975,01975,dwd_north_coastal,development,Hamburg-Fuhlsbuettel,53.6332,9.9881,11,10minutenwerte_TU_01975_20200101_20251231_hist.zip
+DWD-04271,04271,dwd_north_coastal,development,Rostock-Warnemuende,54.1803,12.0808,5,10minutenwerte_TU_04271_20200101_20251231_hist.zip
+DWD-03032,03032,dwd_north_coastal,development,List-auf-Sylt,55.0110,8.4125,25,10minutenwerte_TU_03032_20200101_20251231_hist.zip
+DWD-05839,05839,dwd_north_coastal,development,Emden,53.3881,7.2287,0,10minutenwerte_TU_05839_20200101_20251231_hist.zip
+DWD-00433,00433,dwd_east_continental,development,Berlin-Tempelhof,52.4676,13.4020,48,10minutenwerte_TU_00433_20200101_20251231_hist.zip
+DWD-03987,03987,dwd_east_continental,development,Potsdam,52.3812,13.0622,81,10minutenwerte_TU_03987_20200101_20251231_hist.zip
+DWD-01048,01048,dwd_east_continental,development,Dresden-Klotzsche,51.1278,13.7543,228,10minutenwerte_TU_01048_20200101_20251231_hist.zip
+DWD-01684,01684,dwd_east_continental,development,Goerlitz,51.1621,14.9506,239,10minutenwerte_TU_01684_20200101_20251231_hist.zip
+DWD-01078,01078,dwd_west_lowland,development,Duesseldorf,51.2960,6.7686,37,10minutenwerte_TU_01078_20200101_20251231_hist.zip
+DWD-02667,02667,dwd_west_lowland,development,Koeln-Bonn,50.8645,7.1575,91,10minutenwerte_TU_02667_20200101_20251231_hist.zip
+DWD-01420,01420,dwd_west_lowland,development,Frankfurt-Main,50.0259,8.5213,100,10minutenwerte_TU_01420_20200101_20251231_hist.zip
+DWD-04336,04336,dwd_west_lowland,development,Saarbruecken-Ensheim,49.2128,7.1077,319,10minutenwerte_TU_04336_20200101_20251231_hist.zip
+DWD-02712,02712,dwd_south_upland,development,Konstanz,47.6952,9.1307,428,10minutenwerte_TU_02712_20200101_20251231_hist.zip
+DWD-01262,01262,dwd_south_upland,development,Muenchen-Flughafen,48.3477,11.8134,446,10minutenwerte_TU_01262_20200101_20251231_hist.zip
+DWD-04928,04928,dwd_south_upland,development,Stuttgart-Schnarrenberg,48.8281,9.2000,314,10minutenwerte_TU_04928_20200101_20251231_hist.zip
+DWD-00232,00232,dwd_south_upland,development,Augsburg,48.4253,10.9417,462,10minutenwerte_TU_00232_20200101_20251231_hist.zip

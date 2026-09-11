@@ -1,0 +1,250 @@
+{
+  "status": "PASS",
+  "provider": "Deutscher Wetterdienst (DWD)",
+  "product": "CDC 10-minute station observations of air temperature",
+  "official_base_url": "https://opendata.dwd.de/",
+  "station_contract": {
+    "stations": 16,
+    "clusters": {
+      "dwd_east_continental": 4,
+      "dwd_north_coastal": 4,
+      "dwd_south_upland": 4,
+      "dwd_west_lowland": 4
+    },
+    "observation_inputs": [
+      "temperature_c",
+      "pressure_hpa",
+      "relative_humidity_pct"
+    ]
+  },
+  "raw_integrity": {
+    "files": 18,
+    "station_archives": 16,
+    "all_urls_official_dwd": true,
+    "all_hashes_match": true,
+    "all_sizes_match": true,
+    "errors": []
+  },
+  "yearly": [
+    {
+      "year": 2022,
+      "role": "development_train",
+      "rows": 838126,
+      "stations": 16,
+      "clusters": {
+        "dwd_east_continental": 208774,
+        "dwd_north_coastal": 209785,
+        "dwd_south_upland": 209526,
+        "dwd_west_lowland": 210041
+      },
+      "rows_per_station": {
+        "DWD-00232": 51846,
+        "DWD-00433": 51667,
+        "DWD-01048": 52560,
+        "DWD-01078": 52489,
+        "DWD-01262": 52560,
+        "DWD-01420": 52445,
+        "DWD-01684": 52560,
+        "DWD-01975": 52560,
+        "DWD-02667": 52560,
+        "DWD-02712": 52560,
+        "DWD-03032": 52497,
+        "DWD-03987": 51987,
+        "DWD-04271": 52560,
+        "DWD-04336": 52547,
+        "DWD-04928": 52560,
+        "DWD-05839": 52168
+      },
+      "exact_10_minute_ratio": {
+        "DWD-00232": 0.9999421352107243,
+        "DWD-00433": 0.9999612898230945,
+        "DWD-01048": 1.0,
+        "DWD-01078": 0.9999809480262155,
+        "DWD-01262": 1.0,
+        "DWD-01420": 0.9995233010449242,
+        "DWD-01684": 1.0,
+        "DWD-01975": 1.0,
+        "DWD-02667": 1.0,
+        "DWD-02712": 1.0,
+        "DWD-03032": 0.9999619018591893,
+        "DWD-03987": 0.9999807640518601,
+        "DWD-04271": 1.0,
+        "DWD-04336": 0.9999809690556846,
+        "DWD-04928": 1.0,
+        "DWD-05839": 0.9999808307934135
+      },
+      "quality_codes": {
+        "3": 838126
+      },
+      "bounds": {
+        "temperature_c": {
+          "min": -15.0,
+          "max": 38.8
+        },
+        "pressure_hpa": {
+          "min": 971.9616,
+          "max": 1049.4369
+        },
+        "station_pressure_hpa": {
+          "min": 937.1,
+          "max": 1047.9
+        },
+        "relative_humidity_pct": {
+          "min": 11.3,
+          "max": 100.0
+        }
+      },
+      "sha256": "b6fb48c7d323955309d057816c90c053efeb889e50c0310d9c6d90773fe2b98a",
+      "errors": []
+    },
+    {
+      "year": 2023,
+      "role": "development_validation",
+      "rows": 838307,
+      "stations": 16,
+      "clusters": {
+        "dwd_east_continental": 210056,
+        "dwd_north_coastal": 209527,
+        "dwd_south_upland": 209398,
+        "dwd_west_lowland": 209326
+      },
+      "rows_per_station": {
+        "DWD-00232": 52560,
+        "DWD-00433": 52513,
+        "DWD-01048": 52560,
+        "DWD-01078": 52087,
+        "DWD-01262": 52560,
+        "DWD-01420": 52560,
+        "DWD-01684": 52560,
+        "DWD-01975": 52560,
+        "DWD-02667": 52150,
+        "DWD-02712": 52178,
+        "DWD-03032": 52530,
+        "DWD-03987": 52423,
+        "DWD-04271": 52560,
+        "DWD-04336": 52529,
+        "DWD-04928": 52100,
+        "DWD-05839": 51877
+      },
+      "exact_10_minute_ratio": {
+        "DWD-00232": 1.0,
+        "DWD-00433": 0.9999428702010968,
+        "DWD-01048": 1.0,
+        "DWD-01078": 0.999884805897938,
+        "DWD-01262": 1.0,
+        "DWD-01420": 1.0,
+        "DWD-01684": 1.0,
+        "DWD-01975": 1.0,
+        "DWD-02667": 0.9997698901225335,
+        "DWD-02712": 0.999980834467294,
+        "DWD-03032": 0.9999809628966856,
+        "DWD-03987": 0.9999236961581016,
+        "DWD-04271": 1.0,
+        "DWD-04336": 0.9999619250685349,
+        "DWD-04928": 0.9999808057736232,
+        "DWD-05839": 0.999961446526332
+      },
+      "quality_codes": {
+        "3": 838307
+      },
+      "bounds": {
+        "temperature_c": {
+          "min": -17.9,
+          "max": 36.8
+        },
+        "pressure_hpa": {
+          "min": 970.9344,
+          "max": 1045.006
+        },
+        "station_pressure_hpa": {
+          "min": 927.0,
+          "max": 1042.8
+        },
+        "relative_humidity_pct": {
+          "min": 16.0,
+          "max": 100.0
+        }
+      },
+      "sha256": "4f5f03a5e9acae56a88ccc7ad0df93b9211012003d253f42a76287560bd82085",
+      "errors": []
+    },
+    {
+      "year": 2024,
+      "role": "external_confirmation_locked",
+      "rows": 841805,
+      "stations": 16,
+      "clusters": {
+        "dwd_east_continental": 210728,
+        "dwd_north_coastal": 210508,
+        "dwd_south_upland": 210204,
+        "dwd_west_lowland": 210365
+      },
+      "rows_per_station": {
+        "DWD-00232": 52092,
+        "DWD-00433": 52678,
+        "DWD-01048": 52704,
+        "DWD-01078": 52385,
+        "DWD-01262": 52704,
+        "DWD-01420": 52654,
+        "DWD-01684": 52671,
+        "DWD-01975": 52675,
+        "DWD-02667": 52704,
+        "DWD-02712": 52704,
+        "DWD-03032": 52684,
+        "DWD-03987": 52675,
+        "DWD-04271": 52704,
+        "DWD-04336": 52622,
+        "DWD-04928": 52704,
+        "DWD-05839": 52445
+      },
+      "exact_10_minute_ratio": {
+        "DWD-00232": 0.999980802825824,
+        "DWD-00433": 0.9999810163828616,
+        "DWD-01048": 1.0,
+        "DWD-01078": 0.9999236408063531,
+        "DWD-01262": 1.0,
+        "DWD-01420": 0.9998860463791237,
+        "DWD-01684": 0.9999810138598823,
+        "DWD-01975": 0.9999810153016668,
+        "DWD-02667": 1.0,
+        "DWD-02712": 1.0,
+        "DWD-03032": 0.9999620370897633,
+        "DWD-03987": 0.9999620306033337,
+        "DWD-04271": 1.0,
+        "DWD-04336": 0.9999049809011611,
+        "DWD-04928": 1.0,
+        "DWD-05839": 0.9999046602089848
+      },
+      "quality_codes": {
+        "3": 841805
+      },
+      "bounds": {
+        "temperature_c": {
+          "min": -13.2,
+          "max": 35.6
+        },
+        "pressure_hpa": {
+          "min": 966.3498,
+          "max": 1040.9
+        },
+        "station_pressure_hpa": {
+          "min": 930.1,
+          "max": 1039.3
+        },
+        "relative_humidity_pct": {
+          "min": 19.6,
+          "max": 100.0
+        }
+      },
+      "sha256": "42ec860a0befbe12b4abcc1ac2c0bf91233d893d34afc42093284948c3924011",
+      "errors": []
+    }
+  ],
+  "split_safety": {
+    "development_train": 2022,
+    "development_validation": 2023,
+    "external_confirmation_locked": 2024,
+    "2025_loaded": false
+  },
+  "errors": []
+}

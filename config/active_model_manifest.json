@@ -1,0 +1,1335 @@
+{
+  "schema_version": 1,
+  "release": "R0-reliable-baseline",
+  "generated_at_utc": "2026-09-11T12:29:59+00:00",
+  "model_version": "SkyGuard-P10-compliant",
+  "model_changed": false,
+  "status": "Frozen research comparator; not certified operational IMD deployment",
+  "startup": "python src/data/run_api.py",
+  "verification": "powershell -NoProfile -ExecutionPolicy Bypass -File verify_skyguard.ps1",
+  "deployed_artifacts": {
+    "models/phase10_final.joblib": {
+      "bytes": 8365530,
+      "sha256": "6741f12f15fdaec3aad5e2d0033c203fe98113c47aa9c548bcb7b0c772db83f2"
+    },
+    "models/phase10_climatology.joblib": {
+      "bytes": 77924,
+      "sha256": "4a1c852a369cb59fa50f04165a273f9cefabb5fa54cb9d87997400dc615d2213"
+    }
+  },
+  "all_model_roles": {
+    "models/baseline_thresholds.json": {
+      "bytes": 1307,
+      "sha256": "7e3c10a5a35de503a9be520802ad711dd6543e348c192d80b41270504da95a1a",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/correction_policy.json": {
+      "bytes": 8111,
+      "sha256": "75276286f81a5863b4c8ec61a305c2cc5fe3d95d80408357f737dac95ad42fbe",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/isolation_forest.joblib": {
+      "bytes": 5287191,
+      "sha256": "acd6ff9ea9c72d2015ad5062378b458a2e4dd775ad8d1f70e2e0f22ddd5c1fce",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_climatology.joblib": {
+      "bytes": 77924,
+      "sha256": "4a1c852a369cb59fa50f04165a273f9cefabb5fa54cb9d87997400dc615d2213",
+      "role": "deployed_live"
+    },
+    "models/phase10_ensemble.joblib": {
+      "bytes": 4958580,
+      "sha256": "afd90a5687a154e7d8ce383eb7b8a933aad9a62c36ef741aedb3c1af1ee84a80",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_final.joblib": {
+      "bytes": 8365530,
+      "sha256": "6741f12f15fdaec3aad5e2d0033c203fe98113c47aa9c548bcb7b0c772db83f2",
+      "role": "deployed_live"
+    },
+    "models/phase10_full_data_event.joblib": {
+      "bytes": 4042735,
+      "sha256": "92a4c9543b5e9832bffd221b755014e4c3d1a1926a220950e146f1a6745be7f4",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_policy.json": {
+      "bytes": 1040,
+      "sha256": "825cc72b499a8caf74fdc3407551618c1096bd2c48e576951939ab9ff207d2a4",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_refined_event.joblib": {
+      "bytes": 1636297,
+      "sha256": "73a3fefa936e884f9bb7d8858e35f0b51b6cb44d383875f078c07c0e3b171476",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_specialists.joblib": {
+      "bytes": 5349888,
+      "sha256": "c4cdaad47c18650b7c78211d1b47198777adc1f4506bbf832bb6c9e2ce0d8f90",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_tcn.pt": {
+      "bytes": 97180,
+      "sha256": "85ec7e4690155c072fc52f3907fc0b66f5bf52016b437b41d64636122ece208f",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_transfer_event.joblib": {
+      "bytes": 2849361,
+      "sha256": "29e9bd3acfe67bde956483adb3e838f3cea3f8c8136bbd32cf8f170b0dd4922a",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase10_weather_gate.joblib": {
+      "bytes": 875498,
+      "sha256": "cb2a9253f9ed42fe396e928ac0d8b5d2e060815a0a56a2e9ae2c9d4d285aa756",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase5_classifiers.joblib": {
+      "bytes": 10609306,
+      "sha256": "857cc9859a2f9b3470df7473111df4be27b2b133074e1fb17fb94af4d4207f28",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/phase5_policy.json": {
+      "bytes": 1086,
+      "sha256": "ca4f0d5a002db15e858024f1681ef02fd3d53088c2cbf61700fb0bb098fbe4f1",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/safe_repair_policy.json": {
+      "bytes": 2198,
+      "sha256": "8bf2c05c50cbbe8e1c84a022e5356145af0da20a715766468f335cbda365725a",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    },
+    "models/sensor_repair_classifiers.joblib": {
+      "bytes": 3411357,
+      "sha256": "a5bcfbc6905c0abb36aa0794676195ab5d0519bf6408026af168303193e7894b",
+      "role": "not_loaded_by_live_service; historical_or_candidate"
+    }
+  },
+  "event_model_class": "sklearn.calibration.CalibratedClassifierCV",
+  "root_model_class": "lightgbm.sklearn.LGBMClassifier",
+  "feature_count": 108,
+  "event_features_in_order": [
+    "temperature_value",
+    "pressure_value",
+    "humidity_value",
+    "primary_missing_count",
+    "time_since_previous_minutes",
+    "gap_ratio",
+    "out_of_order_indicator",
+    "temperature_humidity_interaction",
+    "pressure_temperature_ratio",
+    "neighbor_station_count",
+    "neighbor_min_age_minutes",
+    "neighbor_max_age_minutes",
+    "nearest_neighbor_km",
+    "temperature_missing",
+    "temperature_lag1",
+    "temperature_delta1",
+    "temperature_rate_per_hour",
+    "temperature_rolling_count_24h",
+    "temperature_rolling_median_24h",
+    "temperature_rolling_mad_24h",
+    "temperature_robust_z_24h",
+    "temperature_ewma_prior",
+    "temperature_ewma_residual",
+    "temperature_frozen_run_length",
+    "pressure_missing",
+    "pressure_lag1",
+    "pressure_delta1",
+    "pressure_rate_per_hour",
+    "pressure_rolling_count_24h",
+    "pressure_rolling_median_24h",
+    "pressure_rolling_mad_24h",
+    "pressure_robust_z_24h",
+    "pressure_ewma_prior",
+    "pressure_ewma_residual",
+    "pressure_frozen_run_length",
+    "humidity_missing",
+    "humidity_lag1",
+    "humidity_delta1",
+    "humidity_rate_per_hour",
+    "humidity_rolling_count_24h",
+    "humidity_rolling_median_24h",
+    "humidity_rolling_mad_24h",
+    "humidity_robust_z_24h",
+    "humidity_ewma_prior",
+    "humidity_ewma_residual",
+    "humidity_frozen_run_length",
+    "neighbor_temperature_count",
+    "neighbor_temperature_weighted_mean",
+    "neighbor_temperature_median",
+    "neighbor_temperature_mad",
+    "neighbor_temperature_residual",
+    "neighbor_temperature_max_abs_difference",
+    "neighbor_temperature_agreement_fraction",
+    "neighbor_pressure_count",
+    "neighbor_pressure_weighted_mean",
+    "neighbor_pressure_median",
+    "neighbor_pressure_mad",
+    "neighbor_pressure_residual",
+    "neighbor_pressure_max_abs_difference",
+    "neighbor_pressure_agreement_fraction",
+    "neighbor_humidity_count",
+    "neighbor_humidity_weighted_mean",
+    "neighbor_humidity_median",
+    "neighbor_humidity_mad",
+    "neighbor_humidity_residual",
+    "neighbor_humidity_max_abs_difference",
+    "neighbor_humidity_agreement_fraction",
+    "temperature_slope_3h",
+    "temperature_slope_6h",
+    "temperature_slope_12h",
+    "temperature_slope_24h",
+    "temperature_neighbor_residual_slope_3h",
+    "temperature_neighbor_residual_slope_6h",
+    "temperature_neighbor_residual_slope_12h",
+    "temperature_neighbor_residual_slope_24h",
+    "temperature_cusum_positive",
+    "temperature_cusum_negative",
+    "temperature_monotonic_run",
+    "temperature_climatology_residual",
+    "pressure_slope_3h",
+    "pressure_slope_6h",
+    "pressure_slope_12h",
+    "pressure_slope_24h",
+    "pressure_neighbor_residual_slope_3h",
+    "pressure_neighbor_residual_slope_6h",
+    "pressure_neighbor_residual_slope_12h",
+    "pressure_neighbor_residual_slope_24h",
+    "pressure_cusum_positive",
+    "pressure_cusum_negative",
+    "pressure_monotonic_run",
+    "pressure_climatology_residual",
+    "humidity_slope_3h",
+    "humidity_slope_6h",
+    "humidity_slope_12h",
+    "humidity_slope_24h",
+    "humidity_neighbor_residual_slope_3h",
+    "humidity_neighbor_residual_slope_6h",
+    "humidity_neighbor_residual_slope_12h",
+    "humidity_neighbor_residual_slope_24h",
+    "humidity_cusum_positive",
+    "humidity_cusum_negative",
+    "humidity_monotonic_run",
+    "humidity_climatology_residual",
+    "regional_agreement_mean",
+    "regional_agreement_min",
+    "regional_agreeing_sensor_count",
+    "regional_standardized_disagreement_max",
+    "regional_trend_disagreement_mean"
+  ],
+  "root_features_in_order": [
+    "temperature_value",
+    "pressure_value",
+    "humidity_value",
+    "primary_missing_count",
+    "time_since_previous_minutes",
+    "gap_ratio",
+    "out_of_order_indicator",
+    "temperature_humidity_interaction",
+    "pressure_temperature_ratio",
+    "neighbor_station_count",
+    "neighbor_min_age_minutes",
+    "neighbor_max_age_minutes",
+    "nearest_neighbor_km",
+    "temperature_missing",
+    "temperature_lag1",
+    "temperature_delta1",
+    "temperature_rate_per_hour",
+    "temperature_rolling_count_24h",
+    "temperature_rolling_median_24h",
+    "temperature_rolling_mad_24h",
+    "temperature_robust_z_24h",
+    "temperature_ewma_prior",
+    "temperature_ewma_residual",
+    "temperature_frozen_run_length",
+    "pressure_missing",
+    "pressure_lag1",
+    "pressure_delta1",
+    "pressure_rate_per_hour",
+    "pressure_rolling_count_24h",
+    "pressure_rolling_median_24h",
+    "pressure_rolling_mad_24h",
+    "pressure_robust_z_24h",
+    "pressure_ewma_prior",
+    "pressure_ewma_residual",
+    "pressure_frozen_run_length",
+    "humidity_missing",
+    "humidity_lag1",
+    "humidity_delta1",
+    "humidity_rate_per_hour",
+    "humidity_rolling_count_24h",
+    "humidity_rolling_median_24h",
+    "humidity_rolling_mad_24h",
+    "humidity_robust_z_24h",
+    "humidity_ewma_prior",
+    "humidity_ewma_residual",
+    "humidity_frozen_run_length",
+    "neighbor_temperature_count",
+    "neighbor_temperature_weighted_mean",
+    "neighbor_temperature_median",
+    "neighbor_temperature_mad",
+    "neighbor_temperature_residual",
+    "neighbor_temperature_max_abs_difference",
+    "neighbor_temperature_agreement_fraction",
+    "neighbor_pressure_count",
+    "neighbor_pressure_weighted_mean",
+    "neighbor_pressure_median",
+    "neighbor_pressure_mad",
+    "neighbor_pressure_residual",
+    "neighbor_pressure_max_abs_difference",
+    "neighbor_pressure_agreement_fraction",
+    "neighbor_humidity_count",
+    "neighbor_humidity_weighted_mean",
+    "neighbor_humidity_median",
+    "neighbor_humidity_mad",
+    "neighbor_humidity_residual",
+    "neighbor_humidity_max_abs_difference",
+    "neighbor_humidity_agreement_fraction",
+    "temperature_slope_3h",
+    "temperature_slope_6h",
+    "temperature_slope_12h",
+    "temperature_slope_24h",
+    "temperature_neighbor_residual_slope_3h",
+    "temperature_neighbor_residual_slope_6h",
+    "temperature_neighbor_residual_slope_12h",
+    "temperature_neighbor_residual_slope_24h",
+    "temperature_cusum_positive",
+    "temperature_cusum_negative",
+    "temperature_monotonic_run",
+    "temperature_climatology_residual",
+    "pressure_slope_3h",
+    "pressure_slope_6h",
+    "pressure_slope_12h",
+    "pressure_slope_24h",
+    "pressure_neighbor_residual_slope_3h",
+    "pressure_neighbor_residual_slope_6h",
+    "pressure_neighbor_residual_slope_12h",
+    "pressure_neighbor_residual_slope_24h",
+    "pressure_cusum_positive",
+    "pressure_cusum_negative",
+    "pressure_monotonic_run",
+    "pressure_climatology_residual",
+    "humidity_slope_3h",
+    "humidity_slope_6h",
+    "humidity_slope_12h",
+    "humidity_slope_24h",
+    "humidity_neighbor_residual_slope_3h",
+    "humidity_neighbor_residual_slope_6h",
+    "humidity_neighbor_residual_slope_12h",
+    "humidity_neighbor_residual_slope_24h",
+    "humidity_cusum_positive",
+    "humidity_cusum_negative",
+    "humidity_monotonic_run",
+    "humidity_climatology_residual",
+    "regional_agreement_mean",
+    "regional_agreement_min",
+    "regional_agreeing_sensor_count",
+    "regional_standardized_disagreement_max",
+    "regional_trend_disagreement_mean"
+  ],
+  "training_stations": [
+    "42181099999",
+    "42182099999",
+    "42189099999",
+    "42348099999",
+    "42361099999",
+    "42705699999",
+    "43021099999",
+    "43128099999",
+    "43128599999",
+    "43181099999",
+    "43213099999",
+    "43245099999",
+    "43275099999",
+    "43278099999",
+    "43279099999",
+    "43284099999",
+    "43295099999",
+    "43302599999",
+    "43321099999",
+    "43329099999"
+  ],
+  "thresholds_and_policy": {
+    "status": "final_phase10_compliant",
+    "input_contract": [
+      "temperature_c",
+      "pressure_hpa",
+      "relative_humidity_pct"
+    ],
+    "dew_point_used_by_detector": false,
+    "known_station": {
+      "threshold": 0.3857960391820054,
+      "precision": 0.717948717948718,
+      "recall": 0.3640661938534279,
+      "f1": 0.4831372549019608,
+      "false_alarms_per_station_day": 0.03303303303303303,
+      "weather_false_fault_rate": 0.010033444816053512,
+      "constraints_met": 1.0,
+      "persistence_decay": 0.55
+    },
+    "new_station": {
+      "threshold": 0.42390918637865765,
+      "persistence_decay": 0.0,
+      "station_macro_f1": 0.4696195686304957,
+      "recall": 0.3122555410691004,
+      "false_alarms_per_station_day": 0.021616411950984443,
+      "weather_false_fault_rate": 0.011741682974559686
+    },
+    "weather_threshold": 0.11155514993831611,
+    "root_threshold": 0.0,
+    "tcn_role": "advisory sequence evidence; automatic alerts remain LightGBM-gated because TCN fusion exceeded the unseen-station false-alarm limit"
+  },
+  "preprocessing_contract": {
+    "detector_inputs": [
+      "temperature_c",
+      "pressure_hpa",
+      "relative_humidity_pct"
+    ],
+    "live_source": "AviationWeather.gov METAR; periodic terminal observations, not raw IMD AWS telemetry",
+    "relative_humidity": "Derived upstream from temperature/dew point; dew point excluded from detector features",
+    "live_pressure": "METAR QNH hPa; historical pressure compatibility remains an R1 audit item",
+    "temporal_and_spatial": "Existing feature implementations preserved; causal and source-contract audit remains open",
+    "tcn": "Not executed by current live service; no automatic promotion of later notebooks"
+  },
+  "runtime_source_hashes": {
+    "src/skyguard/live/metar.py": {
+      "bytes": 38863,
+      "sha256": "df99174c36f4cf21b7f96c3b49d67ed1361e1c7adb303e31955194057f5bc4bb"
+    },
+    "src/skyguard/features/builder.py": {
+      "bytes": 1958,
+      "sha256": "bbc2fa2d56529fa497b1966da7a2c5d6b6b0e696d69951e15fb932c3b3fda89e"
+    },
+    "src/skyguard/features/temporal.py": {
+      "bytes": 8444,
+      "sha256": "092145398686817517881add25dcb44e32576984ff1e4510bb665b0b9ac24197"
+    },
+    "src/skyguard/features/neighbors.py": {
+      "bytes": 5658,
+      "sha256": "56084c5056ec56a490de5e70a07fa1d580f2551993806ce6dcd3c6f650a8ada5"
+    },
+    "src/skyguard/features/phase10.py": {
+      "bytes": 12565,
+      "sha256": "3e0d7261a09533872a751657c42b97453e8bc23cfc566c606329e5a2c51cc641"
+    },
+    "src/skyguard/models/phase10.py": {
+      "bytes": 6508,
+      "sha256": "35c73e9f4c9738b2bd4b8f38fb02a68b94284ee7c8375c3572bbed7fd2e8d604"
+    },
+    "src/data/run_api.py": {
+      "bytes": 553,
+      "sha256": "f75db6bf2f16ca9af5d424362cb8b8d40bb2dd0cc40027bf7b026e2137d0d6a0"
+    },
+    "requirements.txt": {
+      "bytes": 127,
+      "sha256": "08f8ced9e0b06a213212b495d8b679059369380a5b610ed0ba66b561462331d9"
+    },
+    "reports/phase10_final.json": {
+      "bytes": 22342,
+      "sha256": "33c3e5ae85f464723d0febdc38148c65229137777cf9740b2b864c037b3c146d"
+    },
+    "reports/qc_baseline.json": {
+      "bytes": 2596,
+      "sha256": "a07d10b94a47c6aa7e26732c0b359d1c8144792ecaf9b139e579ee335260da79"
+    },
+    "config/stations.csv": {
+      "bytes": 1760,
+      "sha256": "4209abab0c0fa9f273e0bd61f3925cdb6c7e53287c388039c0be848739940746"
+    },
+    "dashboard/app.js": {
+      "bytes": 41689,
+      "sha256": "238ddbf5440c3d99e5189676ecf9cffc37dfcb1f19dc1ed218c2999276d2debd"
+    },
+    "dashboard/index.html": {
+      "bytes": 23401,
+      "sha256": "a985694c66034e8e5c9196eb07fdad51e41c871e28cd2627fc58d3b1ee962e66"
+    },
+    "dashboard/styles.css": {
+      "bytes": 31180,
+      "sha256": "adffa79e2600b571a95585d2f7096d03dc046c3b710f85e292fbbda2ee035e5f"
+    },
+    "dashboard/station-map.js": {
+      "bytes": 6916,
+      "sha256": "8cb3e26d8d4dd99f02734eeec33a5b3e24845f78911c4b94d79d44974304ff60"
+    },
+    "dashboard/sensor-trace.js": {
+      "bytes": 3268,
+      "sha256": "40f0ee9aa6277ca3881f2a2d438e6f1864ad66779056476208bc4ecd28c40654"
+    },
+    "dashboard/live-qc.js": {
+      "bytes": 1933,
+      "sha256": "da95c8ec236431a4f4871233f30123164fca645c645114e12963c171909606f7"
+    },
+    "verify_skyguard.ps1": {
+      "bytes": 1490,
+      "sha256": "83706ee487170a9dafdd4edb6d9aed1d336843223240af206465c18aa9bc28d2"
+    },
+    "tools/verification_helpers.ps1": {
+      "bytes": 640,
+      "sha256": "e4ac027f3a1fbeb36454d1d6eda08a433b9aab142c5bc22a75493cc96cb4fda0"
+    },
+    "tools/r0_baseline.py": {
+      "bytes": 9387,
+      "sha256": "1b75ffed71084ea15c06534c77a1051b7016b0df8add8c3cb2223441514e3a3e"
+    }
+  },
+  "dependencies_observed": {
+    "python": "3.14.5",
+    "packages": {
+      "numpy": "2.3.4",
+      "pandas": "2.3.3",
+      "scikit-learn": "1.7.2",
+      "joblib": "1.5.2",
+      "lightgbm": "4.6.0",
+      "catboost": "1.2.10",
+      "fastapi": "0.139.2",
+      "uvicorn": "0.51.0",
+      "httpx": "0.28.1"
+    }
+  },
+  "dependency_note": "Observed local versions, not a portable dependency lock or rebuild guarantee",
+  "dataset_version_record": {
+    "path": "reports/r0_baseline/immutable_before.json",
+    "bytes": 43937,
+    "sha256": "540e2d5f48c8b99887ef853e3ec4e08f43bade47db690554306e10015d448bc0",
+    "file_count": 257
+  },
+  "historical_benchmark": {
+    "source": "reports/phase10_final.json",
+    "evaluation": {
+      "time_test": {
+        "rows": 182053,
+        "binary_fault_detection": {
+          "rows": 182053,
+          "positives": 1841,
+          "tp": 746,
+          "fp": 262,
+          "fn": 1095,
+          "tn": 179950,
+          "precision": 0.7400793650793651,
+          "recall": 0.4052145573058121,
+          "f1": 0.5236925236925237,
+          "aucpr": 0.5097137124757571,
+          "false_alarms_per_station_day": 0.03689101661503802,
+          "station_days": 7102,
+          "weather_rows": 824,
+          "weather_false_positives": 6,
+          "weather_false_positive_rate": 0.007281553398058253,
+          "episode_detection": {
+            "episodes": 144,
+            "detected_episodes": 112,
+            "recall": 0.7777777777777778,
+            "median_detection_latency_minutes": 0.0,
+            "mean_detection_latency_minutes": 186.96428571428572,
+            "per_fault_type": {
+              "bias": {
+                "episodes": 12,
+                "detected": 7,
+                "recall": 0.5833333333333334
+              },
+              "communication_corruption": {
+                "episodes": 12,
+                "detected": 12,
+                "recall": 1.0
+              },
+              "drift": {
+                "episodes": 12,
+                "detected": 7,
+                "recall": 0.5833333333333334
+              },
+              "duplicate_packet": {
+                "episodes": 12,
+                "detected": 0,
+                "recall": 0.0
+              },
+              "frozen_sensor": {
+                "episodes": 12,
+                "detected": 8,
+                "recall": 0.6666666666666666
+              },
+              "multi_sensor_failure": {
+                "episodes": 12,
+                "detected": 12,
+                "recall": 1.0
+              },
+              "noise": {
+                "episodes": 12,
+                "detected": 12,
+                "recall": 1.0
+              },
+              "scaling_error": {
+                "episodes": 12,
+                "detected": 11,
+                "recall": 0.9166666666666666
+              },
+              "spike": {
+                "episodes": 12,
+                "detected": 12,
+                "recall": 1.0
+              },
+              "sudden_drop": {
+                "episodes": 12,
+                "detected": 11,
+                "recall": 0.9166666666666666
+              },
+              "timestamp_error": {
+                "episodes": 12,
+                "detected": 9,
+                "recall": 0.75
+              },
+              "unit_error": {
+                "episodes": 12,
+                "detected": 11,
+                "recall": 0.9166666666666666
+              }
+            }
+          }
+        },
+        "event_decision": {
+          "classes": [
+            "normal",
+            "genuine_weather",
+            "sensor_fault"
+          ],
+          "accuracy": 0.9914036022476971,
+          "macro_f1": 0.7901665095374387,
+          "per_class": {
+            "normal": {
+              "precision": 0.9931673608376638,
+              "recall": 0.9982774767542979,
+              "f1": 0.9957158624294201,
+              "support": 179388
+            },
+            "genuine_weather": {
+              "precision": 0.9032697547683923,
+              "recall": 0.8046116504854369,
+              "f1": 0.8510911424903723,
+              "support": 824
+            },
+            "sensor_fault": {
+              "precision": 0.7400793650793651,
+              "recall": 0.4052145573058121,
+              "f1": 0.5236925236925237,
+              "support": 1841
+            }
+          },
+          "confusion_matrix": [
+            [
+              179079,
+              53,
+              256
+            ],
+            [
+              155,
+              663,
+              6
+            ],
+            [
+              1077,
+              18,
+              746
+            ]
+          ]
+        },
+        "oracle_root_cause": {
+          "classes": [
+            "bias",
+            "communication_corruption",
+            "drift",
+            "duplicate_packet",
+            "frozen_sensor",
+            "multi_sensor_failure",
+            "noise",
+            "scaling_error",
+            "spike",
+            "sudden_drop",
+            "timestamp_error",
+            "unit_error"
+          ],
+          "accuracy": 0.5225420966865834,
+          "macro_f1": 0.5554765927747228,
+          "per_class": {
+            "bias": {
+              "precision": 0.38636363636363635,
+              "recall": 0.3148148148148148,
+              "f1": 0.3469387755102041,
+              "support": 378
+            },
+            "communication_corruption": {
+              "precision": 1.0,
+              "recall": 0.9,
+              "f1": 0.9473684210526315,
+              "support": 20
+            },
+            "drift": {
+              "precision": 0.44031311154598823,
+              "recall": 0.3813559322033898,
+              "f1": 0.4087193460490463,
+              "support": 590
+            },
+            "duplicate_packet": {
+              "precision": 0.09090909090909091,
+              "recall": 0.05263157894736842,
+              "f1": 0.06666666666666667,
+              "support": 19
+            },
+            "frozen_sensor": {
+              "precision": 0.5560747663551402,
+              "recall": 0.6363636363636364,
+              "f1": 0.5935162094763092,
+              "support": 187
+            },
+            "multi_sensor_failure": {
+              "precision": 0.9342857142857143,
+              "recall": 0.9134078212290503,
+              "f1": 0.923728813559322,
+              "support": 358
+            },
+            "noise": {
+              "precision": 0.3103448275862069,
+              "recall": 0.4954128440366973,
+              "f1": 0.38162544169611307,
+              "support": 218
+            },
+            "scaling_error": {
+              "precision": 0.7333333333333333,
+              "recall": 0.9166666666666666,
+              "f1": 0.8148148148148148,
+              "support": 12
+            },
+            "spike": {
+              "precision": 0.2727272727272727,
+              "recall": 0.25,
+              "f1": 0.2608695652173913,
+              "support": 12
+            },
+            "sudden_drop": {
+              "precision": 0.3684210526315789,
+              "recall": 0.5833333333333334,
+              "f1": 0.45161290322580644,
+              "support": 12
+            },
+            "timestamp_error": {
+              "precision": 0.5416666666666666,
+              "recall": 0.5652173913043478,
+              "f1": 0.5531914893617021,
+              "support": 23
+            },
+            "unit_error": {
+              "precision": 0.9166666666666666,
+              "recall": 0.9166666666666666,
+              "f1": 0.9166666666666666,
+              "support": 12
+            }
+          },
+          "confusion_matrix": [
+            [
+              119,
+              0,
+              152,
+              3,
+              23,
+              6,
+              73,
+              0,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              18,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              151,
+              0,
+              225,
+              2,
+              49,
+              8,
+              139,
+              0,
+              5,
+              2,
+              9,
+              0
+            ],
+            [
+              1,
+              0,
+              12,
+              1,
+              2,
+              1,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              16,
+              0,
+              27,
+              2,
+              119,
+              8,
+              13,
+              0,
+              0,
+              1,
+              1,
+              0
+            ],
+            [
+              9,
+              0,
+              4,
+              1,
+              13,
+              327,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              9,
+              0,
+              81,
+              2,
+              6,
+              0,
+              108,
+              2,
+              2,
+              8,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              11,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              3,
+              0,
+              0,
+              0,
+              4,
+              0,
+              3,
+              1,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              1,
+              0,
+              7,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              6,
+              0,
+              2,
+              0,
+              1,
+              0,
+              0,
+              0,
+              13,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              11
+            ]
+          ]
+        },
+        "end_to_end_root_cause": {
+          "fault_rows": 1841,
+          "exact_accuracy": 0.28408473655621946,
+          "diagnostic_coverage": 0.4052145573058121,
+          "accepted_root_accuracy": 0.7010723860589813,
+          "missed_detection_rows": 1095,
+          "unknown_fault_rows": 0,
+          "episode_root": {
+            "episodes": 144,
+            "detected": 112,
+            "diagnosed": 112,
+            "correct": 75,
+            "diagnosed_accuracy": 0.6696428571428571
+          }
+        }
+      },
+      "station_test": {
+        "rows": 10491,
+        "binary_fault_detection": {
+          "rows": 10491,
+          "positives": 250,
+          "tp": 82,
+          "fp": 14,
+          "fn": 168,
+          "tn": 10227,
+          "precision": 0.8541666666666666,
+          "recall": 0.328,
+          "f1": 0.4739884393063584,
+          "aucpr": 0.4188396078070703,
+          "false_alarms_per_station_day": 0.009922041105598866,
+          "station_days": 1411,
+          "weather_rows": 0,
+          "weather_false_positives": 0,
+          "weather_false_positive_rate": 0.0,
+          "episode_detection": {
+            "episodes": 60,
+            "detected_episodes": 35,
+            "recall": 0.5833333333333334,
+            "median_detection_latency_minutes": 0.0,
+            "mean_detection_latency_minutes": 185.14285714285714,
+            "per_fault_type": {
+              "bias": {
+                "episodes": 5,
+                "detected": 0,
+                "recall": 0.0
+              },
+              "communication_corruption": {
+                "episodes": 5,
+                "detected": 5,
+                "recall": 1.0
+              },
+              "drift": {
+                "episodes": 5,
+                "detected": 2,
+                "recall": 0.4
+              },
+              "duplicate_packet": {
+                "episodes": 5,
+                "detected": 0,
+                "recall": 0.0
+              },
+              "frozen_sensor": {
+                "episodes": 5,
+                "detected": 2,
+                "recall": 0.4
+              },
+              "multi_sensor_failure": {
+                "episodes": 5,
+                "detected": 5,
+                "recall": 1.0
+              },
+              "noise": {
+                "episodes": 5,
+                "detected": 3,
+                "recall": 0.6
+              },
+              "scaling_error": {
+                "episodes": 5,
+                "detected": 5,
+                "recall": 1.0
+              },
+              "spike": {
+                "episodes": 5,
+                "detected": 4,
+                "recall": 0.8
+              },
+              "sudden_drop": {
+                "episodes": 5,
+                "detected": 4,
+                "recall": 0.8
+              },
+              "timestamp_error": {
+                "episodes": 5,
+                "detected": 0,
+                "recall": 0.0
+              },
+              "unit_error": {
+                "episodes": 5,
+                "detected": 5,
+                "recall": 1.0
+              }
+            }
+          }
+        },
+        "event_decision": {
+          "classes": [
+            "normal",
+            "genuine_weather",
+            "sensor_fault"
+          ],
+          "accuracy": 0.9823658373844247,
+          "macro_f1": 0.48834074004762745,
+          "per_class": {
+            "normal": {
+              "precision": 0.9838337182448037,
+              "recall": 0.9983400058588029,
+              "f1": 0.991033780836524,
+              "support": 10241
+            },
+            "genuine_weather": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 0
+            },
+            "sensor_fault": {
+              "precision": 0.8541666666666666,
+              "recall": 0.328,
+              "f1": 0.47398843930635837,
+              "support": 250
+            }
+          },
+          "confusion_matrix": [
+            [
+              10224,
+              3,
+              14
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              168,
+              0,
+              82
+            ]
+          ]
+        },
+        "oracle_root_cause": {
+          "classes": [
+            "bias",
+            "communication_corruption",
+            "drift",
+            "duplicate_packet",
+            "frozen_sensor",
+            "multi_sensor_failure",
+            "noise",
+            "scaling_error",
+            "spike",
+            "sudden_drop",
+            "timestamp_error",
+            "unit_error"
+          ],
+          "accuracy": 0.588,
+          "macro_f1": 0.5195502849607058,
+          "per_class": {
+            "bias": {
+              "precision": 0.375,
+              "recall": 0.2553191489361702,
+              "f1": 0.3037974683544304,
+              "support": 47
+            },
+            "communication_corruption": {
+              "precision": 0.8571428571428571,
+              "recall": 1.0,
+              "f1": 0.9230769230769231,
+              "support": 6
+            },
+            "drift": {
+              "precision": 0.5172413793103449,
+              "recall": 0.9230769230769231,
+              "f1": 0.6629834254143646,
+              "support": 65
+            },
+            "duplicate_packet": {
+              "precision": 0.3333333333333333,
+              "recall": 0.16666666666666666,
+              "f1": 0.2222222222222222,
+              "support": 6
+            },
+            "frozen_sensor": {
+              "precision": 0.6060606060606061,
+              "recall": 0.5714285714285714,
+              "f1": 0.5882352941176471,
+              "support": 35
+            },
+            "multi_sensor_failure": {
+              "precision": 0.9411764705882353,
+              "recall": 0.8205128205128205,
+              "f1": 0.8767123287671232,
+              "support": 39
+            },
+            "noise": {
+              "precision": 0.3333333333333333,
+              "recall": 0.125,
+              "f1": 0.18181818181818182,
+              "support": 24
+            },
+            "scaling_error": {
+              "precision": 0.7142857142857143,
+              "recall": 1.0,
+              "f1": 0.8333333333333334,
+              "support": 5
+            },
+            "spike": {
+              "precision": 1.0,
+              "recall": 0.2,
+              "f1": 0.3333333333333333,
+              "support": 5
+            },
+            "sudden_drop": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 5
+            },
+            "timestamp_error": {
+              "precision": 1.0,
+              "recall": 0.25,
+              "f1": 0.4,
+              "support": 8
+            },
+            "unit_error": {
+              "precision": 0.8333333333333334,
+              "recall": 1.0,
+              "f1": 0.9090909090909091,
+              "support": 5
+            }
+          },
+          "confusion_matrix": [
+            [
+              12,
+              1,
+              30,
+              1,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              6,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              4,
+              0,
+              60,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              2,
+              1,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              10,
+              0,
+              20,
+              2,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              1,
+              0,
+              5,
+              32,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              10,
+              0,
+              6,
+              0,
+              5,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              1,
+              1,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              2,
+              0,
+              1,
+              0,
+              1,
+              1,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              0,
+              5,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              5
+            ]
+          ]
+        },
+        "end_to_end_root_cause": {
+          "fault_rows": 250,
+          "exact_accuracy": 0.256,
+          "diagnostic_coverage": 0.328,
+          "accepted_root_accuracy": 0.7804878048780488,
+          "missed_detection_rows": 168,
+          "unknown_fault_rows": 0,
+          "episode_root": {
+            "episodes": 60,
+            "detected": 35,
+            "diagnosed": 35,
+            "correct": 25,
+            "diagnosed_accuracy": 0.7142857142857143
+          }
+        }
+      }
+    },
+    "provenance": "2024 historical injected-anomaly evaluations, previously inspected; not a fresh blind test",
+    "no_new_scoring": true,
+    "live_accuracy": "Not measured; live reports lack verified sensor-fault labels",
+    "2025": "Previously opened blind evaluation is historical evidence, not a new untouched holdout"
+  },
+  "remaining_limitations": [
+    "No alert does not prove sensor health; diagnosis/correction/maintenance are advisory.",
+    "R0 fixes display and verification correctness, not recall, calibration or training leakage.",
+    "India/DWD cadence, pressure datum, reported/derived humidity and neighbour support require R1 audit."
+  ]
+}

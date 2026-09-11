@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "automatic_duplicate_detection": true,
+  "automatic_dropout_alert_requires": {
+    "expected_cadence_seconds": "positive integer supplied by source adapter",
+    "heartbeat_sla_seconds": "positive integer supplied by source adapter",
+    "source_contract_verified": true
+  },
+  "unknown_cadence_status": "unverified_data_gap_advisory",
+  "unknown_cadence_is_sensor_fault": false,
+  "maintenance_ticket_from_unknown_gap": false,
+  "detector_observation_inputs": [
+    "temperature",
+    "pressure",
+    "relative_humidity"
+  ],
+  "communication_metadata": [
+    "station_id",
+    "arrival_timestamp",
+    "expected_cadence_seconds",
+    "heartbeat_sla_seconds"
+  ]
+}

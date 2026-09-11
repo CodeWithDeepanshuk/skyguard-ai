@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "error_count": 0,
+  "errors": [],
+  "policy_frozen_on_2023": true,
+  "feature_count": 68,
+  "calendar_shortcuts_excluded": true,
+  "splits": {
+    "validation": {
+      "rows": 181308,
+      "expected_rows": 181308,
+      "sha256": "ceb3cd46be5d7d4ed6e46fe8caf0e4911042594d8c77f2835c2ffa04ad53842e"
+    },
+    "time_test": {
+      "rows": 182053,
+      "expected_rows": 182053,
+      "sha256": "a230878e77fc855cb86033e22de14b12c79c242af511a01ef688410f28aea094"
+    },
+    "station_test": {
+      "rows": 10491,
+      "expected_rows": 10491,
+      "sha256": "c50ee4e40511b99b1f12bbd48edee9ea1b89a2f550fee8ca6eb30526706bd8db"
+    }
+  },
+  "f1_improvement": {
+    "time_test": {
+      "phase4_best_f1": 0.1813870776526378,
+      "phase5_f1": 0.5246957766642807,
+      "absolute_gain": 0.34330869901164285,
+      "improved": true
+    },
+    "station_test": {
+      "phase4_best_f1": 0.2274247491638796,
+      "phase5_f1": 0.5641025641025641,
+      "absolute_gain": 0.3366778149386845,
+      "improved": true
+    }
+  }
+}

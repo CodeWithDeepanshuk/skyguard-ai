@@ -1,0 +1,1333 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/tvd178",
+    "id": "tvd178",
+    "slide": 9,
+    "layoutId": "94868786-971c-4e57-818b-d17cca4e6d14",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "40cc632e-cb0d-4f20-b5bd-ef3b47f1852c",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "SkyGuard Grid",
+    "colors": {
+      "accent1": "#2563EB",
+      "accent2": "#0F766E",
+      "accent3": "#0EA5E9",
+      "accent4": "#D97706",
+      "accent5": "#DC2626",
+      "accent6": "#16A34A",
+      "bg1": "#FFFFFF",
+      "bg2": "#F7FAFC",
+      "tx1": "#101827",
+      "tx2": "#64748B",
+      "dk1": "#000000",
+      "dk2": "#101827",
+      "lt1": "#FFFFFF",
+      "lt2": "#D9E2EC",
+      "hlink": "#2563EB",
+      "folHlink": "#7C3AED"
+    },
+    "typefaces": [
+      "Helvetica Neue"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "94868786-971c-4e57-818b-d17cca4e6d14",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "40cc632e-cb0d-4f20-b5bd-ef3b47f1852c",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "40cc632e-cb0d-4f20-b5bd-ef3b47f1852c",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8velcnqd",
+      "id": "1",
+      "bbox": [
+        42,
+        24,
+        900,
+        28
+      ],
+      "geometry": "rect",
+      "text": "SIH COMPLIANCE",
+      "textPreview": "SIH COMPLIANCE",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 14,
+        "typeface": "Helvetica Neue",
+        "color": "#2563EB",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SIH COMPLIANCE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SIH COMPLIANCE",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "typeface": "Helvetica Neue",
+            "color": "#2563EB",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SIH COMPLIANCE",
+              "fontSize": 14,
+              "typeface": "Helvetica Neue",
+              "color": "#2563EB",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7u543i9s",
+      "id": "2",
+      "bbox": [
+        42,
+        54,
+        1160,
+        66
+      ],
+      "geometry": "rect",
+      "text": "Every mandatory software output is demonstrated",
+      "textPreview": "Every mandatory software output is demonstrated",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 39,
+        "typeface": "Helvetica Neue",
+        "color": "#101827",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Every mandatory software output is demonstrated"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Every mandatory software output is demonstrated",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "typeface": "Helvetica Neue",
+            "color": "#101827",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Every mandatory software output is demonstrated",
+              "fontSize": 39,
+              "typeface": "Helvetica Neue",
+              "color": "#101827",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/m9w3ad8n",
+      "id": "3",
+      "bbox": [
+        1180,
+        658,
+        55,
+        24
+      ],
+      "geometry": "rect",
+      "text": "09",
+      "textPreview": "09",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 13,
+        "typeface": "Helvetica Neue",
+        "color": "#64748B",
+        "alignment": "right",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "09"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "09",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "Helvetica Neue",
+            "color": "#64748B",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "09",
+              "fontSize": 13,
+              "typeface": "Helvetica Neue",
+              "color": "#64748B",
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "table",
+      "scope": "slide",
+      "aid": "tb/83e54ju5",
+      "id": "4",
+      "bbox": [
+        42,
+        145,
+        1196,
+        470
+      ],
+      "text": "Statement requirement | SkyGuard implementation | Status\nReal-time anomaly detection | Streaming engine + live refresh + cache | Complete\nFaults and communication errors | 13-class benchmark + stateful QC | Complete\nTemporal / seasonal learning | Causal rolling, EWMA and seasonal features | Complete\nMultivariate consistency | Cross-sensor and calibrated event model | Complete\nWeather vs sensor failure | Neighbour agreement + regional scenario | Complete\nConfidence and explanation | Calibration, abstention, evidence text | Complete\nHealth and maintenance | Sensor score, priority and action | Complete\nCorrection / imputation | Uncertainty-aware advisory correction | Optional done\nDashboard and deployability | Offline/local web UI, API and report export | Complete",
+      "textPreview": "Statement requirement | SkyGuard implementation | Status | Real-time anomaly detection | Streaming engine + live refresh + cache | Comple...",
+      "rows": 10,
+      "cols": 3,
+      "cells": [
+        {
+          "index": 1,
+          "row": 1,
+          "column": 1,
+          "bbox": [
+            42,
+            145,
+            350,
+            47
+          ],
+          "text": "Statement requirement",
+          "textPreview": "Statement requirement",
+          "fillColor": "#101827",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Statement requirement",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#FFFFFF",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Statement requirement",
+                  "fontSize": 16,
+                  "color": "#FFFFFF",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "row": 1,
+          "column": 2,
+          "bbox": [
+            392,
+            145,
+            636,
+            47
+          ],
+          "text": "SkyGuard implementation",
+          "textPreview": "SkyGuard implementation",
+          "fillColor": "#101827",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "SkyGuard implementation",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#FFFFFF",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "SkyGuard implementation",
+                  "fontSize": 16,
+                  "color": "#FFFFFF",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "row": 1,
+          "column": 3,
+          "bbox": [
+            1028,
+            145,
+            210,
+            47
+          ],
+          "text": "Status",
+          "textPreview": "Status",
+          "fillColor": "#101827",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Status",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#FFFFFF",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Status",
+                  "fontSize": 16,
+                  "color": "#FFFFFF",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "row": 2,
+          "column": 1,
+          "bbox": [
+            42,
+            192,
+            350,
+            47
+          ],
+          "text": "Real-time anomaly detection",
+          "textPreview": "Real-time anomaly detection",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Real-time anomaly detection",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Real-time anomaly detection",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "row": 2,
+          "column": 2,
+          "bbox": [
+            392,
+            192,
+            636,
+            47
+          ],
+          "text": "Streaming engine + live refresh + cache",
+          "textPreview": "Streaming engine + live refresh + cache",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Streaming engine + live refresh + cache",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Streaming engine + live refresh + cache",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "row": 2,
+          "column": 3,
+          "bbox": [
+            1028,
+            192,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "row": 3,
+          "column": 1,
+          "bbox": [
+            42,
+            239,
+            350,
+            47
+          ],
+          "text": "Faults and communication errors",
+          "textPreview": "Faults and communication errors",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Faults and communication errors",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Faults and communication errors",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "row": 3,
+          "column": 2,
+          "bbox": [
+            392,
+            239,
+            636,
+            47
+          ],
+          "text": "13-class benchmark + stateful QC",
+          "textPreview": "13-class benchmark + stateful QC",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "13-class benchmark + stateful QC",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "13-class benchmark + stateful QC",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "row": 3,
+          "column": 3,
+          "bbox": [
+            1028,
+            239,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "row": 4,
+          "column": 1,
+          "bbox": [
+            42,
+            286,
+            350,
+            47
+          ],
+          "text": "Temporal / seasonal learning",
+          "textPreview": "Temporal / seasonal learning",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Temporal / seasonal learning",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Temporal / seasonal learning",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 11,
+          "row": 4,
+          "column": 2,
+          "bbox": [
+            392,
+            286,
+            636,
+            47
+          ],
+          "text": "Causal rolling, EWMA and seasonal features",
+          "textPreview": "Causal rolling, EWMA and seasonal features",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Causal rolling, EWMA and seasonal features",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Causal rolling, EWMA and seasonal features",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 12,
+          "row": 4,
+          "column": 3,
+          "bbox": [
+            1028,
+            286,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 13,
+          "row": 5,
+          "column": 1,
+          "bbox": [
+            42,
+            333,
+            350,
+            47
+          ],
+          "text": "Multivariate consistency",
+          "textPreview": "Multivariate consistency",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Multivariate consistency",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Multivariate consistency",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 14,
+          "row": 5,
+          "column": 2,
+          "bbox": [
+            392,
+            333,
+            636,
+            47
+          ],
+          "text": "Cross-sensor and calibrated event model",
+          "textPreview": "Cross-sensor and calibrated event model",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Cross-sensor and calibrated event model",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Cross-sensor and calibrated event model",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 15,
+          "row": 5,
+          "column": 3,
+          "bbox": [
+            1028,
+            333,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 16,
+          "row": 6,
+          "column": 1,
+          "bbox": [
+            42,
+            380,
+            350,
+            47
+          ],
+          "text": "Weather vs sensor failure",
+          "textPreview": "Weather vs sensor failure",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Weather vs sensor failure",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Weather vs sensor failure",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 17,
+          "row": 6,
+          "column": 2,
+          "bbox": [
+            392,
+            380,
+            636,
+            47
+          ],
+          "text": "Neighbour agreement + regional scenario",
+          "textPreview": "Neighbour agreement + regional scenario",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Neighbour agreement + regional scenario",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Neighbour agreement + regional scenario",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 18,
+          "row": 6,
+          "column": 3,
+          "bbox": [
+            1028,
+            380,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 19,
+          "row": 7,
+          "column": 1,
+          "bbox": [
+            42,
+            427,
+            350,
+            47
+          ],
+          "text": "Confidence and explanation",
+          "textPreview": "Confidence and explanation",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Confidence and explanation",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Confidence and explanation",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 20,
+          "row": 7,
+          "column": 2,
+          "bbox": [
+            392,
+            427,
+            636,
+            47
+          ],
+          "text": "Calibration, abstention, evidence text",
+          "textPreview": "Calibration, abstention, evidence text",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Calibration, abstention, evidence text",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Calibration, abstention, evidence text",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 21,
+          "row": 7,
+          "column": 3,
+          "bbox": [
+            1028,
+            427,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 22,
+          "row": 8,
+          "column": 1,
+          "bbox": [
+            42,
+            474,
+            350,
+            47
+          ],
+          "text": "Health and maintenance",
+          "textPreview": "Health and maintenance",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Health and maintenance",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Health and maintenance",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 23,
+          "row": 8,
+          "column": 2,
+          "bbox": [
+            392,
+            474,
+            636,
+            47
+          ],
+          "text": "Sensor score, priority and action",
+          "textPreview": "Sensor score, priority and action",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Sensor score, priority and action",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Sensor score, priority and action",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 24,
+          "row": 8,
+          "column": 3,
+          "bbox": [
+            1028,
+            474,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 25,
+          "row": 9,
+          "column": 1,
+          "bbox": [
+            42,
+            521,
+            350,
+            47
+          ],
+          "text": "Correction / imputation",
+          "textPreview": "Correction / imputation",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Correction / imputation",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Correction / imputation",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 26,
+          "row": 9,
+          "column": 2,
+          "bbox": [
+            392,
+            521,
+            636,
+            47
+          ],
+          "text": "Uncertainty-aware advisory correction",
+          "textPreview": "Uncertainty-aware advisory correction",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Uncertainty-aware advisory correction",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Uncertainty-aware advisory correction",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 27,
+          "row": 9,
+          "column": 3,
+          "bbox": [
+            1028,
+            521,
+            210,
+            47
+          ],
+          "text": "Optional done",
+          "textPreview": "Optional done",
+          "fillColor": "#FFF7E6",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Optional done",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#D97706",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Optional done",
+                  "fontSize": 14,
+                  "color": "#D97706",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 28,
+          "row": 10,
+          "column": 1,
+          "bbox": [
+            42,
+            568,
+            350,
+            47
+          ],
+          "text": "Dashboard and deployability",
+          "textPreview": "Dashboard and deployability",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Dashboard and deployability",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Dashboard and deployability",
+                  "fontSize": 14,
+                  "color": "#101827",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 29,
+          "row": 10,
+          "column": 2,
+          "bbox": [
+            392,
+            568,
+            636,
+            47
+          ],
+          "text": "Offline/local web UI, API and report export",
+          "textPreview": "Offline/local web UI, API and report export",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Offline/local web UI, API and report export",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Offline/local web UI, API and report export",
+                  "fontSize": 14,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 30,
+          "row": 10,
+          "column": 3,
+          "bbox": [
+            1028,
+            568,
+            210,
+            47
+          ],
+          "text": "Complete",
+          "textPreview": "Complete",
+          "fillColor": "#EAF8F1",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Complete",
+              "resolvedTextStyle": {
+                "fontSize": 14,
+                "color": "#16A34A",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Complete",
+                  "fontSize": 14,
+                  "color": "#16A34A",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/k7el8nqh",
+      "id": "5",
+      "bbox": [
+        42,
+        630,
+        1140,
+        32
+      ],
+      "geometry": "rect",
+      "text": "Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults.",
+      "textPreview": "Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults.",
+      "resolvedFontSize": 17,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 17,
+        "typeface": "Helvetica Neue",
+        "color": "#DC2626",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults.",
+          "resolvedTextStyle": {
+            "fontSize": 17,
+            "typeface": "Helvetica Neue",
+            "color": "#DC2626",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults.",
+              "fontSize": 17,
+              "typeface": "Helvetica Neue",
+              "color": "#DC2626",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

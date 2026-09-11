@@ -1,0 +1,12 @@
+{
+  "created_utc": "2026-08-29T10:50:02.9316173Z",
+  "archive_root": "C:\\Users\\deepa\\OneDrive\\Desktop\\Sih 73\\reports\\gpu_iterations\\archive_pre_iteration7_2026-08-29",
+  "download_candidates": 68,
+  "unique_download_artifacts": 56,
+  "duplicate_download_copies": 12,
+  "workspace_manifest_files": 224,
+  "snapshot_path": "C:\\Users\\deepa\\OneDrive\\Desktop\\Sih 73\\deliverables\\SkyGuard_PreIteration7_Code_Artifacts_Snapshot_2026-08-29.zip",
+  "snapshot_bytes": 32644506,
+  "snapshot_sha256": "475234e9185e601b880ab8cf156e730a0bf01914f176c57e2a9d2a930b73d639",
+  "raw_data_note": "Raw/generated NOAA data remains in the OneDrive project and is represented by manifests; it is intentionally not duplicated into this compact snapshot."
+}

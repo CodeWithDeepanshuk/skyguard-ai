@@ -1,0 +1,226 @@
+{
+  "ready_for_one_time_evaluation": true,
+  "checks": {
+    "all_24_stations_present": true,
+    "minimum_900_rows_per_station": true,
+    "all_stations_start_on_january_1": true,
+    "all_stations_reach_august_24": true,
+    "no_normalized_duplicate_timestamps": true,
+    "temperature_missing_below_0_1_percent": true,
+    "humidity_missing_below_0_1_percent": true,
+    "pressure_missing_below_5_percent": true,
+    "episode_ids_unique": true,
+    "all_fault_types_in_both_tests": true,
+    "weather_cases_in_both_tests": true,
+    "blind_rows_do_not_overlap_prior_benchmarks": true,
+    "phase10_input_contract_intact": true,
+    "final_models_not_executed": true
+  },
+  "period": {
+    "start": "2025-01-01",
+    "end": "2025-08-24",
+    "reason": "final common legacy-ISD compatibility interval"
+  },
+  "normalized_rows": 124819,
+  "missing_rows": {
+    "temperature_c": 41,
+    "pressure_hpa": 1927,
+    "relative_humidity_pct": 83
+  },
+  "coverage": [
+    {
+      "station_id": "42131099999",
+      "rows": 1809,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "42181099999",
+      "rows": 11118,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "42182099999",
+      "rows": 1866,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "42189099999",
+      "rows": 1879,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "42348099999",
+      "rows": 9799,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "42361099999",
+      "rows": 1890,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T18:00:00Z"
+    },
+    {
+      "station_id": "42705699999",
+      "rows": 10770,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "43021099999",
+      "rows": 2255,
+      "start_utc": "2025-01-01T03:30:00Z",
+      "end_utc": "2025-08-24T06:00:00Z"
+    },
+    {
+      "station_id": "43086099999",
+      "rows": 1821,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43128099999",
+      "rows": 7085,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43128599999",
+      "rows": 10546,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "43181099999",
+      "rows": 7871,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T18:00:00Z"
+    },
+    {
+      "station_id": "43213099999",
+      "rows": 1839,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43233099999",
+      "rows": 1575,
+      "start_utc": "2025-01-01T03:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43245099999",
+      "rows": 1841,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43275099999",
+      "rows": 982,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T12:00:00Z"
+    },
+    {
+      "station_id": "43278099999",
+      "rows": 1537,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T18:00:00Z"
+    },
+    {
+      "station_id": "43279099999",
+      "rows": 11171,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "43284099999",
+      "rows": 10954,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "43295099999",
+      "rows": 1834,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43302599999",
+      "rows": 10653,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "43321099999",
+      "rows": 10223,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:30:00Z"
+    },
+    {
+      "station_id": "43329099999",
+      "rows": 1831,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    },
+    {
+      "station_id": "43331099999",
+      "rows": 1670,
+      "start_utc": "2025-01-01T00:00:00Z",
+      "end_utc": "2025-08-24T21:00:00Z"
+    }
+  ],
+  "split_rows": {
+    "blind_time": 117944,
+    "blind_station": 6875,
+    "blind_station_context": 117944
+  },
+  "episode_counts": {
+    "blind_time": 201,
+    "blind_station": 86
+  },
+  "fault_episode_counts": {
+    "bias": 21,
+    "communication_corruption": 21,
+    "drift": 21,
+    "dropout": 21,
+    "duplicate_packet": 21,
+    "frozen_sensor": 21,
+    "multi_sensor_failure": 21,
+    "noise": 21,
+    "scaling_error": 21,
+    "spike": 21,
+    "sudden_drop": 21,
+    "timestamp_error": 21,
+    "unit_error": 21
+  },
+  "weather_episode_counts": {
+    "blind_time": 6,
+    "blind_station": 8
+  },
+  "feature_reports": {
+    "blind_time": {
+      "rows": 117944,
+      "columns": 136,
+      "available_rows": 117799,
+      "stations": 20,
+      "neighbor_coverage_percent": 99.8008,
+      "feature_file": "data/blind_2025/features_phase10/blind_time_features.csv.gz",
+      "sha256": "66b6f7d380c17f64fc54e42d06d123e336eb6bc1e8fc8bb916ada18144698739"
+    },
+    "blind_station": {
+      "rows": 6875,
+      "columns": 136,
+      "available_rows": 6849,
+      "stations": 4,
+      "neighbor_coverage_percent": 99.6218,
+      "feature_file": "data/blind_2025/features_phase10/blind_station_features.csv.gz",
+      "sha256": "5540bb8b3b21c10d6a3d9b7c129449af3497a9a008d74f030463031bbcd95bf8"
+    }
+  },
+  "prior_row_overlap": 0,
+  "generation_seconds": 77.025
+}

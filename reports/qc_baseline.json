@@ -1,0 +1,98 @@
+{
+  "report_type": "unlabelled_qc_alert_profile",
+  "observations": 578448,
+  "alerts": 16243,
+  "alerts_per_1000_observations": 28.0803,
+  "processing_seconds": 32.5537,
+  "observations_per_second": 17769.01,
+  "alerts_by_rule": {
+    "COMMUNICATION_GAP": 2322,
+    "FROZEN_SENSOR": 233,
+    "MISSING_VALUE": 8969,
+    "RATE_OF_CHANGE": 3873,
+    "SOURCE_QUALITY_FLAG": 846
+  },
+  "alerts_by_severity": {
+    "high": 3873,
+    "medium": 12370
+  },
+  "alerts_by_sensor": {
+    "communication": 2322,
+    "humidity": 3447,
+    "pressure": 8893,
+    "temperature": 1581
+  },
+  "alerts_by_year": {
+    "2022": 6010,
+    "2023": 5218,
+    "2024": 5015
+  },
+  "top_alert_stations": {
+    "43295099999": 8486,
+    "43021099999": 1774,
+    "43128099999": 1034,
+    "42181099999": 874,
+    "42705699999": 521,
+    "42348099999": 471,
+    "43279099999": 426,
+    "43302599999": 385,
+    "43233099999": 306,
+    "42361099999": 304
+  },
+  "expected_interval_minutes": {
+    "42131099999": 180.0,
+    "42181099999": 30.0,
+    "42182099999": 180.0,
+    "42189099999": 180.0,
+    "42348099999": 30.0,
+    "42361099999": 180.0,
+    "42705699999": 30.0,
+    "43021099999": 30.0,
+    "43086099999": 180.0,
+    "43128099999": 30.0,
+    "43128599999": 30.0,
+    "43181099999": 30.0,
+    "43213099999": 180.0,
+    "43233099999": 180.0,
+    "43245099999": 180.0,
+    "43275099999": 180.0,
+    "43278099999": 180.0,
+    "43279099999": 30.0,
+    "43284099999": 30.0,
+    "43295099999": 180.0,
+    "43302599999": 30.0,
+    "43321099999": 30.0,
+    "43329099999": 180.0,
+    "43331099999": 180.0
+  },
+  "thresholds": {
+    "temperature_min_c": -60.0,
+    "temperature_max_c": 60.0,
+    "pressure_min_hpa": 870.0,
+    "pressure_max_hpa": 1075.0,
+    "humidity_min_pct": 0.0,
+    "humidity_max_pct": 100.0,
+    "dew_point_margin_c": 1.0,
+    "max_temperature_change_c_per_hour": 8.0,
+    "max_pressure_change_hpa_per_hour": 8.0,
+    "max_humidity_change_pct_per_hour": 35.0,
+    "max_rate_interval_hours": 6.0,
+    "gap_multiplier": 4.0,
+    "minimum_gap_hours": 6.0,
+    "frozen_duration_hours": 12.0,
+    "frozen_min_readings": 4,
+    "temperature_equality_tolerance": 0.05,
+    "pressure_equality_tolerance": 0.05,
+    "humidity_equality_tolerance": 0.05,
+    "suspicious_quality_codes": [
+      "2",
+      "6"
+    ],
+    "erroneous_quality_codes": [
+      "3",
+      "7"
+    ]
+  },
+  "alerts_file": "data/processed/qc_alerts_2022_2024.csv",
+  "warning": "Counts on unlabelled observations do not measure model accuracy."
+}

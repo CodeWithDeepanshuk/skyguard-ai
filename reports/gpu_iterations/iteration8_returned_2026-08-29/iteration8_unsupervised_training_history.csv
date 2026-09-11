@@ -1,0 +1,3 @@
+model,fit_rows,features,sequence_window,epochs
+IsolationForest,180000,34,1,0
+causal_LSTM_autoencoder,54015,34,24,20

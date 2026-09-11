@@ -1,0 +1,344 @@
+{
+  "iteration": "02_weak_fault_rescue",
+  "device": "cuda",
+  "gpu": "Tesla T4",
+  "final_tests_opened": false,
+  "tcn_promoted": false,
+  "isotonic_fusion_promoted": false,
+  "specialist_history": {
+    "frozen_sensor": [
+      {
+        "seed": 17,
+        "best_iteration": 17
+      },
+      {
+        "seed": 41,
+        "best_iteration": 65
+      },
+      {
+        "seed": 67,
+        "best_iteration": 8
+      }
+    ],
+    "bias": [
+      {
+        "seed": 17,
+        "best_iteration": 4
+      },
+      {
+        "seed": 41,
+        "best_iteration": 12
+      },
+      {
+        "seed": 67,
+        "best_iteration": 3
+      }
+    ],
+    "drift": [
+      {
+        "seed": 17,
+        "best_iteration": 9
+      },
+      {
+        "seed": 41,
+        "best_iteration": 18
+      },
+      {
+        "seed": 67,
+        "best_iteration": 4
+      }
+    ]
+  },
+  "specialist_validation": [
+    {
+      "fault": "frozen_sensor",
+      "block": "block_jul_sep",
+      "auprc": 0.4555048717987588
+    },
+    {
+      "fault": "frozen_sensor",
+      "block": "block_oct_dec",
+      "auprc": 0.002943007222548812
+    },
+    {
+      "fault": "bias",
+      "block": "block_jul_sep",
+      "auprc": 0.014611779220659808
+    },
+    {
+      "fault": "bias",
+      "block": "block_oct_dec",
+      "auprc": 0.37917313595437285
+    },
+    {
+      "fault": "drift",
+      "block": "block_jul_sep",
+      "auprc": 0.004727892817237212
+    },
+    {
+      "fault": "drift",
+      "block": "block_oct_dec",
+      "auprc": 0.03752419002742005
+    }
+  ],
+  "policy_status": "constraints_met_all_blocks",
+  "selected_policy": {
+    "base_start": 0.3,
+    "base_continue": 0.21999999999999997,
+    "rescue_threshold": 0.5,
+    "min_points": 2.0,
+    "block_may_jun_precision": 0.8,
+    "block_may_jun_recall": 0.4444444444444444,
+    "block_may_jun_f1": 0.5714285714285714,
+    "block_may_jun_auprc": 0.5254728087516216,
+    "block_may_jun_event_precision": 0.5161290322580645,
+    "block_may_jun_event_recall": 0.7272727272727273,
+    "block_may_jun_event_f1": 0.6037735849056604,
+    "block_may_jun_false_alarm_episodes_per_station_day": 0.012328344919694532,
+    "block_may_jun_delay_mean_min": 86.25,
+    "block_may_jun_delay_p90_min": 300.0,
+    "block_jul_sep_precision": 0.8860759493670886,
+    "block_jul_sep_recall": 0.18666666666666668,
+    "block_jul_sep_f1": 0.30837004405286345,
+    "block_jul_sep_auprc": 0.24411362912119633,
+    "block_jul_sep_event_precision": 0.5454545454545454,
+    "block_jul_sep_event_recall": 0.6666666666666666,
+    "block_jul_sep_event_f1": 0.6,
+    "block_jul_sep_false_alarm_episodes_per_station_day": 0.008165579812872128,
+    "block_jul_sep_delay_mean_min": 190.0,
+    "block_jul_sep_delay_p90_min": 630.0000000000007,
+    "block_oct_dec_precision": 0.8326180257510729,
+    "block_oct_dec_recall": 0.4118895966029724,
+    "block_oct_dec_f1": 0.5511363636363636,
+    "block_oct_dec_auprc": 0.49515697020148025,
+    "block_oct_dec_event_precision": 0.47540983606557374,
+    "block_oct_dec_event_recall": 0.8055555555555556,
+    "block_oct_dec_event_f1": 0.5979381443298968,
+    "block_oct_dec_false_alarm_episodes_per_station_day": 0.017419113394345587,
+    "block_oct_dec_delay_mean_min": 93.10344827586206,
+    "block_oct_dec_delay_p90_min": 443.9999999999999,
+    "min_precision": 0.8,
+    "max_false_alarm": 0.017419113394345587,
+    "min_event_recall": 0.6666666666666666,
+    "mean_event_f1": 0.6005705764118524,
+    "mean_point_f1": 0.4769783263725995
+  },
+  "robust_base_policy": {
+    "threshold": 0.27708333333333335,
+    "min_precision": 0.8515625,
+    "max_false_alarm": 0.01796346068791889,
+    "min_event_recall": 0.6296296296296297,
+    "mean_event_f1": 0.5463963278555489
+  },
+  "multiblock_ablation": [
+    {
+      "block": "block_may_jun",
+      "variant": "Phase10 fixed",
+      "tp": 110,
+      "fp": 69,
+      "fn": 133,
+      "tn": 28700,
+      "precision": 0.6145251396648045,
+      "recall": 0.45267489711934156,
+      "f1": 0.5213270142180095,
+      "auprc": 0.48685536552246095,
+      "true_episodes": 22,
+      "predicted_episodes": 66,
+      "event_precision": 0.2727272727272727,
+      "event_recall": 0.8181818181818182,
+      "event_f1": 0.4090909090909091,
+      "false_alarm_episodes_per_station_day": 0.0394507037430225,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 702.0000000000005,
+      "delay_mean_min": 290.0
+    },
+    {
+      "block": "block_may_jun",
+      "variant": "CatBoost base",
+      "tp": 109,
+      "fp": 19,
+      "fn": 134,
+      "tn": 28750,
+      "precision": 0.8515625,
+      "recall": 0.448559670781893,
+      "f1": 0.5876010781671159,
+      "auprc": 0.5254728087516216,
+      "true_episodes": 22,
+      "predicted_episodes": 31,
+      "event_precision": 0.45161290322580644,
+      "event_recall": 0.6363636363636364,
+      "event_f1": 0.5283018867924528,
+      "false_alarm_episodes_per_station_day": 0.01397212424232047,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 477.0000000000002,
+      "delay_mean_min": 171.42857142857142
+    },
+    {
+      "block": "block_may_jun",
+      "variant": "CatBoost + weak-fault rescue",
+      "tp": 108,
+      "fp": 27,
+      "fn": 135,
+      "tn": 28742,
+      "precision": 0.8,
+      "recall": 0.4444444444444444,
+      "f1": 0.5714285714285714,
+      "auprc": 0.5254728087516216,
+      "true_episodes": 22,
+      "predicted_episodes": 31,
+      "event_precision": 0.5161290322580645,
+      "event_recall": 0.7272727272727273,
+      "event_f1": 0.6037735849056604,
+      "false_alarm_episodes_per_station_day": 0.012328344919694532,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 300.0,
+      "delay_mean_min": 86.25
+    },
+    {
+      "block": "block_jul_sep",
+      "variant": "Phase10 fixed",
+      "tp": 77,
+      "fp": 24,
+      "fn": 298,
+      "tn": 46404,
+      "precision": 0.7623762376237624,
+      "recall": 0.20533333333333334,
+      "f1": 0.3235294117647059,
+      "auprc": 0.23993004390080147,
+      "true_episodes": 27,
+      "predicted_episodes": 57,
+      "event_precision": 0.3508771929824561,
+      "event_recall": 0.7407407407407407,
+      "event_f1": 0.47619047619047616,
+      "false_alarm_episodes_per_station_day": 0.020141763538417914,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 954.0000000000008,
+      "delay_mean_min": 327.0
+    },
+    {
+      "block": "block_jul_sep",
+      "variant": "CatBoost base",
+      "tp": 69,
+      "fp": 11,
+      "fn": 306,
+      "tn": 46417,
+      "precision": 0.8625,
+      "recall": 0.184,
+      "f1": 0.3032967032967033,
+      "auprc": 0.24411362912119633,
+      "true_episodes": 27,
+      "predicted_episodes": 35,
+      "event_precision": 0.4857142857142857,
+      "event_recall": 0.6296296296296297,
+      "event_f1": 0.5483870967741936,
+      "false_alarm_episodes_per_station_day": 0.009798695775446554,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 720.0000000000003,
+      "delay_mean_min": 201.1764705882353
+    },
+    {
+      "block": "block_jul_sep",
+      "variant": "CatBoost + weak-fault rescue",
+      "tp": 70,
+      "fp": 9,
+      "fn": 305,
+      "tn": 46419,
+      "precision": 0.8860759493670886,
+      "recall": 0.18666666666666668,
+      "f1": 0.30837004405286345,
+      "auprc": 0.24411362912119633,
+      "true_episodes": 27,
+      "predicted_episodes": 33,
+      "event_precision": 0.5454545454545454,
+      "event_recall": 0.6666666666666666,
+      "event_f1": 0.6,
+      "false_alarm_episodes_per_station_day": 0.008165579812872128,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 630.0000000000007,
+      "delay_mean_min": 190.0
+    },
+    {
+      "block": "block_oct_dec",
+      "variant": "Phase10 fixed",
+      "tp": 204,
+      "fp": 73,
+      "fn": 267,
+      "tn": 47055,
+      "precision": 0.7364620938628159,
+      "recall": 0.43312101910828027,
+      "f1": 0.5454545454545454,
+      "auprc": 0.4692512148639151,
+      "true_episodes": 36,
+      "predicted_episodes": 94,
+      "event_precision": 0.30851063829787234,
+      "event_recall": 0.8055555555555556,
+      "event_f1": 0.4461538461538461,
+      "false_alarm_episodes_per_station_day": 0.03538257408226447,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 443.9999999999999,
+      "delay_mean_min": 104.48275862068965
+    },
+    {
+      "block": "block_oct_dec",
+      "variant": "CatBoost base",
+      "tp": 189,
+      "fp": 22,
+      "fn": 282,
+      "tn": 47106,
+      "precision": 0.8957345971563981,
+      "recall": 0.4012738853503185,
+      "f1": 0.5542521994134897,
+      "auprc": 0.49515697020148025,
+      "true_episodes": 36,
+      "predicted_episodes": 60,
+      "event_precision": 0.45,
+      "event_recall": 0.75,
+      "event_f1": 0.5625000000000001,
+      "false_alarm_episodes_per_station_day": 0.01796346068791889,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 468.0000000000002,
+      "delay_mean_min": 100.0
+    },
+    {
+      "block": "block_oct_dec",
+      "variant": "CatBoost + weak-fault rescue",
+      "tp": 194,
+      "fp": 39,
+      "fn": 277,
+      "tn": 47089,
+      "precision": 0.8326180257510729,
+      "recall": 0.4118895966029724,
+      "f1": 0.5511363636363636,
+      "auprc": 0.49515697020148025,
+      "true_episodes": 36,
+      "predicted_episodes": 61,
+      "event_precision": 0.47540983606557374,
+      "event_recall": 0.8055555555555556,
+      "event_f1": 0.5979381443298968,
+      "false_alarm_episodes_per_station_day": 0.017419113394345587,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 443.9999999999999,
+      "delay_mean_min": 93.10344827586206
+    }
+  ],
+  "fault_episode_recall": {
+    "duplicate_packet": 0.0,
+    "frozen_sensor": 0.16666666666666666,
+    "drift": 0.25,
+    "bias": 0.42857142857142855,
+    "noise": 0.8571428571428571,
+    "sudden_drop": 0.875,
+    "multi_sensor_failure": 1.0,
+    "communication_corruption": 1.0,
+    "scaling_error": 1.0,
+    "spike": 1.0,
+    "timestamp_error": 1.0,
+    "unit_error": 1.0
+  },
+  "weather_selected": {
+    "score": "cat_weather_mean",
+    "threshold": 0.24,
+    "min_f1": 0.4369747899159664,
+    "mean_f1": 0.5611338876117642
+  }
+}

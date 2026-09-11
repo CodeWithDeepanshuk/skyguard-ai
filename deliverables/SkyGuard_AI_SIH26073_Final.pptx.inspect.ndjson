@@ -1,0 +1,184 @@
+{"kind":"deck","id":"pr/fhagx7","name":"Deck"}
+{"kind":"layout","layoutId":"40cc632e-cb0d-4f20-b5bd-ef3b47f1852c","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"94868786-971c-4e57-818b-d17cca4e6d14","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/tw6l7l","slide":1,"title":"SIH 26073 · PHASE 9","textShapes":8}
+{"kind":"shape","id":"sh/qlo765cf","slide":1,"bbox":[42,38,210,34]}
+{"kind":"textbox","id":"sh/doz61kv6","slide":1,"text":"SIH 26073 · PHASE 9","textPreview":"SIH 26073 · PHASE 9","textChars":19,"textLines":1,"bbox":[54,41,186,28]}
+{"kind":"textbox","id":"sh/cnqp8ful","slide":1,"text":"SkyGuard AI","textPreview":"SkyGuard AI","textChars":11,"textLines":1,"bbox":[42,132,560,78]}
+{"kind":"textbox","id":"sh/zqh83utw","slide":1,"text":"A self-healing weather observation network","textPreview":"A self-healing weather observation network","textChars":42,"textLines":1,"bbox":[42,214,560,90]}
+{"kind":"textbox","id":"sh/yp87apcb","slide":1,"text":"Detect faults. Preserve genuine weather. Explain every decision. Run live or fully offline.","textPreview":"Detect faults. Preserve genuine weather. Explain every decision. Run live or fully offline.","textChars":91,"textLines":1,"bbox":[42,326,560,100]}
+{"kind":"shape","id":"sh/lczq5kb2","slide":1,"bbox":[42,472,195,34]}
+{"kind":"textbox","id":"sh/0rqpczuh","slide":1,"text":"578,448 observations","textPreview":"578,448 observations","textChars":20,"textLines":1,"bbox":[54,475,171,28]}
+{"kind":"shape","id":"sh/neh87ut8","slide":1,"bbox":[250,472,168,34]}
+{"kind":"textbox","id":"sh/md87epcn","slide":1,"text":"24 Indian stations","textPreview":"24 Indian stations","textChars":18,"textLines":1,"bbox":[262,475,144,28]}
+{"kind":"shape","id":"sh/sfa1472d","slide":1,"bbox":[431,472,140,34]}
+{"kind":"textbox","id":"sh/tgj2dc3y","slide":1,"text":"51 tests pass","textPreview":"51 tests pass","textChars":13,"textLines":1,"bbox":[443,475,116,28]}
+{"kind":"textbox","id":"sh/re1kb2ls","slide":1,"text":"Software · AI/ML · Disaster management","textPreview":"Software · AI/ML · Disaster management","textChars":38,"textLines":1,"bbox":[42,648,520,26]}
+{"kind":"image","id":"im/pkjuxo3a","slide":1,"name":"","geometry":"roundRect","alt":"SkyGuard AI live operations dashboard","bbox":[658,42,582,588]}
+{"kind":"notes","id":"nt/tw6l7l","slide":1,"text":"Open with the decision: SkyGuard is an end-to-end software solution for the AWS anomaly problem, with both controlled offline proof and genuine live observations."}
+{"kind":"slide","id":"sl/tn2udf","slide":2,"title":"SIH PROBLEM FIT","textShapes":15}
+{"kind":"textbox","id":"sh/p83y18zm","slide":2,"text":"SIH PROBLEM FIT","textPreview":"SIH PROBLEM FIT","textChars":15,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/2lczqt0b","slide":2,"text":"The problem is trust—not just thresholding","textPreview":"The problem is trust—not just thresholding","textChars":42,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/3mlgzyhg","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"shape","id":"sh/gjaho3i5","slide":2,"bbox":[42,150,520,465]}
+{"kind":"textbox","id":"sh/1k3yxozq","slide":2,"text":"Three signals","textPreview":"Three signals","textChars":13,"textLines":1,"bbox":[72,178,450,36]}
+{"kind":"textbox","id":"sh/ehsfmt0z","slide":2,"text":"Temperature\nPressure\nRelative humidity","textPreview":"Temperature | Pressure | Relative humidity","textChars":38,"textLines":3,"bbox":[72,224,450,142]}
+{"kind":"textbox","id":"sh/fi1gvyhk","slide":2,"text":"A spike may be a failed sensor—or a real regional event. The system must know the difference in real time.","textPreview":"A spike may be a failed sensor—or a real regional event. The system must know the difference in real time.","textChars":106,"textLines":1,"bbox":[72,392,440,120]}
+{"kind":"shape","id":"sh/sfaxkjit","slide":2,"bbox":[604,150,594,92]}
+{"kind":"textbox","id":"sh/tgjytoje","slide":2,"text":"Detect","textPreview":"Detect","textChars":6,"textLines":1,"bbox":[630,167,145,28]}
+{"kind":"textbox","id":"sh/ls7etofq","slide":2,"text":"spikes, drift, frozen and transport faults","textPreview":"spikes, drift, frozen and transport faults","textChars":42,"textLines":1,"bbox":[790,163,370,56]}
+{"kind":"shape","id":"sh/0ryd0jyl","slide":2,"bbox":[604,262,594,92]}
+{"kind":"textbox","id":"sh/z6pwrex0","slide":2,"text":"Distinguish","textPreview":"Distinguish","textChars":11,"textLines":1,"bbox":[630,279,145,28]}
+{"kind":"textbox","id":"sh/y5wvy9gf","slide":2,"text":"genuine weather from sensor failure","textPreview":"genuine weather from sensor failure","textChars":35,"textLines":1,"bbox":[790,275,370,56]}
+{"kind":"shape","id":"sh/d4nepofu","slide":2,"bbox":[604,374,594,92]}
+{"kind":"textbox","id":"sh/c3edwjy9","slide":2,"text":"Explain","textPreview":"Explain","textChars":7,"textLines":1,"bbox":[630,391,145,28]}
+{"kind":"textbox","id":"sh/b25wnexo","slide":2,"text":"severity, confidence and root cause","textPreview":"severity, confidence and root cause","textChars":35,"textLines":1,"bbox":[790,387,370,56]}
+{"kind":"shape","id":"sh/q1wvu9g3","slide":2,"bbox":[604,486,594,92]}
+{"kind":"textbox","id":"sh/p0nel4fy","slide":2,"text":"Act","textPreview":"Act","textChars":3,"textLines":1,"bbox":[630,503,145,28]}
+{"kind":"textbox","id":"sh/ozedszyd","slide":2,"text":"correct safely and recommend maintenance","textPreview":"correct safely and recommend maintenance","textChars":40,"textLines":1,"bbox":[790,499,370,56]}
+{"kind":"shape","id":"sh/gvi5o3a5","slide":2,"bbox":[604,586,350,34]}
+{"kind":"textbox","id":"sh/1wrmx8rq","slide":2,"text":"MANDATORY SOFTWARE SCOPE: COMPLETE","textPreview":"MANDATORY SOFTWARE SCOPE: COMPLETE","textChars":34,"textLines":1,"bbox":[616,589,326,28]}
+{"kind":"notes","id":"nt/tn2udf","slide":2,"text":"Frame the challenge as trustworthy observations. Emphasize that the public statement asks for real-time anomaly detection, genuine-weather separation, confidence, explanation and sensor health.\n\n[Sources]\n- https://sih-fit.vercel.app/problem/SIH26073\n- https://github.com/jeevansai-hub/SIH-2026-/blob/main/ps_2026/README.md\n[/Sources]"}
+{"kind":"slide","id":"sl/bj3um3","slide":3,"title":"DELIVERY JOURNEY","textShapes":13}
+{"kind":"textbox","id":"sh/m9gjep4r","slide":3,"text":"DELIVERY JOURNEY","textPreview":"DELIVERY JOURNEY","textChars":16,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/9c729kn2","slide":3,"text":"Nine phases turned a concept into evidence","textPreview":"Nine phases turned a concept into evidence","textChars":42,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/8by1gzmh","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"shape","id":"sh/zmp03a50","slide":3,"bbox":[70,350,1120,0]}
+{"kind":"shape","id":"sh/ylwja54f","slide":3,"bbox":[100,340,20,20]}
+{"kind":"textbox","id":"sh/l87i5kn6","slide":3,"text":"01–03","textPreview":"01–03","textChars":5,"textLines":1,"bbox":[100,294,125,28]}
+{"kind":"textbox","id":"sh/k7y1cfml","slide":3,"text":"Data & benchmark","textPreview":"Data & benchmark","textChars":16,"textLines":1,"bbox":[100,398,300,42]}
+{"kind":"textbox","id":"sh/bi50za54","slide":3,"text":"Verified source data, 13-fault library and 72 online-safe features.","textPreview":"Verified source data, 13-fault library and 72 online-safe features.","textChars":67,"textLines":1,"bbox":[100,448,300,120]}
+{"kind":"shape","id":"sh/ahwj65oj","slide":3,"bbox":[458,340,20,20]}
+{"kind":"textbox","id":"sh/cjatw3e9","slide":3,"text":"04–06","textPreview":"04–06","textChars":5,"textLines":1,"bbox":[458,294,125,28]}
+{"kind":"textbox","id":"sh/xkju58vu","slide":3,"text":"Models & safe repair","textPreview":"Models & safe repair","textChars":20,"textLines":1,"bbox":[458,398,300,42]}
+{"kind":"textbox","id":"sh/ahsbudwj","slide":3,"text":"Calibrated detection, weather protection, diagnosis, correction and health.","textPreview":"Calibrated detection, weather protection, diagnosis, correction and health.","textChars":75,"textLines":1,"bbox":[458,448,300,120]}
+{"kind":"shape","id":"sh/bi1c3yd4","slide":3,"bbox":[816,340,20,20]}
+{"kind":"textbox","id":"sh/ofqts3ed","slide":3,"text":"07–09","textPreview":"07–09","textChars":5,"textLines":1,"bbox":[816,294,125,28]}
+{"kind":"textbox","id":"sh/pgju18vy","slide":3,"text":"Platform & delivery","textPreview":"Platform & delivery","textChars":19,"textLines":1,"bbox":[816,398,300,42]}
+{"kind":"textbox","id":"sh/2d8bqtw7","slide":3,"text":"Streaming API, dashboard, genuine live feed, verification and SIH package.","textPreview":"Streaming API, dashboard, genuine live feed, verification and SIH package.","textChars":74,"textLines":1,"bbox":[816,448,300,120]}
+{"kind":"shape","id":"sh/3ehszyds","slide":3,"bbox":[960,595,230,34]}
+{"kind":"textbox","id":"sh/8but4neh","slide":3,"text":"ALL PHASES COMPLETE","textPreview":"ALL PHASES COMPLETE","textChars":19,"textLines":1,"bbox":[972,598,206,28]}
+{"kind":"notes","id":"nt/bj3um3","slide":3,"text":"Use this timeline to show that the project was built in dependency order: provenance first, models second, delivery last."}
+{"kind":"slide","id":"sl/p0i0pb","slide":4,"title":"SYSTEM ARCHITECTURE","textShapes":19}
+{"kind":"textbox","id":"sh/bul4nq5g","slide":4,"text":"SYSTEM ARCHITECTURE","textPreview":"SYSTEM ARCHITECTURE","textChars":19,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/cve5gv61","slide":4,"text":"One pipeline serves offline proof and live operation","textPreview":"One pipeline serves offline proof and live operation","textChars":52,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/xwnmpgn6","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"shape","id":"sh/2pc3a1oj","slide":4,"bbox":[42,178,216,352]}
+{"kind":"textbox","id":"sh/3ql4j6p4","slide":4,"text":"INPUT","textPreview":"INPUT","textChars":5,"textLines":1,"bbox":[60,198,180,28]}
+{"kind":"textbox","id":"sh/orulcb6p","slide":4,"text":"NOAA benchmark\n\nLive METAR\n\nReplay scenarios","textPreview":"NOAA benchmark |  | Live METAR |  | Replay scenarios","textChars":44,"textLines":5,"bbox":[60,252,180,210]}
+{"kind":"textbox","id":"sh/ps3mlgna","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[268,319,28,40]}
+{"kind":"shape","id":"sh/e1s361on","slide":4,"bbox":[306,178,216,352]}
+{"kind":"textbox","id":"sh/f214f6p8","slide":4,"text":"QUALITY","textPreview":"QUALITY","textChars":7,"textLines":1,"bbox":[324,198,180,28]}
+{"kind":"textbox","id":"sh/f2tg3q5g","slide":4,"text":"Schema + QC\n\nTemporal features\n\nNeighbour context","textPreview":"Schema + QC |  | Temporal features |  | Neighbour context","textChars":49,"textLines":5,"bbox":[324,252,180,210]}
+{"kind":"textbox","id":"sh/e1kzulov","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[532,319,28,40]}
+{"kind":"shape","id":"sh/14by50nm","slide":4,"bbox":[570,178,216,352]}
+{"kind":"textbox","id":"sh/032hwv61","slide":4,"text":"DECISION","textPreview":"DECISION","textChars":8,"textLines":1,"bbox":[588,198,180,28]}
+{"kind":"textbox","id":"sh/n6tg7q5s","slide":4,"text":"Fault probability\n\nWeather decision\n\nRoot cause + abstain","textPreview":"Fault probability |  | Weather decision |  | Root cause + abstain","textChars":57,"textLines":5,"bbox":[588,252,180,210]}
+{"kind":"textbox","id":"sh/25kzylo7","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[796,319,28,40]}
+{"kind":"shape","id":"sh/98vy90ni","slide":4,"bbox":[834,178,216,352]}
+{"kind":"textbox","id":"sh/o7mh0vmx","slide":4,"text":"ACTION","textPreview":"ACTION","textChars":6,"textLines":1,"bbox":[852,198,180,28]}
+{"kind":"textbox","id":"sh/3a9gv658","slide":4,"text":"Correction + interval\n\nHealth score\n\nMaintenance priority","textPreview":"Correction + interval |  | Health score |  | Maintenance priority","textChars":57,"textLines":5,"bbox":[852,252,180,210]}
+{"kind":"textbox","id":"sh/i90fm1on","slide":4,"text":"→","textPreview":"→","textChars":1,"textLines":1,"bbox":[1060,319,28,40]}
+{"kind":"shape","id":"sh/6poju9ob","slide":4,"bbox":[1098,178,142,352]}
+{"kind":"textbox","id":"sh/7qhk3epw","slide":4,"text":"OUTPUT","textPreview":"OUTPUT","textChars":6,"textLines":1,"bbox":[1116,198,106,28]}
+{"kind":"textbox","id":"sh/8rq1wj6h","slide":4,"text":"Dashboard\n\nREST API\n\nCSV incident report","textPreview":"Dashboard |  | REST API |  | CSV incident report","textChars":40,"textLines":5,"bbox":[1116,252,106,210]}
+{"kind":"textbox","id":"sh/tsz25472","slide":4,"text":"Frozen 2024 model policy","textPreview":"Frozen 2024 model policy","textChars":24,"textLines":1,"bbox":[488,568,300,30]}
+{"kind":"textbox","id":"sh/y1ojqp8f","slide":4,"text":"No future leakage · explicit unknown outcome · corrections remain advisory","textPreview":"No future leakage · explicit unknown outcome · corrections remain advisory","textChars":74,"textLines":1,"bbox":[340,604,600,32]}
+{"kind":"notes","id":"nt/p0i0pb","slide":4,"text":"Walk left to right. Both offline replay and live observations enter the same quality, feature and decision path. The frozen policy prevents demo-time threshold changes."}
+{"kind":"slide","id":"sl/7zn8kr","slide":5,"title":"DATA EVIDENCE","textShapes":5}
+{"kind":"textbox","id":"sh/8nm1ozqt","slide":5,"text":"DATA EVIDENCE","textPreview":"DATA EVIDENCE","textChars":13,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/7md0vu98","slide":5,"text":"The benchmark is genuine, hashed and leakage-safe","textPreview":"The benchmark is genuine, hashed and leakage-safe","textChars":49,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/6l4zm98n","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"textbox","id":"sh/hcfi1ora","slide":5,"text":"NOAA/NCEI Global Hourly ISD · India · 2022–2024","textPreview":"NOAA/NCEI Global Hourly ISD · India · 2022–2024","textChars":47,"textLines":1,"bbox":[42,118,900,34]}
+{"kind":"shape","id":"sh/vqd0ze9k","slide":5,"bbox":[42,612,258,34]}
+{"kind":"textbox","id":"sh/up4jq98z","slide":5,"text":"14/14 SOURCE CHECKS PASS","textPreview":"14/14 SOURCE CHECKS PASS","textChars":24,"textLines":1,"bbox":[54,615,234,28]}
+{"kind":"table","id":"tb/5kbe1gbe","slide":5,"name":"","rows":8,"cols":3,"preview":"Evidence | Value | Validation","bbox":[42,180,1196,412]}
+{"kind":"notes","id":"nt/7zn8kr","slide":5,"text":"This is the foundation of the credibility story. The fault labels are controlled injections, but the underlying meteorological observations and metadata are genuine official data.\n\n[Sources]\n- https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database\n[/Sources]"}
+{"kind":"slide","id":"sl/20gbcd","slide":6,"title":"LOCKED 2024 RESULTS","textShapes":12}
+{"kind":"textbox","id":"sh/atsnehc7","slide":6,"text":"LOCKED 2024 RESULTS","textPreview":"LOCKED 2024 RESULTS","textChars":19,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/xw369wvi","slide":6,"text":"The model catches episodes with low false-alarm pressure","textPreview":"The model catches episodes with low false-alarm pressure","textChars":56,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/wva5grux","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"shape","id":"sh/yxcni1c3","slide":6,"bbox":[790,155,408,132]}
+{"kind":"textbox","id":"sh/l036dwvu","slide":6,"text":"WEATHER PROTECTION","textPreview":"WEATHER PROTECTION","textChars":18,"textLines":1,"bbox":[810,169,368,24]}
+{"kind":"textbox","id":"sh/kzupkru9","slide":6,"text":"87.97% F1","textPreview":"87.97% F1","textChars":9,"textLines":1,"bbox":[810,196,368,48]}
+{"kind":"textbox","id":"sh/72lof6tk","slide":6,"text":"824 regional-weather rows · 1.699% fault FPR","textPreview":"824 regional-weather rows · 1.699% fault FPR","textChars":44,"textLines":1,"bbox":[810,246,368,26]}
+{"kind":"shape","id":"sh/61c7m1cz","slide":6,"bbox":[790,307,408,132]}
+{"kind":"textbox","id":"sh/0zuxone1","slide":6,"text":"EVENT DECISION","textPreview":"EVENT DECISION","textChars":14,"textLines":1,"bbox":[810,321,368,24]}
+{"kind":"textbox","id":"sh/lknehsvm","slide":6,"text":"99.19%","textPreview":"99.19%","textChars":6,"textLines":1,"bbox":[810,348,368,48]}
+{"kind":"textbox","id":"sh/yxcfmdwv","slide":6,"text":"Accuracy is contextual; use F1/AUCPR for faults","textPreview":"Accuracy is contextual; use F1/AUCPR for faults","textChars":47,"textLines":1,"bbox":[810,398,368,26]}
+{"kind":"shape","id":"sh/zylwfidg","slide":6,"bbox":[790,459,408,132]}
+{"kind":"textbox","id":"sh/8nexs7ex","slide":6,"text":"FALSE ALARMS","textPreview":"FALSE ALARMS","textChars":12,"textLines":1,"bbox":[810,473,368,24]}
+{"kind":"textbox","id":"sh/9onelsvi","slide":6,"text":"0.031/day","textPreview":"0.031/day","textChars":9,"textLines":1,"bbox":[810,500,368,48]}
+{"kind":"textbox","id":"sh/mlwfqxw7","slide":6,"text":"Per station-day on unseen time","textPreview":"Per station-day on unseen time","textChars":30,"textLines":1,"bbox":[810,550,368,26]}
+{"kind":"chart","id":"ch/rmpg3250","slide":6,"name":"","chartType":"bar","bbox":[42,155,700,450]}
+{"kind":"notes","id":"nt/20gbcd","slide":6,"text":"Do not call 99.19% the model's only accuracy. Anomalies are rare, so present precision, recall, F1, AUCPR, false alarms and episode recall together."}
+{"kind":"slide","id":"sl/ojjcm3","slide":7,"title":"SAFE REPAIR","textShapes":20}
+{"kind":"textbox","id":"sh/gnyd8zah","slide":7,"text":"SAFE REPAIR","textPreview":"SAFE REPAIR","textChars":11,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/fmpcfu9w","slide":7,"text":"Correction improved values—but automation stays gated","textPreview":"Correction improved values—but automation stays gated","textChars":53,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/ulgv6psb","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"shape","id":"sh/tknudkrq","slide":7,"bbox":[42,162,360,226]}
+{"kind":"textbox","id":"sh/sjed4fa5","slide":7,"text":"TEMPERATURE","textPreview":"TEMPERATURE","textChars":11,"textLines":1,"bbox":[66,184,310,28]}
+{"kind":"textbox","id":"sh/7i5cba90","slide":7,"text":"1.66 °C","textPreview":"1.66 °C","textChars":7,"textLines":1,"bbox":[66,228,310,54]}
+{"kind":"textbox","id":"sh/6hwv25sf","slide":7,"text":"corrected MAE","textPreview":"corrected MAE","textChars":13,"textLines":1,"bbox":[66,286,310,28]}
+{"kind":"textbox","id":"sh/5gnu9kru","slide":7,"text":"85.64% error reduction","textPreview":"85.64% error reduction","textChars":22,"textLines":1,"bbox":[66,334,310,28]}
+{"kind":"shape","id":"sh/kfed0fa9","slide":7,"bbox":[438,162,360,226]}
+{"kind":"textbox","id":"sh/eh4vyhsr","slide":7,"text":"PRESSURE","textPreview":"PRESSURE","textChars":8,"textLines":1,"bbox":[462,184,310,28]}
+{"kind":"textbox","id":"sh/fidc7m9w","slide":7,"text":"1.56 hPa","textPreview":"1.56 hPa","textChars":8,"textLines":1,"bbox":[462,228,310,54]}
+{"kind":"textbox","id":"sh/gjmd0rah","slide":7,"text":"corrected MAE","textPreview":"corrected MAE","textChars":13,"textLines":1,"bbox":[462,286,310,28]}
+{"kind":"textbox","id":"sh/14vu9cr2","slide":7,"text":"98.63% error reduction","textPreview":"98.63% error reduction","textChars":22,"textLines":1,"bbox":[462,334,310,28]}
+{"kind":"shape","id":"sh/6dkvuxsf","slide":7,"bbox":[834,162,360,226]}
+{"kind":"textbox","id":"sh/retc32t0","slide":7,"text":"HUMIDITY","textPreview":"HUMIDITY","textChars":8,"textLines":1,"bbox":[858,184,310,28]}
+{"kind":"textbox","id":"sh/sf2dw7al","slide":7,"text":"12.92% RH","textPreview":"12.92% RH","textChars":9,"textLines":1,"bbox":[858,228,310,54]}
+{"kind":"textbox","id":"sh/tgvu5cr6","slide":7,"text":"corrected MAE","textPreview":"corrected MAE","textChars":13,"textLines":1,"bbox":[858,286,310,28]}
+{"kind":"textbox","id":"sh/i9kbqxsj","slide":7,"text":"57.86% error reduction","textPreview":"57.86% error reduction","textChars":22,"textLines":1,"bbox":[858,334,310,28]}
+{"kind":"shape","id":"sh/jatcz2t4","slide":7,"bbox":[42,432,1152,148]}
+{"kind":"textbox","id":"sh/nups7y9w","slide":7,"text":"87","textPreview":"87","textChars":2,"textLines":1,"bbox":[72,454,128,72]}
+{"kind":"textbox","id":"sh/mtgryt8b","slide":7,"text":"automatic temperature/pressure repairs","textPreview":"automatic temperature/pressure repairs","textChars":38,"textLines":1,"bbox":[205,458,500,36]}
+{"kind":"textbox","id":"sh/9g7a987m","slide":7,"text":"zero measured false corrections across both locked 2024 holdouts","textPreview":"zero measured false corrections across both locked 2024 holdouts","textChars":64,"textLines":1,"bbox":[205,500,650,34]}
+{"kind":"shape","id":"sh/8fy903q1","slide":7,"bbox":[910,476,240,34]}
+{"kind":"textbox","id":"sh/vi9sbyps","slide":7,"text":"HUMIDITY: REVIEW ONLY","textPreview":"HUMIDITY: REVIEW ONLY","textChars":21,"textLines":1,"bbox":[922,479,216,28]}
+{"kind":"textbox","id":"sh/ah0r2t87","slide":7,"text":"Coverage is limited by missed detection and affected-sensor inference; advisory output remains the default.","textPreview":"Coverage is limited by missed detection and affected-sensor inference; advisory output remains the default.","textChars":107,"textLines":1,"bbox":[42,612,1110,34]}
+{"kind":"notes","id":"nt/ojjcm3","slide":7,"text":"This directly resolves the earlier limitation: we improved review coverage, calibrated uncertainty by split, and added strict automatic gates. We did not claim all corrections are safe to apply automatically."}
+{"kind":"slide","id":"sl/maxtv1","slide":8,"title":"LIVE OPERATION","textShapes":13}
+{"kind":"textbox","id":"sh/ra10f6tg","slide":8,"text":"LIVE OPERATION","textPreview":"LIVE OPERATION","textChars":14,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/sba1oba1","slide":8,"text":"Genuine live observations now use the same decision path","textPreview":"Genuine live observations now use the same decision path","textChars":56,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/tc3ihgbm","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"shape","id":"sh/j610b6tk","slide":8,"bbox":[900,152,298,132]}
+{"kind":"textbox","id":"sh/47a1kbu5","slide":8,"text":"REPORTING","textPreview":"REPORTING","textChars":9,"textLines":1,"bbox":[920,166,258,24]}
+{"kind":"textbox","id":"sh/58jidgba","slide":8,"text":"12 / 14","textPreview":"12 / 14","textChars":7,"textLines":1,"bbox":[920,193,258,48]}
+{"kind":"textbox","id":"sh/uh8zehcn","slide":8,"text":"configured Indian stations","textPreview":"configured Indian stations","textChars":26,"textLines":1,"bbox":[920,243,258,26]}
+{"kind":"shape","id":"sh/vih07mt8","slide":8,"bbox":[900,302,298,132]}
+{"kind":"textbox","id":"sh/rad0va1w","slide":8,"text":"SNAPSHOT","textPreview":"SNAPSHOT","textChars":8,"textLines":1,"bbox":[920,316,258,24]}
+{"kind":"textbox","id":"sh/q9kjm5kb","slide":8,"text":"400","textPreview":"400","textChars":3,"textLines":1,"bbox":[920,343,258,48]}
+{"kind":"textbox","id":"sh/dcvix0j2","slide":8,"text":"genuine observations","textPreview":"genuine observations","textChars":20,"textLines":1,"bbox":[920,393,258,26]}
+{"kind":"shape","id":"sh/sbm1ov2h","slide":8,"bbox":[900,452,298,132]}
+{"kind":"textbox","id":"sh/fed0za1s","slide":8,"text":"REFRESH","textPreview":"REFRESH","textChars":7,"textLines":1,"bbox":[920,466,258,24]}
+{"kind":"textbox","id":"sh/ed4jq5k7","slide":8,"text":"5 min","textPreview":"5 min","textChars":5,"textLines":1,"bbox":[920,493,258,48]}
+{"kind":"textbox","id":"sh/1gv21kjy","slide":8,"text":"optional dashboard schedule","textPreview":"optional dashboard schedule","textChars":27,"textLines":1,"bbox":[920,543,258,26]}
+{"kind":"textbox","id":"sh/0fm1sf2d","slide":8,"text":"Reported: temperature + QNH pressure · Derived: relative humidity","textPreview":"Reported: temperature + QNH pressure · Derived: relative humidity","textChars":65,"textLines":1,"bbox":[42,628,900,30]}
+{"kind":"image","id":"im/zm9sfmtk","slide":8,"name":"","geometry":"roundRect","alt":"SkyGuard live observation mode showing real METAR values","bbox":[42,142,820,474]}
+{"kind":"notes","id":"nt/maxtv1","slide":8,"text":"Switch the live mode on during the demo. Be precise: the feed is genuine METAR terminal data. Humidity is derived from temperature and dew point. Live alerts are signals; benchmark accuracy comes from the locked labelled tests.\n\n[Sources]\n- https://connect.aviationweather.gov/data/api/\n[/Sources]"}
+{"kind":"slide","id":"sl/tvd178","slide":9,"title":"SIH COMPLIANCE","textShapes":4}
+{"kind":"textbox","id":"sh/8velcnqd","slide":9,"text":"SIH COMPLIANCE","textPreview":"SIH COMPLIANCE","textChars":14,"textLines":1,"bbox":[42,24,900,28]}
+{"kind":"textbox","id":"sh/7u543i9s","slide":9,"text":"Every mandatory software output is demonstrated","textPreview":"Every mandatory software output is demonstrated","textChars":47,"textLines":1,"bbox":[42,54,1160,66]}
+{"kind":"textbox","id":"sh/m9w3ad8n","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1180,658,55,24]}
+{"kind":"textbox","id":"sh/k7el8nqh","slide":9,"text":"Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults.","textPreview":"Production gap: replace the public METAR adapter with the official IMD AWS endpoint and validate on confirmed field faults.","textChars":123,"textLines":1,"bbox":[42,630,1140,32]}
+{"kind":"table","id":"tb/83e54ju5","slide":9,"name":"","rows":10,"cols":3,"preview":"Statement requirement | SkyGuard implementation | Status","bbox":[42,145,1196,470]}
+{"kind":"notes","id":"nt/tvd178","slide":9,"text":"This is the honest compliance answer: complete for the SIH software prototype, not yet an operational IMD deployment. Hardware is not required for this team-constrained solution.\n\n[Sources]\n- https://sih-fit.vercel.app/problem/SIH26073\n[/Sources]"}
+{"kind":"slide","id":"sl/974o86","slide":10,"title":"READY FOR SIH DEMONSTRATION","textShapes":12}
+{"kind":"shape","id":"sh/j6pcna1w","slide":10,"bbox":[42,42,286,34]}
+{"kind":"textbox","id":"sh/k7ydgfi1","slide":10,"text":"READY FOR SIH DEMONSTRATION","textPreview":"READY FOR SIH DEMONSTRATION","textChars":27,"textLines":1,"bbox":[54,45,262,28]}
+{"kind":"textbox","id":"sh/587upkjm","slide":10,"text":"Trust every weather reading.","textPreview":"Trust every weather reading.","textChars":28,"textLines":1,"bbox":[42,140,740,90]}
+{"kind":"textbox","id":"sh/a1wba50z","slide":10,"text":"SkyGuard detects, distinguishes, diagnoses, explains, corrects safely and prioritizes maintenance—live or fully offline.","textPreview":"SkyGuard detects, distinguishes, diagnoses, explains, corrects safely and prioritizes maintenance—live or fully offline.","textChars":120,"textLines":1,"bbox":[42,242,760,120]}
+{"kind":"shape","id":"sh/v2pcja1k","slide":10,"bbox":[866,118,328,362]}
+{"kind":"textbox","id":"sh/w3ytcfi5","slide":10,"text":"FINAL PROOF","textPreview":"FINAL PROOF","textChars":11,"textLines":1,"bbox":[896,148,265,28]}
+{"kind":"textbox","id":"sh/x47ulkjq","slide":10,"text":"51","textPreview":"51","textChars":2,"textLines":1,"bbox":[896,198,120,60]}
+{"kind":"textbox","id":"sh/ux0vmp0j","slide":10,"text":"automated tests pass","textPreview":"automated tests pass","textChars":20,"textLines":1,"bbox":[896,257,250,28]}
+{"kind":"textbox","id":"sh/fy9cvu1o","slide":10,"text":"14 / 14","textPreview":"14 / 14","textChars":7,"textLines":1,"bbox":[896,322,180,52]}
+{"kind":"textbox","id":"sh/r2lozidg","slide":10,"text":"final delivery checks","textPreview":"final delivery checks","textChars":21,"textLines":1,"bbox":[896,374,250,28]}
+{"kind":"shape","id":"sh/q1cnqdwv","slide":10,"bbox":[896,424,245,34]}
+{"kind":"textbox","id":"sh/d4n61svm","slide":10,"text":"PHASES 0–9 COMPLETE","textPreview":"PHASES 0–9 COMPLETE","textChars":19,"textLines":1,"bbox":[908,427,221,28]}
+{"kind":"textbox","id":"sh/s3e5sne1","slide":10,"text":"Next pilot step","textPreview":"Next pilot step","textChars":15,"textLines":1,"bbox":[42,506,220,28]}
+{"kind":"textbox","id":"sh/f65o3ids","slide":10,"text":"Connect the official IMD AWS stream and collect confirmed maintenance labels for operational acceptance.","textPreview":"Connect the official IMD AWS stream and collect confirmed maintenance labels for operational acceptance.","textChars":104,"textLines":1,"bbox":[42,548,760,80]}
+{"kind":"textbox","id":"sh/e5wnudw7","slide":10,"text":"SkyGuard AI · SIH 26073","textPreview":"SkyGuard AI · SIH 26073","textChars":23,"textLines":1,"bbox":[42,660,420,24]}
+{"kind":"notes","id":"nt/974o86","slide":10,"text":"Close on the outcome and ask judges to test both scenarios: one-station drift and regional weather. Then show the live feed. Do not overclaim production readiness."}

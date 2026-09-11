@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "error_count": 0,
+  "errors": [],
+  "policy_frozen_on_2023": true,
+  "audit_values_absent_from_incidents": true,
+  "splits": {
+    "validation": {
+      "incidents": 856,
+      "corrections": 1388,
+      "health_rows": 60,
+      "incident_sha256": "9d6bf895315e93ce3d21085ce9c822c4ea369e76db79a1a0f9aed4477eafbcc8",
+      "health_sha256": "67f6bbeed9a981e7c4182929aafc2de5cd45d2f39a51aba77d44c9db1fc972af"
+    },
+    "time_test": {
+      "incidents": 1069,
+      "corrections": 1710,
+      "health_rows": 60,
+      "incident_sha256": "a31bed857723cb35867877da88e543ea3c5401bb1f33af4c6555756f1ca9f751",
+      "health_sha256": "b99966a30cd483149dc8123635fcec2dd117266f4457ce642f105a0488c214f9"
+    },
+    "station_test": {
+      "incidents": 89,
+      "corrections": 143,
+      "health_rows": 12,
+      "incident_sha256": "d3e9d7a5894434dc8b77ae8e336bff12d53ccd15828a1b732792c17cec73dcc3",
+      "health_sha256": "b2f8cfe32747f9661845f9502cdc24e34d7790b03223b8f1621b4a485bef103d"
+    }
+  },
+  "operational_mae_improved": {
+    "time_test": {
+      "temperature": true,
+      "pressure": true,
+      "humidity": true
+    },
+    "station_test": {
+      "temperature": true,
+      "pressure": true,
+      "humidity": true
+    }
+  }
+}

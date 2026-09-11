@@ -1,0 +1,106 @@
+{
+  "phase": 7,
+  "status": "complete",
+  "offline": true,
+  "profiles": {
+    "pressure_drift": {
+      "source_rows": 483,
+      "emitted_readings": 483,
+      "dropped_rows": 0,
+      "alerts": {},
+      "elapsed_seconds": 0.043733099999371916,
+      "throughput_rows_per_second": 11044.266242432774,
+      "mean_processing_latency_ms": 0.09054472049559403,
+      "target_episode_alerts": []
+    },
+    "regional_weather": {
+      "source_rows": 432,
+      "emitted_readings": 432,
+      "dropped_rows": 0,
+      "alerts": {
+        "communication_gap": 1
+      },
+      "elapsed_seconds": 0.035869799998181406,
+      "throughput_rows_per_second": 12043.557533688572,
+      "mean_processing_latency_ms": 0.08303194444023473,
+      "target_episode_alerts": []
+    },
+    "dropout": {
+      "source_rows": 67,
+      "emitted_readings": 24,
+      "dropped_rows": 43,
+      "alerts": {
+        "communication_gap": 1
+      },
+      "elapsed_seconds": 0.0019862000008288305,
+      "throughput_rows_per_second": 33732.75600243745,
+      "mean_processing_latency_ms": 0.02964477613177359,
+      "target_episode_alerts": [
+        "TIME_TEST-FLT-0026"
+      ]
+    },
+    "packet_errors": {
+      "source_rows": 12,
+      "emitted_readings": 12,
+      "dropped_rows": 0,
+      "alerts": {
+        "duplicate_packet": 1,
+        "timestamp_disorder": 1
+      },
+      "elapsed_seconds": 0.002025500001764158,
+      "throughput_rows_per_second": 5924.463090371914,
+      "mean_processing_latency_ms": 0.16879166681367982,
+      "target_episode_alerts": [
+        "TIME_TEST-FLT-0009",
+        "TIME_TEST-FLT-0034"
+      ]
+    }
+  },
+  "api_checks": {
+    "/health": {
+      "status_code": 200,
+      "passed": true
+    },
+    "/api/scenarios": {
+      "status_code": 200,
+      "passed": true
+    },
+    "/api/stations": {
+      "status_code": 200,
+      "passed": true
+    },
+    "/api/incidents?limit=1": {
+      "status_code": 200,
+      "passed": true
+    },
+    "/api/repair-actions?limit=1": {
+      "status_code": 200,
+      "passed": true
+    },
+    "/api/sensor-health": {
+      "status_code": 200,
+      "passed": true
+    },
+    "/api/metrics": {
+      "status_code": 200,
+      "passed": true
+    },
+    "dropout_replay": {
+      "status_code": 200,
+      "communication_gap_detected": true
+    }
+  },
+  "communication_evidence": {
+    "dropout_detected": true,
+    "duplicate_detected": true,
+    "timestamp_disorder_detected": true
+  },
+  "resources": {
+    "total_wall_seconds": 0.24569960000007995,
+    "cpu_seconds": 0.234375,
+    "tracemalloc_current_bytes": 35112,
+    "tracemalloc_peak_bytes": 1570329
+  },
+  "database": "SQLite; persistent data/runtime/replay.db in normal API operation",
+  "api_docs": "http://127.0.0.1:8000/docs"
+}

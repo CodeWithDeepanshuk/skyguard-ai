@@ -1,0 +1,38 @@
+{
+  "phase": "10-weather-gate",
+  "status": "complete",
+  "feature_count": 65,
+  "policy": {
+    "threshold": 0.2014483944800731,
+    "precision": 0.5818181818181818,
+    "recall": 0.3131115459882583,
+    "f1": 0.4071246819338422
+  },
+  "evaluation": {
+    "validation": {
+      "tp": 160,
+      "fp": 115,
+      "fn": 351,
+      "precision": 0.5818181818181818,
+      "recall": 0.3131115459882583,
+      "f1": 0.4071246819338422
+    },
+    "time_test": {
+      "tp": 259,
+      "fp": 77,
+      "fn": 565,
+      "precision": 0.7708333333333334,
+      "recall": 0.3143203883495146,
+      "f1": 0.44655172413793104
+    },
+    "station_test": {
+      "tp": 0,
+      "fp": 8,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "runtime_seconds": 49.051
+}

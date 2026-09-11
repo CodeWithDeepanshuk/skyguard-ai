@@ -1,0 +1,1182 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/7zn8kr",
+    "id": "7zn8kr",
+    "slide": 5,
+    "layoutId": "94868786-971c-4e57-818b-d17cca4e6d14",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "40cc632e-cb0d-4f20-b5bd-ef3b47f1852c",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "SkyGuard Grid",
+    "colors": {
+      "accent1": "#2563EB",
+      "accent2": "#0F766E",
+      "accent3": "#0EA5E9",
+      "accent4": "#D97706",
+      "accent5": "#DC2626",
+      "accent6": "#16A34A",
+      "bg1": "#FFFFFF",
+      "bg2": "#F7FAFC",
+      "tx1": "#101827",
+      "tx2": "#64748B",
+      "dk1": "#000000",
+      "dk2": "#101827",
+      "lt1": "#FFFFFF",
+      "lt2": "#D9E2EC",
+      "hlink": "#2563EB",
+      "folHlink": "#7C3AED"
+    },
+    "typefaces": [
+      "Helvetica Neue"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "94868786-971c-4e57-818b-d17cca4e6d14",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "40cc632e-cb0d-4f20-b5bd-ef3b47f1852c",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "40cc632e-cb0d-4f20-b5bd-ef3b47f1852c",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8nm1ozqt",
+      "id": "1",
+      "bbox": [
+        42,
+        24,
+        900,
+        28
+      ],
+      "geometry": "rect",
+      "text": "DATA EVIDENCE",
+      "textPreview": "DATA EVIDENCE",
+      "resolvedFontSize": 14,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 14,
+        "typeface": "Helvetica Neue",
+        "color": "#2563EB",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "DATA EVIDENCE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "DATA EVIDENCE",
+          "resolvedTextStyle": {
+            "fontSize": 14,
+            "typeface": "Helvetica Neue",
+            "color": "#2563EB",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "DATA EVIDENCE",
+              "fontSize": 14,
+              "typeface": "Helvetica Neue",
+              "color": "#2563EB",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/7md0vu98",
+      "id": "2",
+      "bbox": [
+        42,
+        54,
+        1160,
+        66
+      ],
+      "geometry": "rect",
+      "text": "The benchmark is genuine, hashed and leakage-safe",
+      "textPreview": "The benchmark is genuine, hashed and leakage-safe",
+      "resolvedFontSize": 39,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 39,
+        "typeface": "Helvetica Neue",
+        "color": "#101827",
+        "bold": true,
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "The benchmark is genuine, hashed and leakage-safe"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "The benchmark is genuine, hashed and leakage-safe",
+          "resolvedTextStyle": {
+            "fontSize": 39,
+            "typeface": "Helvetica Neue",
+            "color": "#101827",
+            "bold": true,
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "The benchmark is genuine, hashed and leakage-safe",
+              "fontSize": 39,
+              "typeface": "Helvetica Neue",
+              "color": "#101827",
+              "bold": true,
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/6l4zm98n",
+      "id": "3",
+      "bbox": [
+        1180,
+        658,
+        55,
+        24
+      ],
+      "geometry": "rect",
+      "text": "05",
+      "textPreview": "05",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 13,
+        "typeface": "Helvetica Neue",
+        "color": "#64748B",
+        "alignment": "right",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "05"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "05",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "typeface": "Helvetica Neue",
+            "color": "#64748B",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "05",
+              "fontSize": 13,
+              "typeface": "Helvetica Neue",
+              "color": "#64748B",
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/hcfi1ora",
+      "id": "4",
+      "bbox": [
+        42,
+        118,
+        900,
+        34
+      ],
+      "geometry": "rect",
+      "text": "NOAA/NCEI Global Hourly ISD · India · 2022–2024",
+      "textPreview": "NOAA/NCEI Global Hourly ISD · India · 2022–2024",
+      "resolvedFontSize": 20,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 20,
+        "typeface": "Helvetica Neue",
+        "color": "#64748B",
+        "alignment": "left",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "NOAA/NCEI Global Hourly ISD · India · 2022–2024"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "NOAA/NCEI Global Hourly ISD · India · 2022–2024",
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "typeface": "Helvetica Neue",
+            "color": "#64748B",
+            "alignment": "left"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "NOAA/NCEI Global Hourly ISD · India · 2022–2024",
+              "fontSize": 20,
+              "typeface": "Helvetica Neue",
+              "color": "#64748B",
+              "alignment": "left"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "table",
+      "scope": "slide",
+      "aid": "tb/5kbe1gbe",
+      "id": "5",
+      "bbox": [
+        42,
+        180,
+        1196,
+        412
+      ],
+      "text": "Evidence | Value | Validation\nProcessed observations | 578,448 | Deduplicated\nStations / clusters | 24 / 4 | Metadata checked\nSource files | 72 observations | SHA-256 manifest\nClean candidates | 98.4761% | Range + quality screened\nModel split | 2022 / 2023 / 2024 | Train / select / locked test\nUnseen station holdout | 4 stations | Never trained\nFault library | 546 episodes | 13 classes + weather",
+      "textPreview": "Evidence | Value | Validation | Processed observations | 578,448 | Deduplicated | Stations / clusters | 24 / 4 | Metadata checked | Sourc...",
+      "rows": 8,
+      "cols": 3,
+      "cells": [
+        {
+          "index": 1,
+          "row": 1,
+          "column": 1,
+          "bbox": [
+            42,
+            180,
+            470,
+            51.5
+          ],
+          "text": "Evidence",
+          "textPreview": "Evidence",
+          "fillColor": "#101827",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Evidence",
+              "resolvedTextStyle": {
+                "fontSize": 17,
+                "color": "#FFFFFF",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Evidence",
+                  "fontSize": 17,
+                  "color": "#FFFFFF",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 2,
+          "row": 1,
+          "column": 2,
+          "bbox": [
+            512,
+            180,
+            250,
+            51.5
+          ],
+          "text": "Value",
+          "textPreview": "Value",
+          "fillColor": "#101827",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Value",
+              "resolvedTextStyle": {
+                "fontSize": 17,
+                "color": "#FFFFFF",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Value",
+                  "fontSize": 17,
+                  "color": "#FFFFFF",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 3,
+          "row": 1,
+          "column": 3,
+          "bbox": [
+            762,
+            180,
+            476,
+            51.5
+          ],
+          "text": "Validation",
+          "textPreview": "Validation",
+          "fillColor": "#101827",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Validation",
+              "resolvedTextStyle": {
+                "fontSize": 17,
+                "color": "#FFFFFF",
+                "bold": true
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Validation",
+                  "fontSize": 17,
+                  "color": "#FFFFFF",
+                  "bold": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 4,
+          "row": 2,
+          "column": 1,
+          "bbox": [
+            42,
+            231.5,
+            470,
+            51.5
+          ],
+          "text": "Processed observations",
+          "textPreview": "Processed observations",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Processed observations",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Processed observations",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 5,
+          "row": 2,
+          "column": 2,
+          "bbox": [
+            512,
+            231.5,
+            250,
+            51.5
+          ],
+          "text": "578,448",
+          "textPreview": "578,448",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "578,448",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "578,448",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 6,
+          "row": 2,
+          "column": 3,
+          "bbox": [
+            762,
+            231.5,
+            476,
+            51.5
+          ],
+          "text": "Deduplicated",
+          "textPreview": "Deduplicated",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Deduplicated",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Deduplicated",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 7,
+          "row": 3,
+          "column": 1,
+          "bbox": [
+            42,
+            283,
+            470,
+            51.5
+          ],
+          "text": "Stations / clusters",
+          "textPreview": "Stations / clusters",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Stations / clusters",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Stations / clusters",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 8,
+          "row": 3,
+          "column": 2,
+          "bbox": [
+            512,
+            283,
+            250,
+            51.5
+          ],
+          "text": "24 / 4",
+          "textPreview": "24 / 4",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "24 / 4",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "24 / 4",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 9,
+          "row": 3,
+          "column": 3,
+          "bbox": [
+            762,
+            283,
+            476,
+            51.5
+          ],
+          "text": "Metadata checked",
+          "textPreview": "Metadata checked",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Metadata checked",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Metadata checked",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 10,
+          "row": 4,
+          "column": 1,
+          "bbox": [
+            42,
+            334.5,
+            470,
+            51.5
+          ],
+          "text": "Source files",
+          "textPreview": "Source files",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Source files",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Source files",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 11,
+          "row": 4,
+          "column": 2,
+          "bbox": [
+            512,
+            334.5,
+            250,
+            51.5
+          ],
+          "text": "72 observations",
+          "textPreview": "72 observations",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "72 observations",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "72 observations",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 12,
+          "row": 4,
+          "column": 3,
+          "bbox": [
+            762,
+            334.5,
+            476,
+            51.5
+          ],
+          "text": "SHA-256 manifest",
+          "textPreview": "SHA-256 manifest",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "SHA-256 manifest",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "SHA-256 manifest",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 13,
+          "row": 5,
+          "column": 1,
+          "bbox": [
+            42,
+            386,
+            470,
+            51.5
+          ],
+          "text": "Clean candidates",
+          "textPreview": "Clean candidates",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Clean candidates",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Clean candidates",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 14,
+          "row": 5,
+          "column": 2,
+          "bbox": [
+            512,
+            386,
+            250,
+            51.5
+          ],
+          "text": "98.4761%",
+          "textPreview": "98.4761%",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "98.4761%",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "98.4761%",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 15,
+          "row": 5,
+          "column": 3,
+          "bbox": [
+            762,
+            386,
+            476,
+            51.5
+          ],
+          "text": "Range + quality screened",
+          "textPreview": "Range + quality screened",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Range + quality screened",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Range + quality screened",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 16,
+          "row": 6,
+          "column": 1,
+          "bbox": [
+            42,
+            437.5,
+            470,
+            51.5
+          ],
+          "text": "Model split",
+          "textPreview": "Model split",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Model split",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Model split",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 17,
+          "row": 6,
+          "column": 2,
+          "bbox": [
+            512,
+            437.5,
+            250,
+            51.5
+          ],
+          "text": "2022 / 2023 / 2024",
+          "textPreview": "2022 / 2023 / 2024",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "2022 / 2023 / 2024",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "2022 / 2023 / 2024",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 18,
+          "row": 6,
+          "column": 3,
+          "bbox": [
+            762,
+            437.5,
+            476,
+            51.5
+          ],
+          "text": "Train / select / locked test",
+          "textPreview": "Train / select / locked test",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Train / select / locked test",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Train / select / locked test",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 19,
+          "row": 7,
+          "column": 1,
+          "bbox": [
+            42,
+            489,
+            470,
+            51.5
+          ],
+          "text": "Unseen station holdout",
+          "textPreview": "Unseen station holdout",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Unseen station holdout",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Unseen station holdout",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 20,
+          "row": 7,
+          "column": 2,
+          "bbox": [
+            512,
+            489,
+            250,
+            51.5
+          ],
+          "text": "4 stations",
+          "textPreview": "4 stations",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "4 stations",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "4 stations",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 21,
+          "row": 7,
+          "column": 3,
+          "bbox": [
+            762,
+            489,
+            476,
+            51.5
+          ],
+          "text": "Never trained",
+          "textPreview": "Never trained",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Never trained",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Never trained",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 22,
+          "row": 8,
+          "column": 1,
+          "bbox": [
+            42,
+            540.5,
+            470,
+            51.5
+          ],
+          "text": "Fault library",
+          "textPreview": "Fault library",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "Fault library",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "Fault library",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 23,
+          "row": 8,
+          "column": 2,
+          "bbox": [
+            512,
+            540.5,
+            250,
+            51.5
+          ],
+          "text": "546 episodes",
+          "textPreview": "546 episodes",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "546 episodes",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "546 episodes",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "index": 24,
+          "row": 8,
+          "column": 3,
+          "bbox": [
+            762,
+            540.5,
+            476,
+            51.5
+          ],
+          "text": "13 classes + weather",
+          "textPreview": "13 classes + weather",
+          "paragraphs": [
+            {
+              "index": 1,
+              "text": "13 classes + weather",
+              "resolvedTextStyle": {
+                "fontSize": 16,
+                "color": "#101827"
+              },
+              "runs": [
+                {
+                  "index": 1,
+                  "text": "13 classes + weather",
+                  "fontSize": 16,
+                  "color": "#101827"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/vqd0ze9k",
+      "id": "6",
+      "bbox": [
+        42,
+        612,
+        258,
+        34
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#EAF8F1",
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/up4jq98z",
+      "id": "7",
+      "bbox": [
+        54,
+        615,
+        234,
+        28
+      ],
+      "geometry": "rect",
+      "text": "14/14 SOURCE CHECKS PASS",
+      "textPreview": "14/14 SOURCE CHECKS PASS",
+      "resolvedFontSize": 15,
+      "resolvedTextStyle": {
+        "anchor": 2,
+        "fontSize": 15,
+        "typeface": "Helvetica Neue",
+        "color": "#16A34A",
+        "bold": true,
+        "alignment": "center",
+        "verticalAlignment": "middle",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "14/14 SOURCE CHECKS PASS"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "14/14 SOURCE CHECKS PASS",
+          "resolvedTextStyle": {
+            "fontSize": 15,
+            "typeface": "Helvetica Neue",
+            "color": "#16A34A",
+            "bold": true,
+            "alignment": "center"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "14/14 SOURCE CHECKS PASS",
+              "fontSize": 15,
+              "typeface": "Helvetica Neue",
+              "color": "#16A34A",
+              "bold": true,
+              "alignment": "center"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

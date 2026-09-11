@@ -1,0 +1,557 @@
+{
+  "phase": 9,
+  "generated_at_utc": "2026-09-11T10:54:21.452911+00:00",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "canonical dataset validated",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "all source validation checks pass",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "frozen 2024 time test present",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "unseen-station test present",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "deployed detector is SIH three-parameter compliant",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "deployed model version is Phase 10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "detector input contract is exact",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "dew point excluded from detector",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "correction validation passed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "safe repair validation passed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "streaming validation passed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "dashboard validation passed",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "dashboard entry page packaged",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "metrics API packaged",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "live cache contract available",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "live observations cached",
+      "passed": true,
+      "details": 400
+    },
+    {
+      "name": "live cache scored by Phase 10",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "live detector contract is exact",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "live readings API packaged",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "humidity auto-repair disabled",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "complete inference benchmark available",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "energy claims remain evidence-bounded",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "portable container entry packaged",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "runtime host and port configurable",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "competition audit and model card packaged",
+      "passed": true,
+      "details": null
+    },
+    {
+      "name": "predictive maintenance fields packaged",
+      "passed": true,
+      "details": null
+    }
+  ],
+  "dataset": {
+    "processed_rows": 578448,
+    "stations": 24,
+    "years": {
+      "2022": 193807,
+      "2023": 191849,
+      "2024": 192792
+    },
+    "clusters": {
+      "bengaluru": 203445,
+      "chennai": 87860,
+      "delhi": 141982,
+      "hyderabad": 145161
+    },
+    "roles": {
+      "development": 546108,
+      "station_holdout": 32340
+    },
+    "clean_candidate_rows": 569633,
+    "clean_candidate_percent": 98.4761,
+    "duplicate_station_timestamps": 0
+  },
+  "live_snapshot": {
+    "provider": "AviationWeather.gov / NWS Aviation Weather Center",
+    "product": "Worldwide METAR terminal observations",
+    "fetched_at_utc": "2026-09-11T10:52:00Z",
+    "reporting_stations": 12,
+    "configured_stations": 14,
+    "observation_count": 400,
+    "model_alert_count": 1,
+    "quality_alert_count": 0,
+    "model_version": "SkyGuard-P10-compliant",
+    "detector_inputs": [
+      "temperature",
+      "pressure",
+      "relative_humidity"
+    ]
+  },
+  "scorecard": {
+    "time_test_2024": {
+      "precision": 0.7146866230121609,
+      "recall": 0.41499185225420965,
+      "f1": 0.525085910652921,
+      "aucpr": 0.4845421511430177,
+      "episode_recall": 0.7916666666666666,
+      "false_alarms_per_station_day": 0.042945649112925935,
+      "event_accuracy": 0.9899040389337171,
+      "weather_f1": 0.6771331058020478,
+      "accepted_root_cause_accuracy": 0.6997929606625258,
+      "root_cause_coverage": 0.2623574144486692
+    },
+    "unseen_station_2024": {
+      "precision": 0.898876404494382,
+      "recall": 0.32,
+      "f1": 0.47197640117994105,
+      "aucpr": 0.4195177739212165,
+      "episode_recall": 0.6333333333333333,
+      "false_alarms_per_station_day": 0.0063784549964564135,
+      "event_accuracy": 0.9821751977885806,
+      "accepted_root_cause_accuracy": 0.875,
+      "root_cause_coverage": 0.192
+    },
+    "correction_time_test": {
+      "temperature": {
+        "changed_affected_points": 1065,
+        "corrected_points": 378,
+        "coverage": 0.35492957746478876,
+        "reported_value_mae": 10.212720899470899,
+        "corrected_value_mae": 1.759391962962963,
+        "corrected_value_rmse": 2.3266328573658708,
+        "mae_reduction_percent": 82.77254435638093,
+        "interval_90_coverage": 0.9867724867724867
+      },
+      "pressure": {
+        "changed_affected_points": 709,
+        "corrected_points": 477,
+        "coverage": 0.6727785613540197,
+        "reported_value_mae": 111.46159245283019,
+        "corrected_value_mae": 1.494662199896003,
+        "corrected_value_rmse": 1.9938178343861201,
+        "mae_reduction_percent": 98.6590338725615,
+        "interval_90_coverage": 0.8742138364779874
+      },
+      "humidity": {
+        "changed_affected_points": 597,
+        "corrected_points": 347,
+        "coverage": 0.5812395309882747,
+        "reported_value_mae": 29.751127089337174,
+        "corrected_value_mae": 13.00106599815493,
+        "corrected_value_rmse": 17.30657722375324,
+        "mae_reduction_percent": 56.30059338889879,
+        "interval_90_coverage": 0.7838616714697406
+      }
+    },
+    "correction_unseen_station": {
+      "temperature": {
+        "changed_affected_points": 118,
+        "corrected_points": 32,
+        "coverage": 0.2711864406779661,
+        "reported_value_mae": 22.074525,
+        "corrected_value_mae": 1.483571875,
+        "corrected_value_rmse": 2.239159316920903,
+        "mae_reduction_percent": 93.2792579908288,
+        "interval_90_coverage": 0.875
+      },
+      "pressure": {
+        "changed_affected_points": 67,
+        "corrected_points": 47,
+        "coverage": 0.7014925373134329,
+        "reported_value_mae": 58.69378723404254,
+        "corrected_value_mae": 1.2720355964537524,
+        "corrected_value_rmse": 1.5781222296114348,
+        "mae_reduction_percent": 97.83275938323509,
+        "interval_90_coverage": 0.8723404255319149
+      },
+      "humidity": {
+        "changed_affected_points": 108,
+        "corrected_points": 40,
+        "coverage": 0.37037037037037035,
+        "reported_value_mae": 106.2445475,
+        "corrected_value_mae": 6.497887324999999,
+        "corrected_value_rmse": 9.106823147694671,
+        "mae_reduction_percent": 93.88402748385747,
+        "interval_90_coverage": 0.925
+      }
+    },
+    "safe_repair_time_test": {
+      "temperature": {
+        "review": {
+          "true_changed_points": 1065,
+          "proposed_corrections": 660,
+          "true_positive_corrections": 421,
+          "false_positive_corrections": 239,
+          "precision": 0.6378787878787879,
+          "coverage_recall": 0.39530516431924884,
+          "corrected_mae_on_true_points": 1.7796969334916863,
+          "corrected_rmse_on_true_points": 2.3267202324290968,
+          "reported_mae_on_true_points": 10.764231828978623,
+          "interval_coverage_on_true_points": 0.9881235154394299,
+          "mean_false_correction_harm": 3.3126174233283767,
+          "maximum_false_correction_harm": 20.938035999999997
+        },
+        "auto": {
+          "true_changed_points": 1065,
+          "proposed_corrections": 35,
+          "true_positive_corrections": 35,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.03286384976525822,
+          "corrected_mae_on_true_points": 1.1569005714285714,
+          "corrected_rmse_on_true_points": 1.5116717267397328,
+          "reported_mae_on_true_points": 40.33880285714286,
+          "interval_coverage_on_true_points": 0.9714285714285714,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "pressure": {
+        "review": {
+          "true_changed_points": 709,
+          "proposed_corrections": 792,
+          "true_positive_corrections": 532,
+          "false_positive_corrections": 260,
+          "precision": 0.6717171717171717,
+          "coverage_recall": 0.7503526093088858,
+          "corrected_mae_on_true_points": 1.5305284125407417,
+          "corrected_rmse_on_true_points": 2.0633047276654897,
+          "reported_mae_on_true_points": 100.47445037593987,
+          "interval_coverage_on_true_points": 0.881578947368421,
+          "mean_false_correction_harm": 2.5761958329711896,
+          "maximum_false_correction_harm": 38.15000000000009
+        },
+        "auto": {
+          "true_changed_points": 709,
+          "proposed_corrections": 4,
+          "true_positive_corrections": 4,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.005641748942172073,
+          "corrected_mae_on_true_points": 2.294318000000004,
+          "corrected_rmse_on_true_points": 2.539679206214849,
+          "reported_mae_on_true_points": 2493.1329499999997,
+          "interval_coverage_on_true_points": 1.0,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "humidity": {
+        "review": {
+          "true_changed_points": 597,
+          "proposed_corrections": 704,
+          "true_positive_corrections": 422,
+          "false_positive_corrections": 282,
+          "precision": 0.5994318181818182,
+          "coverage_recall": 0.7068676716917923,
+          "corrected_mae_on_true_points": 12.33320187289043,
+          "corrected_rmse_on_true_points": 16.66819923561685,
+          "reported_mae_on_true_points": 29.1437981042654,
+          "interval_coverage_on_true_points": 0.8080568720379147,
+          "mean_false_correction_harm": 20.608992010537868,
+          "maximum_false_correction_harm": 62.650198
+        },
+        "auto": {
+          "true_changed_points": 597,
+          "proposed_corrections": 0,
+          "true_positive_corrections": 0,
+          "false_positive_corrections": 0,
+          "precision": 0.0,
+          "coverage_recall": 0.0,
+          "corrected_mae_on_true_points": null,
+          "corrected_rmse_on_true_points": null,
+          "reported_mae_on_true_points": null,
+          "interval_coverage_on_true_points": null,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      }
+    },
+    "safe_repair_unseen_station": {
+      "temperature": {
+        "review": {
+          "true_changed_points": 118,
+          "proposed_corrections": 55,
+          "true_positive_corrections": 42,
+          "false_positive_corrections": 13,
+          "precision": 0.7636363636363637,
+          "coverage_recall": 0.3559322033898305,
+          "corrected_mae_on_true_points": 1.3701249999999998,
+          "corrected_rmse_on_true_points": 2.090244582681323,
+          "reported_mae_on_true_points": 23.38203095238095,
+          "interval_coverage_on_true_points": 0.9047619047619048,
+          "mean_false_correction_harm": 3.9009313846153857,
+          "maximum_false_correction_harm": 9.76612
+        },
+        "auto": {
+          "true_changed_points": 118,
+          "proposed_corrections": 8,
+          "true_positive_corrections": 8,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.06779661016949153,
+          "corrected_mae_on_true_points": 1.9475722500000003,
+          "corrected_rmse_on_true_points": 2.787349581554223,
+          "reported_mae_on_true_points": 56.83685,
+          "interval_coverage_on_true_points": 0.625,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "pressure": {
+        "review": {
+          "true_changed_points": 67,
+          "proposed_corrections": 81,
+          "true_positive_corrections": 55,
+          "false_positive_corrections": 26,
+          "precision": 0.6790123456790124,
+          "coverage_recall": 0.8208955223880597,
+          "corrected_mae_on_true_points": 1.33129045515139,
+          "corrected_rmse_on_true_points": 1.6804965069599636,
+          "reported_mae_on_true_points": 50.636036363636364,
+          "interval_coverage_on_true_points": 0.8727272727272727,
+          "mean_false_correction_harm": 3.4314387307692344,
+          "maximum_false_correction_harm": 13.118457000000035
+        },
+        "auto": {
+          "true_changed_points": 67,
+          "proposed_corrections": 2,
+          "true_positive_corrections": 2,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.029850746268656716,
+          "corrected_mae_on_true_points": 1.463841500000001,
+          "corrected_rmse_on_true_points": 1.4915490686680415,
+          "reported_mae_on_true_points": 495.50355,
+          "interval_coverage_on_true_points": 1.0,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "humidity": {
+        "review": {
+          "true_changed_points": 108,
+          "proposed_corrections": 74,
+          "true_positive_corrections": 51,
+          "false_positive_corrections": 23,
+          "precision": 0.6891891891891891,
+          "coverage_recall": 0.4722222222222222,
+          "corrected_mae_on_true_points": 5.827951784313726,
+          "corrected_rmse_on_true_points": 8.344173566496064,
+          "reported_mae_on_true_points": 91.56289215686273,
+          "interval_coverage_on_true_points": 0.9411764705882353,
+          "mean_false_correction_harm": 13.214466347826082,
+          "maximum_false_correction_harm": 40.611661000000005
+        },
+        "auto": {
+          "true_changed_points": 108,
+          "proposed_corrections": 0,
+          "true_positive_corrections": 0,
+          "false_positive_corrections": 0,
+          "precision": 0.0,
+          "coverage_recall": 0.0,
+          "corrected_mae_on_true_points": null,
+          "corrected_rmse_on_true_points": null,
+          "reported_mae_on_true_points": null,
+          "interval_coverage_on_true_points": null,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      }
+    },
+    "streaming_profiles": {
+      "pressure_drift": {
+        "source_rows": 483,
+        "emitted_readings": 483,
+        "dropped_rows": 0,
+        "alerts": {},
+        "elapsed_seconds": 0.043733099999371916,
+        "throughput_rows_per_second": 11044.266242432774,
+        "mean_processing_latency_ms": 0.09054472049559403,
+        "target_episode_alerts": []
+      },
+      "regional_weather": {
+        "source_rows": 432,
+        "emitted_readings": 432,
+        "dropped_rows": 0,
+        "alerts": {
+          "communication_gap": 1
+        },
+        "elapsed_seconds": 0.035869799998181406,
+        "throughput_rows_per_second": 12043.557533688572,
+        "mean_processing_latency_ms": 0.08303194444023473,
+        "target_episode_alerts": []
+      },
+      "dropout": {
+        "source_rows": 67,
+        "emitted_readings": 24,
+        "dropped_rows": 43,
+        "alerts": {
+          "communication_gap": 1
+        },
+        "elapsed_seconds": 0.0019862000008288305,
+        "throughput_rows_per_second": 33732.75600243745,
+        "mean_processing_latency_ms": 0.02964477613177359,
+        "target_episode_alerts": [
+          "TIME_TEST-FLT-0026"
+        ]
+      },
+      "packet_errors": {
+        "source_rows": 12,
+        "emitted_readings": 12,
+        "dropped_rows": 0,
+        "alerts": {
+          "duplicate_packet": 1,
+          "timestamp_disorder": 1
+        },
+        "elapsed_seconds": 0.002025500001764158,
+        "throughput_rows_per_second": 5924.463090371914,
+        "mean_processing_latency_ms": 0.16879166681367982,
+        "target_episode_alerts": [
+          "TIME_TEST-FLT-0009",
+          "TIME_TEST-FLT-0034"
+        ]
+      }
+    },
+    "complete_inference": {
+      "status": "complete",
+      "model_version": "SkyGuard-P10-compliant",
+      "detector_inputs": [
+        "temperature",
+        "pressure",
+        "relative_humidity"
+      ],
+      "dew_point_used_by_detector": false,
+      "benchmark": {
+        "rows": 400,
+        "model_alerts": 1,
+        "wall_seconds": 1.9541035000002012,
+        "cpu_seconds": 4.390625,
+        "throughput_rows_per_second": 204.69744821600227,
+        "mean_wall_latency_ms_per_row": 4.885258750000503,
+        "cpu_seconds_per_1000_rows": 10.9765625,
+        "peak_traced_python_mib": 6.534720420837402,
+        "scope": "normalization-independent causal temporal, neighbour, Phase 10 trend, event, weather and root-cause inference"
+      },
+      "scalability_projection": {
+        "network_stations": 10000,
+        "assumed_cadence_minutes": 30,
+        "required_rows_per_second": 5.555555555555555,
+        "single_process_capacity_factor": 36.84554067888041,
+        "interpretation": "Capacity projection compares measured batch throughput with observation arrival rate; it is not a distributed load test."
+      },
+      "artifacts": {
+        "deployed_phase10_bundle": {
+          "bytes": 5378346,
+          "mib": 5.129190444946289
+        },
+        "advisory_tcn": {
+          "bytes": 97180,
+          "mib": 0.09267807006835938
+        },
+        "climatology": {
+          "bytes": 77924,
+          "mib": 0.07431411743164062
+        },
+        "sensor_repair_bundle": {
+          "bytes": 3411357,
+          "mib": 3.253323554992676
+        },
+        "deployed_detection_total_bytes": 5456270,
+        "deployed_detection_total_mib": 5.20350456237793
+      },
+      "energy": {
+        "measured_joules": null,
+        "proxy": "CPU seconds per 1,000 complete inferences and deployed artifact size",
+        "claim": "No joule or battery-life claim is made because the laptop has no calibrated power meter.",
+        "esp32_status": "Not deployed; ESP32 is a suggested technology, while the submitted category is software."
+      }
+    }
+  },
+  "decision": "Ready for an SIH demonstration with the three-parameter Phase 10 detector. Operational deployment still requires an official IMD AWS feed, prospective labelled real-fault validation, distributed load testing, and calibrated energy measurement."
+}

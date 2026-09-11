@@ -1,0 +1,17 @@
+{
+  "created_utc": "2026-08-29T11:52:29.6524015Z",
+  "status": "iteration7_template_ready_cell29_unpack_fix",
+  "notebook_static_verification": "pass",
+  "project_tests": "65 passed",
+  "final_test_load_calls": 0,
+  "prior_snapshot_sha256": "475234e9185e601b880ab8cf156e730a0bf01914f176c57e2a9d2a930b73d639",
+  "files": {
+    "notebooks\\SkyGuard_AI_GPU_Iteration_07_Climate_Calibration_Causal_TCN_Colab.ipynb": "bd08cb4d942f2c46b1a97e588c27b8b298282358d8f7d5e9f2584b1a4955c152",
+    "tools\\build_gpu_iteration7_notebook.py": "799e222bb77a81e1e6fda346ba4a638275fa5c6b33ce967dfae6cdd98934d133",
+    "tools\\verify_iteration7_notebook.py": "2c029369ca47db966df7b49820ba60b1e3eae6dda355b5a8e868a8b2b8ba1321",
+    "reports\\ITERATION_06_AUDIT_AND_ITERATION_07_RUNBOOK.md": "d0c67a72cc3abdd285952ddcd043ef46a3c7fd71bf2b3a3483b20414520774bd",
+    "src\\skyguard\\streaming\\engine.py": "98aeef42f15f5b6011bc5e3c5ee0d3d7110e3ac390786b686b63f3307b9c6e95",
+    "src\\skyguard\\quality\\engine.py": "36be6a06d0f3ebe199acfe647669830a6014d0259068252e47bd247dfd03a98b",
+    "src\\skyguard\\api\\app.py": "d50f26a7ab5c8e126d78a40c4999b1d23d446369607462817ec4d4069766eb8a"
+  }
+}

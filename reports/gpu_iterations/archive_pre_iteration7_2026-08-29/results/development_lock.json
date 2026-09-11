@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "checked_at_utc": "2026-08-29T09:13:51.473534+00:00",
+  "feature_count": 108,
+  "iteration5_policy": {
+    "score_col": "weak_consensus_min",
+    "threshold": 0.35,
+    "min_points": 4,
+    "max_gap_minutes": 180,
+    "weather_guard": true
+  },
+  "weather_threshold": 0.24,
+  "model_sha256": {
+    "weak_union_lightgbm_seed17.joblib": "45a9b0fb90951ea122e6015d285917001ed33ad9da6395bb6e42196adb65bc61",
+    "weak_union_lightgbm_seed41.joblib": "d9c75bd0be21722a45f32c15e1022af61869a8a4a907255f97310ac22a4f7ce2",
+    "weak_union_lightgbm_seed67.joblib": "96a3eb01e64423f50f2d7f8a97705443de9c5376587fea3d76d5bed30b1bafcd",
+    "weak_union_catboost_seed17.cbm": "1651cca3a20e6fea1bbb038a5d397e65b463775d08f51df116b2e668d463ebc3",
+    "weak_union_catboost_seed41.cbm": "6d60c53a24ad27f9b8553671634d6ec0555f968ccb20a57b1d11e313dabccd75",
+    "weak_union_catboost_seed67.cbm": "3569e4a82ba387072dec09a76a52fa512f963b81488afe9ad632830ea5e5b45c"
+  },
+  "development_confusion_matrices": {
+    "block_may_jun|Iteration3 reference": {
+      "tp": 108,
+      "fp": 27,
+      "fn": 135,
+      "tn": 28742
+    },
+    "block_may_jun|Iteration5 weak consensus": {
+      "tp": 109,
+      "fp": 27,
+      "fn": 134,
+      "tn": 28742
+    },
+    "block_jul_sep|Iteration3 reference": {
+      "tp": 70,
+      "fp": 9,
+      "fn": 305,
+      "tn": 46419
+    },
+    "block_jul_sep|Iteration5 weak consensus": {
+      "tp": 72,
+      "fp": 9,
+      "fn": 303,
+      "tn": 46419
+    },
+    "block_oct_dec|Iteration3 reference": {
+      "tp": 194,
+      "fp": 39,
+      "fn": 277,
+      "tn": 47089
+    },
+    "block_oct_dec|Iteration5 weak consensus": {
+      "tp": 194,
+      "fp": 39,
+      "fn": 277,
+      "tn": 47089
+    }
+  }
+}

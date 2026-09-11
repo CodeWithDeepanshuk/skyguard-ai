@@ -1,0 +1,74 @@
+{
+  "archive_name": "iteration7_returned_2026-08-29",
+  "project": "SkyGuard AI / SIH26073",
+  "source": "C:\\Users\\deepa\\Downloads",
+  "archived_on": "2026-08-29",
+  "file_count": 13,
+  "files": [
+    {
+      "name": "iteration7_communication_contract.json",
+      "bytes": 689,
+      "sha256": "95e57158fb983bceda2a89f6333eeb221e9e06f7aee15d1f116d51bb7d67549b"
+    },
+    {
+      "name": "iteration7_fault_episode_recall.csv",
+      "bytes": 280,
+      "sha256": "a6614331babc8a413b53375b4f1e283914089bd2ed3ce9b9b9d1eabef4b8099f"
+    },
+    {
+      "name": "iteration7_feature_contract.json",
+      "bytes": 3034,
+      "sha256": "ad14a639ba8135081c90cee04fe99e47c1993d496c6c64828a79cd6227236372"
+    },
+    {
+      "name": "iteration7_integrity_receipt.json",
+      "bytes": 573,
+      "sha256": "61368e52e09c3b28c8efc7c1829720ea779016378b25b25ee218d5bf95ef2ac7"
+    },
+    {
+      "name": "iteration7_multiblock_ablation.csv",
+      "bytes": 3105,
+      "sha256": "c31921e1b90f56290250551805e55243aa3c857f5794db66537520c76ceb1a25"
+    },
+    {
+      "name": "iteration7_result_block.json",
+      "bytes": 7285,
+      "sha256": "412b4a21e3d8480fd58061343fef152ee6a75b130de23fa5a67b491681408239"
+    },
+    {
+      "name": "iteration7_tcn_training_history.csv",
+      "bytes": 521,
+      "sha256": "7228492ddcb47947599fb14f18f2194f1768abc84db6500b7e5449708b27b531"
+    },
+    {
+      "name": "iteration7_weak_confirmation.csv",
+      "bytes": 444,
+      "sha256": "afc53f19cfab026e07995566dcaeb7331297f44d2c57a0ee218ec4aa0fe539d5"
+    },
+    {
+      "name": "iteration7_weak_policy_frontier.csv",
+      "bytes": 39533,
+      "sha256": "9b7419bb4adde9b48f749e9c31e877018d2d03e01da61d1847e2f934268a470f"
+    },
+    {
+      "name": "iteration7_weather_confirmation.csv",
+      "bytes": 347,
+      "sha256": "681bd344f519758f293a0a2c23c58300997f2dec19eb92ffbe700a1c88efc3cc"
+    },
+    {
+      "name": "iteration7_weather_policy_frontier.csv",
+      "bytes": 14376,
+      "sha256": "b2a80f3a646e476641e7d5d11786017417ce0f84a24eed8ea0fea68923a9ffac"
+    },
+    {
+      "name": "iteration7_weather_station_metrics.csv",
+      "bytes": 1104,
+      "sha256": "e862da1f7033fa6ee487a1f684831d6f0a406208644b7eda1ed1224ff3c6625c"
+    },
+    {
+      "name": "SkyGuard_AI_GPU_Iteration_07_Climate_Calibration_Causal_TCN_Colab (1).ipynb",
+      "bytes": 800172,
+      "sha256": "ebe4fa3d5938949781be0d06226caa446c767e320bb4ea1f6bdbdb4315f93ea9"
+    }
+  ]
+}

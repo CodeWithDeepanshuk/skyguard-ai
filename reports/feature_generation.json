@@ -1,0 +1,38 @@
+{
+  "model_feature_count": 72,
+  "label_feature_overlap": [],
+  "total_rows": 556624,
+  "generation_seconds": 432.8876,
+  "splits": {
+    "train": {
+      "rows": 182362,
+      "bytes": 28871182,
+      "sha256": "a79663c5f4d9db6daf3b2931367404ba2bdfcf78255f02bb6de486e3c3003c16",
+      "neighbor_context": "train stations",
+      "output": "data/features/train_features.csv.gz"
+    },
+    "validation": {
+      "rows": 181470,
+      "bytes": 28777918,
+      "sha256": "b8e4d918c5d33b96c91468a6e951326a13a54165ad6fa79d2ad79ded5453bb66",
+      "neighbor_context": "validation stations",
+      "output": "data/features/validation_features.csv.gz"
+    },
+    "time_test": {
+      "rows": 182276,
+      "bytes": 28802431,
+      "sha256": "e5b97d9991d4dc40bd13c3021ad71112c682d708abb65cf5e6f7a78907aafeb7",
+      "neighbor_context": "time_test stations",
+      "output": "data/features/time_test_features.csv.gz"
+    },
+    "station_test": {
+      "rows": 10516,
+      "bytes": 2122705,
+      "sha256": "4a996f6770a3d419076f175a76808bb9836defca0465bad5c2df429eb17c7314",
+      "neighbor_context": "time_test development stations",
+      "output": "data/features/station_test_features.csv.gz"
+    }
+  },
+  "feature_spec": "data/features/feature_spec.json",
+  "manifest": "data/features/manifest.csv"
+}

@@ -1,0 +1,41 @@
+{
+  "status": "complete",
+  "scenarios": {
+    "pressure_drift": {
+      "description": "Pressure drift at Station 42181099999 with causal neighbouring-station context.",
+      "rows": 483,
+      "stations": 5,
+      "fault_rows": 132,
+      "weather_rows": 0,
+      "file": "data/demo/pressure_drift.csv.gz",
+      "sha256": "93277cfe02dfe5fedb765bac6a75bf044d1d47727e42c34cf544e0f71618ea8b"
+    },
+    "regional_weather": {
+      "description": "Coherent regional temperature event across four Bengaluru-cluster stations.",
+      "rows": 432,
+      "stations": 5,
+      "fault_rows": 0,
+      "weather_rows": 229,
+      "file": "data/demo/regional_weather.csv.gz",
+      "sha256": "8f9388b3d8e9d2dc3d2956e6e2528c1d10a712a591ec4d914e191ac4aac07c4f"
+    },
+    "dropout": {
+      "description": "Twenty-one-hour station dropout followed by a stateful communication-gap alert.",
+      "rows": 67,
+      "stations": 1,
+      "fault_rows": 43,
+      "weather_rows": 0,
+      "file": "data/demo/dropout.csv.gz",
+      "sha256": "15bdf17801b1d4f8679f5f5c1dff17dbb7ee61d8b42fd3813b9fb9acb0d06e21"
+    },
+    "packet_errors": {
+      "description": "Repeated packets and an out-of-order emitted timestamp.",
+      "rows": 12,
+      "stations": 2,
+      "fault_rows": 3,
+      "weather_rows": 0,
+      "file": "data/demo/packet_errors.csv.gz",
+      "sha256": "11caa3ce29abc7ba96e9915661877378eab86e268789df799096910815d7b840"
+    }
+  }
+}

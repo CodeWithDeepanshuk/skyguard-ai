@@ -1,0 +1,11 @@
+﻿data/processed/
+data/features/
+data/features_phase10/
+data/labelled/
+data/blind_2025/
+data/iteration10/
+iteration 10 result/
+*.zip
+*.gz
+*.csv.gz
+aws_observations_*.csv

@@ -1,0 +1,70 @@
+{
+  "development_years": [
+    2022,
+    2023
+  ],
+  "domains": {
+    "dwd": {
+      "clusters": 4,
+      "complete_primary_fraction": 1.0,
+      "domain": "dwd",
+      "duplicate_station_timestamps": 0,
+      "exact_time_neighbour_ge_2_fraction": 1.0,
+      "maximum_gap_ratio_q999": 5.0,
+      "median_full_year_slot_coverage": 0.9995433789954338,
+      "median_gap_ratio_q999": 1.0,
+      "median_long_gap_fraction_gt_4x": 5.711674663011195e-05,
+      "median_mode_cadence_minutes": 60.0,
+      "median_regular_cadence_fraction": 0.99988577955305,
+      "minimum_full_year_slot_coverage": 0.9831050228310503,
+      "minimum_regular_cadence_fraction": 0.9986189434917712,
+      "model_rows_2022_2023": 279400,
+      "pressure_source_fraction": {
+        "dwd_station_pressure_reduced_to_msl": 1.0
+      },
+      "rows_per_station_cv": 0.0033663315275878733,
+      "rows_per_station_max": 17520,
+      "rows_per_station_mean": 17462.5,
+      "rows_per_station_min": 17341,
+      "source_rows_2022_2023": 1676433,
+      "station_cadence_counts": {
+        "60": 16
+      },
+      "stations": 16
+    },
+    "india": {
+      "clusters": 4,
+      "complete_primary_fraction": 0.9992998942062357,
+      "domain": "india",
+      "duplicate_station_timestamps": 0,
+      "exact_time_neighbour_ge_2_fraction": 0.729751384653681,
+      "maximum_gap_ratio_q999": 48.0,
+      "median_full_year_slot_coverage": 0.9755422374429223,
+      "median_gap_ratio_q999": 4.0,
+      "median_long_gap_fraction_gt_4x": 0.0008075927192290443,
+      "median_mode_cadence_minutes": 180.0,
+      "median_regular_cadence_fraction": 0.9722220597340367,
+      "minimum_full_year_slot_coverage": 0.11501141552511415,
+      "minimum_regular_cadence_fraction": 0.5983118172790467,
+      "model_rows_2022_2023": 385656,
+      "pressure_source_fraction": {
+        "ma1_altimeter": 0.7133637231107516,
+        "ma1_station": 0.014710000622316262,
+        "missing": 0.0002489265044495613,
+        "slp": 0.27167734976248265
+      },
+      "rows_per_station_cv": 0.8031116784571362,
+      "rows_per_station_max": 34891,
+      "rows_per_station_mean": 16069.0,
+      "rows_per_station_min": 3565,
+      "source_rows_2022_2023": 385656,
+      "station_cadence_counts": {
+        "180": 13,
+        "30": 11
+      },
+      "stations": 24
+    }
+  },
+  "locked_observation_years_opened": [],
+  "status": "PASS"
+}

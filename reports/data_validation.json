@@ -1,0 +1,731 @@
+{
+  "ready_for_anomaly_injection": true,
+  "provenance": {
+    "provider": "NOAA/NCEI",
+    "product": "Global Hourly / Integrated Surface Database (ISD)",
+    "manifest_entries": 74,
+    "observation_files": 72,
+    "total_raw_bytes_in_manifest": 257260122
+  },
+  "summary": {
+    "processed_rows": 578448,
+    "stations": 24,
+    "years": {
+      "2022": 193807,
+      "2023": 191849,
+      "2024": 192792
+    },
+    "clusters": {
+      "bengaluru": 203445,
+      "chennai": 87860,
+      "delhi": 141982,
+      "hyderabad": 145161
+    },
+    "roles": {
+      "development": 546108,
+      "station_holdout": 32340
+    },
+    "clean_candidate_rows": 569633,
+    "clean_candidate_percent": 98.4761,
+    "duplicate_station_timestamps": 0
+  },
+  "missing": {
+    "temperature_c": {
+      "rows": 104,
+      "percent": 0.018
+    },
+    "pressure_hpa": {
+      "rows": 8619,
+      "percent": 1.49
+    },
+    "relative_humidity_pct": {
+      "rows": 246,
+      "percent": 0.0425
+    }
+  },
+  "ranges": {
+    "temperature_c": {
+      "min": 0.6,
+      "max": 48.2
+    },
+    "pressure_hpa": {
+      "min": 912.2,
+      "max": 1053.2
+    },
+    "relative_humidity_pct": {
+      "min": 4.7432,
+      "max": 100.0
+    }
+  },
+  "physical_violations": {},
+  "checks": {
+    "official_source_urls_only": true,
+    "all_expected_files_present": true,
+    "all_sha256_checks_pass": true,
+    "official_station_metadata_matches": true,
+    "raw_schema_valid": true,
+    "processed_schema_valid": true,
+    "all_stations_present": true,
+    "all_years_present": true,
+    "all_station_year_pairs_present": true,
+    "minimum_1500_rows_per_station_year": true,
+    "no_processed_duplicate_timestamps": true,
+    "temperature_missing_below_0_1_percent": true,
+    "humidity_missing_below_0_1_percent": true,
+    "pressure_missing_below_5_percent": true
+  },
+  "metadata_errors": [],
+  "integrity_errors": [],
+  "raw_schema_errors": [],
+  "coverage": [
+    {
+      "station_id": "42131099999",
+      "year": "2022",
+      "rows": 2822,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42131099999",
+      "year": "2023",
+      "rows": 2791,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42131099999",
+      "year": "2024",
+      "rows": 2703,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42181099999",
+      "year": "2022",
+      "rows": 17175,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42181099999",
+      "year": "2023",
+      "rows": 17118,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42181099999",
+      "year": "2024",
+      "rows": 16769,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42182099999",
+      "year": "2022",
+      "rows": 4005,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42182099999",
+      "year": "2023",
+      "rows": 2893,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42182099999",
+      "year": "2024",
+      "rows": 2860,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42189099999",
+      "year": "2022",
+      "rows": 3011,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42189099999",
+      "year": "2023",
+      "rows": 3239,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42189099999",
+      "year": "2024",
+      "rows": 4496,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 120.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42348099999",
+      "year": "2022",
+      "rows": 17367,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42348099999",
+      "year": "2023",
+      "rows": 17327,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42348099999",
+      "year": "2024",
+      "rows": 16765,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42361099999",
+      "year": "2022",
+      "rows": 2973,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42361099999",
+      "year": "2023",
+      "rows": 3280,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42361099999",
+      "year": "2024",
+      "rows": 4388,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 150.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "42705699999",
+      "year": "2022",
+      "rows": 17532,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42705699999",
+      "year": "2023",
+      "rows": 17359,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "42705699999",
+      "year": "2024",
+      "rows": 16778,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43021099999",
+      "year": "2022",
+      "rows": 2015,
+      "start_utc": "2022-01-01T01:00:00Z",
+      "end_utc": "2022-12-31T12:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43021099999",
+      "year": "2023",
+      "rows": 2846,
+      "start_utc": "2023-01-01T03:00:00Z",
+      "end_utc": "2023-12-31T03:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43021099999",
+      "year": "2024",
+      "rows": 3521,
+      "start_utc": "2024-01-01T03:00:00Z",
+      "end_utc": "2024-12-31T12:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43086099999",
+      "year": "2022",
+      "rows": 2880,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43086099999",
+      "year": "2023",
+      "rows": 2852,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43086099999",
+      "year": "2024",
+      "rows": 2746,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43128099999",
+      "year": "2022",
+      "rows": 11986,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43128099999",
+      "year": "2023",
+      "rows": 11484,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43128099999",
+      "year": "2024",
+      "rows": 10650,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43128599999",
+      "year": "2022",
+      "rows": 17119,
+      "start_utc": "2022-01-01T00:30:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43128599999",
+      "year": "2023",
+      "rows": 16363,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43128599999",
+      "year": "2024",
+      "rows": 15698,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43181099999",
+      "year": "2022",
+      "rows": 12656,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43181099999",
+      "year": "2023",
+      "rows": 12096,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43181099999",
+      "year": "2024",
+      "rows": 11769,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43213099999",
+      "year": "2022",
+      "rows": 2883,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43213099999",
+      "year": "2023",
+      "rows": 2861,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43213099999",
+      "year": "2024",
+      "rows": 2736,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43233099999",
+      "year": "2022",
+      "rows": 2877,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43233099999",
+      "year": "2023",
+      "rows": 1945,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43233099999",
+      "year": "2024",
+      "rows": 2516,
+      "start_utc": "2024-01-01T03:00:00Z",
+      "end_utc": "2024-12-31T12:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43245099999",
+      "year": "2022",
+      "rows": 2870,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43245099999",
+      "year": "2023",
+      "rows": 2825,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43245099999",
+      "year": "2024",
+      "rows": 2730,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43275099999",
+      "year": "2022",
+      "rows": 1797,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T12:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43275099999",
+      "year": "2023",
+      "rows": 1768,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T12:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43275099999",
+      "year": "2024",
+      "rows": 1562,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T12:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43278099999",
+      "year": "2022",
+      "rows": 2156,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T15:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43278099999",
+      "year": "2023",
+      "rows": 2096,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T15:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43278099999",
+      "year": "2024",
+      "rows": 2006,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T15:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43279099999",
+      "year": "2022",
+      "rows": 17314,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43279099999",
+      "year": "2023",
+      "rows": 17311,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43279099999",
+      "year": "2024",
+      "rows": 16779,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43284099999",
+      "year": "2022",
+      "rows": 17107,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43284099999",
+      "year": "2023",
+      "rows": 16652,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43284099999",
+      "year": "2024",
+      "rows": 16256,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43295099999",
+      "year": "2022",
+      "rows": 2846,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43295099999",
+      "year": "2023",
+      "rows": 2828,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43295099999",
+      "year": "2024",
+      "rows": 2762,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43302599999",
+      "year": "2022",
+      "rows": 10620,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T18:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43302599999",
+      "year": "2023",
+      "rows": 12727,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43302599999",
+      "year": "2024",
+      "rows": 15627,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43321099999",
+      "year": "2022",
+      "rows": 16047,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:00:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43321099999",
+      "year": "2023",
+      "rows": 15556,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43321099999",
+      "year": "2024",
+      "rows": 15410,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "sampling_tier": "high"
+    },
+    {
+      "station_id": "43329099999",
+      "year": "2022",
+      "rows": 2883,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43329099999",
+      "year": "2023",
+      "rows": 2841,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43329099999",
+      "year": "2024",
+      "rows": 2714,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43331099999",
+      "year": "2022",
+      "rows": 2866,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43331099999",
+      "year": "2023",
+      "rows": 2791,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    },
+    {
+      "station_id": "43331099999",
+      "year": "2024",
+      "rows": 2551,
+      "start_utc": "2024-01-01T00:00:00Z",
+      "end_utc": "2024-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "sampling_tier": "medium"
+    }
+  ],
+  "limitation": "ISD observations are genuine, but confirmed sensor-fault labels are not included. Controlled fault injection is required for supervised evaluation."
+}

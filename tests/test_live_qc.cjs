@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');
+const {stationSupport}=require('../dashboard/live-qc.js');
+const stations=[{station_id:'a',latitude:28,longitude:77,elevation_m:200},{station_id:'b',latitude:28.1,longitude:77.1,elevation_m:210},{station_id:'c',latitude:28.2,longitude:77.2,elevation_m:220}];
+const time='2026-09-10T12:00:00Z';
+const rows=stations.map(s=>({station_id:s.station_id,timestamp_utc:time,temperature:25,pressure:1000,humidity:50}));
+assert.equal(stationSupport(stations[0],stations,rows,Date.parse(time)).buddies,2);
+rows[1].timestamp_utc='2026-09-10T12:01:00Z'; rows[2].timestamp_utc='2026-09-10T10:00:00Z';
+assert.equal(stationSupport(stations[0],stations,rows,Date.parse(time)).buddies,0);
+rows[0].humidity=null;
+assert.equal(stationSupport(stations[0],stations,rows,Date.parse(time)).count,2);
+assert.match(stationSupport(stations[0],stations,[]).text,/No observation/);
+console.log('PASS: causal support and missing-value diagnostics.');

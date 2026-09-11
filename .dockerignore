@@ -1,0 +1,17 @@
+.git
+.gitignore
+.pytest_cache
+**/__pycache__
+**/*.pyc
+data/raw
+data/processed
+data/labelled
+data/features
+data/features_phase10
+data/predictions
+data/predictions_phase10
+data/runtime/*.db
+notebooks
+deliverables
+reports/gpu_iterations
+*.ipynb_checkpoints

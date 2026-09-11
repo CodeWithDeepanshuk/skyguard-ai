@@ -1,0 +1,391 @@
+{
+  "phase": "6.1",
+  "status": "complete",
+  "training": {
+    "temperature": {
+      "sampled_rows": 32768,
+      "positive_rows": 928
+    },
+    "pressure": {
+      "sampled_rows": 32768,
+      "positive_rows": 1060
+    },
+    "humidity": {
+      "sampled_rows": 32768,
+      "positive_rows": 890
+    }
+  },
+  "policy": {
+    "status": "frozen_before_2024_evaluation",
+    "selection_split": "validation (2023)",
+    "input_contract": [
+      "temperature_c",
+      "pressure_hpa",
+      "relative_humidity_pct"
+    ],
+    "dew_point_used_by_detector": false,
+    "review_target_precision": 0.7,
+    "auto_target_precision": 0.98,
+    "auto_safety": "three causal candidates and sensor-specific maximum interval half-width",
+    "review_fusion": "union of compliant detector proposals and sensor-specific rescue probability",
+    "automatic_repair_enabled": {
+      "temperature": true,
+      "pressure": true,
+      "humidity": false
+    },
+    "sensors": {
+      "temperature": {
+        "review": {
+          "threshold": 0.3051288347175892,
+          "precision": 0.7005494505494505,
+          "recall": 0.38288288288288286,
+          "target_precision": 0.7
+        },
+        "auto": {
+          "threshold": 0.8950480699199278,
+          "precision": 0.9844961240310077,
+          "recall": 0.1906906906906907,
+          "target_precision": 0.98
+        },
+        "validation_ece": 0.00019463033956420358,
+        "interval_half_width_limit": 4.0,
+        "automatic_repair_enabled": true
+      },
+      "pressure": {
+        "review": {
+          "threshold": 0.11560769715176904,
+          "precision": 0.7029360967184801,
+          "recall": 0.8075396825396826,
+          "target_precision": 0.7
+        },
+        "auto": {
+          "threshold": 0.8440341092833684,
+          "precision": 1.0,
+          "recall": 0.005952380952380952,
+          "target_precision": 0.98
+        },
+        "validation_ece": 0.00029372229284750694,
+        "interval_half_width_limit": 6.0,
+        "automatic_repair_enabled": true
+      },
+      "humidity": {
+        "review": {
+          "threshold": 0.20932278749993158,
+          "precision": 0.714975845410628,
+          "recall": 0.387434554973822,
+          "target_precision": 0.7
+        },
+        "auto": {
+          "threshold": 0.9330249998864779,
+          "precision": 0.9844961240310077,
+          "recall": 0.1662303664921466,
+          "target_precision": 0.98
+        },
+        "validation_ece": 0.00016469944953906656,
+        "interval_half_width_limit": 15.0,
+        "automatic_repair_enabled": false
+      }
+    }
+  },
+  "evaluation": {
+    "validation": {
+      "temperature": {
+        "review": {
+          "true_changed_points": 666,
+          "proposed_corrections": 522,
+          "true_positive_corrections": 288,
+          "false_positive_corrections": 234,
+          "precision": 0.5517241379310345,
+          "coverage_recall": 0.43243243243243246,
+          "corrected_mae_on_true_points": 2.145094114805601,
+          "corrected_rmse_on_true_points": 2.7233494996224414,
+          "reported_mae_on_true_points": 10.442709027777777,
+          "interval_coverage_on_true_points": 0.9548611111111112,
+          "mean_false_correction_harm": 4.1354615337906635,
+          "maximum_false_correction_harm": 16.552075
+        },
+        "auto": {
+          "true_changed_points": 666,
+          "proposed_corrections": 18,
+          "true_positive_corrections": 17,
+          "false_positive_corrections": 1,
+          "precision": 0.9444444444444444,
+          "coverage_recall": 0.025525525525525526,
+          "corrected_mae_on_true_points": 1.3134298823529411,
+          "corrected_rmse_on_true_points": 1.6755843282368164,
+          "reported_mae_on_true_points": 62.99825882352942,
+          "interval_coverage_on_true_points": 0.9411764705882353,
+          "mean_false_correction_harm": 11.686003999999997,
+          "maximum_false_correction_harm": 11.686003999999997
+        }
+      },
+      "pressure": {
+        "review": {
+          "true_changed_points": 504,
+          "proposed_corrections": 691,
+          "true_positive_corrections": 423,
+          "false_positive_corrections": 268,
+          "precision": 0.6121562952243126,
+          "coverage_recall": 0.8392857142857143,
+          "corrected_mae_on_true_points": 1.4941511311893856,
+          "corrected_rmse_on_true_points": 3.674102743707531,
+          "reported_mae_on_true_points": 78.08917706855793,
+          "interval_coverage_on_true_points": 0.9574468085106383,
+          "mean_false_correction_harm": 4.793590320930007,
+          "maximum_false_correction_harm": 97.0
+        },
+        "auto": {
+          "true_changed_points": 504,
+          "proposed_corrections": 3,
+          "true_positive_corrections": 3,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.005952380952380952,
+          "corrected_mae_on_true_points": 1.3537483333333284,
+          "corrected_rmse_on_true_points": 1.7361091507568467,
+          "reported_mae_on_true_points": 424.6394666666667,
+          "interval_coverage_on_true_points": 1.0,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "humidity": {
+        "review": {
+          "true_changed_points": 764,
+          "proposed_corrections": 575,
+          "true_positive_corrections": 318,
+          "false_positive_corrections": 257,
+          "precision": 0.5530434782608695,
+          "coverage_recall": 0.4162303664921466,
+          "corrected_mae_on_true_points": 6.694430800390003,
+          "corrected_rmse_on_true_points": 8.749082954873098,
+          "reported_mae_on_true_points": 28.525711949685537,
+          "interval_coverage_on_true_points": 0.9559748427672956,
+          "mean_false_correction_harm": 15.803561927298345,
+          "maximum_false_correction_harm": 67.164382
+        },
+        "auto": {
+          "true_changed_points": 764,
+          "proposed_corrections": 0,
+          "true_positive_corrections": 0,
+          "false_positive_corrections": 0,
+          "precision": 0.0,
+          "coverage_recall": 0.0,
+          "corrected_mae_on_true_points": null,
+          "corrected_rmse_on_true_points": null,
+          "reported_mae_on_true_points": null,
+          "interval_coverage_on_true_points": null,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      }
+    },
+    "time_test": {
+      "temperature": {
+        "review": {
+          "true_changed_points": 1065,
+          "proposed_corrections": 660,
+          "true_positive_corrections": 421,
+          "false_positive_corrections": 239,
+          "precision": 0.6378787878787879,
+          "coverage_recall": 0.39530516431924884,
+          "corrected_mae_on_true_points": 1.7796969334916863,
+          "corrected_rmse_on_true_points": 2.3267202324290968,
+          "reported_mae_on_true_points": 10.764231828978623,
+          "interval_coverage_on_true_points": 0.9881235154394299,
+          "mean_false_correction_harm": 3.3126174233283767,
+          "maximum_false_correction_harm": 20.938035999999997
+        },
+        "auto": {
+          "true_changed_points": 1065,
+          "proposed_corrections": 35,
+          "true_positive_corrections": 35,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.03286384976525822,
+          "corrected_mae_on_true_points": 1.1569005714285714,
+          "corrected_rmse_on_true_points": 1.5116717267397328,
+          "reported_mae_on_true_points": 40.33880285714286,
+          "interval_coverage_on_true_points": 0.9714285714285714,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "pressure": {
+        "review": {
+          "true_changed_points": 709,
+          "proposed_corrections": 792,
+          "true_positive_corrections": 532,
+          "false_positive_corrections": 260,
+          "precision": 0.6717171717171717,
+          "coverage_recall": 0.7503526093088858,
+          "corrected_mae_on_true_points": 1.5305284125407417,
+          "corrected_rmse_on_true_points": 2.0633047276654897,
+          "reported_mae_on_true_points": 100.47445037593987,
+          "interval_coverage_on_true_points": 0.881578947368421,
+          "mean_false_correction_harm": 2.5761958329711896,
+          "maximum_false_correction_harm": 38.15000000000009
+        },
+        "auto": {
+          "true_changed_points": 709,
+          "proposed_corrections": 4,
+          "true_positive_corrections": 4,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.005641748942172073,
+          "corrected_mae_on_true_points": 2.294318000000004,
+          "corrected_rmse_on_true_points": 2.539679206214849,
+          "reported_mae_on_true_points": 2493.1329499999997,
+          "interval_coverage_on_true_points": 1.0,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "humidity": {
+        "review": {
+          "true_changed_points": 597,
+          "proposed_corrections": 704,
+          "true_positive_corrections": 422,
+          "false_positive_corrections": 282,
+          "precision": 0.5994318181818182,
+          "coverage_recall": 0.7068676716917923,
+          "corrected_mae_on_true_points": 12.33320187289043,
+          "corrected_rmse_on_true_points": 16.66819923561685,
+          "reported_mae_on_true_points": 29.1437981042654,
+          "interval_coverage_on_true_points": 0.8080568720379147,
+          "mean_false_correction_harm": 20.608992010537868,
+          "maximum_false_correction_harm": 62.650198
+        },
+        "auto": {
+          "true_changed_points": 597,
+          "proposed_corrections": 0,
+          "true_positive_corrections": 0,
+          "false_positive_corrections": 0,
+          "precision": 0.0,
+          "coverage_recall": 0.0,
+          "corrected_mae_on_true_points": null,
+          "corrected_rmse_on_true_points": null,
+          "reported_mae_on_true_points": null,
+          "interval_coverage_on_true_points": null,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      }
+    },
+    "station_test": {
+      "temperature": {
+        "review": {
+          "true_changed_points": 118,
+          "proposed_corrections": 55,
+          "true_positive_corrections": 42,
+          "false_positive_corrections": 13,
+          "precision": 0.7636363636363637,
+          "coverage_recall": 0.3559322033898305,
+          "corrected_mae_on_true_points": 1.3701249999999998,
+          "corrected_rmse_on_true_points": 2.090244582681323,
+          "reported_mae_on_true_points": 23.38203095238095,
+          "interval_coverage_on_true_points": 0.9047619047619048,
+          "mean_false_correction_harm": 3.9009313846153857,
+          "maximum_false_correction_harm": 9.76612
+        },
+        "auto": {
+          "true_changed_points": 118,
+          "proposed_corrections": 8,
+          "true_positive_corrections": 8,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.06779661016949153,
+          "corrected_mae_on_true_points": 1.9475722500000003,
+          "corrected_rmse_on_true_points": 2.787349581554223,
+          "reported_mae_on_true_points": 56.83685,
+          "interval_coverage_on_true_points": 0.625,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "pressure": {
+        "review": {
+          "true_changed_points": 67,
+          "proposed_corrections": 81,
+          "true_positive_corrections": 55,
+          "false_positive_corrections": 26,
+          "precision": 0.6790123456790124,
+          "coverage_recall": 0.8208955223880597,
+          "corrected_mae_on_true_points": 1.33129045515139,
+          "corrected_rmse_on_true_points": 1.6804965069599636,
+          "reported_mae_on_true_points": 50.636036363636364,
+          "interval_coverage_on_true_points": 0.8727272727272727,
+          "mean_false_correction_harm": 3.4314387307692344,
+          "maximum_false_correction_harm": 13.118457000000035
+        },
+        "auto": {
+          "true_changed_points": 67,
+          "proposed_corrections": 2,
+          "true_positive_corrections": 2,
+          "false_positive_corrections": 0,
+          "precision": 1.0,
+          "coverage_recall": 0.029850746268656716,
+          "corrected_mae_on_true_points": 1.463841500000001,
+          "corrected_rmse_on_true_points": 1.4915490686680415,
+          "reported_mae_on_true_points": 495.50355,
+          "interval_coverage_on_true_points": 1.0,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      },
+      "humidity": {
+        "review": {
+          "true_changed_points": 108,
+          "proposed_corrections": 74,
+          "true_positive_corrections": 51,
+          "false_positive_corrections": 23,
+          "precision": 0.6891891891891891,
+          "coverage_recall": 0.4722222222222222,
+          "corrected_mae_on_true_points": 5.827951784313726,
+          "corrected_rmse_on_true_points": 8.344173566496064,
+          "reported_mae_on_true_points": 91.56289215686273,
+          "interval_coverage_on_true_points": 0.9411764705882353,
+          "mean_false_correction_harm": 13.214466347826082,
+          "maximum_false_correction_harm": 40.611661000000005
+        },
+        "auto": {
+          "true_changed_points": 108,
+          "proposed_corrections": 0,
+          "true_positive_corrections": 0,
+          "false_positive_corrections": 0,
+          "precision": 0.0,
+          "coverage_recall": 0.0,
+          "corrected_mae_on_true_points": null,
+          "corrected_rmse_on_true_points": null,
+          "reported_mae_on_true_points": null,
+          "interval_coverage_on_true_points": null,
+          "mean_false_correction_harm": 0.0,
+          "maximum_false_correction_harm": 0.0
+        }
+      }
+    }
+  },
+  "outputs": {
+    "validation": {
+      "actions": 1788,
+      "auto_eligible": 21,
+      "file": "data/incidents/validation_repair_actions.jsonl.gz"
+    },
+    "time_test": {
+      "actions": 2156,
+      "auto_eligible": 39,
+      "file": "data/incidents/time_test_repair_actions.jsonl.gz"
+    },
+    "station_test": {
+      "actions": 210,
+      "auto_eligible": 10,
+      "file": "data/incidents/station_test_repair_actions.jsonl.gz"
+    }
+  },
+  "artifacts": {
+    "model": "models/sensor_repair_classifiers.joblib",
+    "policy": "models/safe_repair_policy.json",
+    "manifest": "data/incidents/safe_repair_manifest.csv"
+  },
+  "runtime_seconds": 64.3867
+}

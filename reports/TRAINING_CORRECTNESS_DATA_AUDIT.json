@@ -1,0 +1,735 @@
+{
+  "scope": "2022-2023 only; read-only; no observations rewritten",
+  "files_verified": 48,
+  "all_manifest_hashes_match": true,
+  "raw_quality_flag_counts": {
+    "TMP:1": 420954,
+    "DEW:1": 420635,
+    "SLP:1": 105086,
+    "SLP:9": 317499,
+    "DEW:9": 483,
+    "TMP:9": 114,
+    "SLP:2": 57,
+    "DEW:2": 406,
+    "TMP:2": 457,
+    "TMP:5": 1114,
+    "DEW:5": 1118,
+    "TMP:6": 3
+  },
+  "pressure_source_switches": [
+    {
+      "station": "42181099999",
+      "year": 2022,
+      "source_switches": 5131,
+      "sources": {
+        "slp": 2586,
+        "ma1_altimeter": 14585
+      }
+    },
+    {
+      "station": "42181099999",
+      "year": 2023,
+      "source_switches": 5621,
+      "sources": {
+        "slp": 2822,
+        "ma1_altimeter": 14293,
+        "ma1_station": 1
+      }
+    },
+    {
+      "station": "42182099999",
+      "year": 2022,
+      "source_switches": 630,
+      "sources": {
+        "slp": 2872,
+        "ma1_altimeter": 1129
+      }
+    },
+    {
+      "station": "42182099999",
+      "year": 2023,
+      "source_switches": 30,
+      "sources": {
+        "slp": 2858,
+        "ma1_altimeter": 32
+      }
+    },
+    {
+      "station": "42348099999",
+      "year": 2022,
+      "source_switches": 5715,
+      "sources": {
+        "slp": 2865,
+        "ma1_altimeter": 14499
+      }
+    },
+    {
+      "station": "42348099999",
+      "year": 2023,
+      "source_switches": 5697,
+      "sources": {
+        "slp": 2851,
+        "ma1_altimeter": 14473
+      }
+    },
+    {
+      "station": "42189099999",
+      "year": 2022,
+      "source_switches": 138,
+      "sources": {
+        "slp": 2883,
+        "ma1_station": 1,
+        "ma1_altimeter": 126
+      }
+    },
+    {
+      "station": "42189099999",
+      "year": 2023,
+      "source_switches": 509,
+      "sources": {
+        "slp": 2793,
+        "ma1_altimeter": 442
+      }
+    },
+    {
+      "station": "42361099999",
+      "year": 2022,
+      "source_switches": 128,
+      "sources": {
+        "slp": 2846,
+        "ma1_altimeter": 127
+      }
+    },
+    {
+      "station": "42361099999",
+      "year": 2023,
+      "source_switches": 495,
+      "sources": {
+        "slp": 2834,
+        "ma1_altimeter": 444
+      }
+    },
+    {
+      "station": "42131099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2815
+      }
+    },
+    {
+      "station": "42131099999",
+      "year": 2023,
+      "source_switches": 2,
+      "sources": {
+        "slp": 2779,
+        "ma1_station": 1
+      }
+    },
+    {
+      "station": "43128099999",
+      "year": 2022,
+      "source_switches": 4302,
+      "sources": {
+        "slp": 2882,
+        "ma1_altimeter": 9102
+      }
+    },
+    {
+      "station": "43128099999",
+      "year": 2023,
+      "source_switches": 4160,
+      "sources": {
+        "slp": 2868,
+        "ma1_altimeter": 8616
+      }
+    },
+    {
+      "station": "43128599999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "ma1_altimeter": 17117
+      }
+    },
+    {
+      "station": "43128599999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "ma1_altimeter": 16363
+      }
+    },
+    {
+      "station": "43181099999",
+      "year": 2022,
+      "source_switches": 4288,
+      "sources": {
+        "slp": 2837,
+        "ma1_altimeter": 9819
+      }
+    },
+    {
+      "station": "43181099999",
+      "year": 2023,
+      "source_switches": 4080,
+      "sources": {
+        "slp": 2755,
+        "ma1_altimeter": 9341
+      }
+    },
+    {
+      "station": "43021099999",
+      "year": 2022,
+      "source_switches": 636,
+      "sources": {
+        "ma1_altimeter": 1348,
+        "slp": 661,
+        "ma1_station": 3
+      }
+    },
+    {
+      "station": "43021099999",
+      "year": 2023,
+      "source_switches": 862,
+      "sources": {
+        "slp": 644,
+        "ma1_altimeter": 2182,
+        "ma1_station": 10
+      }
+    },
+    {
+      "station": "43213099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2883
+      }
+    },
+    {
+      "station": "43213099999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2861
+      }
+    },
+    {
+      "station": "43086099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2879
+      }
+    },
+    {
+      "station": "43086099999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2851
+      }
+    },
+    {
+      "station": "43295099999",
+      "year": 2022,
+      "source_switches": 24,
+      "sources": {
+        "ma1_station": 2825,
+        "slp": 13
+      }
+    },
+    {
+      "station": "43295099999",
+      "year": 2023,
+      "source_switches": 8,
+      "sources": {
+        "ma1_station": 2815,
+        "slp": 4
+      }
+    },
+    {
+      "station": "43302599999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "ma1_altimeter": 10620
+      }
+    },
+    {
+      "station": "43302599999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "ma1_altimeter": 12727
+      }
+    },
+    {
+      "station": "42705699999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "ma1_altimeter": 17524
+      }
+    },
+    {
+      "station": "42705699999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "ma1_altimeter": 17358
+      }
+    },
+    {
+      "station": "43321099999",
+      "year": 2022,
+      "source_switches": 5719,
+      "sources": {
+        "slp": 2872,
+        "ma1_altimeter": 13175
+      }
+    },
+    {
+      "station": "43321099999",
+      "year": 2023,
+      "source_switches": 5639,
+      "sources": {
+        "slp": 2849,
+        "ma1_altimeter": 12706
+      }
+    },
+    {
+      "station": "43284099999",
+      "year": 2022,
+      "source_switches": 5739,
+      "sources": {
+        "slp": 2874,
+        "ma1_altimeter": 14232,
+        "ma1_station": 1
+      }
+    },
+    {
+      "station": "43284099999",
+      "year": 2023,
+      "source_switches": 5515,
+      "sources": {
+        "slp": 2811,
+        "ma1_altimeter": 13840
+      }
+    },
+    {
+      "station": "43233099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2877
+      }
+    },
+    {
+      "station": "43233099999",
+      "year": 2023,
+      "source_switches": 2,
+      "sources": {
+        "slp": 1944,
+        "ma1_station": 1
+      }
+    },
+    {
+      "station": "43279099999",
+      "year": 2022,
+      "source_switches": 5727,
+      "sources": {
+        "slp": 2869,
+        "ma1_altimeter": 14440,
+        "ma1_station": 2
+      }
+    },
+    {
+      "station": "43279099999",
+      "year": 2023,
+      "source_switches": 5711,
+      "sources": {
+        "slp": 2857,
+        "ma1_altimeter": 14453,
+        "ma1_station": 1
+      }
+    },
+    {
+      "station": "43278099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2156
+      }
+    },
+    {
+      "station": "43278099999",
+      "year": 2023,
+      "source_switches": 4,
+      "sources": {
+        "slp": 2093,
+        "ma1_station": 2
+      }
+    },
+    {
+      "station": "43275099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 1797
+      }
+    },
+    {
+      "station": "43275099999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "slp": 1768
+      }
+    },
+    {
+      "station": "43329099999",
+      "year": 2022,
+      "source_switches": 14,
+      "sources": {
+        "slp": 2875,
+        "ma1_station": 7
+      }
+    },
+    {
+      "station": "43329099999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2841
+      }
+    },
+    {
+      "station": "43245099999",
+      "year": 2022,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2870
+      }
+    },
+    {
+      "station": "43245099999",
+      "year": 2023,
+      "source_switches": 0,
+      "sources": {
+        "slp": 2825
+      }
+    },
+    {
+      "station": "43331099999",
+      "year": 2022,
+      "source_switches": 4,
+      "sources": {
+        "slp": 2864,
+        "ma1_station": 2
+      }
+    },
+    {
+      "station": "43331099999",
+      "year": 2023,
+      "source_switches": 2,
+      "sources": {
+        "slp": 2790,
+        "ma1_station": 1
+      }
+    }
+  ],
+  "total_pressure_source_switches": 76532,
+  "files": [
+    {
+      "station": "42181099999",
+      "year": 2022,
+      "sha256": "dcd17a468cbe96f07a1f239a72f8a779ce4e98e9cdbb44705498a2ca9f30b026",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42181099999",
+      "year": 2023,
+      "sha256": "de451ef7b04a61e5326160b4a15ff9b5cbc133f7b764eee92a5a40982248f391",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42182099999",
+      "year": 2022,
+      "sha256": "f5166a78e14bf3fca476042471a84823c0fb060a3012b57fb72c4c152eea54fd",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42182099999",
+      "year": 2023,
+      "sha256": "a4bd1021ae9df9257b525f3b18fab68e3244194fd17cc5308d455e3c6f695414",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42348099999",
+      "year": 2022,
+      "sha256": "8a7b33b63f9b68b00364af7184c7ea5d8f1c6c720b36c9ee150bc15e3b893c8b",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42348099999",
+      "year": 2023,
+      "sha256": "d5c2949728817305fd4bec59df8cab14c7743f49fc259c14f8bcf43ad05aa252",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42189099999",
+      "year": 2022,
+      "sha256": "ad240c8923bd466f1c70b22b3316e5965814c59368cb51070ac1d0382bdbf4dd",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42189099999",
+      "year": 2023,
+      "sha256": "0ab5d774efc60e0db81afb09627c6f1825dc4403ac03ab8e35dce819e799345e",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42361099999",
+      "year": 2022,
+      "sha256": "a8850ffae652aa515f6475e5699d3bccee4811c5c2a104fd3be02dc6bac79e30",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42361099999",
+      "year": 2023,
+      "sha256": "f16d4dc2cbd27d6562734cbdea0af88071868afff24db2f6cb67b0d90b9d2b62",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42131099999",
+      "year": 2022,
+      "sha256": "28532fae89f0ba0c65495c172572066c02fbcc20e99250e839260ce4c8a1255d",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42131099999",
+      "year": 2023,
+      "sha256": "27826aa4d94fdd671cab02d9b45d3d8ab032acad4af626c11a3658d861d7e5c1",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43128099999",
+      "year": 2022,
+      "sha256": "6dc1ef6d6c5dd2037e75408723b0c9354b5122c668971ca3ab8cc407c64b7884",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43128099999",
+      "year": 2023,
+      "sha256": "23d378042cf55fb267f122b49b3fad7980eff0f59fac64f6e9f3ab718d2202ba",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43128599999",
+      "year": 2022,
+      "sha256": "d6f57d31e05e46c40153458b15096681e6984e40ec01ad7bac99013b7e41c2f5",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43128599999",
+      "year": 2023,
+      "sha256": "bb11afcabb3826676be0c6f53ad19ab9def27d2de728bad5c3a4e9015868788e",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43181099999",
+      "year": 2022,
+      "sha256": "24c13740a166e296020838a7c1cf3d8fa790ad164d0f18d1fe148838966df641",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43181099999",
+      "year": 2023,
+      "sha256": "d4201d5f20db8abb1681b775f0c59176c8a918fff809a801e0bf3dab9efddeaf",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43021099999",
+      "year": 2022,
+      "sha256": "d82fde818bd1aadedac29c319d64edf830c2c195ab1c9c4fc1ed593ab7dfaeff",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43021099999",
+      "year": 2023,
+      "sha256": "1fccbe5503b2a54f7627e0cf00c2702e83f4a4d25055f6b230a0b0e2273528f1",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43213099999",
+      "year": 2022,
+      "sha256": "75ec87fcbeb2015833c66003fb5be52be82c0f474a40ab479a9378426a9581f8",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43213099999",
+      "year": 2023,
+      "sha256": "cc1c4c803dddc1385994c71ecdb208b9c1d79ec59bb96aaed78c6d743dc3d64a",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43086099999",
+      "year": 2022,
+      "sha256": "570d93c9a99ffa780e11c3f535bde5cd68f46c91cd7affa37d80c61781e58381",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43086099999",
+      "year": 2023,
+      "sha256": "c99b0c5781136fbfcb4cc560ccae8ede5f11cd4a610e2748c68e8b52b5df939d",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43295099999",
+      "year": 2022,
+      "sha256": "1febc3b635c7f1583ec23a3667a70361b251a2f609f54665f36c8f5ad5216763",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43295099999",
+      "year": 2023,
+      "sha256": "7cbc524f469318b7ebdca5c862656cafc800d8dbfc040e424fe6478594820e94",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43302599999",
+      "year": 2022,
+      "sha256": "a72d3af3d74b6c1649cb30c3430560d490968fc5f6a7b3b7e8e814d764dad707",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43302599999",
+      "year": 2023,
+      "sha256": "06dc3b2c17a4e0a446dc9629d20f805d6254d9444b8c68fd659c5579657ea4a0",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42705699999",
+      "year": 2022,
+      "sha256": "74c3d3817124e6bac9294955e21e1ee751c4d316d401041008c876ca0b144a98",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "42705699999",
+      "year": 2023,
+      "sha256": "e5716d0643789aac34f0ca49e22a0539dd11f095436bd2c10106258c91b1f46c",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43321099999",
+      "year": 2022,
+      "sha256": "81baab3a28b54c6b90054fd7b2e1bb9b8f5136888c2fcb85d29a1a6c33f0be7c",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43321099999",
+      "year": 2023,
+      "sha256": "dd31128007cafe6d9c535918156f76d9318b2c336aa2c6c06c6213537aff546d",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43284099999",
+      "year": 2022,
+      "sha256": "23a463ac4b300b1d07a5097e0b46a81d4aae05fd99c87f72ca2ca92db109a48e",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43284099999",
+      "year": 2023,
+      "sha256": "4a837ec84c9033e96105669f69f197c735ebd02268e52a17fda3e958ba40c857",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43233099999",
+      "year": 2022,
+      "sha256": "95e87ffcae109a1404e6d05de7f0f17630bbb187ed003500339bfce91527b324",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43233099999",
+      "year": 2023,
+      "sha256": "a59d6b93f3e479697cb560ae002136a852a45e2a1bbc3bdbbe27635af62e260c",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43279099999",
+      "year": 2022,
+      "sha256": "6f4de55f986bc3f47dec86a643a8414cdcbb1909b7a50686cfc57324c67b6d5a",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43279099999",
+      "year": 2023,
+      "sha256": "e21791b165a1c84f7ce7ee276fa891a9cdc8577c8b2c2bc1f802951a8d9c1fb4",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43278099999",
+      "year": 2022,
+      "sha256": "bd65b1a451b83b0b9f24bdc1925255a2710665d9882a40a9a49680cfac767b5b",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43278099999",
+      "year": 2023,
+      "sha256": "f04d28cf2ae34746b146efe50298ef89c735b3ecd0355c3116a379ac0189be83",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43275099999",
+      "year": 2022,
+      "sha256": "df36f5ac75eeae7b3c80b1d3b38a18af428856da2d71a93cb6fd0f12002ae6f3",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43275099999",
+      "year": 2023,
+      "sha256": "ed8b8b2de73922ff2c7a8a7851b37b08d9676658264b711500bdec08421f989c",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43329099999",
+      "year": 2022,
+      "sha256": "c547b1f706d6de572345156a57064f73bc95254fa7b908dbf6ac66f40dc66fab",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43329099999",
+      "year": 2023,
+      "sha256": "73c81ec955acdab28b75ef480676a268455b4a39c8507dbdcf05af6b2039af85",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43245099999",
+      "year": 2022,
+      "sha256": "7faac9304855f481c0c76500fbb52a32e9bad08d98c80ebf7cfa5ed00c5339b1",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43245099999",
+      "year": 2023,
+      "sha256": "f17a0d245bf9fe0757728792ab13a94c6ee86f39cd15a3265fdbb070d4d6361e",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43331099999",
+      "year": 2022,
+      "sha256": "6a48c8e7bdc7d52ea26075e94708bf43ae25946693d15cb014850afabb79cf20",
+      "manifest_hash_match": true
+    },
+    {
+      "station": "43331099999",
+      "year": 2023,
+      "sha256": "a9e74db06937bf85f958805b330bf123ef3fd7795552d23f507ab3775800b38e",
+      "manifest_hash_match": true
+    }
+  ],
+  "suitability": "conditional development proxy; derived RH, mixed pressure definitions, no real sensor-failure labels",
+  "notebook_training_release": "BLOCKED pending pressure/QC handling and independent scientific evaluation"
+}

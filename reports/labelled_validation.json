@@ -1,0 +1,124 @@
+{
+  "ready_for_feature_engineering": true,
+  "checks": {
+    "generated_file_hashes_match": true,
+    "episode_ids_globally_unique": true,
+    "all_fault_types_present": true,
+    "split_year_and_role_rules_hold": true,
+    "no_row_leakage_between_splits": true,
+    "station_test_contains_only_holdouts": true,
+    "episode_manifest_counts_match_rows": true,
+    "original_values_and_timestamps_preserved": true,
+    "stream_actions_match_fault_types": true,
+    "fault_and_weather_labels_are_exclusive": true
+  },
+  "errors": [],
+  "error_count": 0,
+  "episode_count": 559,
+  "fault_episode_counts": {
+    "bias": 42,
+    "communication_corruption": 42,
+    "drift": 42,
+    "dropout": 42,
+    "duplicate_packet": 42,
+    "frozen_sensor": 42,
+    "multi_sensor_failure": 42,
+    "noise": 42,
+    "scaling_error": 42,
+    "spike": 42,
+    "sudden_drop": 42,
+    "timestamp_error": 42,
+    "unit_error": 42
+  },
+  "split_summary": {
+    "train": {
+      "rows": 182362,
+      "anomaly_rows": 2510,
+      "weather_rows": 498,
+      "anomaly_percent": 1.3764,
+      "stations": 20,
+      "anomaly_rows_by_type": {
+        "bias": 468,
+        "communication_corruption": 28,
+        "drift": 549,
+        "dropout": 240,
+        "duplicate_packet": 24,
+        "frozen_sensor": 380,
+        "multi_sensor_failure": 412,
+        "noise": 322,
+        "scaling_error": 15,
+        "spike": 15,
+        "sudden_drop": 15,
+        "timestamp_error": 27,
+        "unit_error": 15
+      }
+    },
+    "validation": {
+      "rows": 181470,
+      "anomaly_rows": 1696,
+      "weather_rows": 511,
+      "anomaly_percent": 0.9346,
+      "stations": 20,
+      "anomaly_rows_by_type": {
+        "bias": 276,
+        "communication_corruption": 16,
+        "drift": 491,
+        "dropout": 162,
+        "duplicate_packet": 16,
+        "frozen_sensor": 233,
+        "multi_sensor_failure": 267,
+        "noise": 181,
+        "scaling_error": 10,
+        "spike": 10,
+        "sudden_drop": 10,
+        "timestamp_error": 14,
+        "unit_error": 10
+      }
+    },
+    "time_test": {
+      "rows": 182276,
+      "anomaly_rows": 2064,
+      "weather_rows": 824,
+      "anomaly_percent": 1.1323,
+      "stations": 20,
+      "anomaly_rows_by_type": {
+        "bias": 378,
+        "communication_corruption": 20,
+        "drift": 590,
+        "dropout": 223,
+        "duplicate_packet": 19,
+        "frozen_sensor": 187,
+        "multi_sensor_failure": 358,
+        "noise": 218,
+        "scaling_error": 12,
+        "spike": 12,
+        "sudden_drop": 12,
+        "timestamp_error": 23,
+        "unit_error": 12
+      }
+    },
+    "station_test": {
+      "rows": 10516,
+      "anomaly_rows": 275,
+      "weather_rows": 0,
+      "anomaly_percent": 2.6151,
+      "stations": 4,
+      "anomaly_rows_by_type": {
+        "bias": 47,
+        "communication_corruption": 6,
+        "drift": 65,
+        "dropout": 25,
+        "duplicate_packet": 6,
+        "frozen_sensor": 35,
+        "multi_sensor_failure": 39,
+        "noise": 24,
+        "scaling_error": 5,
+        "spike": 5,
+        "sudden_drop": 5,
+        "timestamp_error": 8,
+        "unit_error": 5
+      }
+    }
+  },
+  "manifest_entries": 5
+}

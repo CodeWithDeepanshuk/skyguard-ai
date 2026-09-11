@@ -1,0 +1,255 @@
+{
+  "iteration": "06_communication_safety_weather_station_transfer",
+  "device": "cuda",
+  "gpu": "Tesla T4",
+  "blind_2025_opened": false,
+  "former_final_tests_opened": false,
+  "development_years": [
+    2022,
+    2023
+  ],
+  "pseudo_unseen_stations": [
+    "43321099999",
+    "43329099999",
+    "42361099999",
+    "43213099999"
+  ],
+  "communication": {
+    "status": "heartbeat_contract_required_archive_gaps_advisory_only",
+    "selected_policy": {
+      "automatic_fault_alert_without_contract": false,
+      "unknown_cadence_output": "unverified_data_gap_advisory",
+      "strict_mode_requirement": "adapter supplies expected cadence and heartbeat SLA",
+      "duplicate_packet_detection_remains_automatic": true
+    },
+    "safe_automatic_candidates": 0,
+    "best_gap_policy": {
+      "ratio_threshold": 30.0,
+      "recent_regularity": 0.8,
+      "historical_q999_multiplier": 1.0,
+      "tp": 3.0,
+      "fp": 1.0,
+      "fn": 4.0,
+      "precision": 0.75,
+      "recall": 0.42857142857142855,
+      "f1": 0.5454545454545454,
+      "false_gap_alerts_per_station_day": 0.0004072213926971631
+    },
+    "confirmation": [],
+    "stream_action_used_by_detector": false
+  },
+  "weather": {
+    "status": "no_confirmed_weather_gain_keep_iteration5_weather",
+    "selected_policy": {
+      "score_col": "cat_weather_mean",
+      "threshold": 0.24
+    },
+    "feature_count": 87,
+    "model_history": [
+      {
+        "seed": 17,
+        "cat_trees": 232,
+        "lgb_iteration": 865
+      },
+      {
+        "seed": 41,
+        "cat_trees": 182,
+        "lgb_iteration": 223
+      },
+      {
+        "seed": 67,
+        "cat_trees": 993,
+        "lgb_iteration": 719
+      }
+    ],
+    "discovery_feasible_candidates": 0,
+    "confirmation": []
+  },
+  "weak_fault_transfer": {
+    "status": "no_station_transfer_gain_keep_iteration5_candidate",
+    "selected_policy": {
+      "score_col": "weak6_min",
+      "threshold": 1.1,
+      "min_points": 999,
+      "max_gap_minutes": 180
+    },
+    "feature_count": 91,
+    "model_history": [
+      {
+        "seed": 17,
+        "cat_trees": 1273,
+        "lgb_iteration": 319
+      },
+      {
+        "seed": 41,
+        "cat_trees": 1013,
+        "lgb_iteration": 291
+      },
+      {
+        "seed": 67,
+        "cat_trees": 328,
+        "lgb_iteration": 310
+      }
+    ],
+    "discovery_feasible_candidates": 12,
+    "confirmation": [
+      {
+        "scope": "oct_dec_discovery",
+        "precision": 0.7638190954773869,
+        "false_alarm_episodes_per_station_day": 0.021097704490351483,
+        "point_f1": 0.5066666666666667,
+        "point_f1_delta": -0.007715736040609045,
+        "event_f1": 0.5813953488372092,
+        "event_f1_delta": -0.03588860178007469,
+        "weak_episode_recall": 0.16666666666666666,
+        "weak_episode_recall_delta": 0.0
+      },
+      {
+        "scope": "pseudo_unseen_all_2023",
+        "precision": 0.9425287356321839,
+        "false_alarm_episodes_per_station_day": 0.012248543358992899,
+        "point_f1": 0.7592592592592593,
+        "point_f1_delta": 0.0,
+        "event_f1": 0.5714285714285714,
+        "event_f1_delta": 0.0,
+        "weak_episode_recall": 0.8333333333333334,
+        "weak_episode_recall_delta": 0.0
+      }
+    ]
+  },
+  "selected_ablation": [
+    {
+      "block": "block_may_jun",
+      "variant": "Iteration5 candidate",
+      "tp": 109,
+      "fp": 27,
+      "fn": 134,
+      "tn": 28742,
+      "precision": 0.8014705882352942,
+      "recall": 0.448559670781893,
+      "f1": 0.575197889182058,
+      "auprc": 0.5254728087516216,
+      "true_episodes": 22,
+      "predicted_episodes": 32,
+      "event_precision": 0.53125,
+      "event_recall": 0.7727272727272727,
+      "event_f1": 0.6296296296296297,
+      "false_alarm_episodes_per_station_day": 0.012328344919694532,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 432.00000000000006,
+      "delay_mean_min": 176.47058823529412,
+      "weak_episode_recall": 0.16666666666666666
+    },
+    {
+      "block": "block_may_jun",
+      "variant": "Iteration6 candidate",
+      "tp": 109,
+      "fp": 27,
+      "fn": 134,
+      "tn": 28742,
+      "precision": 0.8014705882352942,
+      "recall": 0.448559670781893,
+      "f1": 0.575197889182058,
+      "auprc": 0.5254728087516216,
+      "true_episodes": 22,
+      "predicted_episodes": 32,
+      "event_precision": 0.53125,
+      "event_recall": 0.7727272727272727,
+      "event_f1": 0.6296296296296297,
+      "false_alarm_episodes_per_station_day": 0.012328344919694532,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 432.00000000000006,
+      "delay_mean_min": 176.47058823529412,
+      "weak_episode_recall": 0.16666666666666666
+    },
+    {
+      "block": "block_jul_sep",
+      "variant": "Iteration5 candidate",
+      "tp": 72,
+      "fp": 9,
+      "fn": 303,
+      "tn": 46419,
+      "precision": 0.8888888888888888,
+      "recall": 0.192,
+      "f1": 0.3157894736842105,
+      "auprc": 0.24411362912119633,
+      "true_episodes": 27,
+      "predicted_episodes": 32,
+      "event_precision": 0.5625,
+      "event_recall": 0.6666666666666666,
+      "event_f1": 0.6101694915254238,
+      "false_alarm_episodes_per_station_day": 0.00762120782534732,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 630.0000000000007,
+      "delay_mean_min": 190.0,
+      "weak_episode_recall": 0.4166666666666667
+    },
+    {
+      "block": "block_jul_sep",
+      "variant": "Iteration6 candidate",
+      "tp": 72,
+      "fp": 9,
+      "fn": 303,
+      "tn": 46419,
+      "precision": 0.8888888888888888,
+      "recall": 0.192,
+      "f1": 0.3157894736842105,
+      "auprc": 0.24411362912119633,
+      "true_episodes": 27,
+      "predicted_episodes": 32,
+      "event_precision": 0.5625,
+      "event_recall": 0.6666666666666666,
+      "event_f1": 0.6101694915254238,
+      "false_alarm_episodes_per_station_day": 0.00762120782534732,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 630.0000000000007,
+      "delay_mean_min": 190.0,
+      "weak_episode_recall": 0.4166666666666667
+    },
+    {
+      "block": "block_oct_dec",
+      "variant": "Iteration5 candidate",
+      "tp": 194,
+      "fp": 39,
+      "fn": 277,
+      "tn": 47089,
+      "precision": 0.8326180257510729,
+      "recall": 0.4118895966029724,
+      "f1": 0.5511363636363636,
+      "auprc": 0.49515697020148025,
+      "true_episodes": 36,
+      "predicted_episodes": 61,
+      "event_precision": 0.47540983606557374,
+      "event_recall": 0.8055555555555556,
+      "event_f1": 0.5979381443298968,
+      "false_alarm_episodes_per_station_day": 0.017419113394345587,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 443.9999999999999,
+      "delay_mean_min": 93.10344827586206,
+      "weak_episode_recall": 0.3333333333333333
+    },
+    {
+      "block": "block_oct_dec",
+      "variant": "Iteration6 candidate",
+      "tp": 194,
+      "fp": 39,
+      "fn": 277,
+      "tn": 47089,
+      "precision": 0.8326180257510729,
+      "recall": 0.4118895966029724,
+      "f1": 0.5511363636363636,
+      "auprc": 0.49515697020148025,
+      "true_episodes": 36,
+      "predicted_episodes": 61,
+      "event_precision": 0.47540983606557374,
+      "event_recall": 0.8055555555555556,
+      "event_f1": 0.5979381443298968,
+      "false_alarm_episodes_per_station_day": 0.017419113394345587,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 443.9999999999999,
+      "delay_mean_min": 93.10344827586206,
+      "weak_episode_recall": 0.3333333333333333
+    }
+  ],
+  "promotion_rule": "No change unless discovery, October, pseudo-unseen, precision, false-alarm, point-F1 and event-F1 gates pass."
+}

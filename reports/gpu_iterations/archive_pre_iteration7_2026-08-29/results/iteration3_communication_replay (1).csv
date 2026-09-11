@@ -1,0 +1,2 @@
+simulated_input_rows,emitted_packets,duplicate_packet_tp,duplicate_packet_fp,duplicate_packet_fn,duplicate_packet_precision,duplicate_packet_recall,true_duplicate_episodes,detected_duplicate_episodes,duplicate_episode_recall,detector_inputs,stream_action_used_by_detector
+181470,181486,16,0,0,1.0,1.0,10,10,1.0,"['station_id', 'timestamp', 'temperature', 'pressure', 'humidity']",False

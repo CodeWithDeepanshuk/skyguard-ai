@@ -1,0 +1,2907 @@
+{
+  "audit_time_utc": "2026-09-11T14:55:47.402787+00:00",
+  "scope": "Descriptive 2022/2023 data audit, no fitting, no new accuracy scoring; saved source code does not prove original artifact training execution",
+  "legacy_archive_total_rows": 578448,
+  "india_legacy_development": {
+    "rows": 385656,
+    "stations": 24,
+    "start": "2022-01-01 00:00:00+00:00",
+    "end": "2023-12-31 23:30:00+00:00",
+    "invalid_timestamps": 0,
+    "duplicate_station_times": 0,
+    "missing": {
+      "temperature_c": 71,
+      "pressure_hpa": 5764,
+      "relative_humidity_pct": 188
+    },
+    "complete_triples": 379741,
+    "rows_on_whole_hour": 232631,
+    "ranges": {
+      "temperature_c": {
+        "min": 0.6,
+        "max": 46.4,
+        "integer_value_percent": 79.27849890426235
+      },
+      "pressure_hpa": {
+        "min": 912.2,
+        "max": 1053.2,
+        "integer_value_percent": 75.22611689638109
+      },
+      "relative_humidity_pct": {
+        "min": 5.0276,
+        "max": 100.0,
+        "integer_value_percent": 3.0259321136903714
+      }
+    },
+    "categories": {
+      "source": {
+        "NOAA/NCEI Global Hourly ISD 2022": 193807,
+        "NOAA/NCEI Global Hourly ISD 2023": 191849
+      },
+      "pressure_source": {
+        "ma1_altimeter": 275118,
+        "slp": 104774,
+        "<missing>": 5764
+      },
+      "report_type": {
+        "FM-15": 274930,
+        "FM-12": 110507,
+        "FM-16": 219
+      },
+      "temperature_quality": {
+        "1": 384182,
+        "5": 966,
+        "2": 434,
+        "9": 71,
+        "6": 3
+      },
+      "pressure_quality": {
+        "1.0": 378359,
+        "9.0": 5670,
+        "5.0": 1324,
+        "2.0": 206,
+        "<missing>": 94,
+        "6.0": 3
+      },
+      "cluster": {
+        "bengaluru": 134096,
+        "hyderabad": 98041,
+        "delhi": 94001,
+        "chennai": 59518
+      },
+      "evaluation_role": {
+        "development": 363832,
+        "station_holdout": 21824
+      }
+    },
+    "by_station": [
+      {
+        "station_id": "42131099999",
+        "name": "HISSAR, IN",
+        "rows": 5613,
+        "complete_triple_pct": 99.51897381079637,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 31,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5594,
+          "": 19
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "42181099999",
+        "name": "INDIRA GANDHI INTERNATIONAL, IN",
+        "rows": 34293,
+        "complete_triple_pct": 99.95042720088648,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 12.0,
+        "gaps_over_6h": 4,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28879,
+          "slp": 5408,
+          "": 6
+        },
+        "pressure_source_switches": 10748,
+        "pressure_switch_jump_median_hpa": 0.8999999999999773
+      },
+      {
+        "station_id": "42182099999",
+        "name": "SAFDARJUNG, IN",
+        "rows": 6898,
+        "complete_triple_pct": 99.78254566541025,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 10,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5730,
+          "ma1_altimeter": 1161,
+          "": 7
+        },
+        "pressure_source_switches": 660,
+        "pressure_switch_jump_median_hpa": 1.0
+      },
+      {
+        "station_id": "42189099999",
+        "name": "BAREILLY, IN",
+        "rows": 6250,
+        "complete_triple_pct": 99.83999999999999,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 54.0,
+        "gaps_over_6h": 18,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5676,
+          "ma1_altimeter": 568,
+          "": 6
+        },
+        "pressure_source_switches": 644,
+        "pressure_switch_jump_median_hpa": 0.7000000000000455
+      },
+      {
+        "station_id": "42348099999",
+        "name": "JAIPUR, IN",
+        "rows": 34694,
+        "complete_triple_pct": 99.95100017294057,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 10.5,
+        "gaps_over_6h": 4,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28972,
+          "slp": 5716,
+          "": 6
+        },
+        "pressure_source_switches": 11411,
+        "pressure_switch_jump_median_hpa": 2.2999999999999545
+      },
+      {
+        "station_id": "42361099999",
+        "name": "GWALIOR, IN",
+        "rows": 6253,
+        "complete_triple_pct": 99.90404605789222,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 7,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5680,
+          "ma1_altimeter": 571,
+          "": 2
+        },
+        "pressure_source_switches": 623,
+        "pressure_switch_jump_median_hpa": 1.1000000000000227
+      },
+      {
+        "station_id": "42705699999",
+        "name": "BANGALURU INTERNATIONAL AIRPORT, IN",
+        "rows": 34891,
+        "complete_triple_pct": 99.95700897079476,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 12.5,
+        "gaps_over_6h": 4,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 34882,
+          "": 9
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43021099999",
+        "name": "NANDED, IN",
+        "rows": 4861,
+        "complete_triple_pct": 98.78625797161078,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 900.0,
+        "max_gap_hours": 72.0,
+        "gaps_over_6h": 1102,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "ma1_altimeter": 3530,
+          "slp": 1305,
+          "": 26
+        },
+        "pressure_source_switches": 1461,
+        "pressure_switch_jump_median_hpa": 2.2999999999999545
+      },
+      {
+        "station_id": "43086099999",
+        "name": "RAMGUNDAM, IN",
+        "rows": 5732,
+        "complete_triple_pct": 99.96510816468947,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 12,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5730,
+          "": 2
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43128099999",
+        "name": "BEGUMPET AIRPORT, IN",
+        "rows": 23470,
+        "complete_triple_pct": 99.97443544951001,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 90.0,
+        "max_gap_hours": 10.5,
+        "gaps_over_6h": 11,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 17718,
+          "slp": 5750,
+          "": 2
+        },
+        "pressure_source_switches": 8461,
+        "pressure_switch_jump_median_hpa": 4.2999999999999545
+      },
+      {
+        "station_id": "43128599999",
+        "name": "HYDERABAD INTERNATIONAL AIRPORT, IN",
+        "rows": 33482,
+        "complete_triple_pct": 99.98805328236067,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 44.0,
+        "gaps_over_6h": 19,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "ma1_altimeter": 33480,
+          "": 2
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43181099999",
+        "name": "VIJAYAWADA, IN",
+        "rows": 24752,
+        "complete_triple_pct": 99.98787976729153,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 60.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 21,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "ma1_altimeter": 19160,
+          "slp": 5592
+        },
+        "pressure_source_switches": 8368,
+        "pressure_switch_jump_median_hpa": 0.39999999999997726
+      },
+      {
+        "station_id": "43213099999",
+        "name": "KURNOOL, IN",
+        "rows": 5744,
+        "complete_triple_pct": 100.0,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 14,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5744
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43233099999",
+        "name": "CHITRADURGA, IN",
+        "rows": 4822,
+        "complete_triple_pct": 99.79261717129822,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 241,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 4821,
+          "": 1
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43245099999",
+        "name": "NELLORE, IN",
+        "rows": 5695,
+        "complete_triple_pct": 99.94732221246707,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 16,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5695
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43275099999",
+        "name": "TIRUPATHI, IN",
+        "rows": 3565,
+        "complete_triple_pct": 99.94389901823281,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 720.0,
+        "max_gap_hours": 63.0,
+        "gaps_over_6h": 727,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "slp": 3565
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43278099999",
+        "name": "NUMGAMBAKKAM, IN",
+        "rows": 4252,
+        "complete_triple_pct": 99.85888993414864,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 540.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 725,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 4249,
+          "": 3
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43279099999",
+        "name": "CHENNAI INTERNATIONAL, IN",
+        "rows": 34625,
+        "complete_triple_pct": 99.985559566787,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 10.5,
+        "gaps_over_6h": 3,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28896,
+          "slp": 5726,
+          "": 3
+        },
+        "pressure_source_switches": 11431,
+        "pressure_switch_jump_median_hpa": 0.7999999999999545
+      },
+      {
+        "station_id": "43284099999",
+        "name": "MANGALORE, IN",
+        "rows": 33759,
+        "complete_triple_pct": 99.96149175034805,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 30.5,
+        "gaps_over_6h": 7,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28073,
+          "slp": 5685,
+          "": 1
+        },
+        "pressure_source_switches": 11253,
+        "pressure_switch_jump_median_hpa": 0.39999999999997726
+      },
+      {
+        "station_id": "43295099999",
+        "name": "BANGALORE, IN",
+        "rows": 5674,
+        "complete_triple_pct": 0.2996122664786746,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 18,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "": 5657,
+          "slp": 17
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43302599999",
+        "name": "BANGALORE, IN",
+        "rows": 23347,
+        "complete_triple_pct": 99.94003512228552,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 60.0,
+        "max_gap_hours": 261.5,
+        "gaps_over_6h": 74,
+        "reporting_days": 705,
+        "pressure_sources": {
+          "ma1_altimeter": 23347
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43321099999",
+        "name": "COIMBATORE, IN",
+        "rows": 31603,
+        "complete_triple_pct": 99.9841787172104,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 21.0,
+        "gaps_over_6h": 5,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 25881,
+          "slp": 5721,
+          "": 1
+        },
+        "pressure_source_switches": 11358,
+        "pressure_switch_jump_median_hpa": 1.7999999999999545
+      },
+      {
+        "station_id": "43329099999",
+        "name": "CUDDALORE, IN",
+        "rows": 5724,
+        "complete_triple_pct": 99.75541579315164,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 12,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5716,
+          "": 8
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43331099999",
+        "name": "M.O. PONDICHERRY, IN",
+        "rows": 5657,
+        "complete_triple_pct": 99.91161392964469,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 17,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "slp": 5654,
+          "": 3
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      }
+    ],
+    "dewpoint_above_temperature_rows": 0,
+    "rh_matches_magnus_to_0_001_percent": 100.0,
+    "report_gaps_minutes_counts": {
+      "30.0": 297723,
+      "180.0": 68729,
+      "60.0": 9018,
+      "90.0": 1815,
+      "360.0": 1704,
+      "120.0": 1293,
+      "540.0": 937,
+      "720.0": 784,
+      "900.0": 703,
+      "150.0": 391,
+      "29.0": 154,
+      "10.0": 153,
+      "1.0": 142,
+      "20.0": 121,
+      "25.0": 102,
+      "390.0": 101,
+      "15.0": 100,
+      "300.0": 87,
+      "270.0": 71,
+      "420.0": 70,
+      "210.0": 69,
+      "330.0": 64,
+      "5.0": 59,
+      "28.0": 59,
+      "2.0": 58,
+      "870.0": 56,
+      "240.0": 53,
+      "810.0": 53,
+      "510.0": 47,
+      "27.0": 42,
+      "3.0": 41,
+      "480.0": 37,
+      "26.0": 33,
+      "780.0": 30,
+      "840.0": 30,
+      "4.0": 28,
+      "450.0": 27,
+      "11.0": 26,
+      "18.0": 23,
+      "750.0": 22,
+      "630.0": 21,
+      "9.0": 20,
+      "12.0": 20,
+      "31.0": 19,
+      "19.0": 19,
+      "6.0": 18,
+      "21.0": 17,
+      "17.0": 17,
+      "24.0": 17,
+      "13.0": 15,
+      "14.0": 15,
+      "1440.0": 15,
+      "1290.0": 15,
+      "570.0": 14,
+      "16.0": 14,
+      "35.0": 13,
+      "45.0": 13,
+      "600.0": 13,
+      "1020.0": 13,
+      "7.0": 12,
+      "22.0": 12,
+      "8.0": 12,
+      "1080.0": 12,
+      "23.0": 11,
+      "32.0": 10,
+      "135.0": 9,
+      "34.0": 9,
+      "1410.0": 9,
+      "1350.0": 9,
+      "1260.0": 9,
+      "2520.0": 8,
+      "165.0": 8,
+      "50.0": 7,
+      "40.0": 7,
+      "33.0": 7,
+      "1320.0": 6,
+      "75.0": 5,
+      "2700.0": 4,
+      "80.0": 4,
+      "105.0": 4,
+      "1140.0": 4,
+      "660.0": 4,
+      "930.0": 4,
+      "55.0": 4,
+      "65.0": 3,
+      "140.0": 3,
+      "1200.0": 3,
+      "690.0": 3,
+      "1380.0": 3,
+      "70.0": 2,
+      "110.0": 2,
+      "100.0": 2,
+      "1230.0": 2,
+      "1110.0": 2,
+      "866.0": 2,
+      "960.0": 2,
+      "2280.0": 2,
+      "58.0": 2,
+      "57.0": 1,
+      "160.0": 1,
+      "177.0": 1,
+      "115.0": 1,
+      "130.0": 1,
+      "3240.0": 1,
+      "42.0": 1,
+      "59.0": 1,
+      "170.0": 1,
+      "293.0": 1,
+      "101.0": 1,
+      "154.0": 1,
+      "838.0": 1,
+      "990.0": 1,
+      "779.0": 1,
+      "63.0": 1,
+      "301.0": 1,
+      "37.0": 1,
+      "1258.0": 1,
+      "388.0": 1,
+      "359.0": 1,
+      "361.0": 1,
+      "357.0": 1,
+      "264.0": 1,
+      "1212.0": 1,
+      "1203.0": 1,
+      "4320.0": 1,
+      "2640.0": 1,
+      "1050.0": 1,
+      "1920.0": 1,
+      "215.0": 1,
+      "3780.0": 1,
+      "1830.0": 1,
+      "121.0": 1,
+      "1770.0": 1,
+      "2460.0": 1,
+      "5520.0": 1,
+      "290.0": 1,
+      "2580.0": 1,
+      "15690.0": 1,
+      "11580.0": 1,
+      "1560.0": 1,
+      "1500.0": 1,
+      "3270.0": 1,
+      "1620.0": 1,
+      "2340.0": 1
+    },
+    "gap_over_6h_count": 3102
+  },
+  "india_iteration10_development": {
+    "rows": 385656,
+    "stations": 24,
+    "start": "2022-01-01 00:00:00+00:00",
+    "end": "2023-12-31 23:30:00+00:00",
+    "invalid_timestamps": 0,
+    "duplicate_station_times": 0,
+    "missing": {
+      "temperature_c": 71,
+      "pressure_hpa": 96,
+      "relative_humidity_pct": 188
+    },
+    "complete_triples": 385386,
+    "rows_on_whole_hour": 232631,
+    "ranges": {
+      "temperature_c": {
+        "min": 0.6,
+        "max": 46.4,
+        "integer_value_percent": 79.27746151950932
+      },
+      "pressure_hpa": {
+        "min": 901.3,
+        "max": 1053.2,
+        "integer_value_percent": 74.35314866687416
+      },
+      "relative_humidity_pct": {
+        "min": 5.0276,
+        "max": 100.0,
+        "integer_value_percent": 3.0259321136903714
+      }
+    },
+    "categories": {
+      "source": {
+        "NOAA/NCEI Global Hourly ISD 2022": 193807,
+        "NOAA/NCEI Global Hourly ISD 2023": 191849
+      },
+      "pressure_source": {
+        "ma1_altimeter": 275113,
+        "slp": 104774,
+        "ma1_station": 5673,
+        "<missing>": 96
+      },
+      "report_type": {
+        "FM-15": 274925,
+        "FM-12": 110512,
+        "FM-16": 219
+      },
+      "cluster": {
+        "bengaluru": 134096,
+        "hyderabad": 98041,
+        "delhi": 94001,
+        "chennai": 59518
+      },
+      "evaluation_role": {
+        "development": 363832,
+        "station_holdout": 21824
+      }
+    },
+    "by_station": [
+      {
+        "station_id": "42131099999",
+        "name": "HISSAR, IN",
+        "rows": 5613,
+        "complete_triple_pct": 99.53678959558168,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 31,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5594,
+          "": 18,
+          "ma1_station": 1
+        },
+        "pressure_source_switches": 2,
+        "pressure_switch_jump_median_hpa": 25.349999999999966
+      },
+      {
+        "station_id": "42181099999",
+        "name": "INDIRA GANDHI INTERNATIONAL, IN",
+        "rows": 34293,
+        "complete_triple_pct": 99.95042720088648,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 12.0,
+        "gaps_over_6h": 4,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28878,
+          "slp": 5408,
+          "": 6,
+          "ma1_station": 1
+        },
+        "pressure_source_switches": 10750,
+        "pressure_switch_jump_median_hpa": 0.8999999999999773
+      },
+      {
+        "station_id": "42182099999",
+        "name": "SAFDARJUNG, IN",
+        "rows": 6898,
+        "complete_triple_pct": 99.78254566541025,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 10,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5730,
+          "ma1_altimeter": 1161,
+          "": 7
+        },
+        "pressure_source_switches": 660,
+        "pressure_switch_jump_median_hpa": 1.0
+      },
+      {
+        "station_id": "42189099999",
+        "name": "BAREILLY, IN",
+        "rows": 6250,
+        "complete_triple_pct": 99.856,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 54.0,
+        "gaps_over_6h": 18,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5676,
+          "ma1_altimeter": 568,
+          "": 5,
+          "ma1_station": 1
+        },
+        "pressure_source_switches": 646,
+        "pressure_switch_jump_median_hpa": 0.7000000000000455
+      },
+      {
+        "station_id": "42348099999",
+        "name": "JAIPUR, IN",
+        "rows": 34694,
+        "complete_triple_pct": 99.95100017294057,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 10.5,
+        "gaps_over_6h": 4,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28972,
+          "slp": 5716,
+          "": 6
+        },
+        "pressure_source_switches": 11411,
+        "pressure_switch_jump_median_hpa": 2.2999999999999545
+      },
+      {
+        "station_id": "42361099999",
+        "name": "GWALIOR, IN",
+        "rows": 6253,
+        "complete_triple_pct": 99.90404605789222,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 7,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5680,
+          "ma1_altimeter": 571,
+          "": 2
+        },
+        "pressure_source_switches": 623,
+        "pressure_switch_jump_median_hpa": 1.1000000000000227
+      },
+      {
+        "station_id": "42705699999",
+        "name": "BANGALURU INTERNATIONAL AIRPORT, IN",
+        "rows": 34891,
+        "complete_triple_pct": 99.95700897079476,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 12.5,
+        "gaps_over_6h": 4,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 34882,
+          "": 9
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43021099999",
+        "name": "NANDED, IN",
+        "rows": 4861,
+        "complete_triple_pct": 99.05369265583214,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 900.0,
+        "max_gap_hours": 72.0,
+        "gaps_over_6h": 1102,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "ma1_altimeter": 3530,
+          "slp": 1305,
+          "": 13,
+          "ma1_station": 13
+        },
+        "pressure_source_switches": 1487,
+        "pressure_switch_jump_median_hpa": 2.2999999999999545
+      },
+      {
+        "station_id": "43086099999",
+        "name": "RAMGUNDAM, IN",
+        "rows": 5732,
+        "complete_triple_pct": 99.96510816468947,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 12,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5730,
+          "": 2
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43128099999",
+        "name": "BEGUMPET AIRPORT, IN",
+        "rows": 23470,
+        "complete_triple_pct": 99.97443544951001,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 90.0,
+        "max_gap_hours": 10.5,
+        "gaps_over_6h": 11,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 17718,
+          "slp": 5750,
+          "": 2
+        },
+        "pressure_source_switches": 8461,
+        "pressure_switch_jump_median_hpa": 4.2999999999999545
+      },
+      {
+        "station_id": "43128599999",
+        "name": "HYDERABAD INTERNATIONAL AIRPORT, IN",
+        "rows": 33482,
+        "complete_triple_pct": 99.98805328236067,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 44.0,
+        "gaps_over_6h": 19,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "ma1_altimeter": 33480,
+          "": 2
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43181099999",
+        "name": "VIJAYAWADA, IN",
+        "rows": 24752,
+        "complete_triple_pct": 99.98787976729153,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 60.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 21,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "ma1_altimeter": 19160,
+          "slp": 5592
+        },
+        "pressure_source_switches": 8368,
+        "pressure_switch_jump_median_hpa": 0.39999999999997726
+      },
+      {
+        "station_id": "43213099999",
+        "name": "KURNOOL, IN",
+        "rows": 5744,
+        "complete_triple_pct": 100.0,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 14,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5744
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43233099999",
+        "name": "CHITRADURGA, IN",
+        "rows": 4822,
+        "complete_triple_pct": 99.8133554541684,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 241,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 4821,
+          "ma1_station": 1
+        },
+        "pressure_source_switches": 2,
+        "pressure_switch_jump_median_hpa": 90.15000000000009
+      },
+      {
+        "station_id": "43245099999",
+        "name": "NELLORE, IN",
+        "rows": 5695,
+        "complete_triple_pct": 99.94732221246707,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 16,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5695
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43275099999",
+        "name": "TIRUPATHI, IN",
+        "rows": 3565,
+        "complete_triple_pct": 99.94389901823281,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 720.0,
+        "max_gap_hours": 63.0,
+        "gaps_over_6h": 727,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "slp": 3565
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43278099999",
+        "name": "NUMGAMBAKKAM, IN",
+        "rows": 4252,
+        "complete_triple_pct": 99.90592662276576,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 540.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 725,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 4249,
+          "ma1_station": 2,
+          "": 1
+        },
+        "pressure_source_switches": 4,
+        "pressure_switch_jump_median_hpa": 1.3000000000000114
+      },
+      {
+        "station_id": "43279099999",
+        "name": "CHENNAI INTERNATIONAL, IN",
+        "rows": 34625,
+        "complete_triple_pct": 99.985559566787,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 10.5,
+        "gaps_over_6h": 3,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28893,
+          "slp": 5726,
+          "ma1_station": 3,
+          "": 3
+        },
+        "pressure_source_switches": 11437,
+        "pressure_switch_jump_median_hpa": 0.7999999999999545
+      },
+      {
+        "station_id": "43284099999",
+        "name": "MANGALORE, IN",
+        "rows": 33759,
+        "complete_triple_pct": 99.96149175034805,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 30.5,
+        "gaps_over_6h": 7,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 28072,
+          "slp": 5685,
+          "ma1_station": 1,
+          "": 1
+        },
+        "pressure_source_switches": 11255,
+        "pressure_switch_jump_median_hpa": 0.39999999999997726
+      },
+      {
+        "station_id": "43295099999",
+        "name": "BANGALORE, IN",
+        "rows": 5674,
+        "complete_triple_pct": 99.29502996122665,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 18,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "ma1_station": 5640,
+          "": 17,
+          "slp": 17
+        },
+        "pressure_source_switches": 32,
+        "pressure_switch_jump_median_hpa": 141.30000000000007
+      },
+      {
+        "station_id": "43302599999",
+        "name": "BANGALORE, IN",
+        "rows": 23347,
+        "complete_triple_pct": 99.94003512228552,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 60.0,
+        "max_gap_hours": 261.5,
+        "gaps_over_6h": 74,
+        "reporting_days": 705,
+        "pressure_sources": {
+          "ma1_altimeter": 23347
+        },
+        "pressure_source_switches": 0,
+        "pressure_switch_jump_median_hpa": null
+      },
+      {
+        "station_id": "43321099999",
+        "name": "COIMBATORE, IN",
+        "rows": 31603,
+        "complete_triple_pct": 99.9841787172104,
+        "median_gap_minutes": 30.0,
+        "p90_gap_minutes": 30.0,
+        "max_gap_hours": 21.0,
+        "gaps_over_6h": 5,
+        "reporting_days": 730,
+        "pressure_sources": {
+          "ma1_altimeter": 25881,
+          "slp": 5721,
+          "": 1
+        },
+        "pressure_source_switches": 11358,
+        "pressure_switch_jump_median_hpa": 1.7999999999999545
+      },
+      {
+        "station_id": "43329099999",
+        "name": "CUDDALORE, IN",
+        "rows": 5724,
+        "complete_triple_pct": 99.87770789657581,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 42.0,
+        "gaps_over_6h": 12,
+        "reporting_days": 729,
+        "pressure_sources": {
+          "slp": 5716,
+          "ma1_station": 7,
+          "": 1
+        },
+        "pressure_source_switches": 14,
+        "pressure_switch_jump_median_hpa": 1.7500000000000568
+      },
+      {
+        "station_id": "43331099999",
+        "name": "M.O. PONDICHERRY, IN",
+        "rows": 5657,
+        "complete_triple_pct": 99.96464557185789,
+        "median_gap_minutes": 180.0,
+        "p90_gap_minutes": 180.0,
+        "max_gap_hours": 45.0,
+        "gaps_over_6h": 17,
+        "reporting_days": 728,
+        "pressure_sources": {
+          "slp": 5654,
+          "ma1_station": 3
+        },
+        "pressure_source_switches": 6,
+        "pressure_switch_jump_median_hpa": 3.4499999999999886
+      }
+    ],
+    "report_gaps_minutes_counts": {
+      "30.0": 297723,
+      "180.0": 68729,
+      "60.0": 9018,
+      "90.0": 1815,
+      "360.0": 1704,
+      "120.0": 1293,
+      "540.0": 937,
+      "720.0": 784,
+      "900.0": 703,
+      "150.0": 391,
+      "29.0": 154,
+      "10.0": 153,
+      "1.0": 142,
+      "20.0": 121,
+      "25.0": 102,
+      "390.0": 101,
+      "15.0": 100,
+      "300.0": 87,
+      "270.0": 71,
+      "420.0": 70,
+      "210.0": 69,
+      "330.0": 64,
+      "5.0": 59,
+      "28.0": 59,
+      "2.0": 58,
+      "870.0": 56,
+      "240.0": 53,
+      "810.0": 53,
+      "510.0": 47,
+      "27.0": 42,
+      "3.0": 41,
+      "480.0": 37,
+      "26.0": 33,
+      "780.0": 30,
+      "840.0": 30,
+      "4.0": 28,
+      "450.0": 27,
+      "11.0": 26,
+      "18.0": 23,
+      "750.0": 22,
+      "630.0": 21,
+      "9.0": 20,
+      "12.0": 20,
+      "31.0": 19,
+      "19.0": 19,
+      "6.0": 18,
+      "21.0": 17,
+      "17.0": 17,
+      "24.0": 17,
+      "13.0": 15,
+      "14.0": 15,
+      "1440.0": 15,
+      "1290.0": 15,
+      "570.0": 14,
+      "16.0": 14,
+      "35.0": 13,
+      "45.0": 13,
+      "600.0": 13,
+      "1020.0": 13,
+      "7.0": 12,
+      "22.0": 12,
+      "8.0": 12,
+      "1080.0": 12,
+      "23.0": 11,
+      "32.0": 10,
+      "135.0": 9,
+      "34.0": 9,
+      "1410.0": 9,
+      "1350.0": 9,
+      "1260.0": 9,
+      "2520.0": 8,
+      "165.0": 8,
+      "50.0": 7,
+      "40.0": 7,
+      "33.0": 7,
+      "1320.0": 6,
+      "75.0": 5,
+      "2700.0": 4,
+      "80.0": 4,
+      "105.0": 4,
+      "1140.0": 4,
+      "660.0": 4,
+      "930.0": 4,
+      "55.0": 4,
+      "65.0": 3,
+      "140.0": 3,
+      "1200.0": 3,
+      "690.0": 3,
+      "1380.0": 3,
+      "70.0": 2,
+      "110.0": 2,
+      "100.0": 2,
+      "1230.0": 2,
+      "1110.0": 2,
+      "866.0": 2,
+      "960.0": 2,
+      "2280.0": 2,
+      "58.0": 2,
+      "57.0": 1,
+      "160.0": 1,
+      "177.0": 1,
+      "115.0": 1,
+      "130.0": 1,
+      "3240.0": 1,
+      "42.0": 1,
+      "59.0": 1,
+      "170.0": 1,
+      "293.0": 1,
+      "101.0": 1,
+      "154.0": 1,
+      "838.0": 1,
+      "990.0": 1,
+      "779.0": 1,
+      "63.0": 1,
+      "301.0": 1,
+      "37.0": 1,
+      "1258.0": 1,
+      "388.0": 1,
+      "359.0": 1,
+      "361.0": 1,
+      "357.0": 1,
+      "264.0": 1,
+      "1212.0": 1,
+      "1203.0": 1,
+      "4320.0": 1,
+      "2640.0": 1,
+      "1050.0": 1,
+      "1920.0": 1,
+      "215.0": 1,
+      "3780.0": 1,
+      "1830.0": 1,
+      "121.0": 1,
+      "1770.0": 1,
+      "2460.0": 1,
+      "5520.0": 1,
+      "290.0": 1,
+      "2580.0": 1,
+      "15690.0": 1,
+      "11580.0": 1,
+      "1560.0": 1,
+      "1500.0": 1,
+      "3270.0": 1,
+      "1620.0": 1,
+      "2340.0": 1
+    },
+    "gap_over_6h_count": 3102
+  },
+  "india_revision_comparison": {
+    "join": {
+      "both": 385656
+    },
+    "pressure_newly_available": 5668,
+    "pressure_changed_over_0_01_hpa": 5
+  },
+  "bangalore_pressure_switch_examples": [
+    [
+      {
+        "timestamp_utc": "2022-05-22T12:00:00Z",
+        "pressure_hpa": 903.7,
+        "pressure_source": "ma1_station"
+      },
+      {
+        "timestamp_utc": "2022-05-22T15:00:00Z",
+        "pressure_hpa": 1048.3,
+        "pressure_source": "slp"
+      }
+    ],
+    [
+      {
+        "timestamp_utc": "2022-05-22T15:00:00Z",
+        "pressure_hpa": 1048.3,
+        "pressure_source": "slp"
+      },
+      {
+        "timestamp_utc": "2022-05-22T18:00:00Z",
+        "pressure_hpa": 906.1,
+        "pressure_source": "ma1_station"
+      }
+    ],
+    [
+      {
+        "timestamp_utc": "2022-05-31T00:00:00Z",
+        "pressure_hpa": 905.8,
+        "pressure_source": "ma1_station"
+      },
+      {
+        "timestamp_utc": "2022-05-31T03:00:00Z",
+        "pressure_hpa": 1048.4,
+        "pressure_source": "slp"
+      }
+    ]
+  ],
+  "raw_noaa_spotchecks": [
+    {
+      "station_id": "42181099999",
+      "raw_rows": 20006,
+      "raw_rows_with_MA1_station_pressure": 13,
+      "sample": [
+        {
+          "STATION": "42181099999",
+          "DATE": "2022-03-27T06:00:00",
+          "REPORT_TYPE": "FM-12",
+          "TMP": "+0330,1",
+          "DEW": "+0136,1",
+          "SLP": "10103,1",
+          "MA1": "99999,9,09846,1"
+        },
+        {
+          "STATION": "42181099999",
+          "DATE": "2022-08-13T06:00:00",
+          "REPORT_TYPE": "FM-12",
+          "TMP": "+0320,1",
+          "DEW": "+0264,1",
+          "SLP": "09995,1",
+          "MA1": "99999,9,09739,1"
+        }
+      ],
+      "source_url": [
+        "https://www.ncei.noaa.gov/data/global-hourly/access/2022/42181099999.csv"
+      ]
+    },
+    {
+      "station_id": "43295099999",
+      "raw_rows": 2846,
+      "raw_rows_with_MA1_station_pressure": 2838,
+      "sample": [
+        {
+          "STATION": "43295099999",
+          "DATE": "2022-01-01T00:00:00",
+          "REPORT_TYPE": "FM-12",
+          "TMP": "+0192,1",
+          "DEW": "+0183,1",
+          "SLP": "99999,9",
+          "MA1": "99999,9,09133,1"
+        },
+        {
+          "STATION": "43295099999",
+          "DATE": "2022-01-01T03:00:00",
+          "REPORT_TYPE": "FM-12",
+          "TMP": "+0200,1",
+          "DEW": "+0181,1",
+          "SLP": "99999,9",
+          "MA1": "99999,9,09156,1"
+        }
+      ],
+      "source_url": [
+        "https://www.ncei.noaa.gov/data/global-hourly/access/2022/43295099999.csv"
+      ]
+    }
+  ],
+  "dwd_development": {
+    "2022": {
+      "rows": 838126,
+      "stations": 16,
+      "start": "2022-01-01 00:00:00+00:00",
+      "end": "2022-12-31 23:50:00+00:00",
+      "invalid_timestamps": 0,
+      "duplicate_station_times": 0,
+      "missing": {
+        "temperature_c": 0,
+        "pressure_hpa": 0,
+        "relative_humidity_pct": 0
+      },
+      "complete_triples": 838126,
+      "rows_on_whole_hour": 139684,
+      "ranges": {
+        "temperature_c": {
+          "min": -15.0,
+          "max": 38.8,
+          "integer_value_percent": 9.971173785325833
+        },
+        "pressure_hpa": {
+          "min": 971.9616,
+          "max": 1049.4369,
+          "integer_value_percent": 0.6309313874047577
+        },
+        "relative_humidity_pct": {
+          "min": 11.3,
+          "max": 100.0,
+          "integer_value_percent": 10.886072022583717
+        }
+      },
+      "categories": {
+        "source": {
+          "DWD CDC 10-minute station observations 2022": 838126
+        },
+        "pressure_source": {
+          "dwd_station_pressure_reduced_to_msl": 838126
+        },
+        "report_type": {
+          "DWD_10MIN": 838126
+        },
+        "temperature_quality": {
+          "3": 838126
+        },
+        "pressure_quality": {
+          "3": 838126
+        },
+        "cluster": {
+          "dwd_west_lowland": 210041,
+          "dwd_north_coastal": 209785,
+          "dwd_south_upland": 209526,
+          "dwd_east_continental": 208774
+        },
+        "evaluation_role": {
+          "development_train": 838126
+        }
+      },
+      "by_station": [
+        {
+          "station_id": "DWD-00232",
+          "name": "Augsburg",
+          "rows": 51846,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 97.0,
+          "gaps_over_6h": 3,
+          "reporting_days": 362,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 51846
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-00433",
+          "name": "Berlin-Tempelhof",
+          "rows": 51667,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 95.5,
+          "gaps_over_6h": 2,
+          "reporting_days": 361,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 51667
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01048",
+          "name": "Dresden-Klotzsche",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01078",
+          "name": "Duesseldorf",
+          "rows": 52489,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 12.0,
+          "gaps_over_6h": 1,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52489
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01262",
+          "name": "Muenchen-Flughafen",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01420",
+          "name": "Frankfurt-Main",
+          "rows": 52445,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 1.0,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52445
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01684",
+          "name": "Goerlitz",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01975",
+          "name": "Hamburg-Fuhlsbuettel",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-02667",
+          "name": "Koeln-Bonn",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-02712",
+          "name": "Konstanz",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-03032",
+          "name": "List-auf-Sylt",
+          "rows": 52497,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 6.833333333333333,
+          "gaps_over_6h": 1,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52497
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-03987",
+          "name": "Potsdam",
+          "rows": 51987,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 95.66666666666667,
+          "gaps_over_6h": 1,
+          "reporting_days": 362,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 51987
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-04271",
+          "name": "Rostock-Warnemuende",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-04336",
+          "name": "Saarbruecken-Ensheim",
+          "rows": 52547,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 2.3333333333333335,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52547
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-04928",
+          "name": "Stuttgart-Schnarrenberg",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-05839",
+          "name": "Emden",
+          "rows": 52168,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 65.5,
+          "gaps_over_6h": 1,
+          "reporting_days": 363,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52168
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        }
+      ],
+      "dewpoint_above_temperature_rows": 0,
+      "rh_matches_magnus_to_0_001_percent": 1.4153003247721703,
+      "report_gaps_minutes_counts": {
+        "10.0": 838074,
+        "60.0": 22,
+        "30.0": 2,
+        "910.0": 1,
+        "5820.0": 1,
+        "440.0": 1,
+        "5730.0": 1,
+        "3220.0": 1,
+        "720.0": 1,
+        "20.0": 1,
+        "240.0": 1,
+        "410.0": 1,
+        "5740.0": 1,
+        "140.0": 1,
+        "3930.0": 1
+      },
+      "gap_over_6h_count": 9
+    },
+    "2023": {
+      "rows": 838307,
+      "stations": 16,
+      "start": "2023-01-01 00:00:00+00:00",
+      "end": "2023-12-31 23:50:00+00:00",
+      "invalid_timestamps": 0,
+      "duplicate_station_times": 0,
+      "missing": {
+        "temperature_c": 0,
+        "pressure_hpa": 0,
+        "relative_humidity_pct": 0
+      },
+      "complete_triples": 838307,
+      "rows_on_whole_hour": 139716,
+      "ranges": {
+        "temperature_c": {
+          "min": -17.9,
+          "max": 36.8,
+          "integer_value_percent": 9.959119988262056
+        },
+        "pressure_hpa": {
+          "min": 970.9344,
+          "max": 1045.006,
+          "integer_value_percent": 0.6192242221525049
+        },
+        "relative_humidity_pct": {
+          "min": 16.0,
+          "max": 100.0,
+          "integer_value_percent": 10.639896839701922
+        }
+      },
+      "categories": {
+        "source": {
+          "DWD CDC 10-minute station observations 2023": 838307
+        },
+        "pressure_source": {
+          "dwd_station_pressure_reduced_to_msl": 838307
+        },
+        "report_type": {
+          "DWD_10MIN": 838307
+        },
+        "temperature_quality": {
+          "3": 838307
+        },
+        "pressure_quality": {
+          "3": 838307
+        },
+        "cluster": {
+          "dwd_east_continental": 210056,
+          "dwd_north_coastal": 209527,
+          "dwd_south_upland": 209398,
+          "dwd_west_lowland": 209326
+        },
+        "evaluation_role": {
+          "development_validation": 838307
+        }
+      },
+      "by_station": [
+        {
+          "station_id": "DWD-00232",
+          "name": "Augsburg",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-00433",
+          "name": "Berlin-Tempelhof",
+          "rows": 52513,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 5.0,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52513
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01048",
+          "name": "Dresden-Klotzsche",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01078",
+          "name": "Duesseldorf",
+          "rows": 52087,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 52.333333333333336,
+          "gaps_over_6h": 3,
+          "reporting_days": 364,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52087
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01262",
+          "name": "Muenchen-Flughafen",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01420",
+          "name": "Frankfurt-Main",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01684",
+          "name": "Goerlitz",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-01975",
+          "name": "Hamburg-Fuhlsbuettel",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-02667",
+          "name": "Koeln-Bonn",
+          "rows": 52150,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 8.666666666666666,
+          "gaps_over_6h": 7,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52150
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-02712",
+          "name": "Konstanz",
+          "rows": 52178,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 63.833333333333336,
+          "gaps_over_6h": 1,
+          "reporting_days": 363,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52178
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-03032",
+          "name": "List-auf-Sylt",
+          "rows": 52530,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 5.166666666666667,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52530
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-03987",
+          "name": "Potsdam",
+          "rows": 52423,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 9.0,
+          "gaps_over_6h": 2,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52423
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-04271",
+          "name": "Rostock-Warnemuende",
+          "rows": 52560,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 0.16666666666666666,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52560
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-04336",
+          "name": "Saarbruecken-Ensheim",
+          "rows": 52529,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 3.5,
+          "gaps_over_6h": 0,
+          "reporting_days": 365,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52529
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-04928",
+          "name": "Stuttgart-Schnarrenberg",
+          "rows": 52100,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 76.83333333333333,
+          "gaps_over_6h": 1,
+          "reporting_days": 363,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 52100
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        },
+        {
+          "station_id": "DWD-05839",
+          "name": "Emden",
+          "rows": 51877,
+          "complete_triple_pct": 100.0,
+          "median_gap_minutes": 10.0,
+          "p90_gap_minutes": 10.0,
+          "max_gap_hours": 89.5,
+          "gaps_over_6h": 2,
+          "reporting_days": 362,
+          "pressure_sources": {
+            "dwd_station_pressure_reduced_to_msl": 51877
+          },
+          "pressure_source_switches": 0,
+          "pressure_switch_jump_median_hpa": null
+        }
+      ],
+      "dewpoint_above_temperature_rows": 0,
+      "rh_matches_magnus_to_0_001_percent": 1.0879069362417348,
+      "report_gaps_minutes_counts": {
+        "10.0": 838259,
+        "210.0": 3,
+        "120.0": 2,
+        "220.0": 2,
+        "260.0": 2,
+        "470.0": 2,
+        "380.0": 2,
+        "300.0": 1,
+        "80.0": 1,
+        "3140.0": 1,
+        "200.0": 1,
+        "500.0": 1,
+        "460.0": 1,
+        "480.0": 1,
+        "440.0": 1,
+        "110.0": 1,
+        "410.0": 1,
+        "350.0": 1,
+        "520.0": 1,
+        "3830.0": 1,
+        "310.0": 1,
+        "190.0": 1,
+        "540.0": 1,
+        "4610.0": 1,
+        "1480.0": 1,
+        "5370.0": 1
+      },
+      "gap_over_6h_count": 16
+    }
+  },
+  "dwd_saved_samples": [
+    {
+      "station_id": "DWD-01975",
+      "timestamp_utc": "2022-01-01T00:00:00Z",
+      "year": 2022,
+      "cluster": "dwd_north_coastal",
+      "evaluation_role": "development_train",
+      "station_name": "Hamburg-Fuhlsbuettel",
+      "latitude": 53.6332,
+      "longitude": 9.9881,
+      "elevation_m": 11,
+      "temperature_c": 11.4,
+      "temperature_quality": 3,
+      "dew_point_c": 10.5,
+      "dew_point_quality": 3,
+      "relative_humidity_pct": 93.9,
+      "pressure_hpa": 1017.0424,
+      "station_pressure_hpa": 1015.7,
+      "pressure_source": "dwd_station_pressure_reduced_to_msl",
+      "pressure_quality": 3,
+      "source": "DWD CDC 10-minute station observations 2022",
+      "report_type": "DWD_10MIN"
+    },
+    {
+      "station_id": "DWD-01975",
+      "timestamp_utc": "2022-01-01T00:10:00Z",
+      "year": 2022,
+      "cluster": "dwd_north_coastal",
+      "evaluation_role": "development_train",
+      "station_name": "Hamburg-Fuhlsbuettel",
+      "latitude": 53.6332,
+      "longitude": 9.9881,
+      "elevation_m": 11,
+      "temperature_c": 11.3,
+      "temperature_quality": 3,
+      "dew_point_c": 10.5,
+      "dew_point_quality": 3,
+      "relative_humidity_pct": 94.8,
+      "pressure_hpa": 1017.143,
+      "station_pressure_hpa": 1015.8,
+      "pressure_source": "dwd_station_pressure_reduced_to_msl",
+      "pressure_quality": 3,
+      "source": "DWD CDC 10-minute station observations 2022",
+      "report_type": "DWD_10MIN"
+    }
+  ],
+  "dwd_raw_station_spotcheck": {
+    "station_id": "DWD-01975",
+    "archive": "10minutenwerte_TU_01975_20200101_20251231_hist.zip",
+    "development_rows": 105120,
+    "missing_or_sentinel_counts": {
+      "TT_10": 0,
+      "PP_10": 0,
+      "RF_10": 0
+    },
+    "quality_levels": {
+      "3": 105120
+    },
+    "sample": [
+      {
+        "STATIONS_ID": "       1975",
+        "MESS_DATUM": "202201010000",
+        "QN": "    3",
+        "PP_10": " 1015.7",
+        "TT_10": "  11.4",
+        "TM5_10": "  10.7",
+        "RF_10": "  93.9",
+        "TD_10": "  10.5",
+        "eor": "eor"
+      },
+      {
+        "STATIONS_ID": "       1975",
+        "MESS_DATUM": "202201010010",
+        "QN": "    3",
+        "PP_10": " 1015.8",
+        "TT_10": "  11.3",
+        "TM5_10": "  10.6",
+        "RF_10": "  94.8",
+        "TD_10": "  10.5",
+        "eor": "eor"
+      }
+    ]
+  },
+  "labels": {
+    "train": {
+      "rows": 182362,
+      "station_count": 20,
+      "label_sources": {
+        "none": 179354,
+        "synthetic_fault": 2510,
+        "synthetic_weather_scenario": 498
+      },
+      "categories": {
+        "normal": 179354,
+        "sensor_fault": 2510,
+        "genuine_weather_scenario": 498
+      },
+      "faults": {
+        "normal": 179354,
+        "drift": 549,
+        "regional_temperature_event": 498,
+        "bias": 468,
+        "multi_sensor_failure": 412,
+        "frozen_sensor": 380,
+        "noise": 322,
+        "dropout": 240,
+        "communication_corruption": 28,
+        "timestamp_error": 27,
+        "duplicate_packet": 24,
+        "unit_error": 15,
+        "spike": 15,
+        "sudden_drop": 15,
+        "scaling_error": 15
+      },
+      "fault_rows": 2510,
+      "weather_rows": 498,
+      "fault_episodes": 195,
+      "original_value_columns": [
+        "original_timestamp_utc",
+        "original_temperature_c",
+        "original_pressure_hpa",
+        "original_relative_humidity_pct"
+      ],
+      "normal_label_with_missing_primary": 2948,
+      "normal_label_with_source_qc_suspect": 279
+    },
+    "validation": {
+      "rows": 181470,
+      "station_count": 20,
+      "label_sources": {
+        "none": 179263,
+        "synthetic_fault": 1696,
+        "synthetic_weather_scenario": 511
+      },
+      "categories": {
+        "normal": 179263,
+        "sensor_fault": 1696,
+        "genuine_weather_scenario": 511
+      },
+      "faults": {
+        "normal": 179263,
+        "regional_temperature_event": 511,
+        "drift": 491,
+        "bias": 276,
+        "multi_sensor_failure": 267,
+        "frozen_sensor": 233,
+        "noise": 181,
+        "dropout": 162,
+        "communication_corruption": 16,
+        "duplicate_packet": 16,
+        "timestamp_error": 14,
+        "sudden_drop": 10,
+        "scaling_error": 10,
+        "unit_error": 10,
+        "spike": 10
+      },
+      "fault_rows": 1696,
+      "weather_rows": 511,
+      "fault_episodes": 130,
+      "original_value_columns": [
+        "original_timestamp_utc",
+        "original_temperature_c",
+        "original_pressure_hpa",
+        "original_relative_humidity_pct"
+      ],
+      "normal_label_with_missing_primary": 2923,
+      "normal_label_with_source_qc_suspect": 238
+    }
+  },
+  "feature_tables": {
+    "train": {
+      "rows": 182362,
+      "visible_rows": 182122,
+      "visible_station_count": 20,
+      "year_counts": {
+        "2022": 182122
+      },
+      "h1_rows": 91194,
+      "h2_rows": 90928,
+      "non_india_station_ids": [],
+      "raw_input_missing": {
+        "temperature_value": 273,
+        "pressure_value": 3115,
+        "humidity_value": 334
+      },
+      "neighbour_count": {
+        "4": 140149,
+        "3": 36251,
+        "2": 5426,
+        "1": 204,
+        "0": 92
+      },
+      "features_with_label_like_names": []
+    },
+    "validation": {
+      "rows": 181470,
+      "visible_rows": 181308,
+      "visible_station_count": 20,
+      "year_counts": {
+        "2023": 181308
+      },
+      "h1_rows": 86906,
+      "h2_rows": 94402,
+      "non_india_station_ids": [],
+      "raw_input_missing": {
+        "temperature_value": 194,
+        "pressure_value": 3026,
+        "humidity_value": 236
+      },
+      "neighbour_count": {
+        "4": 143342,
+        "3": 30984,
+        "2": 6190,
+        "1": 650,
+        "0": 142
+      },
+      "features_with_label_like_names": []
+    }
+  },
+  "configured_distances": {
+    "india": {
+      "bengaluru": {
+        "stations": 6,
+        "min_km": 9.4,
+        "max_km": 362.2,
+        "pairs_over_200km": 9,
+        "pairs": [
+          {
+            "a": "Bangalore",
+            "b": "Bangalore HAL Airport",
+            "distance_km": 9.4,
+            "elevation_difference_m": 33.4
+          },
+          {
+            "a": "Bangalore",
+            "b": "Kempegowda International Airport",
+            "distance_km": 28.8,
+            "elevation_difference_m": 6.0
+          },
+          {
+            "a": "Bangalore",
+            "b": "Coimbatore",
+            "distance_km": 223.1,
+            "elevation_difference_m": 517.4
+          },
+          {
+            "a": "Bangalore",
+            "b": "Mangalore",
+            "distance_km": 291.8,
+            "elevation_difference_m": 818.3
+          },
+          {
+            "a": "Bangalore",
+            "b": "Chitradurga",
+            "distance_km": 187.8,
+            "elevation_difference_m": 188.0
+          },
+          {
+            "a": "Bangalore HAL Airport",
+            "b": "Kempegowda International Airport",
+            "distance_km": 28.0,
+            "elevation_difference_m": 27.4
+          },
+          {
+            "a": "Bangalore HAL Airport",
+            "b": "Coimbatore",
+            "distance_km": 223.9,
+            "elevation_difference_m": 484.0
+          },
+          {
+            "a": "Bangalore HAL Airport",
+            "b": "Mangalore",
+            "distance_km": 301.0,
+            "elevation_difference_m": 784.9
+          },
+          {
+            "a": "Bangalore HAL Airport",
+            "b": "Chitradurga",
+            "distance_km": 195.4,
+            "elevation_difference_m": 154.6
+          },
+          {
+            "a": "Kempegowda International Airport",
+            "b": "Coimbatore",
+            "distance_km": 251.5,
+            "elevation_difference_m": 511.4
+          },
+          {
+            "a": "Kempegowda International Airport",
+            "b": "Mangalore",
+            "distance_km": 305.5,
+            "elevation_difference_m": 812.3
+          },
+          {
+            "a": "Kempegowda International Airport",
+            "b": "Chitradurga",
+            "distance_km": 178.7,
+            "elevation_difference_m": 182.0
+          },
+          {
+            "a": "Coimbatore",
+            "b": "Mangalore",
+            "distance_km": 317.7,
+            "elevation_difference_m": 300.9
+          },
+          {
+            "a": "Coimbatore",
+            "b": "Chitradurga",
+            "distance_km": 362.2,
+            "elevation_difference_m": 329.4
+          },
+          {
+            "a": "Mangalore",
+            "b": "Chitradurga",
+            "distance_km": 218.7,
+            "elevation_difference_m": 630.3
+          }
+        ]
+      },
+      "chennai": {
+        "stations": 6,
+        "min_km": 8.4,
+        "max_km": 299.3,
+        "pairs_over_200km": 3,
+        "pairs": [
+          {
+            "a": "Chennai International",
+            "b": "Nungambakkam",
+            "distance_km": 8.4,
+            "elevation_difference_m": 8.8
+          },
+          {
+            "a": "Chennai International",
+            "b": "Tirupati",
+            "distance_km": 98.9,
+            "elevation_difference_m": 89.2
+          },
+          {
+            "a": "Chennai International",
+            "b": "Cuddalore",
+            "distance_km": 143.7,
+            "elevation_difference_m": 3.8
+          },
+          {
+            "a": "Chennai International",
+            "b": "Nellore",
+            "distance_km": 163.3,
+            "elevation_difference_m": 4.2
+          },
+          {
+            "a": "Chennai International",
+            "b": "Pondicherry",
+            "distance_km": 120.8,
+            "elevation_difference_m": 22.2
+          },
+          {
+            "a": "Nungambakkam",
+            "b": "Tirupati",
+            "distance_km": 94.4,
+            "elevation_difference_m": 98.0
+          },
+          {
+            "a": "Nungambakkam",
+            "b": "Cuddalore",
+            "distance_km": 152.0,
+            "elevation_difference_m": 5.0
+          },
+          {
+            "a": "Nungambakkam",
+            "b": "Nellore",
+            "distance_km": 155.6,
+            "elevation_difference_m": 13.0
+          },
+          {
+            "a": "Nungambakkam",
+            "b": "Pondicherry",
+            "distance_km": 129.2,
+            "elevation_difference_m": 31.0
+          },
+          {
+            "a": "Tirupati",
+            "b": "Cuddalore",
+            "distance_km": 212.2,
+            "elevation_difference_m": 93.0
+          },
+          {
+            "a": "Tirupati",
+            "b": "Nellore",
+            "distance_km": 97.2,
+            "elevation_difference_m": 85.0
+          },
+          {
+            "a": "Tirupati",
+            "b": "Pondicherry",
+            "distance_km": 190.7,
+            "elevation_difference_m": 67.0
+          },
+          {
+            "a": "Cuddalore",
+            "b": "Nellore",
+            "distance_km": 299.3,
+            "elevation_difference_m": 8.0
+          },
+          {
+            "a": "Cuddalore",
+            "b": "Pondicherry",
+            "distance_km": 22.9,
+            "elevation_difference_m": 26.0
+          },
+          {
+            "a": "Nellore",
+            "b": "Pondicherry",
+            "distance_km": 276.7,
+            "elevation_difference_m": 18.0
+          }
+        ]
+      },
+      "delhi": {
+        "stations": 6,
+        "min_km": 10.3,
+        "max_km": 402.7,
+        "pairs_over_200km": 12,
+        "pairs": [
+          {
+            "a": "Indira Gandhi International",
+            "b": "Safdarjung",
+            "distance_km": 10.3,
+            "elevation_difference_m": 21.9
+          },
+          {
+            "a": "Indira Gandhi International",
+            "b": "Jaipur",
+            "distance_km": 231.8,
+            "elevation_difference_m": 148.2
+          },
+          {
+            "a": "Indira Gandhi International",
+            "b": "Bareilly",
+            "distance_km": 230.0,
+            "elevation_difference_m": 60.0
+          },
+          {
+            "a": "Indira Gandhi International",
+            "b": "Gwalior",
+            "distance_km": 276.2,
+            "elevation_difference_m": 48.7
+          },
+          {
+            "a": "Indira Gandhi International",
+            "b": "Hisar",
+            "distance_km": 147.8,
+            "elevation_difference_m": 23.4
+          },
+          {
+            "a": "Safdarjung",
+            "b": "Jaipur",
+            "distance_km": 239.1,
+            "elevation_difference_m": 170.1
+          },
+          {
+            "a": "Safdarjung",
+            "b": "Bareilly",
+            "distance_km": 220.1,
+            "elevation_difference_m": 38.1
+          },
+          {
+            "a": "Safdarjung",
+            "b": "Gwalior",
+            "distance_km": 274.1,
+            "elevation_difference_m": 26.8
+          },
+          {
+            "a": "Safdarjung",
+            "b": "Hisar",
+            "distance_km": 156.0,
+            "elevation_difference_m": 1.5
+          },
+          {
+            "a": "Jaipur",
+            "b": "Bareilly",
+            "distance_km": 400.1,
+            "elevation_difference_m": 208.2
+          },
+          {
+            "a": "Jaipur",
+            "b": "Gwalior",
+            "distance_km": 247.4,
+            "elevation_difference_m": 196.9
+          },
+          {
+            "a": "Jaipur",
+            "b": "Hisar",
+            "distance_km": 261.9,
+            "elevation_difference_m": 171.6
+          },
+          {
+            "a": "Bareilly",
+            "b": "Gwalior",
+            "distance_km": 265.8,
+            "elevation_difference_m": 11.3
+          },
+          {
+            "a": "Bareilly",
+            "b": "Hisar",
+            "distance_km": 369.8,
+            "elevation_difference_m": 36.6
+          },
+          {
+            "a": "Gwalior",
+            "b": "Hisar",
+            "distance_km": 402.7,
+            "elevation_difference_m": 25.3
+          }
+        ]
+      },
+      "hyderabad": {
+        "stations": 6,
+        "min_km": 24.8,
+        "max_km": 463.7,
+        "pairs_over_200km": 11,
+        "pairs": [
+          {
+            "a": "Begumpet Airport",
+            "b": "Hyderabad International Airport",
+            "distance_km": 24.8,
+            "elevation_difference_m": 86.0
+          },
+          {
+            "a": "Begumpet Airport",
+            "b": "Vijayawada",
+            "distance_km": 268.7,
+            "elevation_difference_m": 506.0
+          },
+          {
+            "a": "Begumpet Airport",
+            "b": "Nanded",
+            "distance_km": 217.0,
+            "elevation_difference_m": 173.0
+          },
+          {
+            "a": "Begumpet Airport",
+            "b": "Kurnool",
+            "distance_km": 188.4,
+            "elevation_difference_m": 250.0
+          },
+          {
+            "a": "Begumpet Airport",
+            "b": "Ramagundam",
+            "distance_km": 178.7,
+            "elevation_difference_m": 375.0
+          },
+          {
+            "a": "Hyderabad International Airport",
+            "b": "Vijayawada",
+            "distance_km": 265.0,
+            "elevation_difference_m": 592.0
+          },
+          {
+            "a": "Hyderabad International Airport",
+            "b": "Nanded",
+            "distance_km": 235.4,
+            "elevation_difference_m": 259.0
+          },
+          {
+            "a": "Hyderabad International Airport",
+            "b": "Kurnool",
+            "distance_km": 163.7,
+            "elevation_difference_m": 336.0
+          },
+          {
+            "a": "Hyderabad International Airport",
+            "b": "Ramagundam",
+            "distance_km": 201.6,
+            "elevation_difference_m": 461.0
+          },
+          {
+            "a": "Vijayawada",
+            "b": "Nanded",
+            "distance_km": 463.7,
+            "elevation_difference_m": 333.0
+          },
+          {
+            "a": "Vijayawada",
+            "b": "Kurnool",
+            "distance_km": 302.6,
+            "elevation_difference_m": 256.0
+          },
+          {
+            "a": "Vijayawada",
+            "b": "Ramagundam",
+            "distance_km": 287.7,
+            "elevation_difference_m": 131.0
+          },
+          {
+            "a": "Nanded",
+            "b": "Kurnool",
+            "distance_km": 373.3,
+            "elevation_difference_m": 77.0
+          },
+          {
+            "a": "Nanded",
+            "b": "Ramagundam",
+            "distance_km": 223.7,
+            "elevation_difference_m": 202.0
+          },
+          {
+            "a": "Kurnool",
+            "b": "Ramagundam",
+            "distance_km": 360.4,
+            "elevation_difference_m": 125.0
+          }
+        ]
+      }
+    },
+    "dwd": {
+      "dwd_east_continental": {
+        "stations": 4,
+        "min_km": 25.0,
+        "max_km": 187.8,
+        "pairs_over_200km": 0,
+        "pairs": [
+          {
+            "a": "Berlin-Tempelhof",
+            "b": "Potsdam",
+            "distance_km": 25.0,
+            "elevation_difference_m": 33
+          },
+          {
+            "a": "Berlin-Tempelhof",
+            "b": "Dresden-Klotzsche",
+            "distance_km": 150.9,
+            "elevation_difference_m": 180
+          },
+          {
+            "a": "Berlin-Tempelhof",
+            "b": "Goerlitz",
+            "distance_km": 180.0,
+            "elevation_difference_m": 191
+          },
+          {
+            "a": "Potsdam",
+            "b": "Dresden-Klotzsche",
+            "distance_km": 147.3,
+            "elevation_difference_m": 147
+          },
+          {
+            "a": "Potsdam",
+            "b": "Goerlitz",
+            "distance_km": 187.8,
+            "elevation_difference_m": 158
+          },
+          {
+            "a": "Dresden-Klotzsche",
+            "b": "Goerlitz",
+            "distance_km": 83.5,
+            "elevation_difference_m": 11
+          }
+        ]
+      },
+      "dwd_north_coastal": {
+        "stations": 4,
+        "min_km": 150.0,
+        "max_km": 330.6,
+        "pairs_over_200km": 2,
+        "pairs": [
+          {
+            "a": "Hamburg-Fuhlsbuettel",
+            "b": "Rostock-Warnemuende",
+            "distance_km": 150.0,
+            "elevation_difference_m": 6
+          },
+          {
+            "a": "Hamburg-Fuhlsbuettel",
+            "b": "List-auf-Sylt",
+            "distance_km": 184.1,
+            "elevation_difference_m": 14
+          },
+          {
+            "a": "Hamburg-Fuhlsbuettel",
+            "b": "Emden",
+            "distance_km": 184.5,
+            "elevation_difference_m": 11
+          },
+          {
+            "a": "Rostock-Warnemuende",
+            "b": "List-auf-Sylt",
+            "distance_km": 253.7,
+            "elevation_difference_m": 20
+          },
+          {
+            "a": "Rostock-Warnemuende",
+            "b": "Emden",
+            "distance_km": 330.6,
+            "elevation_difference_m": 5
+          },
+          {
+            "a": "List-auf-Sylt",
+            "b": "Emden",
+            "distance_km": 196.2,
+            "elevation_difference_m": 25
+          }
+        ]
+      },
+      "dwd_south_upland": {
+        "stations": 4,
+        "min_km": 64.9,
+        "max_km": 212.3,
+        "pairs_over_200km": 1,
+        "pairs": [
+          {
+            "a": "Konstanz",
+            "b": "Muenchen-Flughafen",
+            "distance_km": 212.3,
+            "elevation_difference_m": 18
+          },
+          {
+            "a": "Konstanz",
+            "b": "Stuttgart-Schnarrenberg",
+            "distance_km": 126.1,
+            "elevation_difference_m": 114
+          },
+          {
+            "a": "Konstanz",
+            "b": "Augsburg",
+            "distance_km": 157.2,
+            "elevation_difference_m": 34
+          },
+          {
+            "a": "Muenchen-Flughafen",
+            "b": "Stuttgart-Schnarrenberg",
+            "distance_km": 199.5,
+            "elevation_difference_m": 132
+          },
+          {
+            "a": "Muenchen-Flughafen",
+            "b": "Augsburg",
+            "distance_km": 64.9,
+            "elevation_difference_m": 16
+          },
+          {
+            "a": "Stuttgart-Schnarrenberg",
+            "b": "Augsburg",
+            "distance_km": 135.6,
+            "elevation_difference_m": 148
+          }
+        ]
+      },
+      "dwd_west_lowland": {
+        "stations": 4,
+        "min_km": 55.1,
+        "max_km": 232.9,
+        "pairs_over_200km": 1,
+        "pairs": [
+          {
+            "a": "Duesseldorf",
+            "b": "Koeln-Bonn",
+            "distance_km": 55.1,
+            "elevation_difference_m": 54
+          },
+          {
+            "a": "Duesseldorf",
+            "b": "Frankfurt-Main",
+            "distance_km": 187.6,
+            "elevation_difference_m": 63
+          },
+          {
+            "a": "Duesseldorf",
+            "b": "Saarbruecken-Ensheim",
+            "distance_km": 232.9,
+            "elevation_difference_m": 282
+          },
+          {
+            "a": "Koeln-Bonn",
+            "b": "Frankfurt-Main",
+            "distance_km": 134.2,
+            "elevation_difference_m": 9
+          },
+          {
+            "a": "Koeln-Bonn",
+            "b": "Saarbruecken-Ensheim",
+            "distance_km": 183.7,
+            "elevation_difference_m": 228
+          },
+          {
+            "a": "Frankfurt-Main",
+            "b": "Saarbruecken-Ensheim",
+            "distance_km": 136.2,
+            "elevation_difference_m": 219
+          }
+        ]
+      }
+    }
+  },
+  "latest_notebook_data_code": [
+    {
+      "cell": 9,
+      "code": "PRIMARY=['temperature_c','pressure_hpa','relative_humidity_pct']\n\nindia=pd.read_csv(STARTER/'data'/'india_aws_2022_2023.csv.gz',dtype={'station_id':str},low_memory=False)\nindia_stations=pd.read_csv(STARTER/'config'/'india_stations.csv',dtype={'station_id':str})\nindia_report=json.loads((STARTER/'reports'/'iteration10_india_data_validation.json').read_text())"
+    },
+    {
+      "cell": 9,
+      "code": "\nindia=pd.read_csv(STARTER/'data'/'india_aws_2022_2023.csv.gz',dtype={'station_id':str},low_memory=False)\nindia_stations=pd.read_csv(STARTER/'config'/'india_stations.csv',dtype={'station_id':str})\nindia_report=json.loads((STARTER/'reports'/'iteration10_india_data_validation.json').read_text())\nassert india_report['status']=='PASS'"
+    },
+    {
+      "cell": 9,
+      "code": "\ndef load_dwd(year):\n    frame=pd.read_csv(DWD_BUNDLE/'data'/f'dwd_aws_10min_{year}.csv.gz',dtype={'station_id':str},low_memory=False)\n    ts=pd.to_datetime(frame.timestamp_utc,utc=True)\n    frame=frame.loc[ts.dt.minute.eq(0)].copy().reset_index(drop=True)"
+    },
+    {
+      "cell": 9,
+      "code": "    frame=pd.read_csv(DWD_BUNDLE/'data'/f'dwd_aws_10min_{year}.csv.gz',dtype={'station_id':str},low_memory=False)\n    ts=pd.to_datetime(frame.timestamp_utc,utc=True)\n    frame=frame.loc[ts.dt.minute.eq(0)].copy().reset_index(drop=True)\n    frame['timestamp_utc']=pd.to_datetime(frame.timestamp_utc,utc=True).dt.strftime('%Y-%m-%dT%H:%M:%SZ')\n    return frame"
+    },
+    {
+      "cell": 9,
+      "code": "\ndwd=pd.concat([load_dwd(2022),load_dwd(2023)],ignore_index=True)\ndwd_stations=pd.read_csv(DWD_BUNDLE/'config'/'iteration8_dwd_stations.csv',dtype={'station_id':str})\n\ndef standardize(frame,domain):"
+    },
+    {
+      "cell": 15,
+      "code": "\ndef read_feature_cache(path,label):\n    table=pd.read_csv(path,dtype={'station_id':str,'eval_station_id':str,'row_id':str},low_memory=False)\n    return normalise_feature_identifiers(table,label)\n"
+    }
+  ],
+  "packaged_development_identity": [
+    {
+      "package": "SkyGuard_Iteration10_Final_Starter_Bundle.zip",
+      "member": "SkyGuard_Iteration10_Final_Starter_Bundle/data/india_aws_2022_2023.csv.gz",
+      "local_file": "data/iteration10/processed/india_aws_2022_2023.csv.gz",
+      "same_bytes": true,
+      "local_sha256": "a84fa2a3e6e674bb7b11829590ceb58757e63afcc86db1de895759bc1c49ad49",
+      "embedded_sha256": "a84fa2a3e6e674bb7b11829590ceb58757e63afcc86db1de895759bc1c49ad49"
+    },
+    {
+      "package": "SkyGuard_Iteration8_Development_Data_Bundle.zip",
+      "member": "SkyGuard_Iteration8_Development_Data_Bundle/data/dwd_aws_10min_2022.csv.gz",
+      "local_file": "data/iteration8/processed/dwd_aws_10min_2022.csv.gz",
+      "same_bytes": true,
+      "local_sha256": "b6fb48c7d323955309d057816c90c053efeb889e50c0310d9c6d90773fe2b98a",
+      "embedded_sha256": "b6fb48c7d323955309d057816c90c053efeb889e50c0310d9c6d90773fe2b98a"
+    },
+    {
+      "package": "SkyGuard_Iteration8_Development_Data_Bundle.zip",
+      "member": "SkyGuard_Iteration8_Development_Data_Bundle/data/dwd_aws_10min_2023.csv.gz",
+      "local_file": "data/iteration8/processed/dwd_aws_10min_2023.csv.gz",
+      "same_bytes": true,
+      "local_sha256": "4f5f03a5e9acae56a88ccc7ad0df93b9211012003d253f42a76287560bd82085",
+      "embedded_sha256": "4f5f03a5e9acae56a88ccc7ad0df93b9211012003d253f42a76287560bd82085"
+    }
+  ]
+}

@@ -1,0 +1,993 @@
+{
+  "status": "PASS",
+  "built_at_utc": "2026-08-30T06:55:57+00:00",
+  "provider": "NOAA/NCEI",
+  "product": "Global Hourly / Integrated Surface Database (ISD)",
+  "official_dataset_page": "https://www.ncei.noaa.gov/products/land-based-station/integrated-surface-database",
+  "development_years": [
+    2022,
+    2023
+  ],
+  "locked_years_opened": [],
+  "summary": {
+    "rows": 385656,
+    "stations": 24,
+    "clusters": 4,
+    "rows_by_year": {
+      "2022": 193807,
+      "2023": 191849
+    },
+    "rows_by_cluster": {
+      "bengaluru": 134096,
+      "chennai": 59518,
+      "delhi": 94001,
+      "hyderabad": 98041
+    },
+    "roles": {
+      "development": 363832,
+      "station_holdout": 21824
+    },
+    "valid_triple_rows": 385386,
+    "valid_triple_percent": 99.92998942062357,
+    "duplicate_station_timestamps": 0
+  },
+  "missing_percent": {
+    "temperature_c": 0.018410189391582135,
+    "pressure_hpa": 0.02489265044495613,
+    "relative_humidity_pct": 0.04874810712137242
+  },
+  "ranges": {
+    "temperature_c": {
+      "min": 0.6,
+      "max": 46.4
+    },
+    "pressure_hpa": {
+      "min": 901.3,
+      "max": 1053.2
+    },
+    "relative_humidity_pct": {
+      "min": 5.0276,
+      "max": 100.0
+    }
+  },
+  "pressure_sources": {
+    "": 96,
+    "ma1_altimeter": 275113,
+    "ma1_station": 5673,
+    "slp": 104774
+  },
+  "station_year_coverage": [
+    {
+      "station_id": "42131099999",
+      "year": 2022,
+      "rows": 2822,
+      "valid_triple_rows": 2813,
+      "valid_triple_percent": 99.68107725017717,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.39737681673165,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42131099999",
+      "year": 2023,
+      "rows": 2791,
+      "valid_triple_rows": 2774,
+      "valid_triple_percent": 99.39089931924042,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.49820788530465,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "42181099999",
+      "year": 2022,
+      "rows": 17175,
+      "valid_triple_rows": 17164,
+      "valid_triple_percent": 99.93595342066958,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.66228019098638,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42181099999",
+      "year": 2023,
+      "rows": 17118,
+      "valid_triple_rows": 17112,
+      "valid_triple_percent": 99.96494917630564,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.5034176549629,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42182099999",
+      "year": 2022,
+      "rows": 4005,
+      "valid_triple_rows": 3995,
+      "valid_triple_percent": 99.75031210986268,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.85014985014985,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42182099999",
+      "year": 2023,
+      "rows": 2893,
+      "valid_triple_rows": 2888,
+      "valid_triple_percent": 99.82716902868994,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.86168741355463,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "42189099999",
+      "year": 2022,
+      "rows": 3011,
+      "valid_triple_rows": 3009,
+      "valid_triple_percent": 99.9335768847559,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.8671096345515,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42189099999",
+      "year": 2023,
+      "rows": 3239,
+      "valid_triple_rows": 3232,
+      "valid_triple_percent": 99.78388391478852,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.56763434218654,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "42348099999",
+      "year": 2022,
+      "rows": 17367,
+      "valid_triple_rows": 17359,
+      "valid_triple_percent": 99.95393562503598,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.79269837613728,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42348099999",
+      "year": 2023,
+      "rows": 17327,
+      "valid_triple_rows": 17318,
+      "valid_triple_percent": 99.94805794424886,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.76913309477087,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42361099999",
+      "year": 2022,
+      "rows": 2973,
+      "valid_triple_rows": 2973,
+      "valid_triple_percent": 100.0,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.89905787348586,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42361099999",
+      "year": 2023,
+      "rows": 3280,
+      "valid_triple_rows": 3274,
+      "valid_triple_percent": 99.8170731707317,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.87801158889906,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "42705699999",
+      "year": 2022,
+      "rows": 17532,
+      "valid_triple_rows": 17518,
+      "valid_triple_percent": 99.92014601870865,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.84598710855057,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "42705699999",
+      "year": 2023,
+      "rows": 17359,
+      "valid_triple_rows": 17358,
+      "valid_triple_percent": 99.99423929949882,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.72923147828091,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43021099999",
+      "year": 2022,
+      "rows": 2015,
+      "valid_triple_rows": 1991,
+      "valid_triple_percent": 98.8089330024814,
+      "start_utc": "2022-01-01T01:00:00Z",
+      "end_utc": "2022-12-31T12:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 900.0,
+      "intervals_within_2x_median_percent": 63.70407149950348,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43021099999",
+      "year": 2023,
+      "rows": 2846,
+      "valid_triple_rows": 2824,
+      "valid_triple_percent": 99.22698524244554,
+      "start_utc": "2023-01-01T03:00:00Z",
+      "end_utc": "2023-12-31T03:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 827.9999999999973,
+      "intervals_within_2x_median_percent": 73.04042179261863,
+      "unique_reporting_days": 363
+    },
+    {
+      "station_id": "43086099999",
+      "year": 2022,
+      "rows": 2880,
+      "valid_triple_rows": 2879,
+      "valid_triple_percent": 99.96527777777777,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.7221257381035,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43086099999",
+      "year": 2023,
+      "rows": 2852,
+      "valid_triple_rows": 2851,
+      "valid_triple_percent": 99.96493688639552,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.85969835145563,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43128099999",
+      "year": 2022,
+      "rows": 11986,
+      "valid_triple_rows": 11981,
+      "valid_triple_percent": 99.95828466544302,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 90.0,
+      "intervals_within_2x_median_percent": 88.50229453483522,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43128099999",
+      "year": 2023,
+      "rows": 11484,
+      "valid_triple_rows": 11483,
+      "valid_triple_percent": 99.99129223267154,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 90.0,
+      "intervals_within_2x_median_percent": 86.9720456326744,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43128599999",
+      "year": 2022,
+      "rows": 17119,
+      "valid_triple_rows": 17116,
+      "valid_triple_percent": 99.98247561189322,
+      "start_utc": "2022-01-01T00:30:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.67870078280173,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43128599999",
+      "year": 2023,
+      "rows": 16363,
+      "valid_triple_rows": 16362,
+      "valid_triple_percent": 99.99388865122533,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.28492849284929,
+      "unique_reporting_days": 363
+    },
+    {
+      "station_id": "43181099999",
+      "year": 2022,
+      "rows": 12656,
+      "valid_triple_rows": 12656,
+      "valid_triple_percent": 100.0,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 92.12169103121296,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43181099999",
+      "year": 2023,
+      "rows": 12096,
+      "valid_triple_rows": 12093,
+      "valid_triple_percent": 99.9751984126984,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 60.0,
+      "intervals_within_2x_median_percent": 90.91360066143034,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43213099999",
+      "year": 2022,
+      "rows": 2883,
+      "valid_triple_rows": 2883,
+      "valid_triple_percent": 100.0,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.75711311589174,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43213099999",
+      "year": 2023,
+      "rows": 2861,
+      "valid_triple_rows": 2861,
+      "valid_triple_percent": 100.0,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.75524475524476,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43233099999",
+      "year": 2022,
+      "rows": 2877,
+      "valid_triple_rows": 2870,
+      "valid_triple_percent": 99.7566909975669,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.72183588317107,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43233099999",
+      "year": 2023,
+      "rows": 1945,
+      "valid_triple_rows": 1943,
+      "valid_triple_percent": 99.89717223650385,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 900.0,
+      "intervals_within_2x_median_percent": 88.01440329218107,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43245099999",
+      "year": 2022,
+      "rows": 2870,
+      "valid_triple_rows": 2868,
+      "valid_triple_percent": 99.93031358885017,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.7560125479261,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43245099999",
+      "year": 2023,
+      "rows": 2825,
+      "valid_triple_rows": 2824,
+      "valid_triple_percent": 99.96460176991151,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.68130311614732,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43275099999",
+      "year": 2022,
+      "rows": 1797,
+      "valid_triple_rows": 1796,
+      "valid_triple_percent": 99.94435169727323,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T12:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 720.0,
+      "intervals_within_2x_median_percent": 79.73273942093542,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43275099999",
+      "year": 2023,
+      "rows": 1768,
+      "valid_triple_rows": 1767,
+      "valid_triple_percent": 99.94343891402715,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T12:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 720.0,
+      "intervals_within_2x_median_percent": 79.51329937747595,
+      "unique_reporting_days": 363
+    },
+    {
+      "station_id": "43278099999",
+      "year": 2022,
+      "rows": 2156,
+      "valid_triple_rows": 2155,
+      "valid_triple_percent": 99.95361781076066,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T15:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 540.0,
+      "intervals_within_2x_median_percent": 83.15545243619489,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43278099999",
+      "year": 2023,
+      "rows": 2096,
+      "valid_triple_rows": 2093,
+      "valid_triple_percent": 99.85687022900763,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T15:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 540.0,
+      "intervals_within_2x_median_percent": 82.76849642004774,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43279099999",
+      "year": 2022,
+      "rows": 17314,
+      "valid_triple_rows": 17309,
+      "valid_triple_percent": 99.97112163567056,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.75740772829666,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43279099999",
+      "year": 2023,
+      "rows": 17311,
+      "valid_triple_rows": 17311,
+      "valid_triple_percent": 100.0,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.72270363951473,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43284099999",
+      "year": 2022,
+      "rows": 17107,
+      "valid_triple_rows": 17102,
+      "valid_triple_percent": 99.97077219851522,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.75447211504735,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43284099999",
+      "year": 2023,
+      "rows": 16652,
+      "valid_triple_rows": 16644,
+      "valid_triple_percent": 99.95195772279605,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.22527175545012,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43295099999",
+      "year": 2022,
+      "rows": 2846,
+      "valid_triple_rows": 2827,
+      "valid_triple_percent": 99.33239634574842,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.71880492091388,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43295099999",
+      "year": 2023,
+      "rows": 2828,
+      "valid_triple_rows": 2807,
+      "valid_triple_percent": 99.25742574257426,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.6462681287584,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43302599999",
+      "year": 2022,
+      "rows": 10620,
+      "valid_triple_rows": 10613,
+      "valid_triple_percent": 99.93408662900188,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T18:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 60.0,
+      "intervals_within_2x_median_percent": 96.09191072605708,
+      "unique_reporting_days": 360
+    },
+    {
+      "station_id": "43302599999",
+      "year": 2023,
+      "rows": 12727,
+      "valid_triple_rows": 12720,
+      "valid_triple_percent": 99.94499882140332,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 60.0,
+      "intervals_within_2x_median_percent": 97.81549583529781,
+      "unique_reporting_days": 345
+    },
+    {
+      "station_id": "43321099999",
+      "year": 2022,
+      "rows": 16047,
+      "valid_triple_rows": 16045,
+      "valid_triple_percent": 99.98753661120459,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T23:00:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 30.0,
+      "intervals_within_2x_median_percent": 99.60737878599028,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43321099999",
+      "year": 2023,
+      "rows": 15556,
+      "valid_triple_rows": 15553,
+      "valid_triple_percent": 99.98071483671896,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T23:30:00Z",
+      "median_interval_minutes": 30.0,
+      "p90_interval_minutes": 60.0,
+      "intervals_within_2x_median_percent": 99.18997107039537,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43329099999",
+      "year": 2022,
+      "rows": 2883,
+      "valid_triple_rows": 2879,
+      "valid_triple_percent": 99.86125563648976,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.86120749479528,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43329099999",
+      "year": 2023,
+      "rows": 2841,
+      "valid_triple_rows": 2838,
+      "valid_triple_percent": 99.89440337909187,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.71830985915493,
+      "unique_reporting_days": 364
+    },
+    {
+      "station_id": "43331099999",
+      "year": 2022,
+      "rows": 2866,
+      "valid_triple_rows": 2865,
+      "valid_triple_percent": 99.96510816468947,
+      "start_utc": "2022-01-01T00:00:00Z",
+      "end_utc": "2022-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.82547993019197,
+      "unique_reporting_days": 365
+    },
+    {
+      "station_id": "43331099999",
+      "year": 2023,
+      "rows": 2791,
+      "valid_triple_rows": 2790,
+      "valid_triple_percent": 99.96417054819061,
+      "start_utc": "2023-01-01T00:00:00Z",
+      "end_utc": "2023-12-31T21:00:00Z",
+      "median_interval_minutes": 180.0,
+      "p90_interval_minutes": 180.0,
+      "intervals_within_2x_median_percent": 99.56989247311829,
+      "unique_reporting_days": 363
+    }
+  ],
+  "neighbour_support": [
+    {
+      "cluster": "bengaluru",
+      "tolerance_minutes": 90.0,
+      "rows": 134096,
+      "at_least_1_neighbour_percent": 99.94183271685957,
+      "at_least_2_neighbours_percent": 99.71662092829018,
+      "at_least_3_neighbours_percent": 93.9080956926381,
+      "mean_causal_neighbours": 4.123717336833313
+    },
+    {
+      "cluster": "chennai",
+      "tolerance_minutes": 90.0,
+      "rows": 59518,
+      "at_least_1_neighbour_percent": 80.44289122618368,
+      "at_least_2_neighbours_percent": 80.33032023925534,
+      "at_least_3_neighbours_percent": 79.3356631607245,
+      "mean_causal_neighbours": 3.536560368291945
+    },
+    {
+      "cluster": "delhi",
+      "tolerance_minutes": 90.0,
+      "rows": 94001,
+      "at_least_1_neighbour_percent": 99.92446888862885,
+      "at_least_2_neighbours_percent": 77.9874682184232,
+      "at_least_3_neighbours_percent": 75.64174849203732,
+      "mean_causal_neighbours": 3.9670003510600953
+    },
+    {
+      "cluster": "hyderabad",
+      "tolerance_minutes": 90.0,
+      "rows": 98041,
+      "at_least_1_neighbour_percent": 97.15017186687203,
+      "at_least_2_neighbours_percent": 96.43006497281749,
+      "at_least_3_neighbours_percent": 79.33925602554034,
+      "mean_causal_neighbours": 3.7266347752470903
+    },
+    {
+      "cluster": "bengaluru",
+      "tolerance_minutes": 180.0,
+      "rows": 134096,
+      "at_least_1_neighbour_percent": 99.98806824961221,
+      "at_least_2_neighbours_percent": 99.94108698246032,
+      "at_least_3_neighbours_percent": 99.30870421190788,
+      "mean_causal_neighbours": 4.734965994511395
+    },
+    {
+      "cluster": "chennai",
+      "tolerance_minutes": 180.0,
+      "rows": 59518,
+      "at_least_1_neighbour_percent": 99.75469605833528,
+      "at_least_2_neighbours_percent": 99.63372425148694,
+      "at_least_3_neighbours_percent": 98.77516045566047,
+      "mean_causal_neighbours": 4.4974629523841525
+    },
+    {
+      "cluster": "delhi",
+      "tolerance_minutes": 180.0,
+      "rows": 94001,
+      "at_least_1_neighbour_percent": 99.99680854458995,
+      "at_least_2_neighbours_percent": 99.74681120413612,
+      "at_least_3_neighbours_percent": 99.58085552281358,
+      "mean_causal_neighbours": 4.932256039829364
+    },
+    {
+      "cluster": "hyderabad",
+      "tolerance_minutes": 180.0,
+      "rows": 98041,
+      "at_least_1_neighbour_percent": 99.9459409838741,
+      "at_least_2_neighbours_percent": 99.77662406544201,
+      "at_least_3_neighbours_percent": 99.62158688711865,
+      "mean_causal_neighbours": 4.472118807437704
+    },
+    {
+      "cluster": "bengaluru",
+      "tolerance_minutes": 360.0,
+      "rows": 134096,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.99254265600763,
+      "at_least_3_neighbours_percent": 99.76583939863978,
+      "mean_causal_neighbours": 4.854790597780695
+    },
+    {
+      "cluster": "chennai",
+      "tolerance_minutes": 360.0,
+      "rows": 59518,
+      "at_least_1_neighbour_percent": 99.86558688127961,
+      "at_least_2_neighbours_percent": 99.85214556940757,
+      "at_least_3_neighbours_percent": 99.7261332706072,
+      "mean_causal_neighbours": 4.74661446957223
+    },
+    {
+      "cluster": "delhi",
+      "tolerance_minutes": 360.0,
+      "rows": 94001,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.82766140785736,
+      "at_least_3_neighbours_percent": 99.7978744906969,
+      "mean_causal_neighbours": 4.9847342049552665
+    },
+    {
+      "cluster": "hyderabad",
+      "tolerance_minutes": 360.0,
+      "rows": 98041,
+      "at_least_1_neighbour_percent": 99.9918401485093,
+      "at_least_2_neighbours_percent": 99.87454228333044,
+      "at_least_3_neighbours_percent": 99.849042747422,
+      "mean_causal_neighbours": 4.691771809753062
+    }
+  ],
+  "station_neighbour_support_180m": [
+    {
+      "station_id": "42131099999",
+      "rows": 5613,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.995724211651523
+    },
+    {
+      "station_id": "42181099999",
+      "rows": 34293,
+      "at_least_1_neighbour_percent": 99.99416790598664,
+      "at_least_2_neighbours_percent": 99.66757064123874,
+      "mean_causal_neighbours": 4.913510045781938
+    },
+    {
+      "station_id": "42182099999",
+      "rows": 6898,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.98550304436068,
+      "mean_causal_neighbours": 4.9804291098869236
+    },
+    {
+      "station_id": "42189099999",
+      "rows": 6250,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.98832
+    },
+    {
+      "station_id": "42348099999",
+      "rows": 34694,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.65123652504757,
+      "mean_causal_neighbours": 4.911656194154609
+    },
+    {
+      "station_id": "42361099999",
+      "rows": 6253,
+      "at_least_1_neighbour_percent": 99.98400767631537,
+      "at_least_2_neighbours_percent": 99.96801535263073,
+      "mean_causal_neighbours": 4.983208060131137
+    },
+    {
+      "station_id": "42705699999",
+      "rows": 34891,
+      "at_least_1_neighbour_percent": 99.95700897079476,
+      "at_least_2_neighbours_percent": 99.83090195179273,
+      "mean_causal_neighbours": 4.670115502565132
+    },
+    {
+      "station_id": "43021099999",
+      "rows": 4861,
+      "at_least_1_neighbour_percent": 99.97942810121374,
+      "at_least_2_neighbours_percent": 99.97942810121374,
+      "mean_causal_neighbours": 4.9732565315778645
+    },
+    {
+      "station_id": "43086099999",
+      "rows": 5732,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.98255408234473,
+      "mean_causal_neighbours": 4.486741102581996
+    },
+    {
+      "station_id": "43128099999",
+      "rows": 23470,
+      "at_least_1_neighbour_percent": 99.995739241585,
+      "at_least_2_neighbours_percent": 99.76991904559011,
+      "mean_causal_neighbours": 4.518023008095441
+    },
+    {
+      "station_id": "43128599999",
+      "rows": 33482,
+      "at_least_1_neighbour_percent": 99.85066602950839,
+      "at_least_2_neighbours_percent": 99.56095812675467,
+      "mean_causal_neighbours": 4.344005734424467
+    },
+    {
+      "station_id": "43181099999",
+      "rows": 24752,
+      "at_least_1_neighbour_percent": 99.99595992243052,
+      "at_least_2_neighbours_percent": 99.93535875888817,
+      "mean_causal_neighbours": 4.4963235294117645
+    },
+    {
+      "station_id": "43213099999",
+      "rows": 5744,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.4883356545961
+    },
+    {
+      "station_id": "43233099999",
+      "rows": 4822,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.949191206968063
+    },
+    {
+      "station_id": "43245099999",
+      "rows": 5695,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.612818261633011
+    },
+    {
+      "station_id": "43275099999",
+      "rows": 3565,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.986255259467041
+    },
+    {
+      "station_id": "43278099999",
+      "rows": 4252,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.97648165569144,
+      "mean_causal_neighbours": 4.983772342427093
+    },
+    {
+      "station_id": "43279099999",
+      "rows": 34625,
+      "at_least_1_neighbour_percent": 99.5783393501805,
+      "at_least_2_neighbours_percent": 99.37328519855596,
+      "mean_causal_neighbours": 4.331321299638989
+    },
+    {
+      "station_id": "43284099999",
+      "rows": 33759,
+      "at_least_1_neighbour_percent": 99.99703782694985,
+      "at_least_2_neighbours_percent": 99.9881513077994,
+      "mean_causal_neighbours": 4.69622915370716
+    },
+    {
+      "station_id": "43295099999",
+      "rows": 5674,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.98237574903067,
+      "mean_causal_neighbours": 4.821466337680649
+    },
+    {
+      "station_id": "43302599999",
+      "rows": 23347,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.844476806441941
+    },
+    {
+      "station_id": "43321099999",
+      "rows": 31603,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 99.95253615163118,
+      "mean_causal_neighbours": 4.718824162263076
+    },
+    {
+      "station_id": "43329099999",
+      "rows": 5724,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.6084905660377355
+    },
+    {
+      "station_id": "43331099999",
+      "rows": 5657,
+      "at_least_1_neighbour_percent": 100.0,
+      "at_least_2_neighbours_percent": 100.0,
+      "mean_causal_neighbours": 4.6123386954216015
+    }
+  ],
+  "raw_integrity_errors": [],
+  "checks": {
+    "48_station_year_raw_files_verified": true,
+    "all_raw_hashes_match": true,
+    "official_source_urls_only": true,
+    "exactly_24_stations_and_4_clusters": true,
+    "both_development_years_present": true,
+    "all_48_station_year_pairs_present": true,
+    "minimum_1500_rows_per_station_year": true,
+    "minimum_90_percent_complete_triples_per_station_year": true,
+    "no_duplicate_station_timestamps": true,
+    "temperature_missing_below_0_1_percent": true,
+    "humidity_missing_below_0_1_percent": true,
+    "pressure_missing_below_5_percent": true,
+    "temperature_range_plausible": true,
+    "humidity_range_valid": true,
+    "pressure_range_plausible": true,
+    "source_labels_only_2022_2023": true,
+    "locked_observation_years_not_loaded": true
+  },
+  "artifacts": {
+    "observations": "data/iteration10/processed/india_aws_2022_2023.csv.gz",
+    "station_contract": "data/iteration10/config/india_stations.csv",
+    "split_contract": "data/iteration10/config/split_contract.json",
+    "manifest": "data/iteration10/manifest/india_development_files.csv",
+    "package": "deliverables/SkyGuard_Iteration10_India_Development_Data_Bundle.zip"
+  },
+  "runtime_seconds": 21.482387
+}

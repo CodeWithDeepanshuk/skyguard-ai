@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "notebook": "C:\\Users\\deepa\\OneDrive\\Desktop\\Sih 73\\notebooks\\SkyGuard_AI_GPU_Iteration_10R_Calibration_Integrity_Repair_Colab.ipynb",
+  "cell_count": 36,
+  "code_cell_count": 17,
+  "checks": {
+    "all_code_cells_parse": true,
+    "balanced_calibrator_removed": true,
+    "typed_cache_reload_present": true,
+    "new_cache_schema_present": true,
+    "holdout_nonempty_assertions_present": true,
+    "policy_fails_closed": true,
+    "separate_fault_weather_runs": true,
+    "multi_evidence_drift_present": true,
+    "weather_veto_present": true,
+    "downstream_uses_diagnostic_policy_explicitly": true,
+    "conformal_correction_intervals_present": true,
+    "sensor_health_fails_closed": true,
+    "no_direct_locked_observation_read": true,
+    "identifier_regression_pass": true,
+    "prior_scaling_regression_pass": true,
+    "weather_not_misclassified_as_fault_regression": true,
+    "weather_detected_regression": true,
+    "isolated_drift_detected_regression": true,
+    "hard_fault_immediate_regression": true,
+    "slow_cadence_high_confidence_immediate_regression": true
+  },
+  "syntax_errors": []
+}

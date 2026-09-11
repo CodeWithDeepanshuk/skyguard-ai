@@ -1,0 +1,272 @@
+{
+  "status": "complete",
+  "selection": "2023 station-macro F1 under operational constraints",
+  "policy": {
+    "threshold": 0.42390918637865765,
+    "persistence_decay": 0.0,
+    "station_macro_f1": 0.4696195686304957,
+    "recall": 0.3122555410691004,
+    "false_alarms_per_station_day": 0.021616411950984443,
+    "weather_false_fault_rate": 0.011741682974559686
+  },
+  "evaluation": {
+    "validation": {
+      "rows": 181308,
+      "positives": 1534,
+      "tp": 479,
+      "fp": 157,
+      "fn": 1055,
+      "tn": 179617,
+      "precision": 0.7531446540880503,
+      "recall": 0.3122555410691004,
+      "f1": 0.4414746543778802,
+      "aucpr": 0.3707168550399369,
+      "false_alarms_per_station_day": 0.021616411950984443,
+      "station_days": 7263,
+      "weather_rows": 511,
+      "weather_false_positives": 6,
+      "weather_false_positive_rate": 0.011741682974559686,
+      "episode_detection": {
+        "episodes": 120,
+        "detected_episodes": 85,
+        "recall": 0.7083333333333334,
+        "median_detection_latency_minutes": 0.0,
+        "mean_detection_latency_minutes": 219.88235294117646,
+        "per_fault_type": {
+          "bias": {
+            "episodes": 10,
+            "detected": 3,
+            "recall": 0.3
+          },
+          "communication_corruption": {
+            "episodes": 10,
+            "detected": 10,
+            "recall": 1.0
+          },
+          "drift": {
+            "episodes": 10,
+            "detected": 5,
+            "recall": 0.5
+          },
+          "duplicate_packet": {
+            "episodes": 10,
+            "detected": 1,
+            "recall": 0.1
+          },
+          "frozen_sensor": {
+            "episodes": 10,
+            "detected": 4,
+            "recall": 0.4
+          },
+          "multi_sensor_failure": {
+            "episodes": 10,
+            "detected": 10,
+            "recall": 1.0
+          },
+          "noise": {
+            "episodes": 10,
+            "detected": 9,
+            "recall": 0.9
+          },
+          "scaling_error": {
+            "episodes": 10,
+            "detected": 10,
+            "recall": 1.0
+          },
+          "spike": {
+            "episodes": 10,
+            "detected": 10,
+            "recall": 1.0
+          },
+          "sudden_drop": {
+            "episodes": 10,
+            "detected": 7,
+            "recall": 0.7
+          },
+          "timestamp_error": {
+            "episodes": 10,
+            "detected": 6,
+            "recall": 0.6
+          },
+          "unit_error": {
+            "episodes": 10,
+            "detected": 10,
+            "recall": 1.0
+          }
+        }
+      }
+    },
+    "time_test": {
+      "rows": 182053,
+      "positives": 1841,
+      "tp": 673,
+      "fp": 133,
+      "fn": 1168,
+      "tn": 180079,
+      "precision": 0.8349875930521092,
+      "recall": 0.36556219445953286,
+      "f1": 0.5085001888930865,
+      "aucpr": 0.44921649695598187,
+      "false_alarms_per_station_day": 0.018727119121374262,
+      "station_days": 7102,
+      "weather_rows": 824,
+      "weather_false_positives": 4,
+      "weather_false_positive_rate": 0.0048543689320388345,
+      "episode_detection": {
+        "episodes": 144,
+        "detected_episodes": 105,
+        "recall": 0.7291666666666666,
+        "median_detection_latency_minutes": 0.0,
+        "mean_detection_latency_minutes": 196.57142857142858,
+        "per_fault_type": {
+          "bias": {
+            "episodes": 12,
+            "detected": 7,
+            "recall": 0.5833333333333334
+          },
+          "communication_corruption": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "drift": {
+            "episodes": 12,
+            "detected": 7,
+            "recall": 0.5833333333333334
+          },
+          "duplicate_packet": {
+            "episodes": 12,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "frozen_sensor": {
+            "episodes": 12,
+            "detected": 7,
+            "recall": 0.5833333333333334
+          },
+          "multi_sensor_failure": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "noise": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "scaling_error": {
+            "episodes": 12,
+            "detected": 11,
+            "recall": 0.9166666666666666
+          },
+          "spike": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "sudden_drop": {
+            "episodes": 12,
+            "detected": 10,
+            "recall": 0.8333333333333334
+          },
+          "timestamp_error": {
+            "episodes": 12,
+            "detected": 4,
+            "recall": 0.3333333333333333
+          },
+          "unit_error": {
+            "episodes": 12,
+            "detected": 11,
+            "recall": 0.9166666666666666
+          }
+        }
+      }
+    },
+    "station_test": {
+      "rows": 10491,
+      "positives": 250,
+      "tp": 80,
+      "fp": 9,
+      "fn": 170,
+      "tn": 10232,
+      "precision": 0.898876404494382,
+      "recall": 0.32,
+      "f1": 0.47197640117994105,
+      "aucpr": 0.4195177739212165,
+      "false_alarms_per_station_day": 0.0063784549964564135,
+      "station_days": 1411,
+      "weather_rows": 0,
+      "weather_false_positives": 0,
+      "weather_false_positive_rate": 0.0,
+      "episode_detection": {
+        "episodes": 60,
+        "detected_episodes": 38,
+        "recall": 0.6333333333333333,
+        "median_detection_latency_minutes": 0.0,
+        "mean_detection_latency_minutes": 227.3684210526316,
+        "per_fault_type": {
+          "bias": {
+            "episodes": 5,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "communication_corruption": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          },
+          "drift": {
+            "episodes": 5,
+            "detected": 3,
+            "recall": 0.6
+          },
+          "duplicate_packet": {
+            "episodes": 5,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "frozen_sensor": {
+            "episodes": 5,
+            "detected": 2,
+            "recall": 0.4
+          },
+          "multi_sensor_failure": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          },
+          "noise": {
+            "episodes": 5,
+            "detected": 3,
+            "recall": 0.6
+          },
+          "scaling_error": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          },
+          "spike": {
+            "episodes": 5,
+            "detected": 4,
+            "recall": 0.8
+          },
+          "sudden_drop": {
+            "episodes": 5,
+            "detected": 4,
+            "recall": 0.8
+          },
+          "timestamp_error": {
+            "episodes": 5,
+            "detected": 2,
+            "recall": 0.4
+          },
+          "unit_error": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          }
+        }
+      }
+    }
+  }
+}

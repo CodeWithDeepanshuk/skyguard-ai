@@ -1,0 +1,1429 @@
+{
+  "phase": 10,
+  "status": "complete",
+  "compliant_three_parameter_model": true,
+  "feature_count": 108,
+  "training": {
+    "fault_lightgbm": {
+      "selected": "trend-63",
+      "candidates": [
+        {
+          "name": "balanced-31",
+          "policy_half_aucpr": 0.36272320904591693
+        },
+        {
+          "name": "regularized-31",
+          "policy_half_aucpr": 0.33871998842166473
+        },
+        {
+          "name": "trend-63",
+          "policy_half_aucpr": 0.3633208218602867
+        }
+      ],
+      "training_rows": 42768
+    },
+    "weather_lightgbm": {
+      "selected": "balanced-31",
+      "candidates": [
+        {
+          "name": "balanced-31",
+          "policy_half_aucpr": 0.4403312744925561
+        },
+        {
+          "name": "regularized-31",
+          "policy_half_aucpr": 0.42871696262262593
+        },
+        {
+          "name": "trend-63",
+          "policy_half_aucpr": 0.4040831391533838
+        }
+      ],
+      "training_rows": 42768
+    },
+    "tcn": {
+      "sequence_length": 24,
+      "channels": 31,
+      "parameters": 20657,
+      "training_rows": 42768,
+      "best_validation_sample_aucpr": 0.579083912645905,
+      "epochs": [
+        {
+          "epoch": 1,
+          "loss": 0.13140563325335583,
+          "validation_sample_aucpr": 0.4343256684828982
+        },
+        {
+          "epoch": 2,
+          "loss": 0.10605656442099384,
+          "validation_sample_aucpr": 0.47111969945641796
+        },
+        {
+          "epoch": 3,
+          "loss": 0.09180764244159773,
+          "validation_sample_aucpr": 0.4769952105956605
+        },
+        {
+          "epoch": 4,
+          "loss": 0.08149281639738806,
+          "validation_sample_aucpr": 0.5057884705862891
+        },
+        {
+          "epoch": 5,
+          "loss": 0.06885357406212106,
+          "validation_sample_aucpr": 0.5403814328246472
+        },
+        {
+          "epoch": 6,
+          "loss": 0.06033657422466647,
+          "validation_sample_aucpr": 0.5056175213591153
+        },
+        {
+          "epoch": 7,
+          "loss": 0.06162905900384344,
+          "validation_sample_aucpr": 0.49843528094725725
+        },
+        {
+          "epoch": 8,
+          "loss": 0.05398788894083174,
+          "validation_sample_aucpr": 0.5428985656685632
+        },
+        {
+          "epoch": 9,
+          "loss": 0.04926419443827832,
+          "validation_sample_aucpr": 0.5663045335246216
+        },
+        {
+          "epoch": 10,
+          "loss": 0.04172687253559984,
+          "validation_sample_aucpr": 0.579083912645905
+        }
+      ]
+    },
+    "root": {
+      "training_rows": 2270,
+      "classes": [
+        "bias",
+        "communication_corruption",
+        "drift",
+        "duplicate_packet",
+        "frozen_sensor",
+        "multi_sensor_failure",
+        "noise",
+        "scaling_error",
+        "spike",
+        "sudden_drop",
+        "timestamp_error",
+        "unit_error"
+      ],
+      "hierarchy": "packet/order rules before incident-aggregated physical root probabilities"
+    }
+  },
+  "policy": {
+    "status": "frozen_on_2023_before_2024_loading",
+    "input_contract": [
+      "temperature_c",
+      "pressure_hpa",
+      "relative_humidity_pct"
+    ],
+    "dew_point_used": false,
+    "fault_threshold": 0.9697956961831872,
+    "persistence_decay": 0.0,
+    "weather_threshold": 0.31371246158413996,
+    "root_threshold": 0.4678407954493642,
+    "validation_policy_half": {
+      "fault": {
+        "threshold": 0.9697956961831872,
+        "precision": 0.7801608579088471,
+        "recall": 0.34397163120567376,
+        "f1": 0.47744052502050865,
+        "false_alarms_per_station_day": 0.022386022386022386,
+        "weather_false_fault_rate": 0.0,
+        "constraints_met": 1.0,
+        "persistence_decay": 0.0
+      },
+      "weather": {
+        "threshold": 0.31371246158413996,
+        "precision": 0.768595041322314,
+        "recall": 0.3110367892976589,
+        "f1": 0.4428571428571429
+      },
+      "root": {
+        "threshold": 0.4678407954493642,
+        "coverage": 0.4879725085910653,
+        "accepted_accuracy": 0.9295774647887324
+      }
+    }
+  },
+  "evaluation": {
+    "validation": {
+      "rows": 181308,
+      "binary_fault_detection": {
+        "rows": 181308,
+        "positives": 1534,
+        "tp": 519,
+        "fp": 214,
+        "fn": 1015,
+        "tn": 179560,
+        "precision": 0.7080491132332879,
+        "recall": 0.33833116036505867,
+        "f1": 0.4578738420820468,
+        "aucpr": 0.4205724826718333,
+        "false_alarms_per_station_day": 0.029464408646564782,
+        "station_days": 7263,
+        "weather_rows": 511,
+        "weather_false_positives": 2,
+        "weather_false_positive_rate": 0.003913894324853229,
+        "episode_detection": {
+          "episodes": 120,
+          "detected_episodes": 90,
+          "recall": 0.75,
+          "median_detection_latency_minutes": 0.0,
+          "mean_detection_latency_minutes": 224.83333333333334,
+          "per_fault_type": {
+            "bias": {
+              "episodes": 10,
+              "detected": 5,
+              "recall": 0.5
+            },
+            "communication_corruption": {
+              "episodes": 10,
+              "detected": 10,
+              "recall": 1.0
+            },
+            "drift": {
+              "episodes": 10,
+              "detected": 5,
+              "recall": 0.5
+            },
+            "duplicate_packet": {
+              "episodes": 10,
+              "detected": 0,
+              "recall": 0.0
+            },
+            "frozen_sensor": {
+              "episodes": 10,
+              "detected": 7,
+              "recall": 0.7
+            },
+            "multi_sensor_failure": {
+              "episodes": 10,
+              "detected": 10,
+              "recall": 1.0
+            },
+            "noise": {
+              "episodes": 10,
+              "detected": 9,
+              "recall": 0.9
+            },
+            "scaling_error": {
+              "episodes": 10,
+              "detected": 10,
+              "recall": 1.0
+            },
+            "spike": {
+              "episodes": 10,
+              "detected": 10,
+              "recall": 1.0
+            },
+            "sudden_drop": {
+              "episodes": 10,
+              "detected": 9,
+              "recall": 0.9
+            },
+            "timestamp_error": {
+              "episodes": 10,
+              "detected": 5,
+              "recall": 0.5
+            },
+            "unit_error": {
+              "episodes": 10,
+              "detected": 10,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "event_decision": {
+        "classes": [
+          "normal",
+          "genuine_weather",
+          "sensor_fault"
+        ],
+        "accuracy": 0.9908939484192645,
+        "macro_f1": 0.6256827742334444,
+        "per_class": {
+          "normal": {
+            "precision": 0.9924367185117414,
+            "recall": 0.998426892331379,
+            "f1": 0.995422793708705,
+            "support": 179263
+          },
+          "genuine_weather": {
+            "precision": 0.6826086956521739,
+            "recall": 0.30724070450097846,
+            "f1": 0.42375168690958165,
+            "support": 511
+          },
+          "sensor_fault": {
+            "precision": 0.7080491132332879,
+            "recall": 0.33833116036505867,
+            "f1": 0.45787384208204673,
+            "support": 1534
+          }
+        },
+        "confusion_matrix": [
+          [
+            178981,
+            70,
+            212
+          ],
+          [
+            352,
+            157,
+            2
+          ],
+          [
+            1012,
+            3,
+            519
+          ]
+        ]
+      },
+      "oracle_root_cause": {
+        "classes": [
+          "bias",
+          "communication_corruption",
+          "drift",
+          "duplicate_packet",
+          "frozen_sensor",
+          "multi_sensor_failure",
+          "noise",
+          "scaling_error",
+          "spike",
+          "sudden_drop",
+          "timestamp_error",
+          "unit_error"
+        ],
+        "accuracy": 0.455019556714472,
+        "macro_f1": 0.4556006375981043,
+        "per_class": {
+          "bias": {
+            "precision": 0.4823008849557522,
+            "recall": 0.39492753623188404,
+            "f1": 0.4342629482071713,
+            "support": 276
+          },
+          "communication_corruption": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 16
+          },
+          "drift": {
+            "precision": 0.4416475972540046,
+            "recall": 0.39307535641547864,
+            "f1": 0.41594827586206895,
+            "support": 491
+          },
+          "duplicate_packet": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 16
+          },
+          "frozen_sensor": {
+            "precision": 0.23636363636363636,
+            "recall": 0.33476394849785407,
+            "f1": 0.27708703374777977,
+            "support": 233
+          },
+          "multi_sensor_failure": {
+            "precision": 0.8257839721254355,
+            "recall": 0.8876404494382022,
+            "f1": 0.855595667870036,
+            "support": 267
+          },
+          "noise": {
+            "precision": 0.2087378640776699,
+            "recall": 0.23756906077348067,
+            "f1": 0.2222222222222222,
+            "support": 181
+          },
+          "scaling_error": {
+            "precision": 0.7,
+            "recall": 0.7,
+            "f1": 0.7,
+            "support": 10
+          },
+          "spike": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 10
+          },
+          "sudden_drop": {
+            "precision": 0.14285714285714285,
+            "recall": 0.1,
+            "f1": 0.11764705882352941,
+            "support": 10
+          },
+          "timestamp_error": {
+            "precision": 1.0,
+            "recall": 0.2857142857142857,
+            "f1": 0.4444444444444444,
+            "support": 14
+          },
+          "unit_error": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 10
+          }
+        },
+        "confusion_matrix": [
+          [
+            109,
+            0,
+            95,
+            0,
+            31,
+            9,
+            32,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            16,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            39,
+            0,
+            193,
+            1,
+            160,
+            7,
+            91,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            9,
+            0,
+            1,
+            2,
+            2,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            28,
+            0,
+            71,
+            0,
+            78,
+            30,
+            26,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            0,
+            6,
+            0,
+            18,
+            237,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            39,
+            0,
+            54,
+            0,
+            37,
+            0,
+            43,
+            3,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            2,
+            7,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            2,
+            0,
+            0,
+            0,
+            4,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            0,
+            2,
+            0,
+            3,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            2,
+            0,
+            3,
+            2,
+            2,
+            0,
+            0,
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ]
+        ]
+      },
+      "end_to_end_root_cause": {
+        "fault_rows": 1534,
+        "exact_accuracy": 0.19491525423728814,
+        "diagnostic_coverage": 0.2046936114732725,
+        "accepted_root_accuracy": 0.9522292993630573,
+        "missed_detection_rows": 1015,
+        "unknown_fault_rows": 205,
+        "episode_root": {
+          "episodes": 120,
+          "detected": 90,
+          "diagnosed": 46,
+          "correct": 36,
+          "diagnosed_accuracy": 0.782608695652174
+        }
+      }
+    },
+    "time_test": {
+      "rows": 182053,
+      "binary_fault_detection": {
+        "rows": 182053,
+        "positives": 1841,
+        "tp": 685,
+        "fp": 256,
+        "fn": 1156,
+        "tn": 179956,
+        "precision": 0.7279489904357067,
+        "recall": 0.3720803910917979,
+        "f1": 0.4924514737598849,
+        "aucpr": 0.46033155878444876,
+        "false_alarms_per_station_day": 0.03604618417347226,
+        "station_days": 7102,
+        "weather_rows": 824,
+        "weather_false_positives": 1,
+        "weather_false_positive_rate": 0.0012135922330097086,
+        "episode_detection": {
+          "episodes": 144,
+          "detected_episodes": 107,
+          "recall": 0.7430555555555556,
+          "median_detection_latency_minutes": 0.0,
+          "mean_detection_latency_minutes": 162.61682242990653,
+          "per_fault_type": {
+            "bias": {
+              "episodes": 12,
+              "detected": 7,
+              "recall": 0.5833333333333334
+            },
+            "communication_corruption": {
+              "episodes": 12,
+              "detected": 12,
+              "recall": 1.0
+            },
+            "drift": {
+              "episodes": 12,
+              "detected": 6,
+              "recall": 0.5
+            },
+            "duplicate_packet": {
+              "episodes": 12,
+              "detected": 0,
+              "recall": 0.0
+            },
+            "frozen_sensor": {
+              "episodes": 12,
+              "detected": 8,
+              "recall": 0.6666666666666666
+            },
+            "multi_sensor_failure": {
+              "episodes": 12,
+              "detected": 12,
+              "recall": 1.0
+            },
+            "noise": {
+              "episodes": 12,
+              "detected": 12,
+              "recall": 1.0
+            },
+            "scaling_error": {
+              "episodes": 12,
+              "detected": 11,
+              "recall": 0.9166666666666666
+            },
+            "spike": {
+              "episodes": 12,
+              "detected": 12,
+              "recall": 1.0
+            },
+            "sudden_drop": {
+              "episodes": 12,
+              "detected": 11,
+              "recall": 0.9166666666666666
+            },
+            "timestamp_error": {
+              "episodes": 12,
+              "detected": 4,
+              "recall": 0.3333333333333333
+            },
+            "unit_error": {
+              "episodes": 12,
+              "detected": 12,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "event_decision": {
+        "classes": [
+          "normal",
+          "genuine_weather",
+          "sensor_fault"
+        ],
+        "accuracy": 0.9892339044124513,
+        "macro_f1": 0.6798595033629747,
+        "per_class": {
+          "normal": {
+            "precision": 0.990924635740334,
+            "recall": 0.9982217316654403,
+            "f1": 0.994559799165225,
+            "support": 179388
+          },
+          "genuine_weather": {
+            "precision": 0.8411910669975186,
+            "recall": 0.41140776699029125,
+            "f1": 0.5525672371638142,
+            "support": 824
+          },
+          "sensor_fault": {
+            "precision": 0.7279489904357067,
+            "recall": 0.3720803910917979,
+            "f1": 0.49245147375988496,
+            "support": 1841
+          }
+        },
+        "confusion_matrix": [
+          [
+            179069,
+            64,
+            255
+          ],
+          [
+            484,
+            339,
+            1
+          ],
+          [
+            1156,
+            0,
+            685
+          ]
+        ]
+      },
+      "oracle_root_cause": {
+        "classes": [
+          "bias",
+          "communication_corruption",
+          "drift",
+          "duplicate_packet",
+          "frozen_sensor",
+          "multi_sensor_failure",
+          "noise",
+          "scaling_error",
+          "spike",
+          "sudden_drop",
+          "timestamp_error",
+          "unit_error"
+        ],
+        "accuracy": 0.467680608365019,
+        "macro_f1": 0.46694865494843246,
+        "per_class": {
+          "bias": {
+            "precision": 0.3489010989010989,
+            "recall": 0.335978835978836,
+            "f1": 0.3423180592991914,
+            "support": 378
+          },
+          "communication_corruption": {
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9473684210526315,
+            "support": 20
+          },
+          "drift": {
+            "precision": 0.42828685258964144,
+            "recall": 0.3644067796610169,
+            "f1": 0.39377289377289376,
+            "support": 590
+          },
+          "duplicate_packet": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 19
+          },
+          "frozen_sensor": {
+            "precision": 0.2694610778443114,
+            "recall": 0.48128342245989303,
+            "f1": 0.345489443378119,
+            "support": 187
+          },
+          "multi_sensor_failure": {
+            "precision": 0.8532608695652174,
+            "recall": 0.8770949720670391,
+            "f1": 0.8650137741046832,
+            "support": 358
+          },
+          "noise": {
+            "precision": 0.3127962085308057,
+            "recall": 0.30275229357798167,
+            "f1": 0.3076923076923077,
+            "support": 218
+          },
+          "scaling_error": {
+            "precision": 0.5,
+            "recall": 0.5,
+            "f1": 0.5,
+            "support": 12
+          },
+          "spike": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 12
+          },
+          "sudden_drop": {
+            "precision": 0.5714285714285714,
+            "recall": 0.3333333333333333,
+            "f1": 0.42105263157894735,
+            "support": 12
+          },
+          "timestamp_error": {
+            "precision": 0.8461538461538461,
+            "recall": 0.4782608695652174,
+            "f1": 0.6111111111111112,
+            "support": 23
+          },
+          "unit_error": {
+            "precision": 0.9090909090909091,
+            "recall": 0.8333333333333334,
+            "f1": 0.8695652173913043,
+            "support": 12
+          }
+        },
+        "confusion_matrix": [
+          [
+            127,
+            0,
+            124,
+            0,
+            78,
+            14,
+            34,
+            0,
+            0,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            18,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            178,
+            0,
+            215,
+            1,
+            92,
+            15,
+            87,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            2,
+            0,
+            12,
+            0,
+            3,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            21,
+            0,
+            44,
+            0,
+            90,
+            19,
+            13,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            9,
+            0,
+            7,
+            0,
+            25,
+            314,
+            3,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            21,
+            0,
+            87,
+            0,
+            35,
+            5,
+            66,
+            2,
+            0,
+            2,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            0,
+            3,
+            0,
+            1,
+            6,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            0,
+            5,
+            0,
+            2,
+            0,
+            2,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            2,
+            0,
+            2,
+            2,
+            0,
+            4,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            5,
+            0,
+            4,
+            0,
+            2,
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            10
+          ]
+        ]
+      },
+      "end_to_end_root_cause": {
+        "fault_rows": 1841,
+        "exact_accuracy": 0.19391634980988592,
+        "diagnostic_coverage": 0.2634437805540467,
+        "accepted_root_accuracy": 0.7360824742268042,
+        "missed_detection_rows": 1156,
+        "unknown_fault_rows": 200,
+        "episode_root": {
+          "episodes": 144,
+          "detected": 107,
+          "diagnosed": 55,
+          "correct": 39,
+          "diagnosed_accuracy": 0.7090909090909091
+        }
+      }
+    },
+    "station_test": {
+      "rows": 10491,
+      "binary_fault_detection": {
+        "rows": 10491,
+        "positives": 250,
+        "tp": 83,
+        "fp": 26,
+        "fn": 167,
+        "tn": 10215,
+        "precision": 0.7614678899082569,
+        "recall": 0.332,
+        "f1": 0.46239554317548753,
+        "aucpr": 0.4129654067438249,
+        "false_alarms_per_station_day": 0.01842664776754075,
+        "station_days": 1411,
+        "weather_rows": 0,
+        "weather_false_positives": 0,
+        "weather_false_positive_rate": 0.0,
+        "episode_detection": {
+          "episodes": 60,
+          "detected_episodes": 39,
+          "recall": 0.65,
+          "median_detection_latency_minutes": 0.0,
+          "mean_detection_latency_minutes": 235.3846153846154,
+          "per_fault_type": {
+            "bias": {
+              "episodes": 5,
+              "detected": 1,
+              "recall": 0.2
+            },
+            "communication_corruption": {
+              "episodes": 5,
+              "detected": 5,
+              "recall": 1.0
+            },
+            "drift": {
+              "episodes": 5,
+              "detected": 3,
+              "recall": 0.6
+            },
+            "duplicate_packet": {
+              "episodes": 5,
+              "detected": 0,
+              "recall": 0.0
+            },
+            "frozen_sensor": {
+              "episodes": 5,
+              "detected": 2,
+              "recall": 0.4
+            },
+            "multi_sensor_failure": {
+              "episodes": 5,
+              "detected": 5,
+              "recall": 1.0
+            },
+            "noise": {
+              "episodes": 5,
+              "detected": 3,
+              "recall": 0.6
+            },
+            "scaling_error": {
+              "episodes": 5,
+              "detected": 5,
+              "recall": 1.0
+            },
+            "spike": {
+              "episodes": 5,
+              "detected": 4,
+              "recall": 0.8
+            },
+            "sudden_drop": {
+              "episodes": 5,
+              "detected": 4,
+              "recall": 0.8
+            },
+            "timestamp_error": {
+              "episodes": 5,
+              "detected": 2,
+              "recall": 0.4
+            },
+            "unit_error": {
+              "episodes": 5,
+              "detected": 5,
+              "recall": 1.0
+            }
+          }
+        }
+      },
+      "event_decision": {
+        "classes": [
+          "normal",
+          "genuine_weather",
+          "sensor_fault"
+        ],
+        "accuracy": 0.9812219998093604,
+        "macro_f1": 0.48428041619760703,
+        "per_class": {
+          "normal": {
+            "precision": 0.9839082674889189,
+            "recall": 0.997070598574358,
+            "f1": 0.9904457054173336,
+            "support": 10241
+          },
+          "genuine_weather": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "sensor_fault": {
+            "precision": 0.7614678899082569,
+            "recall": 0.332,
+            "f1": 0.4623955431754875,
+            "support": 250
+          }
+        },
+        "confusion_matrix": [
+          [
+            10211,
+            4,
+            26
+          ],
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            167,
+            0,
+            83
+          ]
+        ]
+      },
+      "oracle_root_cause": {
+        "classes": [
+          "bias",
+          "communication_corruption",
+          "drift",
+          "duplicate_packet",
+          "frozen_sensor",
+          "multi_sensor_failure",
+          "noise",
+          "scaling_error",
+          "spike",
+          "sudden_drop",
+          "timestamp_error",
+          "unit_error"
+        ],
+        "accuracy": 0.476,
+        "macro_f1": 0.3778334682753665,
+        "per_class": {
+          "bias": {
+            "precision": 0.3125,
+            "recall": 0.10638297872340426,
+            "f1": 0.15873015873015872,
+            "support": 47
+          },
+          "communication_corruption": {
+            "precision": 0.8333333333333334,
+            "recall": 0.8333333333333334,
+            "f1": 0.8333333333333334,
+            "support": 6
+          },
+          "drift": {
+            "precision": 0.4573643410852713,
+            "recall": 0.9076923076923077,
+            "f1": 0.6082474226804123,
+            "support": 65
+          },
+          "duplicate_packet": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 6
+          },
+          "frozen_sensor": {
+            "precision": 0.19230769230769232,
+            "recall": 0.2857142857142857,
+            "f1": 0.22988505747126436,
+            "support": 35
+          },
+          "multi_sensor_failure": {
+            "precision": 0.9642857142857143,
+            "recall": 0.6923076923076923,
+            "f1": 0.8059701492537313,
+            "support": 39
+          },
+          "noise": {
+            "precision": 0.5555555555555556,
+            "recall": 0.20833333333333334,
+            "f1": 0.30303030303030304,
+            "support": 24
+          },
+          "scaling_error": {
+            "precision": 0.5,
+            "recall": 0.2,
+            "f1": 0.2857142857142857,
+            "support": 5
+          },
+          "spike": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 5
+          },
+          "sudden_drop": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 5
+          },
+          "timestamp_error": {
+            "precision": 1.0,
+            "recall": 0.25,
+            "f1": 0.4,
+            "support": 8
+          },
+          "unit_error": {
+            "precision": 0.8333333333333334,
+            "recall": 1.0,
+            "f1": 0.9090909090909091,
+            "support": 5
+          }
+        },
+        "confusion_matrix": [
+          [
+            5,
+            1,
+            27,
+            0,
+            14,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            59,
+            0,
+            5,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            4,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            21,
+            0,
+            10,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            0,
+            9,
+            27,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            0,
+            6,
+            0,
+            7,
+            0,
+            5,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            3,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            0,
+            2,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5
+          ]
+        ]
+      },
+      "end_to_end_root_cause": {
+        "fault_rows": 250,
+        "exact_accuracy": 0.152,
+        "diagnostic_coverage": 0.176,
+        "accepted_root_accuracy": 0.8636363636363636,
+        "missed_detection_rows": 167,
+        "unknown_fault_rows": 39,
+        "episode_root": {
+          "episodes": 60,
+          "detected": 39,
+          "diagnosed": 19,
+          "correct": 14,
+          "diagnosed_accuracy": 0.7368421052631579
+        }
+      }
+    }
+  },
+  "comparison_with_phase5": {
+    "time_test": {
+      "phase5_f1": 0.5246957766642807,
+      "phase10_f1": 0.4924514737598849,
+      "f1_change_points": -3.224430290439578,
+      "phase5_recall": 0.3981531776208582,
+      "phase10_recall": 0.3720803910917979,
+      "recall_change_points": -2.607278652906031,
+      "phase5_precision": 0.7691500524658972,
+      "phase10_precision": 0.7279489904357067,
+      "phase5_episode_recall": 0.7430555555555556,
+      "phase10_episode_recall": 0.7430555555555556
+    },
+    "station_test": {
+      "phase5_f1": 0.5641025641025641,
+      "phase10_f1": 0.46239554317548753,
+      "f1_change_points": -10.170702092707657,
+      "phase5_recall": 0.44,
+      "phase10_recall": 0.332,
+      "recall_change_points": -10.799999999999999,
+      "phase5_precision": 0.7857142857142857,
+      "phase10_precision": 0.7614678899082569,
+      "phase5_episode_recall": 0.75,
+      "phase10_episode_recall": 0.65
+    }
+  },
+  "artifacts": {
+    "bundle": "models/phase10_ensemble.joblib",
+    "bundle_bytes": 4958580,
+    "tcn": "models/phase10_tcn.pt",
+    "tcn_bytes": 97180,
+    "policy": "models/phase10_policy.json"
+  },
+  "runtime_seconds": 399.041
+}

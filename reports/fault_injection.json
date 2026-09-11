@@ -1,0 +1,75 @@
+{
+  "global_seed": 26073,
+  "source": "data/processed/aws_observations_2022_2024.csv",
+  "splits": {
+    "train": {
+      "year": "2022",
+      "evaluation_role": "development",
+      "seed": 26174,
+      "rows": 182362,
+      "fault_episodes": 195,
+      "weather_episodes": 5,
+      "anomaly_rows": 2510,
+      "anomaly_percent": 1.3764,
+      "weather_rows": 498,
+      "output": "data/labelled/train.csv"
+    },
+    "validation": {
+      "year": "2023",
+      "evaluation_role": "development",
+      "seed": 26275,
+      "rows": 181470,
+      "fault_episodes": 130,
+      "weather_episodes": 4,
+      "anomaly_rows": 1696,
+      "anomaly_percent": 0.9346,
+      "weather_rows": 511,
+      "output": "data/labelled/validation.csv"
+    },
+    "time_test": {
+      "year": "2024",
+      "evaluation_role": "development",
+      "seed": 26376,
+      "rows": 182276,
+      "fault_episodes": 156,
+      "weather_episodes": 4,
+      "anomaly_rows": 2064,
+      "anomaly_percent": 1.1323,
+      "weather_rows": 824,
+      "output": "data/labelled/time_test.csv"
+    },
+    "station_test": {
+      "year": "2024",
+      "evaluation_role": "station_holdout",
+      "seed": 26477,
+      "rows": 10516,
+      "fault_episodes": 65,
+      "weather_episodes": 0,
+      "anomaly_rows": 275,
+      "anomaly_percent": 2.6151,
+      "weather_rows": 0,
+      "output": "data/labelled/station_test.csv"
+    }
+  },
+  "total_fault_episodes": 546,
+  "total_weather_episodes": 13,
+  "total_anomaly_rows": 6545,
+  "episodes_by_type": {
+    "bias": 42,
+    "communication_corruption": 42,
+    "drift": 42,
+    "dropout": 42,
+    "duplicate_packet": 42,
+    "frozen_sensor": 42,
+    "multi_sensor_failure": 42,
+    "noise": 42,
+    "scaling_error": 42,
+    "spike": 42,
+    "sudden_drop": 42,
+    "timestamp_error": 42,
+    "unit_error": 42
+  },
+  "episode_manifest": "data/labelled/episodes.csv",
+  "checksum_manifest": "data/labelled/manifest.csv",
+  "generation_seconds": 142.7264
+}

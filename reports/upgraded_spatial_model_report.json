@@ -1,0 +1,309 @@
+{
+  "status": "complete",
+  "features": [
+    "temperature_value",
+    "pressure_value",
+    "humidity_value",
+    "primary_missing_count",
+    "time_since_previous_minutes",
+    "gap_ratio",
+    "out_of_order_indicator",
+    "temperature_humidity_interaction",
+    "pressure_temperature_ratio",
+    "neighbor_station_count",
+    "neighbor_min_age_minutes",
+    "neighbor_max_age_minutes",
+    "nearest_neighbor_km",
+    "temperature_missing",
+    "temperature_lag1",
+    "temperature_delta1",
+    "temperature_rate_per_hour",
+    "temperature_rolling_count_24h",
+    "temperature_rolling_median_24h",
+    "temperature_rolling_mad_24h",
+    "temperature_robust_z_24h",
+    "temperature_ewma_prior",
+    "temperature_ewma_residual",
+    "temperature_frozen_run_length",
+    "pressure_missing",
+    "pressure_lag1",
+    "pressure_delta1",
+    "pressure_rate_per_hour",
+    "pressure_rolling_count_24h",
+    "pressure_rolling_median_24h",
+    "pressure_rolling_mad_24h",
+    "pressure_robust_z_24h",
+    "pressure_ewma_prior",
+    "pressure_ewma_residual",
+    "pressure_frozen_run_length",
+    "humidity_missing",
+    "humidity_lag1",
+    "humidity_delta1",
+    "humidity_rate_per_hour",
+    "humidity_rolling_count_24h",
+    "humidity_rolling_median_24h",
+    "humidity_rolling_mad_24h",
+    "humidity_robust_z_24h",
+    "humidity_ewma_prior",
+    "humidity_ewma_residual",
+    "humidity_frozen_run_length",
+    "neighbor_temperature_count",
+    "neighbor_temperature_weighted_mean",
+    "neighbor_temperature_median",
+    "neighbor_temperature_mad",
+    "neighbor_temperature_residual",
+    "neighbor_temperature_max_abs_difference",
+    "neighbor_temperature_agreement_fraction",
+    "neighbor_pressure_count",
+    "neighbor_pressure_weighted_mean",
+    "neighbor_pressure_median",
+    "neighbor_pressure_mad",
+    "neighbor_pressure_residual",
+    "neighbor_pressure_max_abs_difference",
+    "neighbor_pressure_agreement_fraction",
+    "neighbor_humidity_count",
+    "neighbor_humidity_weighted_mean",
+    "neighbor_humidity_median",
+    "neighbor_humidity_mad",
+    "neighbor_humidity_residual",
+    "neighbor_humidity_max_abs_difference",
+    "neighbor_humidity_agreement_fraction",
+    "temperature_slope_3h",
+    "temperature_slope_6h",
+    "temperature_slope_12h",
+    "temperature_slope_24h",
+    "temperature_neighbor_residual_slope_3h",
+    "temperature_neighbor_residual_slope_6h",
+    "temperature_neighbor_residual_slope_12h",
+    "temperature_neighbor_residual_slope_24h",
+    "temperature_cusum_positive",
+    "temperature_cusum_negative",
+    "temperature_monotonic_run",
+    "temperature_climatology_residual",
+    "pressure_slope_3h",
+    "pressure_slope_6h",
+    "pressure_slope_12h",
+    "pressure_slope_24h",
+    "pressure_neighbor_residual_slope_3h",
+    "pressure_neighbor_residual_slope_6h",
+    "pressure_neighbor_residual_slope_12h",
+    "pressure_neighbor_residual_slope_24h",
+    "pressure_cusum_positive",
+    "pressure_cusum_negative",
+    "pressure_monotonic_run",
+    "pressure_climatology_residual",
+    "humidity_slope_3h",
+    "humidity_slope_6h",
+    "humidity_slope_12h",
+    "humidity_slope_24h",
+    "humidity_neighbor_residual_slope_3h",
+    "humidity_neighbor_residual_slope_6h",
+    "humidity_neighbor_residual_slope_12h",
+    "humidity_neighbor_residual_slope_24h",
+    "humidity_cusum_positive",
+    "humidity_cusum_negative",
+    "humidity_monotonic_run",
+    "humidity_climatology_residual",
+    "regional_agreement_mean",
+    "regional_agreement_min",
+    "regional_agreeing_sensor_count",
+    "regional_standardized_disagreement_max",
+    "regional_trend_disagreement_mean",
+    "qc_spatial_support",
+    "qc_temperature_buddy_z",
+    "qc_temperature_temporal_spatial",
+    "qc_pressure_buddy_z",
+    "qc_pressure_temporal_spatial",
+    "qc_humidity_buddy_z",
+    "qc_humidity_temporal_spatial"
+  ],
+  "feature_count": 115,
+  "policy": {
+    "threshold": 0.5538849945319895,
+    "precision": 0.7641653905053599,
+    "recall": 0.32529335071707954,
+    "f1": 0.4563328760859625,
+    "false_alarms_per_station_day": 0.02120335949332232,
+    "weather_false_fault_rate": 0.009784735812133072,
+    "constraints_met": 1.0,
+    "decay": 0.55,
+    "low_trigger": 0.28,
+    "boost_per_step": 0.08,
+    "persistence_decay": 0.55
+  },
+  "evaluation": {
+    "time_test": {
+      "rows": 182053,
+      "positives": 1841,
+      "tp": 701,
+      "fp": 160,
+      "fn": 1140,
+      "tn": 180052,
+      "precision": 0.8141695702671312,
+      "recall": 0.38077131993481805,
+      "f1": 0.5188749074759437,
+      "aucpr": 0.4929897438505629,
+      "false_alarms_per_station_day": 0.022528865108420164,
+      "station_days": 7102,
+      "weather_rows": 824,
+      "weather_false_positives": 4,
+      "weather_false_positive_rate": 0.0048543689320388345,
+      "episode_detection": {
+        "episodes": 144,
+        "detected_episodes": 109,
+        "recall": 0.7569444444444444,
+        "median_detection_latency_minutes": 0.0,
+        "mean_detection_latency_minutes": 203.6697247706422,
+        "per_fault_type": {
+          "bias": {
+            "episodes": 12,
+            "detected": 7,
+            "recall": 0.5833333333333334
+          },
+          "communication_corruption": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "drift": {
+            "episodes": 12,
+            "detected": 6,
+            "recall": 0.5
+          },
+          "duplicate_packet": {
+            "episodes": 12,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "frozen_sensor": {
+            "episodes": 12,
+            "detected": 8,
+            "recall": 0.6666666666666666
+          },
+          "multi_sensor_failure": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "noise": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "scaling_error": {
+            "episodes": 12,
+            "detected": 11,
+            "recall": 0.9166666666666666
+          },
+          "spike": {
+            "episodes": 12,
+            "detected": 12,
+            "recall": 1.0
+          },
+          "sudden_drop": {
+            "episodes": 12,
+            "detected": 10,
+            "recall": 0.8333333333333334
+          },
+          "timestamp_error": {
+            "episodes": 12,
+            "detected": 8,
+            "recall": 0.6666666666666666
+          },
+          "unit_error": {
+            "episodes": 12,
+            "detected": 11,
+            "recall": 0.9166666666666666
+          }
+        }
+      }
+    },
+    "station_test": {
+      "rows": 10491,
+      "positives": 250,
+      "tp": 79,
+      "fp": 12,
+      "fn": 171,
+      "tn": 10229,
+      "precision": 0.8681318681318682,
+      "recall": 0.316,
+      "f1": 0.46334310850439875,
+      "aucpr": 0.40578189759312927,
+      "false_alarms_per_station_day": 0.008504606661941885,
+      "station_days": 1411,
+      "weather_rows": 0,
+      "weather_false_positives": 0,
+      "weather_false_positive_rate": 0.0,
+      "episode_detection": {
+        "episodes": 60,
+        "detected_episodes": 35,
+        "recall": 0.5833333333333334,
+        "median_detection_latency_minutes": 0.0,
+        "mean_detection_latency_minutes": 205.71428571428572,
+        "per_fault_type": {
+          "bias": {
+            "episodes": 5,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "communication_corruption": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          },
+          "drift": {
+            "episodes": 5,
+            "detected": 2,
+            "recall": 0.4
+          },
+          "duplicate_packet": {
+            "episodes": 5,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "frozen_sensor": {
+            "episodes": 5,
+            "detected": 2,
+            "recall": 0.4
+          },
+          "multi_sensor_failure": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          },
+          "noise": {
+            "episodes": 5,
+            "detected": 3,
+            "recall": 0.6
+          },
+          "scaling_error": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          },
+          "spike": {
+            "episodes": 5,
+            "detected": 4,
+            "recall": 0.8
+          },
+          "sudden_drop": {
+            "episodes": 5,
+            "detected": 4,
+            "recall": 0.8
+          },
+          "timestamp_error": {
+            "episodes": 5,
+            "detected": 0,
+            "recall": 0.0
+          },
+          "unit_error": {
+            "episodes": 5,
+            "detected": 5,
+            "recall": 1.0
+          }
+        }
+      }
+    }
+  },
+  "runtime_seconds": 134.25
+}

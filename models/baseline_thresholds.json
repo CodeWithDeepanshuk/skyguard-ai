@@ -1,0 +1,47 @@
+{
+  "status": "frozen_before_test_evaluation",
+  "selection_split": "validation (2023)",
+  "selection_metric": "maximum point-level F1; ties use stricter threshold",
+  "eligible_rows": 181308,
+  "excluded_faults": [
+    "dropout"
+  ],
+  "detectors": {
+    "qc_rules": {
+      "threshold": 5.002971428571429,
+      "precision": 0.20554123711340205,
+      "recall": 0.20795306388526727,
+      "f1": 0.20674011665586517
+    },
+    "hampel": {
+      "threshold": 6.947255,
+      "precision": 0.03463904176108773,
+      "recall": 0.0697522816166884,
+      "f1": 0.04629028769197491
+    },
+    "ewma": {
+      "threshold": 7.20827,
+      "precision": 0.09399773499433749,
+      "recall": 0.05410691003911343,
+      "f1": 0.06868018204385602
+    },
+    "neighbor": {
+      "threshold": 3.08586,
+      "precision": 0.22701949860724233,
+      "recall": 0.10625814863102999,
+      "f1": 0.1447602131438721
+    },
+    "combined": {
+      "threshold": 5.046873333333334,
+      "precision": 0.09724870607463906,
+      "recall": 0.23272490221642764,
+      "f1": 0.1371757925072046
+    },
+    "isolation_forest": {
+      "threshold": -0.08009748513600334,
+      "precision": 0.08080977078802075,
+      "recall": 0.31486310299869624,
+      "f1": 0.12861136999068035
+    }
+  }
+}

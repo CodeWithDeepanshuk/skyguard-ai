@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "notebook": "C:\\Users\\deepa\\OneDrive\\Desktop\\Sih 73\\notebooks\\SkyGuard_AI_GPU_Iteration_11_Colab.ipynb",
+  "total_cells": 36,
+  "code_cells": 17,
+  "checks": {
+    "all_code_cells_parse": true,
+    "bundle_reference_updated": true,
+    "single_sensor_freeze_present": true,
+    "pareto_policy_selection_present": true,
+    "no_0_95_fallback_trap": true,
+    "no_direct_locked_observation_read": true
+  },
+  "syntax_errors": []
+}

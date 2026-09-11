@@ -1,0 +1,25 @@
+station_id,cluster,evaluation_role,station_name,latitude,longitude,elevation_m,icao
+42181099999,delhi,development,Indira Gandhi International,28.567,77.103,236.8,VIDP
+42182099999,delhi,development,Safdarjung,28.585,77.206,214.9,VIDD
+42348099999,delhi,development,Jaipur,26.824,75.812,385.0,VIJP
+42189099999,delhi,development,Bareilly,28.422,79.451,176.8,VIBY
+42361099999,delhi,development,Gwalior,26.293,78.228,188.1,VIGR
+42131099999,delhi,station_holdout,Hisar,29.179,75.755,213.4,VIHR
+43128099999,hyderabad,development,Begumpet Airport,17.452,78.461,531.0,VOHY
+43128599999,hyderabad,development,Hyderabad International Airport,17.233,78.417,617.0,VOHS
+43181099999,hyderabad,development,Vijayawada,16.530,80.797,25.0,VOBZ
+43021099999,hyderabad,development,Nanded,19.083,77.333,358.0,
+43213099999,hyderabad,development,Kurnool,15.800,78.067,281.0,
+43086099999,hyderabad,station_holdout,Ramagundam,18.767,79.433,156.0,
+43295099999,bengaluru,development,Bangalore,12.967,77.583,921.0,
+43302599999,bengaluru,development,Bangalore HAL Airport,12.950,77.668,887.6,VOBG
+42705699999,bengaluru,development,Kempegowda International Airport,13.200,77.700,915.0,VOBL
+43321099999,bengaluru,development,Coimbatore,11.031,77.044,403.6,VOCB
+43284099999,bengaluru,development,Mangalore,12.961,74.890,102.7,VOML
+43233099999,bengaluru,station_holdout,Chitradurga,14.233,76.433,733.0,
+43279099999,chennai,development,Chennai International,12.994,80.181,15.8,VOMM
+43278099999,chennai,development,Nungambakkam,13.067,80.200,7.0,
+43275099999,chennai,development,Tirupati,13.667,79.583,105.0,
+43329099999,chennai,development,Cuddalore,11.767,79.767,12.0,
+43245099999,chennai,development,Nellore,14.450,79.983,20.0,
+43331099999,chennai,station_holdout,Pondicherry,11.967,79.817,38.0,

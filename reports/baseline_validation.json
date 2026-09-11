@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "error_count": 0,
+  "errors": [],
+  "thresholds_frozen_on_validation": true,
+  "saved_model_feature_count": 31,
+  "splits": {
+    "validation": {
+      "rows": 181470,
+      "expected_rows": 181470,
+      "sha256": "5e248395ecca3907a485ff1aaa5fc23f857ddde29e1132caa6ad5345b256556e"
+    },
+    "time_test": {
+      "rows": 182276,
+      "expected_rows": 182276,
+      "sha256": "8b53961afecb6f13f2348df4036aef02af16931a79a0c16eb8b346d958011dea"
+    },
+    "station_test": {
+      "rows": 10516,
+      "expected_rows": 10516,
+      "sha256": "c337cd01ac885df08d992735ba72472688d9ee55d659833bd0c321b522aa4eec"
+    }
+  }
+}

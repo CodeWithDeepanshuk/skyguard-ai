@@ -1,0 +1,86 @@
+{
+  "ready_for_baseline_models": true,
+  "checks": {
+    "feature_hashes_match_manifest": true,
+    "model_features_exclude_labels_and_audit": true,
+    "source_rows_and_labels_preserved": true,
+    "row_ids_unique": true,
+    "all_model_features_numeric_and_finite": true,
+    "dropped_rows_hidden_from_detector": true,
+    "first_lags_are_causal": true,
+    "neighbor_alignment_is_backward_only": true,
+    "neighbor_coverage_above_70_percent": true
+  },
+  "errors": [],
+  "error_count": 0,
+  "model_feature_count": 72,
+  "total_rows": 556624,
+  "overall_neighbor_coverage_percent": 99.9014,
+  "splits": {
+    "train": {
+      "rows": 182362,
+      "available_to_detector_rows": 182122,
+      "neighbor_rows": 182030,
+      "neighbor_coverage_percent": 99.9495,
+      "robust_z_rows": 181226,
+      "robust_z_coverage_percent": 99.508,
+      "selected_feature_missing_percent": {
+        "temperature_value": 0.1497,
+        "pressure_value": 1.7081,
+        "humidity_value": 0.1832,
+        "temperature_lag1": 0.1426,
+        "temperature_rolling_median_24h": 0.1941,
+        "neighbor_temperature_median": 0.1821
+      }
+    },
+    "validation": {
+      "rows": 181470,
+      "available_to_detector_rows": 181308,
+      "neighbor_rows": 181166,
+      "neighbor_coverage_percent": 99.9217,
+      "robust_z_rows": 180715,
+      "robust_z_coverage_percent": 99.6729,
+      "selected_feature_missing_percent": {
+        "temperature_value": 0.1069,
+        "pressure_value": 1.6675,
+        "humidity_value": 0.13,
+        "temperature_lag1": 0.1003,
+        "temperature_rolling_median_24h": 0.1521,
+        "neighbor_temperature_median": 0.1703
+      }
+    },
+    "time_test": {
+      "rows": 182276,
+      "available_to_detector_rows": 182053,
+      "neighbor_rows": 181739,
+      "neighbor_coverage_percent": 99.8275,
+      "robust_z_rows": 180984,
+      "robust_z_coverage_percent": 99.4128,
+      "selected_feature_missing_percent": {
+        "temperature_value": 0.1393,
+        "pressure_value": 1.6848,
+        "humidity_value": 0.1509,
+        "temperature_lag1": 0.1333,
+        "temperature_rolling_median_24h": 0.2293,
+        "neighbor_temperature_median": 0.2946
+      }
+    },
+    "station_test": {
+      "rows": 10516,
+      "available_to_detector_rows": 10491,
+      "neighbor_rows": 10491,
+      "neighbor_coverage_percent": 100.0,
+      "robust_z_rows": 10342,
+      "robust_z_coverage_percent": 98.5797,
+      "selected_feature_missing_percent": {
+        "temperature_value": 0.2568,
+        "pressure_value": 0.3043,
+        "humidity_value": 0.2948,
+        "temperature_lag1": 0.2758,
+        "temperature_rolling_median_24h": 0.5801,
+        "neighbor_temperature_median": 0.2377
+      }
+    }
+  },
+  "manifest_entries": 5
+}

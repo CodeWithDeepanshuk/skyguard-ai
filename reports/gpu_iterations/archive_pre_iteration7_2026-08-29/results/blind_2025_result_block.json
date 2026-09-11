@@ -1,0 +1,386 @@
+{
+  "phase": "fresh_2025_blind_time_and_station_evaluation",
+  "evaluated_at_utc": "2026-08-29T09:16:35.670310+00:00",
+  "archive_sha256": "5f8bbad22342295f62c97d9b47628800eaa43df7aec5650ea91b814c6854d859",
+  "source": {
+    "provider": "NOAA/NCEI",
+    "product": "Global Hourly / Integrated Surface Database legacy compatibility files",
+    "base_url": "https://www.ncei.noaa.gov/data/global-hourly/access/2025/",
+    "replacement_product": "GHCNh",
+    "period": {
+      "start": "2025-01-01",
+      "end": "2025-08-24",
+      "reason": "final common legacy-ISD compatibility interval"
+    }
+  },
+  "frozen_iteration5_policy": {
+    "score_col": "weak_consensus_min",
+    "threshold": 0.35,
+    "min_points": 4,
+    "max_gap_minutes": 180,
+    "weather_guard": true
+  },
+  "weather_threshold": 0.24,
+  "feature_count": 108,
+  "model_sha256": {
+    "weak_union_lightgbm_seed17.joblib": "45a9b0fb90951ea122e6015d285917001ed33ad9da6395bb6e42196adb65bc61",
+    "weak_union_lightgbm_seed41.joblib": "d9c75bd0be21722a45f32c15e1022af61869a8a4a907255f97310ac22a4f7ce2",
+    "weak_union_lightgbm_seed67.joblib": "96a3eb01e64423f50f2d7f8a97705443de9c5376587fea3d76d5bed30b1bafcd",
+    "weak_union_catboost_seed17.cbm": "1651cca3a20e6fea1bbb038a5d397e65b463775d08f51df116b2e668d463ebc3",
+    "weak_union_catboost_seed41.cbm": "6d60c53a24ad27f9b8553671634d6ec0555f968ccb20a57b1d11e313dabccd75",
+    "weak_union_catboost_seed67.cbm": "3569e4a82ba387072dec09a76a52fa512f963b81488afe9ad632830ea5e5b45c"
+  },
+  "no_tuning_attestation": "No blind threshold search, model fitting, calibration, feature selection, or policy selection is performed by this notebook.",
+  "comparison": [
+    {
+      "test": "blind_time",
+      "variant": "Iteration3 reference",
+      "rows": 117799,
+      "stations": 20,
+      "tp": 706,
+      "fp": 101,
+      "fn": 1672,
+      "tn": 115320,
+      "precision": 0.8748451053283767,
+      "recall": 0.2968881412952061,
+      "f1": 0.4433281004709576,
+      "auprc": 0.44969967200906374,
+      "true_episodes": 180,
+      "predicted_episodes": 217,
+      "event_precision": 0.5944700460829493,
+      "event_recall": 0.7166666666666667,
+      "event_f1": 0.649874055415617,
+      "false_alarm_episodes_per_station_day": 0.01865930425179459,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 720.0,
+      "delay_mean_min": 203.72093023255815,
+      "accuracy": 0.984948938445997,
+      "specificity": 0.999124942601433,
+      "balanced_accuracy": 0.6480065419483195,
+      "operational_episode_recall": 0.8153846153846154,
+      "operational_false_alarm_episodes_per_station_day": 0.7056609607951408,
+      "weather_f1": 0.5302491103202847,
+      "weather_to_fault_rate": 0.0
+    },
+    {
+      "test": "blind_time",
+      "variant": "Iteration5 weak consensus",
+      "rows": 117799,
+      "stations": 20,
+      "tp": 741,
+      "fp": 103,
+      "fn": 1637,
+      "tn": 115318,
+      "precision": 0.8779620853080569,
+      "recall": 0.3116063919259882,
+      "f1": 0.45996275605214154,
+      "auprc": 0.44969967200906374,
+      "true_episodes": 180,
+      "predicted_episodes": 218,
+      "event_precision": 0.5963302752293578,
+      "event_recall": 0.7222222222222222,
+      "event_f1": 0.6532663316582915,
+      "false_alarm_episodes_per_station_day": 0.01865930425179459,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 720.0,
+      "delay_mean_min": 203.30769230769232,
+      "accuracy": 0.9852290766475097,
+      "specificity": 0.9991076147321545,
+      "balanced_accuracy": 0.6553570033290713,
+      "operational_episode_recall": 0.8205128205128205,
+      "operational_false_alarm_episodes_per_station_day": 0.7056609607951408,
+      "weather_f1": 0.5302491103202847,
+      "weather_to_fault_rate": 0.0
+    },
+    {
+      "test": "blind_station",
+      "variant": "Iteration3 reference",
+      "rows": 6849,
+      "stations": 4,
+      "tp": 119,
+      "fp": 13,
+      "fn": 216,
+      "tn": 6501,
+      "precision": 0.9015151515151515,
+      "recall": 0.35522388059701493,
+      "f1": 0.5096359743040685,
+      "auprc": 0.5985075090049157,
+      "true_episodes": 72,
+      "predicted_episodes": 60,
+      "event_precision": 0.8,
+      "event_recall": 0.6666666666666666,
+      "event_f1": 0.7272727272727272,
+      "false_alarm_episodes_per_station_day": 0.012720286206439646,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 414.0000000000008,
+      "delay_mean_min": 133.75,
+      "accuracy": 0.9665644619652504,
+      "specificity": 0.9980042984341418,
+      "balanced_accuracy": 0.6766140895155783,
+      "operational_episode_recall": 0.7692307692307693,
+      "operational_false_alarm_episodes_per_station_day": 0.12508281436332316,
+      "weather_f1": 0.13636363636363635,
+      "weather_to_fault_rate": 0.030303030303030304
+    },
+    {
+      "test": "blind_station",
+      "variant": "Iteration5 weak consensus",
+      "rows": 6849,
+      "stations": 4,
+      "tp": 119,
+      "fp": 13,
+      "fn": 216,
+      "tn": 6501,
+      "precision": 0.9015151515151515,
+      "recall": 0.35522388059701493,
+      "f1": 0.5096359743040685,
+      "auprc": 0.5985075090049157,
+      "true_episodes": 72,
+      "predicted_episodes": 60,
+      "event_precision": 0.8,
+      "event_recall": 0.6666666666666666,
+      "event_f1": 0.7272727272727272,
+      "false_alarm_episodes_per_station_day": 0.012720286206439646,
+      "delay_median_min": 0.0,
+      "delay_p90_min": 414.0000000000008,
+      "delay_mean_min": 133.75,
+      "accuracy": 0.9665644619652504,
+      "specificity": 0.9980042984341418,
+      "balanced_accuracy": 0.6766140895155783,
+      "operational_episode_recall": 0.7692307692307693,
+      "operational_false_alarm_episodes_per_station_day": 0.12508281436332316,
+      "weather_f1": 0.13636363636363635,
+      "weather_to_fault_rate": 0.030303030303030304
+    }
+  ],
+  "weather_metrics": [
+    {
+      "test": "blind_time",
+      "variant": "Iteration3 reference",
+      "weather_rows": 632,
+      "weather_precision": 0.6056910569105691,
+      "weather_recall": 0.47151898734177217,
+      "weather_f1": 0.5302491103202847,
+      "weather_auprc": 0.5533433450143154,
+      "weather_to_fault_rate": 0.0
+    },
+    {
+      "test": "blind_time",
+      "variant": "Iteration5 weak consensus",
+      "weather_rows": 632,
+      "weather_precision": 0.6056910569105691,
+      "weather_recall": 0.47151898734177217,
+      "weather_f1": 0.5302491103202847,
+      "weather_auprc": 0.5533433450143154,
+      "weather_to_fault_rate": 0.0
+    },
+    {
+      "test": "blind_station",
+      "variant": "Iteration3 reference",
+      "weather_rows": 66,
+      "weather_precision": 0.2727272727272727,
+      "weather_recall": 0.09090909090909091,
+      "weather_f1": 0.13636363636363635,
+      "weather_auprc": 0.1930314799911449,
+      "weather_to_fault_rate": 0.030303030303030304
+    },
+    {
+      "test": "blind_station",
+      "variant": "Iteration5 weak consensus",
+      "weather_rows": 66,
+      "weather_precision": 0.2727272727272727,
+      "weather_recall": 0.09090909090909091,
+      "weather_f1": 0.13636363636363635,
+      "weather_auprc": 0.1930314799911449,
+      "weather_to_fault_rate": 0.030303030303030304
+    }
+  ],
+  "communication_replay": [
+    {
+      "test": "blind_time",
+      "duplicate_packet_tp": 25,
+      "duplicate_packet_fp": 0,
+      "duplicate_packet_fn": 0,
+      "duplicate_packet_precision": 1.0,
+      "duplicate_packet_recall": 1.0,
+      "true_duplicate_episodes": 15,
+      "detected_duplicate_episodes": 15,
+      "duplicate_episode_recall": 1.0,
+      "dropout_event_tp": 15,
+      "dropout_event_fp": 3240,
+      "dropout_event_fn": 0,
+      "dropout_event_precision": 0.004608294930875576,
+      "dropout_event_recall": 1.0,
+      "true_dropout_episodes": 15,
+      "detector_uses_only_arrival_timestamps": true,
+      "stream_action_used_by_detector": false,
+      "detector_inputs": [
+        "station_id",
+        "arrival_timestamp",
+        "temperature",
+        "pressure",
+        "humidity"
+      ]
+    },
+    {
+      "test": "blind_station",
+      "duplicate_packet_tp": 7,
+      "duplicate_packet_fp": 0,
+      "duplicate_packet_fn": 0,
+      "duplicate_packet_precision": 1.0,
+      "duplicate_packet_recall": 1.0,
+      "true_duplicate_episodes": 6,
+      "detected_duplicate_episodes": 6,
+      "duplicate_episode_recall": 1.0,
+      "dropout_event_tp": 6,
+      "dropout_event_fp": 106,
+      "dropout_event_fn": 0,
+      "dropout_event_precision": 0.05357142857142857,
+      "dropout_event_recall": 1.0,
+      "true_dropout_episodes": 6,
+      "detector_uses_only_arrival_timestamps": true,
+      "stream_action_used_by_detector": false,
+      "detector_inputs": [
+        "station_id",
+        "arrival_timestamp",
+        "temperature",
+        "pressure",
+        "humidity"
+      ]
+    }
+  ],
+  "relative_promotion_checks": [
+    {
+      "test": "blind_time",
+      "criterion": "no_point_f1_regression",
+      "passed": true
+    },
+    {
+      "test": "blind_time",
+      "criterion": "no_event_f1_regression",
+      "passed": true
+    },
+    {
+      "test": "blind_time",
+      "criterion": "precision_safety_0.75",
+      "passed": true
+    },
+    {
+      "test": "blind_time",
+      "criterion": "false_alarm_safety_0.02",
+      "passed": false
+    },
+    {
+      "test": "blind_station",
+      "criterion": "no_point_f1_regression",
+      "passed": true
+    },
+    {
+      "test": "blind_station",
+      "criterion": "no_event_f1_regression",
+      "passed": true
+    },
+    {
+      "test": "blind_station",
+      "criterion": "precision_safety_0.75",
+      "passed": true
+    },
+    {
+      "test": "blind_station",
+      "criterion": "false_alarm_safety_0.02",
+      "passed": false
+    }
+  ],
+  "sih_readiness_checks": [
+    {
+      "test": "blind_time",
+      "criterion": "precision",
+      "actual": 0.8779620853080569,
+      "target": 0.8,
+      "passed": true
+    },
+    {
+      "test": "blind_time",
+      "criterion": "point_f1",
+      "actual": 0.45996275605214154,
+      "target": 0.65,
+      "passed": false
+    },
+    {
+      "test": "blind_time",
+      "criterion": "operational_episode_recall",
+      "actual": 0.8205128205128205,
+      "target": 0.85,
+      "passed": false
+    },
+    {
+      "test": "blind_time",
+      "criterion": "operational_false_alarm_rate",
+      "actual": 0.7056609607951408,
+      "target": 0.02,
+      "passed": false
+    },
+    {
+      "test": "blind_time",
+      "criterion": "weather_f1",
+      "actual": 0.5302491103202847,
+      "target": 0.8,
+      "passed": false
+    },
+    {
+      "test": "blind_time",
+      "criterion": "weather_to_fault_rate",
+      "actual": 0.0,
+      "target": 0.01,
+      "passed": true
+    },
+    {
+      "test": "blind_station",
+      "criterion": "precision",
+      "actual": 0.9015151515151515,
+      "target": 0.8,
+      "passed": true
+    },
+    {
+      "test": "blind_station",
+      "criterion": "point_f1",
+      "actual": 0.5096359743040685,
+      "target": 0.65,
+      "passed": false
+    },
+    {
+      "test": "blind_station",
+      "criterion": "operational_episode_recall",
+      "actual": 0.7692307692307693,
+      "target": 0.85,
+      "passed": false
+    },
+    {
+      "test": "blind_station",
+      "criterion": "operational_false_alarm_rate",
+      "actual": 0.12508281436332316,
+      "target": 0.02,
+      "passed": false
+    },
+    {
+      "test": "blind_station",
+      "criterion": "weather_f1",
+      "actual": 0.13636363636363635,
+      "target": 0.8,
+      "passed": false
+    },
+    {
+      "test": "blind_station",
+      "criterion": "weather_to_fault_rate",
+      "actual": 0.030303030303030304,
+      "target": 0.01,
+      "passed": false
+    }
+  ],
+  "decision": {
+    "iteration5_relative_promotion_gate_passed": false,
+    "sih_readiness_targets_all_passed": false,
+    "recommended_detector": "Keep Iteration3 reference",
+    "automatic_production_change_made": false
+  }
+}

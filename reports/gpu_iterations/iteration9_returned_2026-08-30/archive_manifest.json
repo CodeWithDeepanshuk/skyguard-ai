@@ -1,0 +1,158 @@
+{
+  "iteration": 9,
+  "archive_date": "2026-08-30",
+  "immutable_checkpoint": true,
+  "file_count": 30,
+  "files": [
+    {
+      "name": "iteration9_audit_report.json",
+      "bytes": 27350,
+      "sha256": "2fd9e6c99b10592b1efb68a84c620315fc50281b4d12a54853cd3ceffd427a38"
+    },
+    {
+      "name": "iteration9_calibrator_coefficients.csv",
+      "bytes": 903,
+      "sha256": "6a6f8ee72268d81d85f150f7defb7385a00578d5f47f49db33848a63c77a603d"
+    },
+    {
+      "name": "iteration9_fault_episode_recall.csv",
+      "bytes": 1871,
+      "sha256": "54199e278c041a23047fcbede0b9360ec8689d5d2c175af861bd26e405487c44"
+    },
+    {
+      "name": "iteration9_fault_policy_frontier.csv",
+      "bytes": 24716,
+      "sha256": "870db1d6674d6d541a5d28a310aa3c81d559858cefe81b339d34162b14cbc7ca"
+    },
+    {
+      "name": "iteration9_fault_residual_lightgbm_seed17.joblib",
+      "bytes": 3614350,
+      "sha256": "d25f3867dd2d8a247021551ed0759c8d0ec683bdaecd76a3d1450b510398576c"
+    },
+    {
+      "name": "iteration9_fault_residual_lightgbm_seed41.joblib",
+      "bytes": 2044423,
+      "sha256": "d6a543856648c6016bdcb001787ce59ef8e366c3a4fe7163fc02e34ef2123cd7"
+    },
+    {
+      "name": "iteration9_fault_residual_lightgbm_seed67.joblib",
+      "bytes": 3889779,
+      "sha256": "532cf6f103c6e339973e32b6235c8eed0517f0a9621ab5d21b5502ed95ffed09"
+    },
+    {
+      "name": "iteration9_feature_ablation_contract (1).csv",
+      "bytes": 4214,
+      "sha256": "29beae9de728f3874e7b46a53f92ab84a5b9f0ffa94ccf25c6ed347a95f68ba3"
+    },
+    {
+      "name": "iteration9_feature_ablation_contract.csv",
+      "bytes": 4214,
+      "sha256": "29beae9de728f3874e7b46a53f92ab84a5b9f0ffa94ccf25c6ed347a95f68ba3"
+    },
+    {
+      "name": "iteration9_feature_contract.json",
+      "bytes": 4835,
+      "sha256": "412c0f514cedbee49b4edcf25d6fc476283e0e167687ce8b717d9ef9d6dffb08"
+    },
+    {
+      "name": "iteration9_integrity_receipt.json",
+      "bytes": 593,
+      "sha256": "329e4be31adb47612bad2b45d83916125bcdea74df2bec52d0242fd0511f5a0d"
+    },
+    {
+      "name": "iteration9_l2_calibrators.joblib",
+      "bytes": 1779,
+      "sha256": "64fc67df515931c41e981caa33c284295e06a609e162f255421799c595961ed0"
+    },
+    {
+      "name": "iteration9_model_training_history.csv",
+      "bytes": 326,
+      "sha256": "1acd3aacd99cb4206e7b11f074ae78fc564e4e3d6b1312d042538473c45e7d50"
+    },
+    {
+      "name": "iteration9_multidomain_confirmation.csv",
+      "bytes": 2512,
+      "sha256": "e33857589b8b85c0abfab8164e87c78bc0ab808b7985ab8540e9b6756682c0c4"
+    },
+    {
+      "name": "iteration9_multiseed_fault_recall.csv",
+      "bytes": 2082,
+      "sha256": "d57f49fef9404381f2db9cc188a9a6d938194aebe5885abc7f69d2325b6cf890"
+    },
+    {
+      "name": "iteration9_multiseed_stress.csv",
+      "bytes": 3430,
+      "sha256": "7eb3beb7c586543d25609b81208538a6927418938d44f31652ec3d4e39b94af1"
+    },
+    {
+      "name": "iteration9_multiseed_weather_by_cluster.csv",
+      "bytes": 6579,
+      "sha256": "8ca02a9753669788dde311acb50dae39bb69abbf339f7bbbd878cdf7e2d651fa"
+    },
+    {
+      "name": "iteration9_problem_coverage.json",
+      "bytes": 965,
+      "sha256": "f9d79a75dfd20617d09dfbf5ac21dcafbbaf1c319150a8d8d904d7f8f2556a31"
+    },
+    {
+      "name": "iteration9_residual_feature_importance.csv",
+      "bytes": 3538,
+      "sha256": "b577938f435ee0e9d1ac9daf904d328c809507a0f6965c9754f08de6e061e3b6"
+    },
+    {
+      "name": "iteration9_residual_root_cause_catboost.cbm",
+      "bytes": 16151624,
+      "sha256": "fc21c6fde6e0e638eef25b952c873f356dc095d4e53c4769ecf152a8acc0de14"
+    },
+    {
+      "name": "iteration9_result_block.json",
+      "bytes": 14522,
+      "sha256": "7c3c8fb68550e1e8f9cb6990fbeda399caf7a4eb82e67fb584d9e623975887e6"
+    },
+    {
+      "name": "iteration9_root_cause_metrics.csv",
+      "bytes": 294,
+      "sha256": "25ba1d149986ee3476a7c57615cb3277ee9fd9ed083570251e498ba06a2ffdc2"
+    },
+    {
+      "name": "iteration9_root_cause_per_class.csv",
+      "bytes": 2399,
+      "sha256": "c8542007d0b83b3d37430904ddb03522a3727bfe833731fdc1f177b46e63dd14"
+    },
+    {
+      "name": "iteration9_seed_confidence_intervals.csv",
+      "bytes": 3163,
+      "sha256": "0dd31e15a9123894b6df5ca811edb900d34536343c8c311c43af990311a0968d"
+    },
+    {
+      "name": "iteration9_weather_by_cluster.csv",
+      "bytes": 2861,
+      "sha256": "ae716d42f66d7c226ef1b864483771f95cbdc0c8d46b90125aeb797add792e63"
+    },
+    {
+      "name": "iteration9_weather_policy_frontier.csv",
+      "bytes": 18104,
+      "sha256": "756b3807d340cf72a51aeca107baf8c7952ccb8f93a2ff6fbabbf6d1cad8db04"
+    },
+    {
+      "name": "iteration9_weather_residual_lightgbm_seed17.joblib",
+      "bytes": 2132733,
+      "sha256": "610ae172d731804ea457e51aa4e911b511a0d25f04afe47a1998478597e05916"
+    },
+    {
+      "name": "iteration9_weather_residual_lightgbm_seed41.joblib",
+      "bytes": 2496252,
+      "sha256": "97ec7e4754a8ff141c899ecffc627cfe7d0da72c1c6dcacee92f64489b557f06"
+    },
+    {
+      "name": "iteration9_weather_residual_lightgbm_seed67.joblib",
+      "bytes": 2938818,
+      "sha256": "67fbdeb9391bb1d116ef539aea07b4d8ce5c4eb8c5ef0df1c88dae72f9e9fd87"
+    },
+    {
+      "name": "SkyGuard_AI_GPU_Iteration_09_Domain_Invariant_Calibration_Colab.ipynb",
+      "bytes": 1100485,
+      "sha256": "da3ea888bd23dcbf89ea97f634b96a36c35d1fb1fa6a8d8c4116e2d584011545"
+    }
+  ]
+}
