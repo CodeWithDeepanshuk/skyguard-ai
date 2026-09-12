@@ -4,6 +4,7 @@
 
 window.SkyGuardMap = (() => {
   let map, markers, tiles, bounds, fitted = false;
+  let fullMap, fullMarkers;
 
   const zoneColors = {
     'Central Plateau': '#0D9488',
@@ -19,17 +20,35 @@ window.SkyGuardMap = (() => {
   function init() {
     if (map) return;
     map = L.map('station-map', {
-      minZoom: 2,
-      maxZoom: 18,
+      minZoom: 4,
+      maxZoom: 12,
       scrollWheelZoom: true,
-      maxBounds: [[-85, -180], [85, 180]],
-      maxBoundsViscosity: 1
-    }).setView([22.5, 79.5], 5);
+      maxBounds: [[5.0, 65.0], [38.5, 100.0]],
+      maxBoundsViscosity: 1.0
+    }).setView([22.8, 79.5], 5);
 
     map.createPane('offlineLand');
     map.getPane('offlineLand').style.zIndex = '150';
     markers = L.layerGroup().addTo(map);
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
+
+    const fullEl = document.getElementById('fullscreen-map');
+    if (fullEl && !fullMap) {
+      fullMap = L.map('fullscreen-map', {
+        minZoom: 4,
+        maxZoom: 12,
+        scrollWheelZoom: true,
+        maxBounds: [[5.0, 65.0], [38.5, 100.0]],
+        maxBoundsViscosity: 1.0
+      }).setView([22.8, 79.5], 5);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        noWrap: true,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(fullMap);
+      fullMarkers = L.layerGroup().addTo(fullMap);
+      new ResizeObserver(() => fullMap.invalidateSize({ pan: false })).observe(fullEl);
+    }
 
     const status = document.getElementById('map-status');
 
@@ -55,41 +74,28 @@ window.SkyGuardMap = (() => {
         if (status) status.textContent = 'Station coordinates active across Indian subcontinent.';
       });
 
-    // High-resolution clean CartoDB Positron Light Tiles
-    tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      subdomains: 'abcd',
+    // Clean OpenStreetMap Tiles - No API Key Required, No Watermark
+    tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
       noWrap: true,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
-
-    tiles.on('tileerror', () => {
-      // Fallback to OSM directly if Carto CDN is unreachable
-      if (!map.hasLayer(tiles)) return;
-      map.removeLayer(tiles);
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        noWrap: true,
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-    });
-
     tiles.addTo(map);
 
     const fitBtn = document.getElementById('map-fit');
     if (fitBtn) {
       fitBtn.onclick = () => {
-        if (bounds && bounds.isValid()) {
-          map.fitBounds(bounds.pad(0.08), { maxZoom: 9 });
-        } else {
-          map.setView([22.5, 79.5], 5);
-        }
+        map.fitBounds([[7.0, 67.0], [37.0, 98.0]], { padding: [15, 15] });
+        if (fullMap) fullMap.fitBounds([[7.0, 67.0], [37.0, 98.0]], { padding: [15, 15] });
       };
     }
 
     const worldBtn = document.getElementById('map-world');
     if (worldBtn) {
-      worldBtn.onclick = () => map.setView([22.0, 78.0], 4);
+      worldBtn.onclick = () => {
+        map.fitBounds([[7.0, 67.0], [37.0, 98.0]]);
+        if (fullMap) fullMap.fitBounds([[7.0, 67.0], [37.0, 98.0]]);
+      };
     }
 
     const mapElement = document.getElementById('station-map');
@@ -102,6 +108,7 @@ window.SkyGuardMap = (() => {
     reset() {
       init();
       markers.clearLayers();
+      if (fullMarkers) fullMarkers.clearLayers();
       bounds = L.latLngBounds([]);
       const dir = document.getElementById('station-directory');
       if (dir) dir.replaceChildren();
@@ -178,6 +185,12 @@ window.SkyGuardMap = (() => {
               onSelect();
             });
 
+      if (fullMarkers) {
+        const fullM = L.marker([lat, lon], { icon, title: label, keyboard: true }).addTo(fullMarkers);
+        fullM.bindTooltip(tooltipContent, { className: 'light-map-tooltip', direction: 'top', offset: [0, -8] })
+             .on('click', () => onSelect());
+      }
+
       // Render into station directory table if requested
       if (options.renderCard !== false) {
         const dir = document.getElementById('station-directory');
@@ -206,8 +219,8 @@ window.SkyGuardMap = (() => {
     },
 
     finish() {
-      if (!fitted && bounds && bounds.isValid()) {
-        map.fitBounds(bounds.pad(0.08), { maxZoom: 9 });
+      if (!fitted) {
+        map.fitBounds([[7.0, 67.0], [37.0, 98.0]], { padding: [15, 15] });
         fitted = true;
       }
     }

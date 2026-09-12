@@ -63,8 +63,11 @@
 
       <div class="sidebar-footer">
         <button class="presentation-mode-btn" id="toggle-presentation-btn" type="button" title="Start 8-step SIH Judge Walkthrough">
-          <span>🎯</span>
-          <span>SIH Presentation</span>
+          <span style="font-size:16px;">🎯</span>
+          <div style="display:flex; flex-direction:column; align-items:flex-start;">
+            <span style="font-size:12px; font-weight:700;">SIH Presentation</span>
+            <small style="font-size:10px; opacity:0.8; font-weight:500;">8-Step Judge Walkthrough</small>
+          </div>
         </button>
         <button class="sidebar-collapse-btn" id="sidebar-toggle-btn" type="button" aria-label="Toggle Sidebar">
           <span>◀</span>
@@ -109,7 +112,7 @@
         </div>
       </header>
 
-      <!-- SIH Presentation Mode Guide Banner -->
+      <!-- SIH Presentation Mode Executive HUD -->
       <div class="presentation-banner" id="presentation-banner">
         <div class="presentation-step-info">
           <span class="presentation-step-badge" id="pres-step-badge">STEP 1 OF 8</span>
@@ -118,10 +121,20 @@
             <small id="pres-step-desc">All-India monitoring of 543 Automatic Weather Stations across 8 climate zones with continuous 3-parameter QC.</small>
           </div>
         </div>
+        <div class="presentation-step-dots" id="pres-step-dots">
+          <span class="pres-dot active"></span>
+          <span class="pres-dot"></span>
+          <span class="pres-dot"></span>
+          <span class="pres-dot"></span>
+          <span class="pres-dot"></span>
+          <span class="pres-dot"></span>
+          <span class="pres-dot"></span>
+          <span class="pres-dot"></span>
+        </div>
         <div class="presentation-actions">
-          <button class="presentation-btn secondary" id="pres-prev-btn" type="button">Previous</button>
-          <button class="presentation-btn" id="pres-next-btn" type="button">Next Step →</button>
-          <button class="presentation-btn secondary" id="pres-exit-btn" type="button">Exit Demo</button>
+          <button class="presentation-btn secondary" id="pres-prev-btn" type="button">◀ Prev</button>
+          <button class="presentation-btn" id="pres-next-btn" type="button">Next Step ▶</button>
+          <button class="presentation-btn close" id="pres-exit-btn" type="button" title="Close Walkthrough">✕</button>
         </div>
       </div>
 
@@ -298,7 +311,8 @@
               </article>
 
               <!-- Virtual Spike Injection & AI Resolution Demo -->
-              <article class="simulator-box">
+              <!-- Virtual Spike Injection & AI Resolution Demo -->
+              <article class="simulator-box" id="simulator-card">
                 <div class="simulator-header">
                   <div class="simulator-icon">⚡</div>
                   <div class="simulator-title">
@@ -328,6 +342,25 @@
                 <div class="simulator-actions">
                   <button class="sim-btn inject" id="inject-live-fault" type="button">⚡ Inject virtual spike</button>
                   <button class="sim-btn restore" id="clear-live-faults" type="button">↺ Restore nominal</button>
+                </div>
+
+                <!-- 3-Stage Visual Resolution Pipeline -->
+                <div class="simulator-pipeline" id="sim-pipeline-cards">
+                  <div class="sim-pipeline-card shock" id="sim-card-shock">
+                    <span class="sim-card-tag">1. Injected Shock</span>
+                    <strong class="sim-card-val" id="sim-val-shock">Nominal</strong>
+                    <span class="sim-card-sub" id="sim-sub-shock">No fault injected</span>
+                  </div>
+                  <div class="sim-pipeline-card detection" id="sim-card-detect">
+                    <span class="sim-card-tag">2. AI Detection</span>
+                    <strong class="sim-card-val" id="sim-val-detect">0.0σ</strong>
+                    <span class="sim-card-sub" id="sim-sub-detect">Spatial Consensus OK</span>
+                  </div>
+                  <div class="sim-pipeline-card repair" id="sim-card-repair">
+                    <span class="sim-card-tag">3. Safe Resolution</span>
+                    <strong class="sim-card-val" id="sim-val-repair">Pass-Through</strong>
+                    <span class="sim-card-sub" id="sim-sub-repair">Raw stream routed</span>
+                  </div>
                 </div>
 
                 <div class="simulator-status-badge" id="injection-status-badge">
@@ -416,14 +449,18 @@
 
             <!-- Sensor Trace Chart -->
             <div class="chart-container">
-              <div class="chart-controls-bar">
-                <div class="chart-legend">
-                  <span><i class="chart-legend-line temp"></i> Temperature (°C)</span>
-                  <span><i class="chart-legend-line press"></i> Pressure (hPa)</span>
-                  <span><i class="chart-legend-line humid"></i> Humidity (% RH)</span>
+              <div class="charts-master-header">
+                <div>
+                  <h3 class="charts-master-title">📊 24-Hour Parameter Telemetry & Anomaly Analysis</h3>
+                  <p class="charts-master-subtitle">High-precision parameter telemetry with NOAA MADIS spatial consensus & Open-Meteo numerical reference model</p>
                 </div>
-                <span id="trace-time" style="font-size:11px; color:#64748B;"></span>
+                <div class="chart-legend">
+                  <span><i class="chart-legend-line temp"></i> Observed In-Situ</span>
+                  <span><i class="chart-legend-line press"></i> Reference Model (Open-Meteo)</span>
+                  <span><i class="chart-legend-line humid"></i> Spatial Consensus (MADIS)</span>
+                </div>
               </div>
+              <span id="trace-time" style="display:none;"></span>
               <div class="trace-svg-host" id="sensor-chart" role="img" aria-label="Sensor Time Series Chart"></div>
 
               <!-- NOAA MADIS Spatial Buddy Check & Mathematical Proof Card -->
@@ -679,19 +716,20 @@
             </div>
           </div>
 
-          <div class="kpi-grid" id="accuracy-strip" style="grid-template-columns: repeat(6, 1fr); margin-bottom: 20px;"></div>
+          <!-- Executive Headline KPI Strip (Highlighted Bold Numbers) -->
+          <div class="report-hero-grid" id="accuracy-strip"></div>
 
           <div class="overview-split" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 20px;">
             <article class="panel">
-              <div class="panel-header"><div class="panel-title">Fault Detection Metrics</div></div>
+              <div class="panel-header"><div class="panel-title">Fault Detection Performance</div></div>
               <div class="panel-body" id="detection-metrics"></div>
             </article>
             <article class="panel">
-              <div class="panel-header"><div class="panel-title">Weather Event Protection</div></div>
+              <div class="panel-header"><div class="panel-title">Weather Event Safeguard</div></div>
               <div class="panel-body" id="weather-metrics"></div>
             </article>
             <article class="panel">
-              <div class="panel-header"><div class="panel-title">Root Cause Diagnosis</div></div>
+              <div class="panel-header"><div class="panel-title">Safe Automated Reconstruction</div></div>
               <div class="panel-body" id="root-metrics"></div>
             </article>
           </div>

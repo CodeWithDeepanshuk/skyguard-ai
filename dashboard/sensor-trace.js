@@ -1,9 +1,10 @@
 /* ==========================================================================
    SkyGuard AI · Sensor Trace Chart (Light Meteorological SVG Renderer)
    Supports 3-Trace Comparison:
-   1. Observed In-Situ Telemetry (Solid Teal/Red)
+   1. Observed In-Situ Telemetry (Solid Teal/Indigo/Amber)
    2. Independent Reference Model - Open-Meteo (Dashed Indigo)
-   3. Spatial Neighbour Consensus (Dotted Amber)
+   3. Spatial Neighbour Consensus - NOAA MADIS (Dotted Amber)
+   Box Format for Each Term: Temperature, Pressure, Relative Humidity
    ========================================================================== */
 
 window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null) => {
@@ -29,7 +30,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
   const validRows = (rows || []).filter(r => Number.isFinite(Date.parse(r.timestamp_utc)));
   if (!validRows.length && !tripletTraces) {
     const empty = document.createElement('div');
-    empty.style.cssText = 'padding: 40px 20px; text-align: center; color: #64748B; font-size: 13px;';
+    empty.style.cssText = 'padding: 40px 20px; text-align: center; color: #64748B; font-size: 13px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px;';
     empty.textContent = 'No observations available for the selected station. Telemetry will appear as observations arrive.';
     host.appendChild(empty);
     return;
@@ -46,48 +47,22 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
   if (!allTimes.length) allTimes = [Date.now() - 86400000, Date.now()];
 
   const start = Math.min(...allTimes), end = Math.max(...allTimes);
-  const x = time => 75 + (end === start ? 0.5 : (time - start) / (end - start)) * 780;
+  const leftMargin = 85;
+  const rightMargin = 890;
+  const plotWidth = rightMargin - leftMargin;
+  const x = time => leftMargin + (end === start ? 0.5 : (time - start) / (end - start)) * plotWidth;
 
   const seriesDefs = [
-    ['temperature', 'Temperature', '°C', '#0D9488', '#CCFBF1', 'temperature_c'],
-    ['pressure', 'Atmospheric Pressure', 'hPa', '#2563EB', '#DBEAFE', 'pressure_hpa'],
-    ['humidity', 'Relative Humidity', '% RH', '#0284C7', '#E0F2FE', 'relative_humidity_pct']
+    ['temperature', 'Temperature', '°C', '#0D9488', '#CCFBF1', 'temperature_c', '🌡️'],
+    ['pressure', 'Atmospheric Pressure', 'hPa', '#2563EB', '#DBEAFE', 'pressure_hpa', '🧭'],
+    ['humidity', 'Relative Humidity', '% RH', '#D97706', '#FEF3C7', 'relative_humidity_pct', '💧']
   ];
 
   const seriesToRender = activeParameter === 'all' 
     ? seriesDefs 
     : seriesDefs.filter(([key]) => key === activeParameter);
 
-  for (const [key, title, unit, color, lightColor, paramKey] of seriesToRender) {
-    const svg = element('svg', {
-      viewBox: '0 0 900 150',
-      role: 'img',
-      'aria-label': `${title} in ${unit}`,
-      class: changed ? 'trace-series updated' : 'trace-series',
-      style: 'margin-bottom: 14px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px;'
-    });
-
-    // Parameter Title & Legend
-    svg.appendChild(element('text', {
-      x: 18,
-      y: 22,
-      fill: color,
-      'font-weight': '700',
-      'font-size': '12px'
-    }, `${title} (${unit})`));
-
-    // 3-Trace Legend on the SVG header
-    if (tripletTraces) {
-      svg.appendChild(element('line', { x1: 420, y1: 18, x2: 445, y2: 18, stroke: color, 'stroke-width': 2.5 }));
-      svg.appendChild(element('text', { x: 450, y: 22, fill: '#334155', 'font-size': '10px', 'font-weight': '600' }, 'Observed In-Situ'));
-
-      svg.appendChild(element('line', { x1: 570, y1: 18, x2: 595, y2: 18, stroke: '#6366F1', 'stroke-width': 2, 'stroke-dasharray': '5 3' }));
-      svg.appendChild(element('text', { x: 600, y: 22, fill: '#334155', 'font-size': '10px', 'font-weight': '600' }, 'Reference Model (Open-Meteo)'));
-
-      svg.appendChild(element('line', { x1: 760, y1: 18, x2: 785, y2: 18, stroke: '#F59E0B', 'stroke-width': 2, 'stroke-dasharray': '2 3' }));
-      svg.appendChild(element('text', { x: 790, y: 22, fill: '#334155', 'font-size': '10px', 'font-weight': '600' }, 'Spatial Consensus'));
-    }
-
+  for (const [key, title, unit, color, lightColor, paramKey, icon] of seriesToRender) {
     const numeric = value => value !== '' && value != null && Number.isFinite(Number(value));
     const values = validRows.filter(r => numeric(r[key])).map(r => Number(r[key]));
 
@@ -101,39 +76,175 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       });
     }
 
+    const latestVal = values.length ? values[values.length - 1] : null;
+    const minVal = values.length ? Math.min(...values) : null;
+    const maxVal = values.length ? Math.max(...values) : null;
+    const meanVal = values.length ? (values.reduce((a, b) => a + b, 0) / values.length) : null;
+
+    // Outer Box Container for this parameter term
+    const box = document.createElement('div');
+    box.className = 'parameter-graph-box';
+    box.id = `graph-box-${key}`;
+
+    // Box Header
+    const header = document.createElement('div');
+    header.className = 'parameter-graph-header';
+    header.innerHTML = `
+      <div class="parameter-graph-title">
+        <span style="font-size:16px;">${icon}</span>
+        <span>${title}</span>
+        <span class="stat-pill live">Latest: <strong>${latestVal != null ? latestVal.toFixed(1) : '—'} ${unit}</strong></span>
+      </div>
+      <div class="parameter-graph-stats">
+        <span class="stat-pill">Min: <strong>${minVal != null ? minVal.toFixed(1) : '—'} ${unit}</strong></span>
+        <span class="stat-pill">Max: <strong>${maxVal != null ? maxVal.toFixed(1) : '—'} ${unit}</strong></span>
+        <span class="stat-pill">Mean: <strong>${meanVal != null ? meanVal.toFixed(1) : '—'} ${unit}</strong></span>
+      </div>
+    `;
+    box.appendChild(header);
+
     if (!values.length) {
-      svg.appendChild(element('text', { x: 380, y: 80, fill: '#94A3B8', 'font-size': '12px' }, 'No telemetry reported for parameter'));
-      host.appendChild(svg);
+      const emptyNote = document.createElement('div');
+      emptyNote.style.cssText = 'padding: 24px; text-align: center; color: #94A3B8; font-size: 12px;';
+      emptyNote.textContent = `No ${title} telemetry reported for this station.`;
+      box.appendChild(emptyNote);
+      host.appendChild(box);
       continue;
     }
 
     let low = Math.min(...values), high = Math.max(...values);
-    const padding = Math.max((high - low) * 0.15, key === 'pressure' ? 1.0 : 0.5);
+    const padding = Math.max((high - low) * 0.18, key === 'pressure' ? 1.2 : 0.6);
     low -= padding;
     high += padding;
 
-    const y = value => 112 - (value - low) / (high - low) * 80;
+    const yTop = 22;
+    const yBottom = 125;
+    const plotHeight = yBottom - yTop;
+    const y = value => yBottom - (value - low) / (high - low) * plotHeight;
 
-    // Grid lines & Y-axis labels
-    for (let i = 0; i < 3; i++) {
-      const value = low + (high - low) * i / 2;
+    const svg = element('svg', {
+      viewBox: '0 0 920 160',
+      role: 'img',
+      'aria-label': `${title} in ${unit}`,
+      class: changed ? 'trace-series updated' : 'trace-series'
+    });
+
+    // 1. Grid Lines & Broad Y-axis Ticks
+    const numYSteps = 3;
+    for (let i = 0; i <= numYSteps; i++) {
+      const value = low + (high - low) * (i / numYSteps);
       const py = y(value);
+
+      // Horizontal faint gridline
       svg.appendChild(element('line', {
-        x1: 75,
-        x2: 875,
+        x1: leftMargin + 1,
+        x2: rightMargin,
         y1: py,
         y2: py,
-        stroke: '#F1F5F9',
-        'stroke-dasharray': '3 3'
+        stroke: '#E2E8F0',
+        'stroke-dasharray': '4 4',
+        'stroke-width': 1
       }));
+
+      // Broad Y-axis Tick mark
+      svg.appendChild(element('line', {
+        x1: leftMargin - 7,
+        y1: py,
+        x2: leftMargin,
+        y2: py,
+        stroke: '#475569',
+        'stroke-width': 2
+      }));
+
+      // Bold Y-axis Tick label
       svg.appendChild(element('text', {
-        x: 68,
+        x: leftMargin - 11,
         y: py + 4,
         'text-anchor': 'end',
-        fill: '#64748B',
-        'font-size': '10px',
-        'font-weight': '500'
+        fill: '#0F172A',
+        'font-size': '11px',
+        'font-weight': '700'
       }, value.toFixed(1)));
+    }
+
+    // 2. Broad Solid Y and X Axis Lines
+    svg.appendChild(element('line', {
+      x1: leftMargin,
+      y1: yTop - 4,
+      x2: leftMargin,
+      y2: yBottom,
+      stroke: '#475569',
+      'stroke-width': 2.5
+    }));
+
+    svg.appendChild(element('line', {
+      x1: leftMargin,
+      y1: yBottom,
+      x2: rightMargin,
+      y2: yBottom,
+      stroke: '#475569',
+      'stroke-width': 2.5
+    }));
+
+    // Y-Axis Unit Title at top-left
+    svg.appendChild(element('text', {
+      x: leftMargin,
+      y: yTop - 10,
+      'text-anchor': 'start',
+      fill: '#475569',
+      'font-weight': '800',
+      'font-size': '11px'
+    }, `▲ ${unit}`));
+
+    // X-Axis Title at bottom-right
+    svg.appendChild(element('text', {
+      x: rightMargin,
+      y: yBottom + 30,
+      'text-anchor': 'end',
+      fill: '#64748B',
+      'font-weight': '700',
+      'font-size': '10px'
+    }, 'Time (UTC) ▶'));
+
+    // 3. Time labels & Broad X-axis Ticks
+    const numXSteps = 4;
+    for (let i = 0; i <= numXSteps; i++) {
+      const tVal = start + (end - start) * (i / numXSteps);
+      const px = x(tVal);
+
+      // X-axis Tick Mark
+      svg.appendChild(element('line', {
+        x1: px,
+        y1: yBottom,
+        x2: px,
+        y2: yBottom + 6,
+        stroke: '#475569',
+        'stroke-width': 2
+      }));
+
+      // Vertical faint grid line
+      if (i > 0 && i < numXSteps) {
+        svg.appendChild(element('line', {
+          x1: px,
+          y1: yTop,
+          x2: px,
+          y2: yBottom - 1,
+          stroke: '#F1F5F9',
+          'stroke-dasharray': '3 3',
+          'stroke-width': 1
+        }));
+      }
+
+      // Time Text Label
+      const timeStr = new Date(tVal).toISOString().slice(11, 16) + ' UTC';
+      svg.appendChild(element('text', {
+        x: px,
+        y: yBottom + 18,
+        'text-anchor': i === 0 ? 'start' : (i === numXSteps ? 'end' : 'middle'),
+        fill: '#1E293B',
+        'font-size': '11px',
+        'font-weight': '700'
+      }, timeStr));
     }
 
     // Helper to draw a polyline path
@@ -166,7 +277,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       drawTracePath(
         tripletTraces.reference_model,
         '#6366F1',
-        1.8,
+        2.0,
         '5 3',
         r => (r[paramKey] != null ? r[paramKey] : r[key])
       );
@@ -177,7 +288,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       drawTracePath(
         tripletTraces.neighbor_consensus,
         '#F59E0B',
-        2.0,
+        2.2,
         '2 3',
         r => (r[paramKey] != null ? r[paramKey] : r[key])
       );
@@ -206,10 +317,10 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       const dot = element('circle', {
         cx: px.toFixed(1),
         cy: py.toFixed(1),
-        r: isFault ? 5 : 3.5,
+        r: isFault ? 6 : 4,
         fill: isFault ? '#DC2626' : color,
-        stroke: isFault ? '#FFFFFF' : '#FFFFFF',
-        'stroke-width': 1.5,
+        stroke: '#FFFFFF',
+        'stroke-width': isFault ? 2.5 : 1.5,
         tabindex: 0
       });
 
@@ -223,23 +334,12 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
         d: path,
         fill: 'none',
         stroke: color,
-        'stroke-width': 2.5,
+        'stroke-width': 2.8,
         'stroke-linejoin': 'round'
       }));
     }
 
-    // Time labels on X axis
-    for (const [time, anchor, offset] of [[start, 'start', 75], [end, 'end', 875]]) {
-      const timeStr = new Date(time).toISOString().slice(5, 16).replace('T', ' ') + ' UTC';
-      svg.appendChild(element('text', {
-        x: offset,
-        y: 138,
-        'text-anchor': anchor,
-        fill: '#94A3B8',
-        'font-size': '10px'
-      }, timeStr));
-    }
-
-    host.appendChild(svg);
+    box.appendChild(svg);
+    host.appendChild(box);
   }
 };
