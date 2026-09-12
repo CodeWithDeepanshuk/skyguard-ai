@@ -1,5 +1,7 @@
 # SkyGuard AI — Iteration 11 All-India 545 Stations Colab Runbook (Roman-Hindi)
 
+> **12 September 2026 correction: this guide is superseded.** The old “545 Stations” bundle contains only24 Indian observation stations plus a larger metadata catalog. Do not treat its results as nationwide training. Use `SkyGuard_AI_Iteration_11_Data_Rebuild_Colab.ipynb` instead; it downloads new station observations automatically. Read [the returned-result review and corrected workflow](ITERATION11_RETURNED_RESULTS_AND_DATA_REBUILD.md). The older instructions below are retained as history, not the recommended run.
+
 ## Overview
 
 Yeh Iteration 11 **All-India 543/545 Weather Station Network** aur uske incident intelligence engine ke liye banaya gaya hai. Isme:

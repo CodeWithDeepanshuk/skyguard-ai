@@ -1,11 +1,56 @@
-﻿data/processed/
+# Environments and Secrets
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local database and runtimes
+data/runtime/replay.db
+data/runtime/*.db-journal
+data/runtime/*.db-wal
+scratch/
+
+# Large training / intermediate data
+data/processed/
 data/features/
 data/features_phase10/
 data/labelled/
 data/blind_2025/
 data/iteration10/
 iteration 10 result/
+experiments/iteration11_all_india/raw/
+experiments/iteration11_all_india/processed/
+experiments/iteration11_all_india/features_seed111/
+experiments/iteration11_all_india/research_seed111/
+aws_observations_*.csv
+
+# Preserve essential demo and incident archives
 *.zip
 *.gz
-*.csv.gz
-aws_observations_*.csv
+!data/demo/*.csv.gz
+!data/incidents/*.jsonl.gz

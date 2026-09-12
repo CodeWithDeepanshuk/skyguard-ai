@@ -1,0 +1,8 @@
+stage,model,seed,best_iteration
+row_evidence,lightgbm,1017,1400
+row_evidence,lightgbm,1041,1400
+row_evidence,lightgbm,1067,1398
+row_evidence,catboost,1097,1399
+incident_state,lightgbm,2017,99
+incident_state,lightgbm,2041,100
+incident_state,lightgbm,2067,99

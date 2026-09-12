@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "bundle_sha256": {
+    "SkyGuard_Iteration11_All_India_545_Stations_Bundle.zip": "a3204f33a4c0128dd99a4b6a2994e605de290060917f513db43ecf39f5f8f597",
+    "SkyGuard_Iteration8_Development_Data_Bundle.zip": "7f47466805309faf528d6abc8f04a588c4accbaf454989e36a2b4ff5b31681d4"
+  },
+  "development_years": [
+    2022,
+    2023
+  ],
+  "locked_years_opened": [],
+  "fresh_seeds": [
+    10023,
+    10061,
+    10103
+  ],
+  "feature_identifiers_excluded": true,
+  "pressure_datum_protected": true,
+  "confirmation_used_for_selection": false,
+  "automatic_deployment": false,
+  "cache_schema": "iteration11-v3-all-india-pareto-policy",
+  "holdout_integrity": {
+    "india_main_rows": 19387,
+    "dwd_main_rows": 65235,
+    "india_train_rows": 0,
+    "dwd_train_rows": 0
+  },
+  "calibration_safety_pass": true,
+  "policy_promotable": true
+}

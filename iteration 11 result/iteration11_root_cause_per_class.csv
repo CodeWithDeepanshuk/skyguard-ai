@@ -1,0 +1,17 @@
+root_cause,precision,recall,f1-score,support
+bias,0.0,0.0,0.0,2.0
+communication_corruption,0.0,0.0,0.0,2.0
+drift,0.0,0.0,0.0,1.0
+dropout,1.0,1.0,1.0,1.0
+duplicate_packet,0.6666666666666666,1.0,0.8,2.0
+frozen_sensor,1.0,0.8333333333333334,0.9090909090909091,6.0
+multi_sensor_failure,0.6666666666666666,1.0,0.8,2.0
+noise,0.0,0.0,0.0,4.0
+scaling_error,0.0,0.0,0.0,1.0
+spike,0.0,0.0,0.0,2.0
+timestamp_error,0.0,0.0,0.0,1.0
+uncertain_fault,0.0,0.0,0.0,0.0
+unit_error,1.0,1.0,1.0,1.0
+accuracy,0.44,0.44,0.44,0.44
+macro avg,0.3333333333333333,0.37179487179487186,0.34685314685314683,25.0
+weighted avg,0.42666666666666664,0.44,0.42618181818181816,25.0

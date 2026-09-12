@@ -1,0 +1,30 @@
+{
+  "status": "BALANCED_PARETO_POLICY_FROZEN",
+  "frozen_policy": {
+    "fault_threshold": 0.85,
+    "weather_threshold": 0.35,
+    "k": 1,
+    "n": 2,
+    "window_minutes": 720.0,
+    "enable_drift_rescue": false,
+    "drift_rescue_threshold": 10.0,
+    "drift_min_fault_probability": 0.34,
+    "weather_agreement_threshold": 0.5,
+    "weather_probability_floor": 0.1,
+    "recovery_points": 2
+  },
+  "diagnostic_policy": {
+    "fault_threshold": 0.85,
+    "weather_threshold": 0.35,
+    "k": 1,
+    "n": 2,
+    "window_minutes": 720.0,
+    "enable_drift_rescue": false,
+    "drift_rescue_threshold": 10.0,
+    "drift_min_fault_probability": 0.34,
+    "weather_agreement_threshold": 0.5,
+    "weather_probability_floor": 0.1,
+    "recovery_points": 2
+  },
+  "eligible_policy_count": 0
+}

@@ -1,0 +1,6 @@
+station_id,station_role,pressure_datum,legacy_24_station,geographic_buddies,pressure_compatible_buddies
+42273099999,development,sea_level_pressure,False,2,1
+42369099999,development,altimeter_pressure,False,2,0
+42372099999,development,sea_level_pressure,False,2,1
+42492099999,spatial_holdout,altimeter_pressure,False,1,1
+42591099999,spatial_holdout,altimeter_pressure,False,1,1

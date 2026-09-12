@@ -1,0 +1,109 @@
+feature,residual_model_allowed,exclusion_reason
+temperature_value,False,absolute climate/domain shortcut
+pressure_value,False,absolute climate/domain shortcut
+humidity_value,False,absolute climate/domain shortcut
+primary_missing_count,True,
+time_since_previous_minutes,True,
+gap_ratio,True,
+out_of_order_indicator,True,
+temperature_humidity_interaction,False,absolute climate/domain shortcut
+pressure_temperature_ratio,False,absolute climate/domain shortcut
+neighbor_station_count,True,
+neighbor_min_age_minutes,True,
+neighbor_max_age_minutes,True,
+nearest_neighbor_km,False,absolute climate/domain shortcut
+temperature_missing,True,
+temperature_lag1,False,absolute climate/domain shortcut
+temperature_delta1,True,
+temperature_rate_per_hour,True,
+temperature_rolling_count_24h,True,
+temperature_rolling_median_24h,False,absolute climate/domain shortcut
+temperature_rolling_mad_24h,True,
+temperature_robust_z_24h,True,
+temperature_ewma_prior,False,absolute climate/domain shortcut
+temperature_ewma_residual,True,
+temperature_frozen_run_length,True,
+pressure_missing,True,
+pressure_lag1,False,absolute climate/domain shortcut
+pressure_delta1,True,
+pressure_rate_per_hour,True,
+pressure_rolling_count_24h,True,
+pressure_rolling_median_24h,False,absolute climate/domain shortcut
+pressure_rolling_mad_24h,True,
+pressure_robust_z_24h,True,
+pressure_ewma_prior,False,absolute climate/domain shortcut
+pressure_ewma_residual,True,
+pressure_frozen_run_length,True,
+humidity_missing,True,
+humidity_lag1,False,absolute climate/domain shortcut
+humidity_delta1,True,
+humidity_rate_per_hour,True,
+humidity_rolling_count_24h,True,
+humidity_rolling_median_24h,False,absolute climate/domain shortcut
+humidity_rolling_mad_24h,True,
+humidity_robust_z_24h,True,
+humidity_ewma_prior,False,absolute climate/domain shortcut
+humidity_ewma_residual,True,
+humidity_frozen_run_length,True,
+neighbor_temperature_count,True,
+neighbor_temperature_weighted_mean,False,absolute climate/domain shortcut
+neighbor_temperature_median,False,absolute climate/domain shortcut
+neighbor_temperature_mad,True,
+neighbor_temperature_residual,True,
+neighbor_temperature_max_abs_difference,True,
+neighbor_temperature_agreement_fraction,True,
+neighbor_pressure_count,True,
+neighbor_pressure_weighted_mean,False,absolute climate/domain shortcut
+neighbor_pressure_median,False,absolute climate/domain shortcut
+neighbor_pressure_mad,True,
+neighbor_pressure_residual,True,
+neighbor_pressure_max_abs_difference,True,
+neighbor_pressure_agreement_fraction,True,
+neighbor_humidity_count,True,
+neighbor_humidity_weighted_mean,False,absolute climate/domain shortcut
+neighbor_humidity_median,False,absolute climate/domain shortcut
+neighbor_humidity_mad,True,
+neighbor_humidity_residual,True,
+neighbor_humidity_max_abs_difference,True,
+neighbor_humidity_agreement_fraction,True,
+temperature_slope_3h,True,
+temperature_slope_6h,True,
+temperature_slope_12h,True,
+temperature_slope_24h,True,
+temperature_neighbor_residual_slope_3h,True,
+temperature_neighbor_residual_slope_6h,True,
+temperature_neighbor_residual_slope_12h,True,
+temperature_neighbor_residual_slope_24h,True,
+temperature_cusum_positive,True,
+temperature_cusum_negative,True,
+temperature_monotonic_run,True,
+temperature_climatology_residual,True,
+pressure_slope_3h,True,
+pressure_slope_6h,True,
+pressure_slope_12h,True,
+pressure_slope_24h,True,
+pressure_neighbor_residual_slope_3h,True,
+pressure_neighbor_residual_slope_6h,True,
+pressure_neighbor_residual_slope_12h,True,
+pressure_neighbor_residual_slope_24h,True,
+pressure_cusum_positive,True,
+pressure_cusum_negative,True,
+pressure_monotonic_run,True,
+pressure_climatology_residual,True,
+humidity_slope_3h,True,
+humidity_slope_6h,True,
+humidity_slope_12h,True,
+humidity_slope_24h,True,
+humidity_neighbor_residual_slope_3h,True,
+humidity_neighbor_residual_slope_6h,True,
+humidity_neighbor_residual_slope_12h,True,
+humidity_neighbor_residual_slope_24h,True,
+humidity_cusum_positive,True,
+humidity_cusum_negative,True,
+humidity_monotonic_run,True,
+humidity_climatology_residual,True,
+regional_agreement_mean,True,
+regional_agreement_min,True,
+regional_agreeing_sensor_count,True,
+regional_standardized_disagreement_max,True,
+regional_trend_disagreement_mean,True,

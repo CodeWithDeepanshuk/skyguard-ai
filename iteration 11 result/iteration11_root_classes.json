@@ -1,0 +1,15 @@
+[
+  "bias",
+  "communication_corruption",
+  "drift",
+  "dropout",
+  "duplicate_packet",
+  "frozen_sensor",
+  "multi_sensor_failure",
+  "noise",
+  "scaling_error",
+  "spike",
+  "sudden_drop",
+  "timestamp_error",
+  "unit_error"
+]

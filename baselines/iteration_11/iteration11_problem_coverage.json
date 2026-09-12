@@ -1,0 +1,12 @@
+{
+  "real_time_anomaly_alerts": "implemented causal row + state engine",
+  "spike_frozen_communication_faults": "13 operational families plus 5 subtle families evaluated",
+  "temporal_seasonal_learning": "rolling robust/EWMA/slope/CUSUM/climatology residuals",
+  "multivariate_consistency": "T/P/RH causal interactions and consistency features",
+  "genuine_weather_separation": "independent neighbour gate plus exclusive three-way state",
+  "confidence_and_explainability": "L2 calibrated probabilities, LightGBM importance and SHAP export",
+  "sensor_degradation_maintenance": "dedicated drift evidence and station health recommendations",
+  "corrected_values": "causal advisory estimates with held-out original-value MAE/coverage",
+  "scalability": "batch throughput and model-size evidence",
+  "dashboard_and_live_api": "existing SkyGuard dashboard/API; Iteration 10 remains shadow until gates pass"
+}

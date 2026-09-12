@@ -1,0 +1,281 @@
+{
+  "rows": 34436,
+  "observed_class_prior": {
+    "normal": 0.8976652340573819,
+    "genuine_weather": 0.0871181321872459,
+    "sensor_fault": 0.015216633755372284
+  },
+  "mean_raw_probability": {
+    "normal": 0.8939085667644092,
+    "genuine_weather": 0.09361021378418487,
+    "sensor_fault": 0.01248121945188881
+  },
+  "mean_calibrated_probability": {
+    "normal": 0.8976652340578111,
+    "genuine_weather": 0.08711813218725475,
+    "sensor_fault": 0.01521663375537961
+  },
+  "raw": {
+    "fault": {
+      "brier_score": 0.013439126051388141,
+      "expected_calibration_error": 0.005111543071263166,
+      "reliability_bins": [
+        {
+          "bin": 0,
+          "count": 34190,
+          "mean_confidence": 0.008171125265981117,
+          "observed_rate": 0.011962562152676222,
+          "absolute_gap": 0.003791436886695105
+        },
+        {
+          "bin": 1,
+          "count": 91,
+          "mean_confidence": 0.15516426228078337,
+          "observed_rate": 0.17582417582417584,
+          "absolute_gap": 0.020659913543392472
+        },
+        {
+          "bin": 2,
+          "count": 8,
+          "mean_confidence": 0.2174487582446153,
+          "observed_rate": 0.625,
+          "absolute_gap": 0.4075512417553847
+        },
+        {
+          "bin": 4,
+          "count": 4,
+          "mean_confidence": 0.41519428601807123,
+          "observed_rate": 0.5,
+          "absolute_gap": 0.08480571398192877
+        },
+        {
+          "bin": 6,
+          "count": 7,
+          "mean_confidence": 0.6861884903336304,
+          "observed_rate": 0.2857142857142857,
+          "absolute_gap": 0.4004742046193447
+        },
+        {
+          "bin": 7,
+          "count": 15,
+          "mean_confidence": 0.7128992849361835,
+          "observed_rate": 0.3333333333333333,
+          "absolute_gap": 0.37956595160285017
+        },
+        {
+          "bin": 9,
+          "count": 121,
+          "mean_confidence": 0.9703750117116945,
+          "observed_rate": 0.7024793388429752,
+          "absolute_gap": 0.2678956728687193
+        }
+      ]
+    },
+    "weather": {
+      "brier_score": 0.014298903793906054,
+      "expected_calibration_error": 0.006492081596905106,
+      "reliability_bins": [
+        {
+          "bin": 0,
+          "count": 31265,
+          "mean_confidence": 0.008629558566446064,
+          "observed_rate": 0.007740284663361586,
+          "absolute_gap": 0.0008892739030844782
+        },
+        {
+          "bin": 1,
+          "count": 99,
+          "mean_confidence": 0.11725840768212642,
+          "observed_rate": 0.030303030303030304,
+          "absolute_gap": 0.08695537737909612
+        },
+        {
+          "bin": 2,
+          "count": 2,
+          "mean_confidence": 0.29831695200305963,
+          "observed_rate": 0.0,
+          "absolute_gap": 0.29831695200305963
+        },
+        {
+          "bin": 3,
+          "count": 25,
+          "mean_confidence": 0.36360697123828983,
+          "observed_rate": 0.36,
+          "absolute_gap": 0.0036069712382898467
+        },
+        {
+          "bin": 5,
+          "count": 3,
+          "mean_confidence": 0.5930382575660502,
+          "observed_rate": 0.3333333333333333,
+          "absolute_gap": 0.2597049242327169
+        },
+        {
+          "bin": 6,
+          "count": 8,
+          "mean_confidence": 0.6466925422604743,
+          "observed_rate": 0.125,
+          "absolute_gap": 0.5216925422604743
+        },
+        {
+          "bin": 7,
+          "count": 1,
+          "mean_confidence": 0.797462381785036,
+          "observed_rate": 0.0,
+          "absolute_gap": 0.797462381785036
+        },
+        {
+          "bin": 8,
+          "count": 206,
+          "mean_confidence": 0.8634998608338168,
+          "observed_rate": 0.6456310679611651,
+          "absolute_gap": 0.2178687928726517
+        },
+        {
+          "bin": 9,
+          "count": 2827,
+          "mean_confidence": 0.9716419150764983,
+          "observed_rate": 0.9235939158118146,
+          "absolute_gap": 0.04804799926468373
+        }
+      ]
+    }
+  },
+  "calibrated": {
+    "fault": {
+      "brier_score": 0.013054645008622408,
+      "expected_calibration_error": 0.0009625597822377346,
+      "reliability_bins": [
+        {
+          "bin": 0,
+          "count": 34285,
+          "mean_confidence": 0.012356710421955902,
+          "observed_rate": 0.012483593408196004,
+          "absolute_gap": 0.00012688298624010177
+        },
+        {
+          "bin": 1,
+          "count": 8,
+          "mean_confidence": 0.13718244268483332,
+          "observed_rate": 0.5,
+          "absolute_gap": 0.3628175573151667
+        },
+        {
+          "bin": 2,
+          "count": 1,
+          "mean_confidence": 0.29719964121913345,
+          "observed_rate": 0.0,
+          "absolute_gap": 0.29719964121913345
+        },
+        {
+          "bin": 3,
+          "count": 21,
+          "mean_confidence": 0.3211621544160516,
+          "observed_rate": 0.3333333333333333,
+          "absolute_gap": 0.0121711789172817
+        },
+        {
+          "bin": 6,
+          "count": 38,
+          "mean_confidence": 0.6451486871130445,
+          "observed_rate": 0.42105263157894735,
+          "absolute_gap": 0.22409605553409717
+        },
+        {
+          "bin": 7,
+          "count": 18,
+          "mean_confidence": 0.7644724766129645,
+          "observed_rate": 0.3333333333333333,
+          "absolute_gap": 0.43113914327963115
+        },
+        {
+          "bin": 8,
+          "count": 65,
+          "mean_confidence": 0.8297686779759338,
+          "observed_rate": 0.9692307692307692,
+          "absolute_gap": 0.13946209125483544
+        }
+      ]
+    },
+    "weather": {
+      "brier_score": 0.013266780204946019,
+      "expected_calibration_error": 0.006198414375235748,
+      "reliability_bins": [
+        {
+          "bin": 0,
+          "count": 31092,
+          "mean_confidence": 0.005731524420986041,
+          "observed_rate": 0.00591792100861958,
+          "absolute_gap": 0.00018639658763353918
+        },
+        {
+          "bin": 1,
+          "count": 273,
+          "mean_confidence": 0.11887485791555234,
+          "observed_rate": 0.2271062271062271,
+          "absolute_gap": 0.10823136919067476
+        },
+        {
+          "bin": 2,
+          "count": 2,
+          "mean_confidence": 0.27006333674966504,
+          "observed_rate": 0.5,
+          "absolute_gap": 0.22993666325033496
+        },
+        {
+          "bin": 3,
+          "count": 5,
+          "mean_confidence": 0.3556418121655963,
+          "observed_rate": 0.2,
+          "absolute_gap": 0.1556418121655963
+        },
+        {
+          "bin": 4,
+          "count": 21,
+          "mean_confidence": 0.46212706624480787,
+          "observed_rate": 0.38095238095238093,
+          "absolute_gap": 0.08117468529242694
+        },
+        {
+          "bin": 5,
+          "count": 13,
+          "mean_confidence": 0.5286953817638296,
+          "observed_rate": 0.46153846153846156,
+          "absolute_gap": 0.06715692022536801
+        },
+        {
+          "bin": 6,
+          "count": 75,
+          "mean_confidence": 0.6620273344707085,
+          "observed_rate": 0.5333333333333333,
+          "absolute_gap": 0.12869400113737517
+        },
+        {
+          "bin": 7,
+          "count": 228,
+          "mean_confidence": 0.7552583807380414,
+          "observed_rate": 0.6710526315789473,
+          "absolute_gap": 0.08420574915909407
+        },
+        {
+          "bin": 8,
+          "count": 478,
+          "mean_confidence": 0.8295343523096677,
+          "observed_rate": 0.6736401673640168,
+          "absolute_gap": 0.15589418494565088
+        },
+        {
+          "bin": 9,
+          "count": 2249,
+          "mean_confidence": 0.956904482483386,
+          "observed_rate": 0.9884393063583815,
+          "absolute_gap": 0.03153482387499551
+        }
+      ]
+    }
+  },
+  "normal_fault_probability_q99": 0.014514564347069814,
+  "normal_fault_probability_q999": 0.6192892351745536,
+  "maximum_prior_absolute_error": 4.292122213200855e-13,
+  "safety_pass": true
+}

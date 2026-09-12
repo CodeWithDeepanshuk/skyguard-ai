@@ -1,0 +1,8 @@
+{
+  "rows": 50000,
+  "seconds": 1.5296410029986873,
+  "rows_per_second": 32687.408288598883,
+  "model_bytes": 132923429,
+  "cpu_rss_mb": 9786.90625,
+  "shap_status": "PASS"
+}

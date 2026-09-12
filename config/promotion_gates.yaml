@@ -1,0 +1,203 @@
+# SkyGuard AI — 25 Promotion Gates Registry
+# SIH 26073: Scientific Operational Quality Control Framework
+
+gates:
+  calibration_development_safety_pass:
+    description: "Probability calibration safety audit passes development prior check"
+    metric: "calibration_development_safety_pass"
+    threshold: true
+    operator: "=="
+    split: "calibration"
+    evidence_artifact: "calibration_development_audit.json"
+
+  eligible_policy_found:
+    description: "At least one Pareto-eligible persistence policy found during development search"
+    metric: "eligible_policy_found"
+    threshold: true
+    operator: "=="
+    split: "policy_selection"
+    evidence_artifact: "frozen_policy.json"
+
+  india_and_dwd_holdout_rows_nonzero:
+    description: "Untouched evaluation holdouts contain non-zero observations"
+    metric: "holdout_rows_count"
+    threshold: true
+    operator: "=="
+    split: "confirmation"
+    evidence_artifact: "integrity_receipt.json"
+
+  holdouts_absent_from_training:
+    description: "Strict causal split guarantee: zero holdout rows present in training"
+    metric: "train_holdout_leakage_rows"
+    threshold: 0
+    operator: "=="
+    split: "train"
+    evidence_artifact: "integrity_receipt.json"
+
+  incident_fault_precision_gte_0_80_every_domain_and_holdout:
+    description: "Incident fault precision >= 80% across all domains and holdouts"
+    metric: "min_incident_fault_precision"
+    threshold: 0.80
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  incident_fault_f1_gte_0_70:
+    description: "Overall incident fault F1 >= 70%"
+    metric: "incident_fault_f1"
+    threshold: 0.70
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  false_alerts_per_station_day_lte_0_02_every_domain_and_holdout:
+    description: "False alert rate <= 0.020 alerts/station-day across all domains"
+    metric: "max_false_alerts_per_station_day"
+    threshold: 0.020
+    operator: "<="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  no_primary_incident_f1_regression_vs_best_retained:
+    description: "No incident F1 regression versus best retained historical baseline"
+    metric: "incident_f1_regression_free"
+    threshold: true
+    operator: "=="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  no_primary_point_f1_regression_vs_best_retained:
+    description: "No row-level point F1 regression versus best retained historical baseline"
+    metric: "point_f1_regression_free"
+    threshold: true
+    operator: "=="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  fault_episode_recall_gte_0_70:
+    description: "Overall fault episode recall >= 70%"
+    metric: "fault_episode_recall"
+    threshold: 0.70
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "fault_episode_recall.csv"
+
+  drift_episode_recall_gte_0_50:
+    description: "Slow-drift fault episode recall >= 50%"
+    metric: "drift_episode_recall"
+    threshold: 0.50
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "fault_episode_recall.csv"
+
+  frozen_episode_recall_gte_0_80:
+    description: "Frozen sensor episode recall >= 80%"
+    metric: "frozen_episode_recall"
+    threshold: 0.80
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "fault_episode_recall.csv"
+
+  communication_mean_recall_gte_0_80:
+    description: "Mean recall across communication fault families >= 80%"
+    metric: "mean_communication_recall"
+    threshold: 0.80
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "fault_episode_recall.csv"
+
+  weak_fault_mean_recall_gte_0_60:
+    description: "Mean recall across weak/subtle fault families >= 60%"
+    metric: "mean_weak_fault_recall"
+    threshold: 0.60
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "fault_episode_recall.csv"
+
+  india_and_dwd_weather_incident_f1_gte_0_75:
+    description: "Genuine weather incident F1 >= 75% on both India and DWD"
+    metric: "min_weather_incident_f1"
+    threshold: 0.75
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  worst_supported_cluster_weather_f1_gte_0_65:
+    description: "Weather F1 >= 65% in worst supported geographic cluster"
+    metric: "worst_cluster_weather_f1"
+    threshold: 0.65
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "weather_by_cluster.csv"
+
+  fault_to_weather_rate_lte_0_01_every_domain_and_holdout:
+    description: "Fault misclassified as weather <= 1.0% across all domains"
+    metric: "max_fault_to_weather_rate"
+    threshold: 0.010
+    operator: "<="
+    split: "confirmation"
+    evidence_artifact: "multidomain_confirmation.csv"
+
+  root_cause_accuracy_gte_0_80:
+    description: "Multi-class fault root-cause classification accuracy >= 80%"
+    metric: "root_cause_accuracy"
+    threshold: 0.80
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "root_cause_metrics.csv"
+
+  root_cause_macro_f1_gte_0_70:
+    description: "Multi-class fault root-cause macro F1 >= 70%"
+    metric: "root_cause_macro_f1"
+    threshold: 0.70
+    operator: ">="
+    split: "confirmation"
+    evidence_artifact: "root_cause_metrics.csv"
+
+  fault_ece_lte_0_08:
+    description: "Expected Calibration Error for fault probability <= 0.08"
+    metric: "fault_ece"
+    threshold: 0.080
+    operator: "<="
+    split: "confirmation"
+    evidence_artifact: "calibration_metrics.json"
+
+  weather_ece_lte_0_08:
+    description: "Expected Calibration Error for weather probability <= 0.08"
+    metric: "weather_ece"
+    threshold: 0.080
+    operator: "<="
+    split: "confirmation"
+    evidence_artifact: "calibration_metrics.json"
+
+  median_fault_detection_latency_lte_180_minutes:
+    description: "Median fault incident detection latency <= 180 minutes"
+    metric: "median_fault_latency_minutes"
+    threshold: 180.0
+    operator: "<="
+    split: "confirmation"
+    evidence_artifact: "detection_latency.csv"
+
+  three_fresh_seed_runs_present:
+    description: "Stress test evaluated on 3 independent fresh random seeds"
+    metric: "seeds_count"
+    threshold: 3
+    operator: ">="
+    split: "stress_test"
+    evidence_artifact: "multiseed_stress.csv"
+
+  every_seed_precision_and_false_alarm_pass:
+    description: "Every fresh random seed stress test meets precision and false alarm targets"
+    metric: "all_seeds_pass"
+    threshold: true
+    operator: "=="
+    split: "stress_test"
+    evidence_artifact: "multiseed_stress.csv"
+
+  locked_2024_2025_unopened:
+    description: "Locked operational test years 2024 and 2025 remain sealed"
+    metric: "locked_years_sealed"
+    threshold: true
+    operator: "=="
+    split: "all"
+    evidence_artifact: "integrity_receipt.json"

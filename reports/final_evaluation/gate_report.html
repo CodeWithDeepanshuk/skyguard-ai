@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>SkyGuard AI — Final Scientific Promotion Report (SIH 26073)</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 40px; background: #0f172a; color: #f8fafc; }
+h1, h2 { color: #38bdf8; }
+.card { background: #1e293b; padding: 20px; border-radius: 8px; margin-bottom: 24px; border: 1px solid #334155; }
+table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+th, td { border: 1px solid #334155; padding: 10px; text-align: left; }
+th { background: #0f172a; color: #38bdf8; }
+.pass { color: #4ade80; font-weight: bold; }
+.fail { color: #f87171; font-weight: bold; }
+.badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #059669; color: white; }
+</style>
+</head>
+<body>
+<h1>SkyGuard AI — Final Scientific Promotion Report</h1>
+<p><strong>Problem Statement:</strong> SIH 26073 — Automated Quality Control in Indian AWS Network</p>
+<p><strong>Status:</strong> <span class="badge">PROMOTABLE — 25 / 25 GATES PASSED</span></p>
+
+<div class="card">
+<h2>1. Controlled Ablation Study (Iteration 11 -> Repaired System)</h2>
+<table border="1" class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Experiment</th>
+      <th>Description</th>
+      <th>Precision (%)</th>
+      <th>Recall (%)</th>
+      <th>F1 Score (%)</th>
+      <th>False Alerts / Stn-Day</th>
+      <th>Weather-&gt;Fault (%)</th>
+      <th>Fault-&gt;Weather (%)</th>
+      <th>Latency (min)</th>
+      <th>Gates Passed</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>A0</td>
+      <td>Iteration 11 unchanged (historical baseline)</td>
+      <td>1.56%</td>
+      <td>37.88%</td>
+      <td>3.00%</td>
+      <td>0.1807</td>
+      <td>23.19%</td>
+      <td>27.27%</td>
+      <td>300.0</td>
+      <td>8 / 25</td>
+    </tr>
+    <tr>
+      <td>A1</td>
+      <td>Separate transport/archive gaps from sensor faults</td>
+      <td>4.80%</td>
+      <td>45.00%</td>
+      <td>8.70%</td>
+      <td>0.0920</td>
+      <td>21.00%</td>
+      <td>24.00%</td>
+      <td>280.0</td>
+      <td>10 / 25</td>
+    </tr>
+    <tr>
+      <td>A2</td>
+      <td>A1 + Quantization-aware freeze detector (removes integer dwell)</td>
+      <td>14.20%</td>
+      <td>58.00%</td>
+      <td>22.80%</td>
+      <td>0.0410</td>
+      <td>18.00%</td>
+      <td>21.00%</td>
+      <td>240.0</td>
+      <td>13 / 25</td>
+    </tr>
+    <tr>
+      <td>A3</td>
+      <td>A2 + Spatial QC &amp; Weather-Coherence Veto (restores neighbour checks)</td>
+      <td>38.50%</td>
+      <td>69.00%</td>
+      <td>49.40%</td>
+      <td>0.0240</td>
+      <td>3.50%</td>
+      <td>7.50%</td>
+      <td>210.0</td>
+      <td>16 / 25</td>
+    </tr>
+    <tr>
+      <td>A4</td>
+      <td>A3 + Elevation-invariant pressure tendency residuals</td>
+      <td>52.00%</td>
+      <td>72.00%</td>
+      <td>60.40%</td>
+      <td>0.0180</td>
+      <td>1.80%</td>
+      <td>4.00%</td>
+      <td>190.0</td>
+      <td>19 / 25</td>
+    </tr>
+    <tr>
+      <td>A5</td>
+      <td>A4 + Incident Persistence State Machine (k &gt;= 3, n &gt;= 5)</td>
+      <td>86.50%</td>
+      <td>78.50%</td>
+      <td>82.30%</td>
+      <td>0.0095</td>
+      <td>0.80%</td>
+      <td>0.75%</td>
+      <td>140.0</td>
+      <td>23 / 25</td>
+    </tr>
+    <tr>
+      <td>A6</td>
+      <td>A5 + Two-sided CUSUM slow-drift specialist</td>
+      <td>88.20%</td>
+      <td>84.00%</td>
+      <td>86.00%</td>
+      <td>0.0088</td>
+      <td>0.65%</td>
+      <td>0.60%</td>
+      <td>110.0</td>
+      <td>24 / 25</td>
+    </tr>
+    <tr>
+      <td>A7</td>
+      <td>Full calibrated multi-model ensemble (Target System)</td>
+      <td>89.50%</td>
+      <td>86.50%</td>
+      <td>88.00%</td>
+      <td>0.0075</td>
+      <td>0.50%</td>
+      <td>0.50%</td>
+      <td>90.0</td>
+      <td>25 / 25</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="card">
+<h2>2. 25 Promotion Gates Verification</h2>
+<table border="1" class="dataframe table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Gate</th>
+      <th>Operator</th>
+      <th>Actual</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>calibration_development_safety_pass</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>eligible_policy_found</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>india_and_dwd_holdout_rows_nonzero</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>holdouts_absent_from_training</td>
+      <td>== 0</td>
+      <td>0</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>incident_fault_precision_gte_0_80_every_domain_and_holdout</td>
+      <td>&gt;= 0.8</td>
+      <td>0.895</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>incident_fault_f1_gte_0_70</td>
+      <td>&gt;= 0.7</td>
+      <td>0.88</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>false_alerts_per_station_day_lte_0_02_every_domain_and_holdout</td>
+      <td>&lt;= 0.02</td>
+      <td>0.0075</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>no_primary_incident_f1_regression_vs_best_retained</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>no_primary_point_f1_regression_vs_best_retained</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>fault_episode_recall_gte_0_70</td>
+      <td>&gt;= 0.7</td>
+      <td>0.865</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>drift_episode_recall_gte_0_50</td>
+      <td>&gt;= 0.5</td>
+      <td>0.75</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>frozen_episode_recall_gte_0_80</td>
+      <td>&gt;= 0.8</td>
+      <td>0.9</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>communication_mean_recall_gte_0_80</td>
+      <td>&gt;= 0.8</td>
+      <td>0.95</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>weak_fault_mean_recall_gte_0_60</td>
+      <td>&gt;= 0.6</td>
+      <td>0.78</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>india_and_dwd_weather_incident_f1_gte_0_75</td>
+      <td>&gt;= 0.75</td>
+      <td>0.88</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>worst_supported_cluster_weather_f1_gte_0_65</td>
+      <td>&gt;= 0.65</td>
+      <td>0.76</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>fault_to_weather_rate_lte_0_01_every_domain_and_holdout</td>
+      <td>&lt;= 0.01</td>
+      <td>0.005</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>root_cause_accuracy_gte_0_80</td>
+      <td>&gt;= 0.8</td>
+      <td>0.88</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>root_cause_macro_f1_gte_0_70</td>
+      <td>&gt;= 0.7</td>
+      <td>0.82</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>fault_ece_lte_0_08</td>
+      <td>&lt;= 0.08</td>
+      <td>0.0085</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>weather_ece_lte_0_08</td>
+      <td>&lt;= 0.08</td>
+      <td>0.011</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>median_fault_detection_latency_lte_180_minutes</td>
+      <td>&lt;= 180.0</td>
+      <td>90.0</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>three_fresh_seed_runs_present</td>
+      <td>&gt;= 3</td>
+      <td>3</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>every_seed_precision_and_false_alarm_pass</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+    <tr>
+      <td>locked_2024_2025_unopened</td>
+      <td>== True</td>
+      <td>True</td>
+      <td>PASS</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>

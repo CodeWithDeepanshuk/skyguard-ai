@@ -39,12 +39,34 @@ def digest(path):
     return h.hexdigest()
 
 
+def atomic_replace(source, target):
+    # Cloud-synced folders can briefly lock a just-closed file on Windows.
+    for attempt in range(8):
+        try:
+            Path(source).replace(target)
+            return
+        except PermissionError:
+            if attempt == 7:
+                raise
+            time.sleep(.3 * (attempt + 1))
+
+
 def write_json(path, value):
+    def clean(item):
+        if isinstance(item, dict):
+            return {str(k): clean(v) for k, v in item.items()}
+        if isinstance(item, (list, tuple)):
+            return [clean(v) for v in item]
+        if isinstance(item, (float, np.floating)) and not np.isfinite(item):
+            return None
+        if isinstance(item, np.generic):
+            return item.item()
+        return item
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".partial")
-    tmp.write_text(json.dumps(value, indent=2, default=str, allow_nan=False), encoding="utf-8")
-    tmp.replace(path)
+    tmp.write_text(json.dumps(clean(value), indent=2, default=str, allow_nan=False), encoding="utf-8")
+    atomic_replace(tmp, path)
 
 
 def utc_now():
@@ -84,7 +106,7 @@ def download(url, path, min_free_gb=2):
                     required = {"STATION", "DATE", "TMP", "DEW", "SLP"} if "/access/" in url else {"USAF", "WBAN"}
                     if not required.issubset(header):
                         raise ValueError(f"Unsupported source schema: {list(header)[:10]}")
-                tmp.replace(path)
+                atomic_replace(tmp, path)
                 record = {"url": url, "retrieved_at_utc": utc_now(), "bytes": path.stat().st_size,
                           "sha256": digest(path), "last_modified": response.headers.get("Last-Modified")}
                 write_json(receipt, record)
@@ -173,9 +195,9 @@ def acquire(root, station_ids=None, workers=3):
 
 def parse_group(series, index=0):
     parts = series.fillna("").astype(str).str.split(",", expand=True)
-    raw = parts[index].str.strip() if index in parts else pd.Series("", index=series.index)
+    raw = parts[index].fillna("").str.strip() if index in parts else pd.Series("", index=series.index)
     values = pd.to_numeric(raw, errors="coerce").div(10)
-    values = values.mask(raw.str.match(r"^[+-]?999"))
+    values = values.mask(raw.str.match(r"^[+-]?999", na=False))
     quality = parts[index + 1].fillna("").str.strip() if index + 1 in parts else pd.Series("", index=series.index)
     return values, quality
 
@@ -278,16 +300,28 @@ def prepare(root):
     rows = []
     processed = root / "processed"
     processed.mkdir(exist_ok=True)
+    code_hash = digest(Path(__file__))
     for meta in catalog.to_dict("records"):
         paths = [root / f"raw/{y}/{meta['station_id']}.csv" for y in YEARS]
         paths = [p for p in paths if p.exists() and p.with_name(p.name + ".receipt.json").exists()]
         if not paths:
             continue
+        raw_hashes = {str(p.relative_to(root)): digest(p) for p in paths}
+        target = processed / f"{meta['station_id']}.parquet"
+        cached_receipt = target.with_name(target.name + ".profile.json")
+        if target.exists() and cached_receipt.exists():
+            cached = json.loads(cached_receipt.read_text())
+            if cached.get("code_hash") == code_hash and cached.get("raw_hashes") == raw_hashes and cached["record"]["processed_sha256"] == digest(target):
+                rows.append(cached["record"])
+                continue
         data = []
         for path in paths:
             if digest(path) != json.loads(path.with_name(path.name + ".receipt.json").read_text())["sha256"]:
                 raise ValueError(f"Corrupt raw cache: {path}")
             raw = pd.read_csv(path, dtype=str, low_memory=False)
+            dates = pd.to_datetime(raw.DATE, utc=True, errors="coerce")
+            if dates.dropna().dt.year.ne(int(path.parent.name)).any():
+                raise ValueError(f"Unexpected year inside {path}; source schema review required")
             data.append(normalize(raw, meta))
         frame, counts = choose_pressure(pd.concat(data, ignore_index=True).sort_values("timestamp_utc"))
         frame = frame.drop_duplicates(["station_id", "timestamp_utc"]).reset_index(drop=True)
@@ -298,11 +332,11 @@ def prepare(root):
                   "training_eligible": eligible, "exclusion_reason": "" if eligible else "fewer_than_1000_screened_rows_or_180_days_in_2020_21",
                   **{"fit_" + k: v for k, v in train.items()}, **{"eval_" + k: v for k, v in profile(frame, "eval").items()},
                   **{"fit_count_" + k: v for k, v in counts.items()}, "raw_files": len(paths)}
-        target = processed / f"{meta['station_id']}.parquet"
         tmp = target.with_suffix(".partial.parquet")
         frame.to_parquet(tmp, index=False)
-        tmp.replace(target)
+        atomic_replace(tmp, target)
         record["processed_sha256"] = digest(target)
+        write_json(cached_receipt, {"code_hash": code_hash, "raw_hashes": raw_hashes, "record": record})
         rows.append(record)
         print(f"Prepared {meta['station_id']}: {len(frame):,} rows; training eligible={eligible}", flush=True)
     summary = pd.DataFrame(rows)

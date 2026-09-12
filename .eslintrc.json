@@ -1,0 +1,16 @@
+{
+  "extends": "next/core-web-vitals",
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "data/",
+    "models/",
+    "reports/",
+    "experiments/",
+    "deliverables/",
+    "iteration*",
+    "dashboard/",
+    "scratch/",
+    "baselines/"
+  ]
+}

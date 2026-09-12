@@ -18,7 +18,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (accuracy_score, average_precision_score, brier_score_loss,
                              confusion_matrix, f1_score, precision_score, recall_score)
 
-from iteration11_data import PRIMARY, VERSION, digest, write_json
+from iteration11_data import PRIMARY, VERSION, atomic_replace, digest, write_json
 
 FEATURES = ["gap_minutes", "missing_count"]
 for prefix in ["temperature", "pressure", "humidity"]:
@@ -28,6 +28,15 @@ for prefix in ["temperature", "pressure", "humidity"]:
 FEATURES += ["hour_sin", "hour_cos", "year_sin", "year_cos"]
 SPATIAL_FEATURES = [x for x in FEATURES if "buddy_" in x]
 FAULT_TYPES = ["spike", "bias", "drift", "frozen", "noise", "missing_value"]
+
+
+class RobustQC:
+    """Non-learning temporal QC comparator; output is a score until calibrated."""
+    def predict_proba(self, frame):
+        z = frame[[f"{p}_z24" for p in ["temperature", "pressure", "humidity"]]].abs().max(axis=1).fillna(0)
+        score = np.maximum(z.to_numpy(), frame.missing_count.to_numpy() * 10)
+        p = 1 / (1 + np.exp(-np.clip(score - 6, -30, 30)))
+        return np.column_stack([1-p, p])
 
 
 def seed_for(text, seed):
@@ -82,6 +91,8 @@ def inject(frame, seed=111):
                 gap = f.loc[ids, "timestamp_utc"].diff().dt.total_seconds().gt(6 * 3600)
                 if gap.any():
                     ids = ids[:int(np.flatnonzero(gap)[0])]
+                if len(ids) < 2 and kind not in {"spike", "missing_value"}:
+                    continue
                 col_index = int(rng.integers(0, 3))
                 col = PRIMARY[col_index]
                 amp = [3.0, 5.0, 12.0][col_index] * float(rng.uniform(.5, 2)) * rng.choice([-1, 1])
@@ -93,7 +104,7 @@ def inject(frame, seed=111):
                     f.loc[ids, col] += np.linspace(amp * .1, amp, len(ids))
                 elif kind == "frozen":
                     value = f.loc[max(0, begin - 1), col]
-                    if not np.isfinite(value):
+                    if not np.isfinite(value) or np.allclose(f.loc[ids, col], value):
                         continue
                     f.loc[ids, col] = value
                 elif kind == "noise":
@@ -251,7 +262,7 @@ def build_features(root, seed=111, min_ready=True):
         combined = pd.concat(parts, ignore_index=True)
         tmp = dest.with_suffix(".partial.parquet")
         combined.to_parquet(tmp, index=False)
-        tmp.replace(dest)
+        atomic_replace(tmp, dest)
         write_json(receipt_path, {"sha256": digest(dest), "rows": len(combined)})
         print(f"Features: {sid}, {len(combined):,} rows", flush=True)
     stream.cache_clear()
@@ -312,6 +323,24 @@ def calibrated(model, x, calibrator):
     return calibrator.predict_proba(np.log(p/(1-p)).reshape(-1, 1))[:, 1]
 
 
+def score_partition(directory, split, model, features, calibrator=None):
+    """Keep only labels/timestamps/probabilities in RAM for full-prevalence scoring."""
+    rows = []
+    for path in sorted(Path(directory).glob("*.parquet")):
+        f = pd.read_parquet(path)
+        f = f.loc[f.split.eq(split) & f.y.ge(0)]
+        if f.empty:
+            continue
+        p = (calibrated(model, f[features], calibrator) if calibrator is not None
+             else model.predict_proba(f[features])[:, 1])
+        slim = f[["station_id", "timestamp_utc", "y", "episode_id", "weather_challenge", "fault_type"]].copy()
+        slim["probability"] = p
+        rows.append(slim)
+    if not rows:
+        raise RuntimeError(f"No observations in {split}")
+    return pd.concat(rows, ignore_index=True)
+
+
 def train_research(root, seed=111, use_catboost=False, gpu=True, smoke=False):
     from lightgbm import LGBMClassifier, early_stopping, log_evaluation
     root = Path(root)
@@ -330,7 +359,7 @@ def train_research(root, seed=111, use_catboost=False, gpu=True, smoke=False):
         candidates.append(("lightgbm_legacy24_retrained", FEATURES, True))
     if use_catboost:
         candidates.append(("catboost_spatial", FEATURES, False))
-    models = []
+    models = [("robust_qc", RobustQC(), FEATURES, False)]
     for name, feats, legacy in candidates:
         sub = fit.loc[fit.legacy_24_station] if legacy else fit
         if name.startswith("catboost"):
@@ -345,7 +374,8 @@ def train_research(root, seed=111, use_catboost=False, gpu=True, smoke=False):
             model = LGBMClassifier(n_estimators=60 if smoke else 1400, num_leaves=31, max_depth=-1,
                                   learning_rate=.04, min_child_samples=120, reg_alpha=1, reg_lambda=12,
                                   colsample_bytree=.85, subsample=.85, subsample_freq=1,
-                                  random_state=seed, n_jobs=4, verbosity=-1, force_col_wise=True)
+                                  random_state=seed, n_jobs=4, verbosity=-1, force_col_wise=True,
+                                  metric="average_precision")
             model.fit(sub[feats], sub.y, sample_weight=weights(sub), eval_set=[(early[feats], early.y)],
                       eval_metric="average_precision", callbacks=[early_stopping(100, first_metric_only=True, verbose=False), log_evaluation(0)])
         models.append((name, model, feats, legacy))
@@ -353,25 +383,25 @@ def train_research(root, seed=111, use_catboost=False, gpu=True, smoke=False):
     del fit, early
     # Full-prevalence calibration and policy sets, distinct four-month blocks.
     # If the full sets exceed RAM, score streaming by station instead of subsampling negatives.
-    cal = load_partition(features_dir, "calibration", negative_cap=None)
-    if set(cal.y.unique()) != {0, 1}:
-        raise RuntimeError("Calibration block needs both classes")
     bundles = []
     for name, model, feats, legacy in models:
-        p = np.clip(model.predict_proba(cal[feats])[:, 1], 1e-6, 1-1e-6)
+        cal = score_partition(features_dir, "calibration", model, feats)
+        if set(cal.y.unique()) != {0, 1}:
+            raise RuntimeError("Calibration block needs both classes")
+        p = np.clip(cal.probability.to_numpy(), 1e-6, 1-1e-6)
         calibrator = LogisticRegression(C=1, solver="lbfgs", max_iter=500)
         calibrator.fit(np.log(p/(1-p)).reshape(-1, 1), cal.y)
         bundles.append({"name": name, "model": model, "features": feats, "calibrator": calibrator,
                         "legacy_retrained": legacy, "research_only": True})
     del cal
-    policy = load_partition(features_dir, "policy", negative_cap=None)
-    if policy.empty or policy.y.sum() == 0:
-        raise RuntimeError("Policy period is empty or has no injected positives")
     frontier, decisions = [], []
     for bundle in bundles:
-        p = calibrated(bundle["model"], policy[bundle["features"]], bundle["calibrator"])
+        policy = score_partition(features_dir, "policy", bundle["model"], bundle["features"], bundle["calibrator"])
+        if policy.y.sum() == 0:
+            raise RuntimeError("Policy period has no injected positives")
+        p = policy.probability.to_numpy()
         rows = []
-        for th in sorted(set([1.000001, *np.linspace(.01, .99, 70)])):
+        for th in sorted(set([1.000001, *np.geomspace(.0001, .1, 24), *np.linspace(.1, .99, 35)])):
             item = {"model": bundle["name"], "threshold": float(th), **metrics(policy, p, th)}
             item["meets_development_budget"] = bool(item["precision"] >= .8 and item["false_positive_rows_per_observed_station_day"] <= .05)
             rows.append(item)
