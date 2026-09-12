@@ -91,6 +91,14 @@ SkyGuard AI employs a hybrid full-stack architecture optimized for low-latency e
 4. **Zero Fabricated Metrics:**
    All validation metrics derive from immutable project reports (`reports/phase10_final.json`, `reports/qc_baseline.json`). If external ML is unreachable, the system transparently reports a degraded state rather than generating synthetic mock scores.
 
+### Iteration 12 genuine IMD AWS acquisition
+
+The self-contained [Iteration 12 Colab notebook](notebooks/SkyGuard_AI_Iteration_12_Genuine_IMD_AWS_Data_Colab.ipynb)
+collects authenticated observations from IMD's official AWS API using Colab Secrets, preserves immutable raw
+responses and checksums, and blocks temporal/seasonal training claims until minimum history gates pass. See the
+[Roman-Hinglish run guide](docs/ITERATION12_GENUINE_IMD_AWS_GUIDE_HINGLISH.md). This new data foundation does not
+silently replace the retained Phase 10 model.
+
 ---
 
 ## 5. Verified Performance Benchmark
