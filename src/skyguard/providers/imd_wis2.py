@@ -221,6 +221,16 @@ class IMDWIS2Provider(WeatherProvider):
         """Download a bounded national time window by following OGC `next` links."""
         end = datetime.now(timezone.utc)
         start = end - timedelta(hours=max(1, min(hours, 72)))
+        return self.fetch_network_window(start, end, max_pages)
+
+    def fetch_network_window(self, start: datetime, end: datetime,
+                             max_pages: int = 50) -> tuple[List[ObservationRecord], Dict[str, Any]]:
+        """Download one explicit UTC window; suitable for resumable daily archives."""
+        if start.tzinfo is None or end.tzinfo is None:
+            raise ValueError("WIS2 windows must be timezone-aware")
+        start, end = start.astimezone(timezone.utc), end.astimezone(timezone.utc)
+        if end <= start or end - start > timedelta(hours=24, seconds=1):
+            raise ValueError("Window must be positive and no longer than 24 hours")
         collection = urllib.parse.quote(SYNOP_COLLECTION, safe=":")
         params = {"f": "json", "limit": 1000,
                   "datetime": f"{start.isoformat().replace('+00:00', 'Z')}/{end.isoformat().replace('+00:00', 'Z')}"}
@@ -241,7 +251,7 @@ class IMDWIS2Provider(WeatherProvider):
                 return _decode_features(features, self.station_metadata()), {
                     "complete": False, "pages": pages, "features_downloaded": len(features),
                     "number_matched": number_matched, "error": str(exc), "window_start_utc": start.isoformat(),
-                    "window_end_utc": end.isoformat(),
+                    "window_end_utc": end.isoformat(), "source_url": url,
                 }
             pages += 1
             if number_matched is None:
@@ -255,7 +265,7 @@ class IMDWIS2Provider(WeatherProvider):
             "number_matched": number_matched, "decoded_reports": len(records),
             "reporting_stations": len({row.station_id for row in records}),
             "window_start_utc": start.isoformat(), "window_end_utc": end.isoformat(),
-            "max_pages": max_pages,
+            "max_pages": max_pages, "source_collection": SYNOP_COLLECTION,
         }
 
 

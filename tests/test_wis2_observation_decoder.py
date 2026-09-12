@@ -1,4 +1,6 @@
 import json
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from unittest.mock import patch
 
 from skyguard.providers.imd_wis2 import IMDWIS2Provider
@@ -72,3 +74,17 @@ def test_network_fetch_marks_page_cap_incomplete():
          patch("urllib.request.urlopen", return_value=Response(page)):
         _, receipt = provider.fetch_network_history(hours=24, max_pages=1)
     assert receipt["complete"] is False and receipt["pages"] == 1
+
+
+def test_explicit_window_rejects_naive_reversed_and_oversized_ranges():
+    import pytest
+    provider = IMDWIS2Provider()
+    aware = datetime(2026, 1, 1, tzinfo=timezone.utc)
+    with pytest.raises(ValueError): provider.fetch_network_window(datetime(2026,1,1), datetime(2026,1,2))
+    with pytest.raises(ValueError): provider.fetch_network_window(aware, aware)
+    with pytest.raises(ValueError): provider.fetch_network_window(aware, aware + timedelta(days=2))
+
+
+def test_daily_archive_uses_disjoint_inclusive_endpoints():
+    source = (Path(__file__).resolve().parents[1] / "tools" / "collect_wis2_archive.py").read_text(encoding="utf-8")
+    assert "end_exclusive - timedelta(seconds=1)" in source

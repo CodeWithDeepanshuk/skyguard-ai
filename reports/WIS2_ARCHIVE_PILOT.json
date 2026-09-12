@@ -1,0 +1,20 @@
+{
+  "window_start_utc": "2026-09-09T00:00:00Z",
+  "window_end_utc": "2026-09-11T23:59:59Z",
+  "complete_days": 3,
+  "failed_or_partial_days": 0,
+  "direct_reports": 4281,
+  "reporting_stations": 328,
+  "complete_temperature_pressure_humidity_reports": 4134,
+  "temperature_non_null": 4277,
+  "pressure_non_null": 4140,
+  "humidity_non_null": 4275,
+  "duplicate_station_timestamps": 0,
+  "station_days": 979,
+  "reports_per_station_median": 11.0,
+  "reports_per_station_max": 24,
+  "gap_minutes_median": 180.0,
+  "gap_minutes_p90": 720.0,
+  "gap_minutes_max": 2880.0,
+  "model_accuracy_measured": false
+}

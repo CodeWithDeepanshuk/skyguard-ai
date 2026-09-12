@@ -1,0 +1,56 @@
+{
+  "requested_days": 3,
+  "complete_days": 3,
+  "failed_or_partial_days": 0,
+  "total_reports": 4281,
+  "partitions": [
+    {
+      "complete": true,
+      "pages": 26,
+      "features_downloaded": 25380,
+      "number_matched": 25380,
+      "decoded_reports": 1387,
+      "reporting_stations": 326,
+      "window_start_utc": "2026-09-09T00:00:00+00:00",
+      "window_end_utc": "2026-09-09T23:59:59+00:00",
+      "max_pages": 40,
+      "source_collection": "urn:wmo:md:in-imd:surface-based-observations.synop",
+      "date_utc": "2026-09-09",
+      "output_file": "data/observations/imd_wis2/daily/2026-09-09.csv.gz",
+      "output_sha256": "c1b0038ffb0f72411b32791f87bf7ccf061c90f07aa1fe5ebe593eb846ee3fd3",
+      "resumed": false
+    },
+    {
+      "complete": true,
+      "pages": 27,
+      "features_downloaded": 26421,
+      "number_matched": 26421,
+      "decoded_reports": 1445,
+      "reporting_stations": 327,
+      "window_start_utc": "2026-09-10T00:00:00+00:00",
+      "window_end_utc": "2026-09-10T23:59:59+00:00",
+      "max_pages": 40,
+      "source_collection": "urn:wmo:md:in-imd:surface-based-observations.synop",
+      "date_utc": "2026-09-10",
+      "output_file": "data/observations/imd_wis2/daily/2026-09-10.csv.gz",
+      "output_sha256": "89d22ca36b96c1a53f079f89a0a01b446b8c885437b14f49a253c91494a8ff56",
+      "resumed": false
+    },
+    {
+      "complete": true,
+      "pages": 28,
+      "features_downloaded": 27220,
+      "number_matched": 27220,
+      "decoded_reports": 1449,
+      "reporting_stations": 326,
+      "window_start_utc": "2026-09-11T00:00:00+00:00",
+      "window_end_utc": "2026-09-11T23:59:59+00:00",
+      "max_pages": 40,
+      "source_collection": "urn:wmo:md:in-imd:surface-based-observations.synop",
+      "date_utc": "2026-09-11",
+      "output_file": "data/observations/imd_wis2/daily/2026-09-11.csv.gz",
+      "output_sha256": "3d0ed968c48b4fb2f2a6f8555595defec68054570cefc311c90d68b9b0767c56",
+      "resumed": false
+    }
+  ]
+}
