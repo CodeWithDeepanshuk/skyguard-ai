@@ -8,6 +8,9 @@
 
 SkyGuard AI is an intelligent real-time anomaly-detection platform engineered for India's national Automatic Weather Station (AWS) network. Operating strictly on three causal meteorological parameters—**Temperature**, **Atmospheric Station Pressure**, and **Relative Humidity**—SkyGuard reliably differentiates genuine severe meteorological events from physical sensor hardware malfunctions and telemetry dropouts.
 
+> 📘 **New to this project or have zero coding skills?**  
+> Read the **[Complete Project Handbook for Everyone (Zero Coding Required)](docs/COMPLETE_PROJECT_GUIDE_FOR_EVERYONE.md)** — includes real-world analogies, plain-English explanations, a card-by-card dashboard tour, winning pitch scripts, and answers to tough judge questions!
+
 ---
 
 ## 1. Problem Statement & Operational Objective
