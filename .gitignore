@@ -34,6 +34,7 @@ data/runtime/replay.db
 data/runtime/*.db-journal
 data/runtime/*.db-wal
 data/runtime/live_latest.json
+data/runtime/*.json
 data/live/raw_metar.json
 scratch/
 

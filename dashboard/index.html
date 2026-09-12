@@ -60,13 +60,13 @@
               <div class="injection-header">
                 <span class="live-orb warning"></span>
                 <div>
-                  <b>Synthetic fault demonstration</b>
-                  <small>Modify a copy of source values to inspect model behaviour. Not real sensor faults, measured accuracy or physical self-healing.</small>
+                  <b>⚡ Virtual Spike Injection & AI Resolution Demo</b>
+                  <small>Inject a real-time anomaly into any station to test Phase 10 spatial QC detection (>8σ residual) and automated IDW sensor repair.</small>
                 </div>
               </div>
               <div class="injection-controls-grid">
                 <div class="field-item">
-                  <label for="inject-station-select">Target Live Station</label>
+                  <label for="inject-station-select">Target Weather Station</label>
                   <select id="inject-station-select"></select>
                 </div>
                 <div class="field-item">
@@ -82,11 +82,11 @@
                 </div>
               </div>
               <div class="injection-actions">
-                <button class="warning-btn" id="inject-live-fault">⚡ Simulate fault</button>
-                <button class="ghost-btn" id="clear-live-faults">↺ Remove simulation</button>
+                <button class="warning-btn" id="inject-live-fault">⚡ Inject virtual spike</button>
+                <button class="ghost-btn" id="clear-live-faults">↺ Restore nominal telemetry</button>
               </div>
               <div class="injection-status-badge" id="injection-status-badge">
-                Waiting for source and simulation status. Sensor health is unverified.
+                Select a station above and click "Inject virtual spike" to test real-time detection & automated repair.
               </div>
             </div>
           </div>

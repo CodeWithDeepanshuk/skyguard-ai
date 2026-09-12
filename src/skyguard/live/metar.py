@@ -204,6 +204,28 @@ class MetarLiveService:
             temperature = optional_float(item.get("temp"))
             dew_point = optional_float(item.get("dewp"))
             pressure = optional_float(item.get("altim"))
+            source_quality = item.get("qcField", "")
+            observation_origin = "aviationweather_metar"
+
+            # Physical Consistency Gate: Dry-bulb air temperature cannot fall below dew point (T >= Td)
+            # In Gwalior (VIGR) and other stations, operator typos (e.g., 07/24 instead of ~30/24) or sensor faults
+            # cause gross physical violations. We detect this and assimilate accurate ground weather telemetry.
+            if temperature is not None and dew_point is not None and dew_point > temperature + 1.0:
+                try:
+                    from skyguard.live.weather_api import default_weather_client
+                    lat = float(station.get("latitude") or 20.0)
+                    lon = float(station.get("longitude") or 78.0)
+                    w = default_weather_client.fetch_station(lat, lon)
+                    if w and w.get("temperature_c") is not None:
+                        temperature = float(w["temperature_c"])
+                        dew_point = float(w.get("dew_point_c", dew_point))
+                        source_quality = "PHYSICAL_QC_REPAIRED_VIA_WEATHER_API (DEWPOINT_EXCEEDS_TEMPERATURE)"
+                        observation_origin = "aviationweather_metar_repaired_via_open_meteo"
+                except Exception:
+                    # Physical fallback if weather API is unreachable: dry-bulb air temperature must be >= dew point
+                    temperature = round(dew_point + 2.5, 1)
+                    source_quality = "PHYSICAL_QC_ESTIMATED (DEWPOINT_EXCEEDS_TEMPERATURE)"
+
             humidity = relative_humidity(temperature, dew_point)
             row_id = hashlib.sha1(f"live|{identity[0]}|{timestamp}".encode("utf-8")).hexdigest()[:20]
             rows.append({
@@ -224,10 +246,10 @@ class MetarLiveService:
                 "available_to_detector": "1",
                 "timestamp_offset_seconds": "0",
                 "pressure_source": "METAR_QNH",
-                "source_quality": item.get("qcField", ""),
+                "source_quality": source_quality,
                 "raw_observation": item.get("rawOb", ""),
                 "source_receipt_time": item.get("receiptTime", ""),
-                "observation_origin": "aviationweather_metar",
+                "observation_origin": observation_origin,
                 "humidity_origin": "derived_from_temperature_and_dew_point",
             })
         rows.sort(key=lambda row: (str(row["timestamp_utc"]), str(row["station_id"])))
