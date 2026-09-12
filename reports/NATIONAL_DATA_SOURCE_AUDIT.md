@@ -23,7 +23,7 @@ To maintain absolute scientific defensibility, regulatory compliance, and high a
 | Source Identifier | Host Endpoint | Protocol / Format | Nature of Telemetry | Authentication | Verified Station Count |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **IMD WIS 2.0 (wis2box)** | `https://wis2box.imd.gov.in/oapi/` | WMO OGC API / GeoJSON | Direct In-Situ Synoptic AWS / Surface | Public (Open WMO) | **432** Stations |
-| **All-India AWS Catalog** | Internal Master Registry | Geodesic CSV | Historical & Operational AWS Coordinates | Local Verified Archive | **543** Stations |
+| **Legacy NOAA/ISD catalog** | Local research catalog | CSV | Historical station metadata; not authoritative IMD AWS | Excluded from verified national count | 543 catalog rows |
 | **AviationWeather METAR** | `https://aviationweather.gov/api/data/metar` | REST / JSON | Direct Airport Aerodrome Telemetry | Public (NOAA/NWS) | **86** Airports |
 | **Meteostat Global** | `https://bulk.meteostat.net/v2/` | GZIP CSV / WMO IDs | Verified Historical & Hourly In-Situ | Open Data (Meteostat) | **78** Indian WMO Stations |
 | **Open-Meteo NWP** | `https://api.open-meteo.com/v1/forecast` | REST / JSON | **Independent Numerical Reference Model** | Public API | Gridded Global Analysis |
@@ -31,7 +31,7 @@ To maintain absolute scientific defensibility, regulatory compliance, and high a
 ### 2.2 Geodesic Deduplication & Master Registry Build
 
 To build a clean, unified national dataset without co-located duplicate stations, SkyGuard AI executes a **2.0 km Haversine geodesic deduplication algorithm**:
-1. Load 543 established AWS stations across India.
+1. Exclude the 543-row legacy catalog from the authoritative IMD AWS count.
 2. Ingest 432 WMO stations from the official IMD WIS 2.0 node (`wis2box.imd.gov.in`).
 3. If an IMD WIS 2.0 station is within 2.0 km of an existing AWS coordinate (or matches by WMO station ID/name), the records are merged:
    - Primary identifier preserved (`station_id`).
@@ -40,15 +40,15 @@ To build a clean, unified national dataset without co-located duplicate stations
 4. If an IMD WIS 2.0 station represents a distinct geographic site, it is added as a verified new node.
 
 ```
-Total Distinct Verified In-Situ Physical Stations: 570
+Total Verified IMD WIS2 Station Metadata Rows:      432
 Target National AWS Network Scale:                1,008
-Official In-Situ Metadata Coverage Ratio:         570 / 1008 (56.55%)
+Metadata Coverage Against Stated Target:           432 / 1008 (42.86%)
 Synthetic / Fabricated Coordinates:               0 (0.00%)
 ```
 
 > **SCIENTIFIC INTEGRITY GUARANTEE:**  
 > SkyGuard AI **never** duplicates coordinates, generates random dummy stations, or clones station records to reach 1,008 artificially. The dashboard and API explicitly report:  
-> `Verified In-Situ Stations: 570 / 1008 (56.6% national coverage)`.
+> `Verified IMD WIS2 metadata: 432 / stated 1008 target (42.9%). Live reporting coverage is separate and currently not established from WIS2.`
 
 ---
 
@@ -121,6 +121,6 @@ graph TD
 
 ## 5. Summary of Regulatory & Scientific Compliance
 
-1. **Zero Data Falsification**: 570 stations represent verifiable, georeferenced installations across all 8 Indian climatic zones.
+1. **Zero Data Falsification**: 432 rows are downloaded from the official IMD WIS2 station-metadata endpoint; no claim is made that all are currently reporting AWS sensors.
 2. **Deterministic Cryptographic Verification**: Every observation record is hashed with SHA-256 (`raw_source_hash`) to ensure audit trail immutability.
 3. **Independent Baseline Assurance**: Anomaly detection compares physical station telemetry against independent spatial neighbours and numerical reference models without circular self-validation.
