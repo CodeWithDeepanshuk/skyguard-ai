@@ -163,7 +163,8 @@ NEXT_PUBLIC_APP_NAME=SkyGuard AI
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # External ML Inference API (e.g., Render backend)
-SKYGUARD_API_URL=https://skyguard-ai.onrender.com
+SKYGUARD_API_URL=https://skyguard-ai-wbm9.onrender.com
+SKYGUARD_API_TIMEOUT_MS=55000
 
 # Server-Side Operational Secrets
 API_SECRET=your_production_secret_token
@@ -179,7 +180,7 @@ Deploying SkyGuard AI to Vercel takes less than two minutes:
 1. Push this repository to GitHub: `git push origin main`.
 2. Go to [Vercel](https://vercel.com) $\to$ **Add New Project** $\to$ Import `skyguard-ai`.
 3. Framework Preset: **Next.js** (auto-detected).
-4. In **Environment Variables**, set `SKYGUARD_API_URL=https://skyguard-ai.onrender.com`.
+4. In **Environment Variables**, set `SKYGUARD_API_URL=https://skyguard-ai-wbm9.onrender.com` and `SKYGUARD_API_TIMEOUT_MS=55000`.
 5. Click **Deploy**.
 
 For detailed instructions and custom domain setup, read [docs/VERCEL_DEPLOYMENT.md](docs/VERCEL_DEPLOYMENT.md).

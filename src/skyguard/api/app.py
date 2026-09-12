@@ -171,6 +171,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     @app.get("/health")
     def health() -> dict[str, object]:
+        render_revision = os.getenv("RENDER_GIT_COMMIT", "").strip()
         return {
             "status": "ok", "offline": True, "live_capable": True, "scenario_loaded": runtime.engine is not None,
             "model_version": "SkyGuard-P10-compliant",
@@ -179,6 +180,12 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             "live_contract": live.status().get("presentation_contract"),
             "model_loaded": live.bundle is not None,
             "public_read_only": public_mode,
+            "deployment": {
+                "provider": "render" if os.getenv("RENDER") else "local",
+                "service": os.getenv("RENDER_SERVICE_NAME", "skyguard-ai-local"),
+                "revision": render_revision[:12] if render_revision else "local",
+                "python": f"{os.sys.version_info.major}.{os.sys.version_info.minor}.{os.sys.version_info.micro}",
+            },
         }
 
     @app.get("/api/scenarios")

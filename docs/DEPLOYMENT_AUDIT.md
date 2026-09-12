@@ -41,8 +41,8 @@ This audit establishes the roadmap to deploy SkyGuard AI as a production-grade, 
    - Vercel serverless functions have a hard 250 MB uncompressed size limit.
    - The Python scientific stack (`lightgbm`, `scikit-learn`, `scipy`, `pandas`, `numpy`) combined with model binaries (`models/*.joblib`, ~15 MB total) easily exceeds 300+ MB uncompressed, risking deployment failure on native `@vercel/python`.
 2. **Execution Timeouts & Cold Starts:**
-   - Cold starts initializing LightGBM, loading Joblib weights, and preparing feature caches can take 6–12 seconds on serverless lambdas.
-   - Vercel Hobby tier enforces a 10–15 second max duration timeout, leading to 504 Gateway Timeouts during live inference.
+   - Render Free spins the Python service down after inactivity, so its first request can take about one minute even though measured application initialization is only a few seconds.
+   - The original gateway imposed its own 15-second abort timeout and therefore declared a valid waking Render service unavailable. The production proxy now permits up to 55 seconds and the relevant Vercel routes declare a 60-second maximum duration.
 3. **Persistent Replay Process:**
    - In-memory simulation engines and background threads cannot persist in stateless serverless environments.
 

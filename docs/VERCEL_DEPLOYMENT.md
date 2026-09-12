@@ -11,7 +11,7 @@
 Before initiating the Vercel deployment, ensure you have:
 - Access to your GitHub repository: `https://github.com/CodeWithDeepanshuk/skyguard-ai`
 - A free or Pro account on [Vercel](https://vercel.com)
-- Your active ML inference service running (e.g., Render web service at `https://skyguard-ai.onrender.com` or local fallback)
+- Your active ML inference service running at `https://skyguard-ai-wbm9.onrender.com` (or a separately verified replacement)
 
 ---
 
@@ -44,9 +44,10 @@ Expand the **Environment Variables** section in the Vercel deployment setup and 
 | Key | Example Value | Description |
 | :--- | :--- | :--- |
 | `NEXT_PUBLIC_APP_NAME` | `SkyGuard AI` | Public branding name |
-| `NEXT_PUBLIC_APP_URL` | `https://skyguard-ai.vercel.app` | Production frontend domain |
-| `SKYGUARD_API_URL` | `https://skyguard-ai.onrender.com` | URL of your deployed Python ML API |
-| `API_SECRET` | `skyguard_prod_secret_token_change_in_prod` | Internal server authentication secret |
+| `NEXT_PUBLIC_APP_URL` | `https://skyguard-ai-iota.vercel.app` | Production frontend domain |
+| `SKYGUARD_API_URL` | `https://skyguard-ai-wbm9.onrender.com` | Verified deployed Python ML API |
+| `SKYGUARD_API_TIMEOUT_MS` | `55000` | Allows the Render Free service time to resume after idle spin-down |
+| `API_SECRET` | `replace-with-a-random-server-side-secret` | Internal server authentication secret |
 | `NEXT_PUBLIC_DEMO_MODE`| `false` | Set to true only for simulated judge walk-throughs |
 | `NEXT_PUBLIC_MAP_PROVIDER` | `openstreetmap` | Map tile provider |
 

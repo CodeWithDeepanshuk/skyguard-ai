@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { backendJSON, observedFeedStatus } from '@/server/backend';
 import { readStationCatalog } from '@/server/stations';
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const metadata = readStationCatalog().find(s => s.station_id === params.id);
   if (!metadata) return NextResponse.json({ error: 'Station not found' }, { status: 404 });

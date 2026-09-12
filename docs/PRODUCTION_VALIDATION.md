@@ -27,8 +27,8 @@
 
 ## 2. Environment Details
 
-- **Frontend Production URL:** Configured for Vercel Edge (`https://skyguard-ai.vercel.app`)
-- **ML Backend Service:** Render Python 3 service (`https://skyguard-ai.onrender.com` / `http://127.0.0.1:8000`)
+- **Frontend Production URL:** Vercel (`https://skyguard-ai-iota.vercel.app`)
+- **ML Backend Service:** Render Python 3 service (`https://skyguard-ai-wbm9.onrender.com` / `http://127.0.0.1:8000`)
 - **Database / Store:** SQLite Replay Store (`data/runtime/replay.db`) + Compressed Incident Archive (`data/incidents/time_test_incidents.jsonl.gz`)
 - **Model Binary Version:** `SkyGuard-P10-compliant` (`models/phase10_final.joblib`, 108 causal features)
 

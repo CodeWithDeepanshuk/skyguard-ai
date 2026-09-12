@@ -22,6 +22,9 @@ interface HealthData {
   status: string;
   ml_service: boolean;
   ml_backend_url?: string;
+  retryable?: boolean;
+  retry_after_seconds?: number | null;
+  backend_revision?: string | null;
   compliance?: {
     problem_id: string;
     parameters: string[];
@@ -62,16 +65,36 @@ export default function Dashboard() {
   const [predictionError, setPredictionError] = useState('');
 
   useEffect(() => {
-    fetch('/api/health')
-      .then(res => res.json())
-      .then(data => {
+    let cancelled = false;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    let attempt = 0;
+
+    const checkBackend = async () => {
+      attempt += 1;
+      try {
+        const response = await fetch('/api/health', { cache: 'no-store' });
+        const data: HealthData = await response.json();
+        if (cancelled) return;
         setHealth(data);
         setLoading(false);
-      })
-      .catch(() => {
-        setHealth({ status: 'degraded', ml_service: false });
+        if (!data.ml_service && attempt < 7) {
+          // Render Free can take close to one minute to resume after an idle spin-down.
+          const delaySeconds = Math.max(5, data.retry_after_seconds || 5);
+          retryTimer = setTimeout(checkBackend, delaySeconds * 1000);
+        }
+      } catch {
+        if (cancelled) return;
+        setHealth({ status: 'degraded', ml_service: false, retryable: true });
         setLoading(false);
-      });
+        if (attempt < 7) retryTimer = setTimeout(checkBackend, 5000);
+      }
+    };
+
+    void checkBackend();
+    return () => {
+      cancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
+    };
   }, []);
 
   const handlePredict = async () => {
@@ -128,13 +151,17 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center gap-3">
             <div className="bg-[#071521]/90 border border-[#1a4163] rounded-xl p-4 flex items-center space-x-3.5">
               <div className={`p-2.5 rounded-lg ${health?.ml_service ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
-                <Cpu className="w-5 h-5" />
+                <Cpu className={`w-5 h-5 ${loading ? 'animate-pulse' : ''}`} />
               </div>
               <div>
                 <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inference Engine</div>
                 <div className="text-sm font-bold text-white flex items-center gap-1.5">
-                  {health?.ml_service ? 'ML service connected · research mode' : 'ML backend unavailable'}
-                  <span className={`w-2 h-2 rounded-full ${health?.ml_service ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
+                  {health?.ml_service
+                    ? 'ML service connected · research mode'
+                    : loading
+                    ? 'Connecting to ML service…'
+                    : 'ML service waking · automatic retry'}
+                  <span className={`w-2 h-2 rounded-full ${health?.ml_service ? 'bg-emerald-400' : 'bg-amber-400'} ${loading ? 'animate-pulse' : ''}`}></span>
                 </div>
               </div>
             </div>
