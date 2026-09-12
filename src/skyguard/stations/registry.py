@@ -1,9 +1,7 @@
 """Master Station Registry for India-Wide Automatic Weather Stations.
 
-Unifies and deduplicates:
-1. All-India AWS network catalog (543 stations)
-2. IMD WIS 2.0 official WMO synoptic stations (432 stations)
-3. Civil Aviation Airport METAR stations (86 stations)
+Counts only station metadata downloaded from the official IMD WIS2 stations
+collection. The older NOAA/ISD catalog is not authoritative IMD AWS metadata.
 
 SCIENTIFIC GOVERNANCE:
 - Reports exact coverage ratio against the national 1008 AWS benchmark.
@@ -48,8 +46,8 @@ class StationMetadata:
     wigos_id: str = ""
     wmo_id: str = ""
     icao: str = ""
-    network_type: str = "IMD_AWS"  # IMD_AWS | IMD_WIS2_SYNOP | AIRPORT_METAR
-    primary_provider: str = "IMD_AWS"
+    network_type: str = "IMD_WIS2_SYNOP"
+    primary_provider: str = "IMD_WIS2"
     is_reference_only: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
@@ -69,8 +67,6 @@ class MasterStationRegistry:
     def _load_or_build(self) -> None:
         if self.master_path.exists():
             self._load_from_csv()
-            if len(self.stations) < 500:
-                self.build_master_catalog()
         else:
             self.build_master_catalog()
 
@@ -90,11 +86,11 @@ class MasterStationRegistry:
                         latitude=float(row.get("latitude", 0.0)),
                         longitude=float(row.get("longitude", 0.0)),
                         elevation_m=float(row.get("elevation_m", 0.0) or 0.0),
-                        wigos_id=row.get("wigos_id", ""),
+                        wigos_id=row.get("wigos_id", "") or sid,
                         wmo_id=row.get("wmo_id", ""),
                         icao=row.get("icao", ""),
-                        network_type=row.get("network_type", "IMD_AWS"),
-                        primary_provider=row.get("primary_provider", "IMD_AWS"),
+                        network_type=row.get("network_type", "") or "IMD_WIS2_SYNOP",
+                        primary_provider=row.get("primary_provider", "") or "IMD_WIS2",
                         is_reference_only=row.get("is_reference_only", "False").lower() == "true",
                     )
         except Exception:
@@ -292,7 +288,6 @@ class MasterStationRegistry:
                 "civil_aviation_metars": metar_count,
                 "synthetic_or_reference_only": ref_only_count,
             },
-            "scientific_integrity_guarantee": (
-                "Zero synthetic coordinates fabricated. All stations verified against WMO/WIS2/IMD/METAR databases."
-            ),
+            "scientific_integrity_guarantee": "Zero synthetic coordinates fabricated. Registry rows come from the official IMD WIS2 stations endpoint; legacy catalog rows are excluded.",
+            "target_is_verified_count": False,
         }

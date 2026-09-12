@@ -87,9 +87,9 @@ class NationalPlatformTests(unittest.TestCase):
         """Verify master registry coverage reporting without synthetic coordinates."""
         audit = self.registry.coverage_audit()
         self.assertEqual(audit["target_national_aws_coverage"], 1008)
-        self.assertEqual(audit["verified_in_situ_stations"], 570)
+        self.assertEqual(audit["verified_in_situ_stations"], 432)
         self.assertEqual(audit["breakdown"]["synthetic_or_reference_only"], 0)
-        self.assertIn("Zero synthetic coordinates fabricated", audit["scientific_integrity_guarantee"])
+        self.assertIn("official IMD WIS2", audit["scientific_integrity_guarantee"])
 
         # Check retrieval by station ID and ICAO
         delhi = self.registry.get_station("42182099999") or self.registry.get_station("0-20000-0-42182")
