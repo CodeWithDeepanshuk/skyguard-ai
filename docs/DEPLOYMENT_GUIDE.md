@@ -1,91 +1,34 @@
-# SkyGuard AI — Production Deployment Guide
-**SIH 26073: Intelligent Real-Time Anomaly Detection System for Automatic Weather Stations**
+# SkyGuard deployment
 
----
+## Python ML service (Render)
 
-## 1. Which Platform is Best for SkyGuard AI?
+Use the public repository https://github.com/CodeWithDeepanshuk/skyguard-ai and branch main.
+A standard Web Service form does not automatically apply the Blueprint; enter these values, or deploy render.yaml as a Blueprint.
 
-| Feature | **Render (Recommended for ML)** | **Vercel (Serverless)** |
-| :--- | :--- | :--- |
-| **Architecture** | Continuous Web Service (Linux VM/Container) | Serverless Functions (AWS Lambda backend) |
-| **ML Engine Performance** | High-performance OpenMP / BLAS multithreading | Ephemeral serverless execution |
-| **Cold Starts** | **Zero cold starts** (daemon stays hot in memory) | 1–3s cold start if function goes idle |
-| **Live Telemetry Feed** | Runs in-memory background refresh & cache | Stateless; reads from cached JSON or REST |
-| **Cost** | **Free tier available** (Free Web Service) | **Free tier available** (Hobby Plan) |
-| **Setup Effort** | **1-Click** (connect GitHub repo) | **1-Click** (connect GitHub repo) |
+- Runtime: Python 3
+- Root directory: repository root (blank)
+- Build: `pip install -r requirements.txt`
+- Start: `uvicorn skyguard.api.app:create_app --factory --app-dir src --host 0.0.0.0 --port $PORT --workers 1`
+- Health check: `/health`
+- Environment: `PYTHON_VERSION=3.11.9`, `SKYGUARD_PUBLIC_MODE=true`, `OMP_NUM_THREADS=2`, `OPENBLAS_NUM_THREADS=2`
+- Compute: Free for a demonstration only. Do not select a paid plan without account-owner approval.
 
-> **Recommendation:** **Render** is the best suite for ML applications because it keeps the FastAPI server, LightGBM model, and in-memory station cache continuously warm without serverless cold starts. **Vercel** provides high-performance edge deployment for the Next.js 14 web application via `vercel.json`.
+Copy the actual HTTPS address returned by Render after a successful deployment. No example address is proof of deployment.
 
----
+Verify /health, /api/stations, POST /api/live/refresh, /api/live/status and /api/live/readings. A successful health check alone does not prove that source retrieval or ML scoring works. Zero observations must remain explicitly unavailable.
 
-## 2. Deploying on Render (1-Click Setup)
+The Python root serves the existing map dashboard. The newer Next.js frontend is a separate application.
 
-### Step 1: Push Code to GitHub
-Ensure your latest changes are pushed to your GitHub repository:
-```bash
-git add .
-git commit -m "feat: complete production deployment configuration for Render and Vercel"
-git push origin main
-```
+## Next.js frontend (Vercel)
 
-### Step 2: Open Render Dashboard
-1. Go to [dashboard.render.com](https://dashboard.render.com/) and log in (or sign up with GitHub).
-2. Click **New +** → **Web Service**.
-3. Select **Build and deploy from a Git repository** → Choose `CodeWithDeepanshuk/skyguard-ai`.
+Import the same repository using the Next.js preset. Set server-side SKYGUARD_API_URL to the verified Render HTTPS URL. This setting is required for telemetry; there is no generated-data fallback. Keep secrets out of NEXT_PUBLIC variables. Redeploy after configuration changes.
 
-### Step 3: Configure Service
-Render will automatically detect `render.yaml`, or you can verify these exact fields:
-- **Name:** `skyguard-ai`
-- **Region:** `Oregon (US West)` or `Singapore (Southeast Asia)`
-- **Branch:** `main`
-- **Runtime:** `Python`
-- **Build Command:**
-  ```bash
-  pip install --upgrade pip && pip install -r requirements.txt && pip install -e .
-  ```
-- **Start Command:**
-  ```bash
-  uvicorn skyguard.api.app:create_app --factory --host 0.0.0.0 --port $PORT
-  ```
-- **Plan Type:** **Free**
+## ChatGPT Sites
 
-### Step 4: Click Deploy
-Click **Create Web Service**. Render will automatically build the wheels, verify the package, and deploy your live public URL:
-`https://skyguard-ai.onrender.com`
+Sites uses a different hosting runtime. The Python models require an external backend; the Next.js application cannot simply be uploaded as a Python service. Register/build a compatible Sites frontend only after its backend connection is available. Preserve the existing website and ML artifacts when adapting it.
 
----
+## Operational limits
 
-## 3. Deploying Next.js Web App on Vercel
+The public service disables shared fault-injection/replay mutations and throttles live refresh to five minutes. METAR is a reported aviation observation source, not direct IMD AWS telemetry. Catalog-only stations have no fabricated readings or certified health scores. Model outputs remain research-only. Single-reading sandbox inference is explicitly unavailable until a tested API is implemented.
 
-SkyGuard AI includes a full-stack Next.js 14 App Router web application with interactive sandbox, live all-India station telemetry, incident triage, and 25-gate pipeline validation.
-
-### Step 1: Push to GitHub
-```bash
-git push origin main
-```
-
-### Step 2: Import Project on Vercel
-1. Go to [vercel.com/new](https://vercel.com/new).
-2. Select your repository: `CodeWithDeepanshuk/skyguard-ai`.
-3. Framework Preset: Automatically detected as **Next.js**.
-4. Root Directory: `./` (leave default).
-5. (Optional) In Environment Variables, set `SKYGUARD_API_URL` to your Render service (`https://skyguard-ai.onrender.com`).
-6. Click **Deploy**.
-
-Vercel will build the optimized Next.js static pages and serverless route handlers, serving the live application at `https://skyguard-ai.vercel.app`.
-
----
-
-## 4. Deploying via Docker (Railway, Fly.io, or Cloud Run)
-
-A multi-stage production `Dockerfile` is included in the repository root:
-
-```bash
-# Build local container
-docker build -t skyguard-ai .
-
-# Run container locally
-docker run -d -p 8000:8000 --name skyguard skyguard-ai
-```
-
-Access at `http://localhost:8000/`.
+[Render FastAPI guide](https://render.com/docs/deploy-fastapi) · [Free plan limitations](https://render.com/docs/free): free web services sleep after 15 minutes without inbound traffic; startup can be slow and disk is ephemeral. There is no always-on or durable-history guarantee.

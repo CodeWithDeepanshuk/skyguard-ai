@@ -43,7 +43,7 @@ class ApiTests(unittest.TestCase):
 
     def test_evidence_endpoints(self) -> None:
         self.assertGreater(len(self.client.get("/api/stations").json()), 0)
-        self.assertGreater(len(self.client.get("/api/incidents", params={"limit": 2}).json()), 0)
+        self.assertGreater(len(self.client.get("/api/incidents", params={"limit": 2, "mode": "offline"}).json()), 0)
         self.assertIn("classification", self.client.get("/api/metrics").json())
         readiness = self.client.get("/api/competition-readiness")
         self.assertEqual(readiness.status_code, 200)

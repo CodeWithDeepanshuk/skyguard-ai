@@ -11,6 +11,7 @@ import csv
 import hashlib
 import json
 import math
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
@@ -71,7 +72,9 @@ class MetarLiveService:
         self.root = root
         self.endpoint = endpoint
         self.timeout_seconds = timeout_seconds
-        self.cache_path = root / "data" / "live" / "latest.json"
+        self.cache_path = (root / "data" / "runtime" / "live_latest.json"
+                           if os.getenv("SKYGUARD_PUBLIC_MODE", "false").lower() == "true"
+                           else root / "data" / "live" / "latest.json")
         self.stations = self._load_stations()
         self.icao_to_station = {
             row["icao"].upper(): row for row in self.stations.values() if row.get("icao", "").strip()

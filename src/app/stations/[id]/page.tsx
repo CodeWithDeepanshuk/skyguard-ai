@@ -84,16 +84,17 @@ export default function StationDetailPage({ params }: StationDetailProps) {
 
   const meta = stationData.metadata;
   const readings: TelemetryPoint[] = stationData.readings || [];
-  const latest = readings[readings.length - 1] || {
-    temperature_c: 28.5,
-    pressure_hpa: 1008.2,
-    relative_humidity: 65,
-    decision: 'NORMAL',
-    fault_probability: 0.02,
-    buddy_z_temperature: 0.2,
-    cusum_drift_score: 0.1,
-    freeze_repeat_count: 0
-  };
+  if (!readings.length) return (
+    <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-8 space-y-4">
+      <Link href="/stations" className="text-cyan-400">Back to station catalog</Link>
+      <h1 className="text-2xl font-bold text-white">{meta.station_name || id}</h1>
+      <p>{meta.latitude}°, {meta.longitude}° · {meta.elevation_m} m</p>
+      <p role="status" className="text-amber-300">No observed telemetry available</p>
+      <p className="text-slate-300">{stationData.message || 'No reports have been received for this station.'}</p>
+      <p className="text-slate-400">No trace, sensor-health score or anomaly probability has been generated to fill this gap.</p>
+    </div>
+  );
+  const latest = readings[readings.length - 1];
 
   const chartData = readings.map(r => ({
     time: new Date(r.timestamp_utc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -139,7 +140,7 @@ export default function StationDetailPage({ params }: StationDetailProps) {
         <div className="flex items-center space-x-3">
           <span className="px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
             <CheckCircle2 className="w-4 h-4" />
-            Sensor Status: Normal
+            Model signal: {latest.decision || 'Unverified'}
           </span>
         </div>
       </div>
@@ -159,7 +160,7 @@ export default function StationDetailPage({ params }: StationDetailProps) {
             <Thermometer className="w-4 h-4 text-cyan-400" />
           </div>
           <div className="text-3xl font-black text-white">{latest.temperature_c}°C</div>
-          <p className="text-xs text-slate-400 mt-1">Buddy z-residual: {latest.buddy_z_temperature} σ</p>
+          <p className="text-xs text-slate-400 mt-1">Buddy residual: {latest.buddy_z_temperature ?? 'Not supplied'}</p>
         </div>
 
         <div 
@@ -171,11 +172,11 @@ export default function StationDetailPage({ params }: StationDetailProps) {
           }`}
         >
           <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Station Pressure</span>
+            <span className="text-xs font-bold uppercase tracking-wider">METAR QNH Pressure</span>
             <Gauge className="w-4 h-4 text-emerald-400" />
           </div>
           <div className="text-3xl font-black text-white">{latest.pressure_hpa} hPa</div>
-          <p className="text-xs text-slate-400 mt-1">Tendency: Diurnal baseline</p>
+          <p className="text-xs text-slate-400 mt-1">Not raw station pressure; preserve the pressure reference</p>
         </div>
 
         <div 
@@ -191,7 +192,7 @@ export default function StationDetailPage({ params }: StationDetailProps) {
             <Droplets className="w-4 h-4 text-sky-400" />
           </div>
           <div className="text-3xl font-black text-white">{latest.relative_humidity}%</div>
-          <p className="text-xs text-slate-400 mt-1">Status: Within saturation bounds</p>
+          <p className="text-xs text-slate-400 mt-1">Derived from reported temperature and dew point</p>
         </div>
       </div>
 
@@ -199,12 +200,12 @@ export default function StationDetailPage({ params }: StationDetailProps) {
       <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-6 shadow-xl">
         <div className="flex items-center justify-between border-b border-[#1a4163] pb-4 mb-6">
           <div>
-            <h3 className="text-lg font-bold text-white">24-Hour Observation Trace</h3>
+            <h3 className="text-lg font-bold text-white">Received Observation Trace</h3>
             <p className="text-xs text-slate-400">
               Visualizing {selectedSensor === 'temp' ? 'Temperature (°C)' : selectedSensor === 'press' ? 'Pressure (hPa)' : 'Relative Humidity (%)'} across recent telemetry packets.
             </p>
           </div>
-          <div className="text-xs text-slate-400 font-mono">Cadence: 60 min</div>
+          <div className="text-xs text-slate-400 font-mono">{stationData.is_cached ? 'Cached' : 'Source'} · Latest {new Date(latest.timestamp_utc).toLocaleString()}</div>
         </div>
 
         <div className="h-72 w-full">
@@ -233,20 +234,20 @@ export default function StationDetailPage({ params }: StationDetailProps) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5">
           <span className="text-xs font-bold uppercase text-slate-400">Integer Freeze Detection</span>
-          <div className="text-xl font-bold text-white mt-1">No Freeze Detected</div>
-          <p className="text-xs text-slate-400 mt-1">Run-length count: 1 (normal sensor variability)</p>
+          <div className="text-xl font-bold text-white mt-1">Unverified</div>
+          <p className="text-xs text-slate-400 mt-1">Repeated rounded values alone do not prove a frozen sensor.</p>
         </div>
 
         <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5">
           <span className="text-xs font-bold uppercase text-slate-400">CUSUM Drift State</span>
-          <div className="text-xl font-bold text-white mt-1">Score: {latest.cusum_drift_score} σ</div>
-          <p className="text-xs text-slate-400 mt-1">Threshold h=4.0 (no persistent drift accumulation)</p>
+          <div className="text-xl font-bold text-white mt-1">Score: {latest.cusum_drift_score ?? 'Not supplied'}</div>
+          <p className="text-xs text-slate-400 mt-1">No calibrated drift diagnosis is claimed.</p>
         </div>
 
         <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5">
           <span className="text-xs font-bold uppercase text-slate-400">Transport & Heartbeat SLA</span>
-          <div className="text-xl font-bold text-emerald-400 mt-1">Healthy</div>
-          <p className="text-xs text-slate-400 mt-1">No duplicate packets or transmission gaps</p>
+          <div className="text-xl font-bold text-amber-400 mt-1">SLA unverified</div>
+          <p className="text-xs text-slate-400 mt-1">A missing archive report does not establish communication failure.</p>
         </div>
       </div>
     </div>
