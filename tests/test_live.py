@@ -146,7 +146,7 @@ class LiveFeedTests(unittest.TestCase):
         self.assertIsNone(migrated["simulation_active"])
 
 
-    def test_physical_consistency_gate_repairs_corrupt_dewpoint_exceeds_temperature(self) -> None:
+    def test_physical_consistency_gate_preserves_source_and_requests_review(self) -> None:
         service = MetarLiveService(ROOT)
         # Corrupted report where dew point (24 C) exceeds temperature (7 C)
         corrupted = [{
@@ -155,12 +155,13 @@ class LiveFeedTests(unittest.TestCase):
         }]
         normalized = service._normalize(corrupted)
         self.assertEqual(len(normalized), 1)
-        # Repaired temperature must be physically consistent (>= dew point 24 C)
-        self.assertGreaterEqual(normalized[0]["temperature_c"], 24.0)
-        self.assertIn("PHYSICAL_QC", normalized[0]["source_quality"])
+        # Source evidence is never silently replaced by another provider or estimate.
+        self.assertEqual(normalized[0]["temperature_c"], 7.0)
+        self.assertEqual(normalized[0]["dew_point_c"], 24.0)
+        self.assertIn("REVIEW_REQUIRED", normalized[0]["source_quality"])
+        self.assertEqual(normalized[0]["observation_origin"], "aviationweather_metar")
         self.assertEqual(normalized[0]["raw_observation"], "METAR VIGR 121130Z 07/24 Q1006 NOSIG")
 
 
 if __name__ == "__main__":
     unittest.main()
-

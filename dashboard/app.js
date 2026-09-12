@@ -945,7 +945,7 @@ async function initialize() {
     state.summary = summary; state.stations = stations; state.health = health;
     state.publicMode = healthCheck.public_read_only === true;
     if (state.publicMode) {
-      // Keep .live-fault-injection-box active so visitors can test virtual spikes and see how SkyGuard detects and solves them
+      document.querySelector('.live-fault-injection-box')?.classList.add('hidden');
       document.querySelector('.replay-actions')?.classList.add('hidden');
       document.querySelector('#mode-selector [data-mode="replay"]').textContent = 'Training & validation';
     }

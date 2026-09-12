@@ -217,7 +217,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     @app.get("/api/stations")
     def stations(
-        network: str = Query("all", description="'all' (545 stations), 'active' (410 active), or 'benchmark' (24 core)"),
+        network: str = Query("all", description="'all' (543 catalog stations), 'active' (metadata-filtered), or 'benchmark' (24 core)"),
         climate_zone: str | None = Query(None, description="Optional filter by climate zone"),
     ) -> list[dict[str, str]]:
         catalog_path = root / "config" / "all_india_aws_network.csv"
@@ -321,7 +321,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             if public_mode and time.monotonic() - last_refresh_attempt[0] < 300:
                 return {**live.status(), "refresh_throttled": True, "refresh_interval_seconds": 300}
             last_refresh_attempt[0] = time.monotonic()
-            return live.refresh(hours, augment_all_india=True)
+            return live.refresh(hours)
         except Exception as error:
             raise HTTPException(status_code=502, detail=f"Live observation refresh failed: {error}") from error
         finally:

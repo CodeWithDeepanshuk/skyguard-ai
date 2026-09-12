@@ -103,10 +103,6 @@ class MetarLiveService:
     def _load_cache(self) -> dict[str, object]:
         target = self.cache_path
         if not target.exists():
-            fallback = self.root / "data" / "live" / "latest.json"
-            if fallback.exists():
-                target = fallback
-        if not target.exists():
             return {
                 "status": "not_fetched", "mode": "live", "is_cached": False,
                 "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
@@ -116,7 +112,15 @@ class MetarLiveService:
             cached = json.loads(target.read_text(encoding="utf-8"))
             cached["is_cached"] = True
             cached["status"] = "cached"
-            if cached.get("presentation_contract") != LIVE_PRESENTATION_CONTRACT or cached.get("simulation_active"):
+            origins = {
+                str(row.get("observation_origin", ""))
+                for row in cached.get("readings", [])
+            }
+            if (
+                cached.get("presentation_contract") != LIVE_PRESENTATION_CONTRACT
+                or cached.get("simulation_active")
+                or not origins.issubset({"aviationweather_metar"})
+            ):
                 # The previous cache mixed generated station traces into observations
                 # and into neighbour features. Neither its readings nor scores are
                 # safe to reuse. Keep the file for audit; require a source refresh.
@@ -206,25 +210,10 @@ class MetarLiveService:
             pressure = optional_float(item.get("altim"))
             source_quality = item.get("qcField", "")
             observation_origin = "aviationweather_metar"
-
-            # Physical Consistency Gate: Dry-bulb air temperature cannot fall below dew point (T >= Td)
-            # In Gwalior (VIGR) and other stations, operator typos (e.g., 07/24 instead of ~30/24) or sensor faults
-            # cause gross physical violations. We detect this and assimilate accurate ground weather telemetry.
             if temperature is not None and dew_point is not None and dew_point > temperature + 1.0:
-                try:
-                    from skyguard.live.weather_api import default_weather_client
-                    lat = float(station.get("latitude") or 20.0)
-                    lon = float(station.get("longitude") or 78.0)
-                    w = default_weather_client.fetch_station(lat, lon)
-                    if w and w.get("temperature_c") is not None:
-                        temperature = float(w["temperature_c"])
-                        dew_point = float(w.get("dew_point_c", dew_point))
-                        source_quality = "PHYSICAL_QC_REPAIRED_VIA_WEATHER_API (DEWPOINT_EXCEEDS_TEMPERATURE)"
-                        observation_origin = "aviationweather_metar_repaired_via_open_meteo"
-                except Exception:
-                    # Physical fallback if weather API is unreachable: dry-bulb air temperature must be >= dew point
-                    temperature = round(dew_point + 2.5, 1)
-                    source_quality = "PHYSICAL_QC_ESTIMATED (DEWPOINT_EXCEEDS_TEMPERATURE)"
+                # Preserve received values as evidence. Substituting another
+                # provider would turn a quality alert into invented telemetry.
+                source_quality = "PHYSICAL_QC_REVIEW_REQUIRED (DEWPOINT_EXCEEDS_TEMPERATURE)"
 
             humidity = relative_humidity(temperature, dew_point)
             row_id = hashlib.sha1(f"live|{identity[0]}|{timestamp}".encode("utf-8")).hexdigest()[:20]
@@ -622,7 +611,6 @@ class MetarLiveService:
         hours: int = 24,
         fetcher: Callable[[int], list[dict[str, object]]] | None = None,
         source_fetched_at: datetime | None = None,
-        augment_all_india: bool = False,
     ) -> dict[str, object]:
         hours = max(1, min(48, int(hours)))
         try:
@@ -635,20 +623,6 @@ class MetarLiveService:
                 raise RuntimeError("The official feed returned no usable observations for configured ICAO stations")
             quality_alerts = self._quality_alerts(normalized)
             readings, model_alerts = self._score(normalized, quality_alerts)
-
-            # Assimilate complete All-India network covering all 543 Indian stations when requested
-            if augment_all_india:
-                try:
-                    from skyguard.live.all_india_feed import build_all_india_live_payload
-                    all_india = build_all_india_live_payload({"readings": readings}, self.root)
-                    all_context = all_india.get("readings", [])
-                    if all_context:
-                        existing_sids = {str(r["station_id"]) for r in readings}
-                        for r in all_context:
-                            if str(r["station_id"]) not in existing_sids:
-                                readings.append(r)
-                except Exception:
-                    pass
 
             latest_by_station: dict[str, dict[str, object]] = {}
             for row in readings:
@@ -666,8 +640,8 @@ class MetarLiveService:
             latest_time = max(datetime.fromisoformat(str(row["timestamp_utc"]).replace("Z", "+00:00")) for row in readings)
             self.payload = {
                 "status": "live", "mode": "live", "is_cached": False, "error": None,
-                "provider": "Indian AWS National Network & AviationWeather METAR",
-                "product": "All-India 543 AWS Automated Quality Control Feed",
+                "provider": "AviationWeather.gov / NWS Aviation Weather Center",
+                "product": "Worldwide METAR terminal observations mapped to the 543-station catalog",
                 "source_url": self.endpoint,
                 "fetched_at_utc": fetched_at.isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "latest_observation_utc": latest_time.isoformat(timespec="seconds").replace("+00:00", "Z"),
@@ -748,16 +722,6 @@ class MetarLiveService:
         rows = list(self.payload.get("latest" if latest_only else "readings", []))
         if station_id:
             matched = [row for row in rows if str(row.get("station_id")) == station_id]
-            if not matched and station_id in self.stations and self.payload.get("readings"):
-                try:
-                    from skyguard.live.all_india_feed import generate_station_trace
-                    trace = generate_station_trace(self.stations[station_id], hours=24)
-                    matched = trace
-                    self.payload.setdefault("readings", []).extend(trace)
-                    if trace:
-                        self.payload.setdefault("latest", []).append(trace[0])
-                except Exception:
-                    pass
             rows = matched
         return sorted(rows, key=lambda row: str(row.get("timestamp_utc", "")), reverse=True)[:limit]
 
