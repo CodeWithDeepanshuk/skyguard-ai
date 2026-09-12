@@ -33,14 +33,14 @@ Sites uses a different hosting runtime. The Python models require an external ba
 - Python dashboard and backend: https://skyguard-ai-wbm9.onrender.com
 - Render service: `srv-daigismk1f9s73ck2pa0`, Free plan, Singapore.
 - Sites project: `appgprj_6aa50ab2361481919031dc3baabfb7eb`, public access.
-- Sites source commit: `1a6919438b6fc22beba2006863e6153159d8deb9`.
+- Sites source commit for the current version: `c40ceb7326615bf148d4bfdfadd0b8f6caeb19e1`.
 - Separate Sites source checkout: `C:/Users/deepa/.codex/site-workspaces/skyguard-ai-public`.
 
-The Site is a dependency-free Worker gateway serving the existing Python map dashboard, assets and read-only APIs from the fixed Render origin. It forwards only GET/HEAD and the rate-limited live-refresh POST; it does not forward browser credentials. It does not host Python models, invent readings or deploy the separate Next.js application. The build uses `node build.mjs`; four gateway tests pass with `node --test worker.test.mjs`. Native Sites publication reported success for version 1.
+The Site is a dependency-free public shell that embeds the existing Render map dashboard from a fixed HTTPS origin. This avoids a failed server-side proxy dependency: the Site document opens immediately even while the free backend wakes, and the embedded application talks to its own same-origin read-only API. The Site does not host Python models, invent readings or deploy the separate Next.js application. Four shell/security tests pass. Native Sites publication reported success for version 2.
 
 A real backend refresh at approximately 08:15 UTC returned 400 METAR observations from 60 reporting stations out of a 543-entry catalog. The other 483 catalog entries were explicitly without observations. These are time-specific availability counts, not proof of 543 live sensors, retraining on those stations, or measured live accuracy. Model incident evidence remained advisory-only.
 
-This Render service was imported using the public repository URL. After pushing a backend update, verify the deployed commit in Render; if it does not deploy automatically, choose **Manual Deploy > Deploy latest commit** for this existing service. Do not create another service or select a paid plan. The Sites gateway needs a new version only when gateway code or the backend origin changes.
+This Render service was imported using the public repository URL. After pushing a backend update, verify the deployed commit in Render; if it does not deploy automatically, choose **Manual Deploy > Deploy latest commit** for this existing service. Do not create another service or select a paid plan. The Sites shell needs a new version only when its shell or backend origin changes.
 
 ## Operational limits
 
