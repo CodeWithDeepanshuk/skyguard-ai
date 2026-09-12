@@ -228,7 +228,7 @@ async function switchMode(mode) {
   state.liveTimer = null;
   if (mode === "live") { await refreshOfficialLive(true); scheduleLiveRefresh(); }
   else {
-    const incidents = await api('/api/incidents?limit=500');
+    const incidents = await api('/api/incidents?limit=500&mode=offline');
     if (revision !== state.viewRevision) return;
     state.incidents = incidents;
     await loadScenario(true);
@@ -345,39 +345,15 @@ function renderNetwork() {
 function renderTraceFreshness() {
   const latest = state.readings.filter(row => row.station_id === state.selectedStation)
     .sort((a, b) => Date.parse(b.timestamp_utc) - Date.parse(a.timestamp_utc))[0];
-  $("trace-status").textContent = state.mode !== 'live' ? 'OFFLINE REPLAY' : !latest ? 'INITIALIZING TELEMETRY...' : state.liveStatus?.simulation_active ? 'SIMULATION · MODIFIED DATA' : state.liveStatus?.is_cached ? 'LIVE AWS TELEMETRY' : 'REAL-TIME AWS FEED';
-  $("trace-time").textContent = latest ? `Observed ${formatTime(latest.timestamp_utc)} UTC${state.mode === 'live' ? ` · ${ageLabel(latest.timestamp_utc)} · Fetched ${formatTime(state.liveStatus?.fetched_at_utc)} UTC` : ' · Historical scenario time'}` : 'Connecting telemetry for selected station...';
+  $("trace-status").textContent = state.mode !== 'live' ? 'OFFLINE REPLAY' : !latest ? 'NO OBSERVATIONS AVAILABLE' : state.liveStatus?.simulation_active ? 'SIMULATION · MODIFIED DATA' : state.liveStatus?.is_cached ? 'CACHED METAR OBSERVATIONS' : 'METAR OBSERVATIONS';
+  $("trace-time").textContent = latest ? `Observed ${formatTime(latest.timestamp_utc)} UTC${state.mode === 'live' ? ` · ${ageLabel(latest.timestamp_utc)} · Fetched ${formatTime(state.liveStatus?.fetched_at_utc)} UTC` : ' · Historical scenario time'}` : 'This catalog station has no received observations. Health cannot be determined.';
 }
 
 function renderSelectedIncident() {
-  const coLocatedMap = {
-    "42034099999": "42705399999", "42705399999": "42034099999",
-    "42543099999": "42542099999", "42542099999": "42543099999",
-    "43180099999": "43181099999", "43181099999": "43180099999",
-    "43319099999": "43321099999", "43321099999": "43319099999",
-    "43283099999": "43284099999", "43284099999": "43283099999",
-  };
-  const twin = coLocatedMap[state.selectedStation];
-  // Look up incident for selected station or its co-located twin
-  const match = state.incidents.filter(inc => (inc.station_id === state.selectedStation || inc.station_id === twin) && inc.incident_id !== 'SYS-LIVE-CLEAN')
+  // A nearby airport's incident is not evidence about this sensor.
+  const match = state.incidents.filter(inc => inc.station_id === state.selectedStation && inc.incident_id !== 'SYS-LIVE-CLEAN')
     .sort((a, b) => String(b.timestamp_utc || b.last_timestamp_utc || '').localeCompare(String(a.timestamp_utc || a.last_timestamp_utc || '')))[0];
   if (match) { renderIncident(match); return; }
-  const stnRow = state.readings.find(r => r.station_id === state.selectedStation || r.station_id === twin);
-  if (stnRow && (stnRow.event_decision === 'normal' || (stnRow.fault_probability || 0) < 0.15)) {
-    renderIncident({
-      station_id: state.selectedStation,
-      severity: 'nominal',
-      root_cause: 'nominal_operation',
-      fault_probability: stnRow.fault_probability ?? 0.005,
-      root_cause_confidence: 0.995,
-      affected_sensors: [],
-      timestamp_utc: stnRow.timestamp_utc,
-      explanation: `${stationName(state.selectedStation) || 'Station'}: All sensors operating within normal physical limits. Regional spatial coherence confirmed with neighboring AWS network.`,
-      recommended_action: 'Continuous automated monitoring active. Sensor telemetry is valid for meteorological and aviation operations.',
-      isNominal: true,
-    });
-    return;
-  }
   renderIncident({
     station_id: state.selectedStation, severity: 'unknown', root_cause: 'no_evidence_record',
     fault_probability: null, root_cause_confidence: null,

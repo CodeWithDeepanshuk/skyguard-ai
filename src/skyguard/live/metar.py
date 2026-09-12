@@ -34,7 +34,7 @@ from skyguard.quality.models import Observation
 METAR_ENDPOINT = "https://aviationweather.gov/api/data/metar"
 USER_AGENT = "SkyGuard-SIH26073/1.0"
 LIVE_INCIDENT_POLICY_MODE = "shadow_evidence_only_unvalidated"
-LIVE_PRESENTATION_CONTRACT = "r0_evidence_no_fabricated_health_v1"
+LIVE_PRESENTATION_CONTRACT = "observed_metar_only_v2"
 
 
 def relative_humidity(temperature_c: float | None, dew_point_c: float | None) -> float | None:
@@ -108,10 +108,17 @@ class MetarLiveService:
             cached = json.loads(self.cache_path.read_text(encoding="utf-8"))
             cached["is_cached"] = True
             cached["status"] = "cached"
-            if cached.get("presentation_contract") != LIVE_PRESENTATION_CONTRACT:
-                # Old UI evidence included hard-coded health/confidence claims.
-                # Keep observations, but do not present those records as evidence.
-                cached["incidents"] = []
+            if cached.get("presentation_contract") != LIVE_PRESENTATION_CONTRACT or cached.get("simulation_active"):
+                # The previous cache mixed generated station traces into observations
+                # and into neighbour features. Neither its readings nor scores are
+                # safe to reuse. Keep the file for audit; require a source refresh.
+                for collection in ("readings", "latest", "alerts", "quality_alerts", "incidents"):
+                    cached[collection] = []
+                for count in ("observation_count", "reporting_stations", "model_alert_count", "quality_alert_count"):
+                    cached[count] = 0
+                cached["latest_observation_utc"] = None
+                cached["fetched_at_utc"] = None
+                cached["status"] = "source_refresh_required"
                 cached["incident_shadow_active_count"] = 0
                 cached["presentation_contract"] = LIVE_PRESENTATION_CONTRACT
                 cached["legacy_evidence_suppressed"] = True
@@ -138,24 +145,13 @@ class MetarLiveService:
                             "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
                         })
             cached["incident_policy_mode"] = LIVE_INCIDENT_POLICY_MODE
-            if len(cached.get("latest", [])) < 50 and not cached.get("legacy_evidence_suppressed"):
-                try:
-                    from skyguard.live.all_india_feed import build_all_india_live_payload
-                    cached = build_all_india_live_payload(cached, self.root)
-                    cached["is_cached"] = True
-                except Exception:
-                    pass
             return cached
         except (OSError, ValueError, TypeError):
-            try:
-                from skyguard.live.all_india_feed import build_all_india_live_payload
-                return build_all_india_live_payload(None, self.root)
-            except Exception:
-                return {
-                    "status": "cache_invalid", "mode": "live", "is_cached": False,
-                    "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
-                    "readings": [], "alerts": [], "quality_alerts": [], "incidents": [],
-                }
+            return {
+                "status": "cache_invalid", "mode": "live", "is_cached": False,
+                "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
+                "readings": [], "alerts": [], "quality_alerts": [], "incidents": [],
+            }
 
     def _request(self, hours: int) -> list[dict[str, object]]:
         import time
@@ -175,11 +171,8 @@ class MetarLiveService:
                     return data
             except Exception:
                 if attempt == 2:
-                    if raw_cache.exists():
-                        try:
-                            return json.loads(raw_cache.read_text(encoding="utf-8"))
-                        except Exception:
-                            pass
+                    # The scored cache can be shown as cached. An old raw file
+                    # must not be re-stamped as a successful source fetch.
                     raise
                 time.sleep(0.8 * (attempt + 1))
         return []
@@ -226,6 +219,8 @@ class MetarLiveService:
                 "source_quality": item.get("qcField", ""),
                 "raw_observation": item.get("rawOb", ""),
                 "source_receipt_time": item.get("receiptTime", ""),
+                "observation_origin": "aviationweather_metar",
+                "humidity_origin": "derived_from_temperature_and_dew_point",
             })
         rows.sort(key=lambda row: (str(row["timestamp_utc"]), str(row["station_id"])))
         if self.injected_faults:
@@ -427,39 +422,8 @@ class MetarLiveService:
             station_id = str(source["station_id"])
             timestamp = str(source["timestamp_utc"])
 
-            # Spatial Coherence Veto for Genuine Live Weather Observations:
-            # When no fault is simulated on this station, an integer METAR flatline (e.g. 27C repeating
-            # under steady morning cloud cover) can trigger a statistical frozen_sensor or multi_sensor_failure.
-            # If the station's readings agree with regional neighbors within physical limits, veto the false positive.
-            if station_id not in self.injected_faults and decision == "sensor_fault":
-                t_agree = float(optional_float(feature.get("neighbor_temperature_agreement_fraction")) or 0.0)
-                p_agree = float(optional_float(feature.get("neighbor_pressure_agreement_fraction")) or 0.0)
-                t_val = float(optional_float(source.get("temperature_c")) or 0.0)
-                p_val = float(optional_float(source.get("pressure_hpa")) or 0.0)
-                t_wt = float(optional_float(feature.get("neighbor_temperature_weighted_mean")) or t_val)
-                p_wt = float(optional_float(feature.get("neighbor_pressure_weighted_mean")) or p_val)
-                t_wt_diff = abs(t_val - t_wt)
-                p_wt_diff = abs(p_val - p_wt)
-                t_res = abs(float(optional_float(feature.get("neighbor_temperature_residual")) or 0.0))
-                p_res = abs(float(optional_float(feature.get("neighbor_pressure_residual")) or 0.0))
-                reg_agree = float(optional_float(feature.get("regional_agreement_mean")) or 0.0)
-
-                is_spatially_coherent = (
-                    (t_agree >= 0.4 and p_agree >= 0.4)
-                    or (t_wt_diff <= 3.8 and p_wt_diff <= 4.5)
-                    or (t_res <= 2.5 and p_res <= 4.0)
-                    or (p_agree >= 0.8 and p_wt_diff <= 4.5)
-                    or (t_agree >= 0.8 and t_wt_diff <= 4.5)
-                    or (reg_agree >= 0.5 and t_wt_diff <= 4.5 and p_wt_diff <= 4.5)
-                )
-                if is_spatially_coherent and root_cause in (
-                    "frozen_sensor", "multi_sensor_failure", "timestamp_error",
-                    "drift", "sensor_drift", "noise", "bias", "scaling_error",
-                ):
-                    decision = "normal"
-                    root_cause = "not_a_fault"
-                    fault_probability[index] = min(float(fault_probability[index]), 0.008)
-                    event_confidence[index] = 1.0 - float(fault_probability[index])
+            # Preserve model output. Missing buddies are not agreement, and
+            # simulator labels must never select a different detection policy.
             hard_codes, communication_codes = quality_by_row.get((station_id, timestamp), ((), ()))
             neighbours = int(optional_float(feature.get("neighbor_station_count")) or 0)
             cluster = str(source.get("cluster", ""))
@@ -639,22 +603,8 @@ class MetarLiveService:
             if not normalized:
                 raise RuntimeError("The official feed returned no usable observations for configured ICAO stations")
             quality_alerts = self._quality_alerts(normalized)
-            all_india = None
-            all_context = None
-            if not fetcher:
-                try:
-                    from skyguard.live.all_india_feed import build_all_india_live_payload
-                    all_india = build_all_india_live_payload({"readings": normalized}, self.root)
-                    all_context = all_india.get("readings", [])
-                except Exception:
-                    pass
-
-            readings, model_alerts = self._score(normalized, quality_alerts, context_rows=all_context)
-            if all_context:
-                existing_sids = {str(r["station_id"]) for r in readings}
-                for r in all_context:
-                    if str(r["station_id"]) not in existing_sids:
-                        readings.append(r)
+            # Only actually received observations may be station/buddy evidence.
+            readings, model_alerts = self._score(normalized, quality_alerts)
             latest_by_station: dict[str, dict[str, object]] = {}
             for row in readings:
                 sid = str(row["station_id"])
@@ -682,6 +632,7 @@ class MetarLiveService:
                 "all_india_stations_count": len(self.stations),
                 "total_network_stations": len(self.stations),
                 "reporting_stations": len(latest_by_station),
+                "stations_without_observations": len(self.stations) - len(latest_by_station),
                 "observation_count": len(readings),
                 "model_alert_count": len(model_alerts),
                 "quality_alert_count": len(active_quality_alerts),
@@ -752,12 +703,6 @@ class MetarLiveService:
         rows = list(self.payload.get("latest" if latest_only else "readings", []))
         if station_id:
             matched = [row for row in rows if str(row.get("station_id")) == station_id]
-            if not matched and station_id in self.stations:
-                from skyguard.live.all_india_feed import generate_station_trace
-                matched = generate_station_trace(self.stations[station_id], hours=24)
-                self.payload.setdefault("readings", []).extend(matched)
-                if matched:
-                    self.payload.setdefault("latest", []).append(matched[0])
             rows = matched
         return sorted(rows, key=lambda row: str(row.get("timestamp_utc", "")), reverse=True)[:limit]
 
@@ -789,32 +734,22 @@ class MetarLiveService:
         fault_type: str = "temp_spike",
         magnitude: float = 0.0,
     ) -> dict[str, object]:
+        if not self.raw_records:
+            raise ValueError("Refresh genuine METAR observations before an explicit simulation")
+        if station_id not in {row["station_id"] for row in self._normalize(self.raw_records)}:
+            raise ValueError("No observed data for this station; no synthetic live substitute is permitted")
         self.injected_faults[station_id] = {
             "sensor": sensor,
             "fault_type": fault_type,
             "magnitude": magnitude,
             "injected_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         }
-        from skyguard.live.all_india_feed import apply_fault_to_payload
-        self.payload = apply_fault_to_payload(
-            self.payload, station_id, sensor, fault_type, magnitude, self.stations
-        )
-        self.incident_snapshot = self.payload.get("incidents", [])
-        try:
-            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-            self.cache_path.write_text(json.dumps(self.payload, indent=2), encoding="utf-8")
-        except OSError:
-            pass
-        return self.status()
+        # Re-run the detector on a simulation copy; never assign known fault
+        # labels, probabilities, SHAP values or correction intervals by hand.
+        return self.refresh(fetcher=lambda _: self.raw_records, source_fetched_at=self.raw_fetched_at)
 
     def clear_injected_faults(self) -> dict[str, object]:
         self.injected_faults.clear()
-        from skyguard.live.all_india_feed import clear_faults_from_payload
-        self.payload = clear_faults_from_payload(self.payload, self.root)
-        self.incident_snapshot = []
-        try:
-            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-            self.cache_path.write_text(json.dumps(self.payload, indent=2), encoding="utf-8")
-        except OSError:
-            pass
-        return self.status()
+        if self.raw_records:
+            return self.refresh(fetcher=lambda _: self.raw_records, source_fetched_at=self.raw_fetched_at)
+        return self.refresh()

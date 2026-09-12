@@ -7,4 +7,20 @@ __pycache__
 .vscode
 .idea
 .gemini
+.env
+.env.*
+node_modules
+.next
+experiments
+iteration 10 result
+iteration 11 result
+scratch
+notebooks
+deliverables
+data/live
+data/runtime
+data/processed
+data/features
+data/features_phase10
+data/labelled
 *.log

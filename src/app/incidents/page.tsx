@@ -36,18 +36,24 @@ interface Incident {
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState('all');
   const [faultFilter, setFaultFilter] = useState('all');
 
   useEffect(() => {
     fetch('/api/incidents?limit=100')
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Live incident service unavailable');
+        return data;
+      })
       .then(data => {
         setIncidents(Array.isArray(data) ? data : []);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        setError(err.message || 'Live incident service unavailable');
         setIncidents([]);
         setLoading(false);
       });
@@ -94,6 +100,7 @@ export default function IncidentsPage() {
 
   return (
     <div className="space-y-6 animate-fadeIn">
+      {error && <p role="alert" className="rounded-xl border border-amber-800 p-4 text-amber-300">{error}. No historical incidents are substituted.</p>}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1a4163] pb-6">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">

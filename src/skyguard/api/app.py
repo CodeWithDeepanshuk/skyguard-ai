@@ -6,10 +6,13 @@ import csv
 import gzip
 import io
 import json
+import os
+import threading
+import time
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
 from skyguard.streaming.engine import ReplayEngine
@@ -141,6 +144,17 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     app.state.runtime = runtime
     live = MetarLiveService(root)
     app.state.live = live
+    public_mode = os.getenv("SKYGUARD_PUBLIC_MODE", "false").lower() == "true"
+    refresh_lock = threading.Lock()
+    last_refresh_attempt = [0.0]
+
+    @app.middleware("http")
+    async def protect_public_state(request, call_next):
+        # Public visitors may read or request a throttled source refresh. They
+        # must not inject faults/reset a shared stream for everyone else.
+        if public_mode and request.method not in ("GET", "HEAD", "OPTIONS") and request.url.path != "/api/live/refresh":
+            return JSONResponse({"detail": "Shared-state demo mutations are disabled on the public service"}, status_code=403)
+        return await call_next(request)
 
     dashboard_dir = root / "dashboard"
     if dashboard_dir.exists():
@@ -160,6 +174,9 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             "model_version": "SkyGuard-P10-compliant",
             "detector_inputs": ["temperature", "pressure", "relative_humidity"],
             "communication_gap_policy": "verified heartbeat required; unknown cadence is advisory",
+            "live_contract": live.status().get("presentation_contract"),
+            "model_loaded": live.bundle is not None,
+            "public_read_only": public_mode,
         }
 
     @app.get("/api/scenarios")
@@ -246,9 +263,9 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         mode: str = Query("live"),
     ) -> list[dict[str, object]]:
         if mode == "live":
-            live_incs = live.incidents()
-            if live_incs:
-                return live_incs[:limit]
+            return live.incidents()[:limit]
+        if mode != "offline":
+            raise HTTPException(status_code=422, detail="mode must be live or offline")
         return read_jsonl(root / "data" / "incidents" / "time_test_incidents.jsonl.gz", limit)
 
     @app.get("/api/repair-actions")
@@ -298,10 +315,17 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     @app.post("/api/live/refresh")
     def live_refresh(hours: int = Query(24, ge=1, le=48)) -> dict[str, object]:
+        if not refresh_lock.acquire(blocking=False):
+            return {**live.status(), "refresh_in_progress": True}
         try:
+            if public_mode and time.monotonic() - last_refresh_attempt[0] < 300:
+                return {**live.status(), "refresh_throttled": True, "refresh_interval_seconds": 300}
+            last_refresh_attempt[0] = time.monotonic()
             return live.refresh(hours)
         except Exception as error:
             raise HTTPException(status_code=502, detail=f"Live observation refresh failed: {error}") from error
+        finally:
+            refresh_lock.release()
 
     @app.get("/api/live/readings")
     def live_readings(

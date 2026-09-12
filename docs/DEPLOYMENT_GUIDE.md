@@ -14,7 +14,7 @@
 | **Cost** | **Free tier available** (Free Web Service) | **Free tier available** (Hobby Plan) |
 | **Setup Effort** | **1-Click** (connect GitHub repo) | **1-Click** (connect GitHub repo) |
 
-> **Recommendation:** **Render** is the best suite for ML applications because it keeps the FastAPI server, LightGBM model, and in-memory station cache continuously warm without serverless cold starts. **Vercel** is also 100% configured via `vercel.json` and `api/index.py`.
+> **Recommendation:** **Render** is the best suite for ML applications because it keeps the FastAPI server, LightGBM model, and in-memory station cache continuously warm without serverless cold starts. **Vercel** provides high-performance edge deployment for the Next.js 14 web application via `vercel.json`.
 
 ---
 
@@ -55,9 +55,9 @@ Click **Create Web Service**. Render will automatically build the wheels, verify
 
 ---
 
-## 3. Deploying on Vercel
+## 3. Deploying Next.js Web App on Vercel
 
-SkyGuard AI includes a pre-configured `vercel.json` and `api/index.py` ASGI bridge.
+SkyGuard AI includes a full-stack Next.js 14 App Router web application with interactive sandbox, live all-India station telemetry, incident triage, and 25-gate pipeline validation.
 
 ### Step 1: Push to GitHub
 ```bash
@@ -67,11 +67,12 @@ git push origin main
 ### Step 2: Import Project on Vercel
 1. Go to [vercel.com/new](https://vercel.com/new).
 2. Select your repository: `CodeWithDeepanshuk/skyguard-ai`.
-3. Framework Preset: Choose **Other**.
+3. Framework Preset: Automatically detected as **Next.js**.
 4. Root Directory: `./` (leave default).
-5. Click **Deploy**.
+5. (Optional) In Environment Variables, set `SKYGUARD_API_URL` to your Render service (`https://skyguard-ai.onrender.com`).
+6. Click **Deploy**.
 
-Vercel will build the `@vercel/python` serverless bundle and serve the dashboard at `https://skyguard-ai.vercel.app`.
+Vercel will build the optimized Next.js static pages and serverless route handlers, serving the live application at `https://skyguard-ai.vercel.app`.
 
 ---
 

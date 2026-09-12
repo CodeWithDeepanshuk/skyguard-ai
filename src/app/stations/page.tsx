@@ -51,10 +51,10 @@ export default function StationsPage() {
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
             <Radio className="w-6 h-6 text-cyan-400" />
-            All-India Automatic Weather Station Network
+            Indian Weather Station Catalog
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            545 Indian surface observation stations across 8 agro-climatic zones, indexed for spatial QC and regional weather veto.
+            Catalog locations are not proof of live reporting or sensor health. Open a station to check its source observations.
           </p>
         </div>
 
@@ -84,7 +84,7 @@ export default function StationsPage() {
             onChange={e => setNetworkFilter(e.target.value as any)}
             className="w-full bg-[#071521] border border-[#1a4163] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"
           >
-            <option value="all">All Network Stations (545)</option>
+            <option value="all">All Catalog Stations</option>
             <option value="active">Active 2024+ Fleet (410)</option>
             <option value="benchmark">Benchmark Core Stations (24)</option>
           </select>
@@ -135,7 +135,7 @@ export default function StationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1a4163]/50">
-                {filteredStations.slice(0, 100).map(s => (
+                {filteredStations.map(s => (
                   <tr key={s.station_id} className="hover:bg-[#143652]/40 transition-colors">
                     <td className="px-4 py-3.5 font-bold text-white flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
@@ -154,7 +154,7 @@ export default function StationsPage() {
                     <td className="px-4 py-3.5 text-xs font-mono text-slate-400">{s.elevation_m} m</td>
                     <td className="px-4 py-3.5">
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800">
-                        Operational
+                        Unverified
                       </span>
                     </td>
                     <td className="px-4 py-3.5 text-right">

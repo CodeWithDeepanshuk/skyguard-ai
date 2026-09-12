@@ -59,6 +59,7 @@ export default function Dashboard() {
   const [testHumidity, setTestHumidity] = useState('74.0');
   const [evaluating, setEvaluating] = useState(false);
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
+  const [predictionError, setPredictionError] = useState('');
 
   useEffect(() => {
     fetch('/api/health')
@@ -75,6 +76,8 @@ export default function Dashboard() {
 
   const handlePredict = async () => {
     setEvaluating(true);
+    setPrediction(null);
+    setPredictionError('');
     try {
       const res = await fetch('/api/predict', {
         method: 'POST',
@@ -88,9 +91,10 @@ export default function Dashboard() {
         })
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Inference is unavailable.');
       setPrediction(data);
-    } catch {
-      alert('Inference request failed');
+    } catch (error) {
+      setPredictionError(error instanceof Error ? error.message : 'Inference request failed');
     } finally {
       setEvaluating(false);
     }
@@ -117,7 +121,7 @@ export default function Dashboard() {
               Trust Every Weather Reading.
             </h1>
             <p className="text-slate-300 max-w-2xl text-sm sm:text-base leading-relaxed">
-              Real-time anomaly identification across 545 Automatic Weather Stations. Distinguishes sensor hardware faults from genuine extreme meteorological events using temperature, pressure, and relative humidity.
+              Explore the Indian station catalog and available METAR observations. Research models flag readings for review using temperature, pressure and relative humidity. Catalog coverage is not live sensor coverage.
             </p>
           </div>
 
@@ -129,7 +133,7 @@ export default function Dashboard() {
               <div>
                 <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inference Engine</div>
                 <div className="text-sm font-bold text-white flex items-center gap-1.5">
-                  {health?.ml_service ? 'Render GPU Backend Active' : 'Edge Causal QC Active'}
+                  {health?.ml_service ? 'ML service connected · research mode' : 'ML backend unavailable'}
                   <span className={`w-2 h-2 rounded-full ${health?.ml_service ? 'bg-emerald-400' : 'bg-amber-400'}`}></span>
                 </div>
               </div>
@@ -145,8 +149,8 @@ export default function Dashboard() {
             <span className="text-xs font-bold uppercase tracking-wider">Unseen-Station Precision</span>
             <ShieldCheck className="w-4 h-4 text-cyan-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">89.89%</div>
-          <p className="text-xs text-slate-400 mt-1">Verified on 24 held-out benchmark stations</p>
+          <div className="text-2xl sm:text-3xl font-black text-white">Not measured</div>
+          <p className="text-xs text-slate-400 mt-1">Live precision requires independently verified fault labels</p>
         </div>
 
         <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-emerald-500/50 transition-colors">
@@ -154,8 +158,8 @@ export default function Dashboard() {
             <span className="text-xs font-bold uppercase tracking-wider">Detection Latency</span>
             <Activity className="w-4 h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">4.88 ms</div>
-          <p className="text-xs text-slate-400 mt-1">Mean wall-time latency per observation</p>
+          <div className="text-2xl sm:text-3xl font-black text-white">Not measured</div>
+          <p className="text-xs text-slate-400 mt-1">Public-host runtime has not been benchmarked</p>
         </div>
 
         <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-amber-500/50 transition-colors">
@@ -163,8 +167,8 @@ export default function Dashboard() {
             <span className="text-xs font-bold uppercase tracking-wider">False Alert Rate</span>
             <AlertTriangle className="w-4 h-4 text-amber-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">0.021</div>
-          <p className="text-xs text-slate-400 mt-1">Alerts / station-day (&lt; 1 per 47 days)</p>
+          <div className="text-2xl sm:text-3xl font-black text-white">Unverified</div>
+          <p className="text-xs text-slate-400 mt-1">No live false-alarm guarantee is available</p>
         </div>
 
         <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-purple-500/50 transition-colors">
@@ -172,8 +176,8 @@ export default function Dashboard() {
             <span className="text-xs font-bold uppercase tracking-wider">Weather Veto Specificity</span>
             <CloudRain className="w-4 h-4 text-purple-400" />
           </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">99.27%</div>
-          <p className="text-xs text-slate-400 mt-1">Extreme events preserved without false alarms</p>
+          <div className="text-2xl sm:text-3xl font-black text-white">Research only</div>
+          <p className="text-xs text-slate-400 mt-1">See offline validation; real weather events need independent review</p>
         </div>
       </div>
 
@@ -183,10 +187,10 @@ export default function Dashboard() {
           <div>
             <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
               <Gauge className="w-5 h-5 text-cyan-400" />
-              Live Anomaly Detection Sandbox
+              Single-reading sandbox · not deployed
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-              Simulate or input live weather station telemetry to test the real SkyGuard anomaly classifier.
+              A single reading cannot supply temporal history or neighbouring observations. Use station telemetry for the deployed history-based model.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -286,6 +290,7 @@ export default function Dashboard() {
         </div>
 
         {/* Prediction Output Card */}
+        {predictionError && <p role="alert" className="mt-4 text-amber-300">{predictionError}</p>}
         {prediction && (
           <div className="mt-6 rounded-xl border border-cyan-500/30 bg-[#071521] p-5 animate-slideDown">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1a4163] pb-4">
@@ -336,7 +341,7 @@ export default function Dashboard() {
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </div>
           <h3 className="text-lg font-bold text-white mb-1">All-India AWS Network</h3>
-          <p className="text-xs text-slate-400">545 weather stations mapped across 8 agro-climatic zones.</p>
+          <p className="text-xs text-slate-400">Station metadata, coordinates and available source observations.</p>
         </Link>
 
         <Link href="/incidents" className="group rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 hover:border-cyan-500/50 hover:bg-[#0f2b42] transition-all">
