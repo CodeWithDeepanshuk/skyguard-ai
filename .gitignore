@@ -11,6 +11,8 @@ data/processed_imd/
 data/benchmark_injected/
 data/derived_features/
 models/iteration13/
+data/raw/wis2/
+data/reference_weather/
 
 # Node & Next.js
 node_modules/

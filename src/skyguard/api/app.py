@@ -18,6 +18,7 @@ from fastapi.staticfiles import StaticFiles
 from skyguard.streaming.engine import ReplayEngine
 from skyguard.streaming.store import ReplayStore
 from skyguard.live.metar import MetarLiveService
+from skyguard.api.v1_router import create_v1_router
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -144,6 +145,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     app.state.runtime = runtime
     live = MetarLiveService(root)
     app.state.live = live
+    app.include_router(create_v1_router(root))
     public_mode = os.getenv("SKYGUARD_PUBLIC_MODE", "false").lower() == "true"
     refresh_lock = threading.Lock()
     last_refresh_attempt = [0.0]

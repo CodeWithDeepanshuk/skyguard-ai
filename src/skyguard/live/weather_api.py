@@ -1,7 +1,7 @@
-"""Live Weather API Assimilation and Physical Verification for SkyGuard AI.
+"""Open-Meteo reference-field assimilation for SkyGuard AI.
 
-Integrates real-time, accurate meteorological telemetry from Open-Meteo
-across all 543 Indian Automatic Weather Stations (AWS) and Airport METARs.
+Open-Meteo coordinate values are model/reference evidence. They are never direct
+IMD AWS observations and must not be displayed or counted as reporting stations.
 Provides physical consistency gates to detect impossible observations
 (such as dew point exceeding air temperature) and auto-correct them using
 verified ground telemetry.
@@ -105,9 +105,13 @@ class WeatherApiClient:
                 if t is not None:
                     weather_data = {
                         "temperature_c": float(t),
-                        "relative_humidity_pct": float(rh) if rh is not None else 65.0,
-                        "surface_pressure_hpa": float(p) if p is not None else 1008.0,
-                        "dew_point_c": calc_dew_point(float(t), float(rh) if rh is not None else 65.0),
+                        "relative_humidity_pct": float(rh) if rh is not None else None,
+                        "surface_pressure_hpa": float(p) if p is not None else None,
+                        "dew_point_c": calc_dew_point(float(t), float(rh)) if rh is not None else None,
+                        "source_type": "REFERENCE_MODEL",
+                        "provider": "OPEN_METEO_REFERENCE",
+                        "is_direct_observation": False,
+                        "is_model_value": True,
                     }
                     self._memory_cache[cache_key] = {"cached_at": now, "data": weather_data}
                     self._save_cache()
@@ -178,9 +182,13 @@ class WeatherApiClient:
                             if t is not None:
                                 w_data = {
                                     "temperature_c": float(t),
-                                    "relative_humidity_pct": float(rh) if rh is not None else 65.0,
-                                    "surface_pressure_hpa": float(p) if p is not None else 1008.0,
-                                    "dew_point_c": calc_dew_point(float(t), float(rh) if rh is not None else 65.0),
+                                    "relative_humidity_pct": float(rh) if rh is not None else None,
+                                    "surface_pressure_hpa": float(p) if p is not None else None,
+                                    "dew_point_c": calc_dew_point(float(t), float(rh)) if rh is not None else None,
+                                    "source_type": "REFERENCE_MODEL",
+                                    "provider": "OPEN_METEO_REFERENCE",
+                                    "is_direct_observation": False,
+                                    "is_model_value": True,
                                 }
                                 out[sid] = w_data
                                 lat_c = float(stn.get("latitude") or 20.0)

@@ -1,10 +1,8 @@
-"""All-India AWS Live Data Assimilation and Simulation Feed.
+"""Legacy catalog demonstration plus direct METAR observations.
 
-Supplies high-fidelity, physically consistent, barometrically and
-climatologically grounded 24-hour telemetry for all 543 Indian AWS stations.
-Assimilates official AviationWeather METAR terminal observations for airport
-stations, and provides authentic surface AWS observations for all remaining
-stations across all 8 Indian climate zones.
+Generated catalog traces are controlled simulation and must never be counted as
+live station observations. This module is retained for offline judge demos while
+the provider architecture ingests verified IMD AWS/WIS2 observations.
 """
 
 from __future__ import annotations
@@ -46,7 +44,7 @@ def generate_station_trace(
     hours: int = 24,
     as_of: datetime.datetime | None = None,
 ) -> list[dict[str, Any]]:
-    """Generate physically grounded, barometrically accurate 24h AWS trace."""
+    """Generate a deterministic controlled-simulation trace (not an observation)."""
     now = as_of or datetime.datetime.now(datetime.timezone.utc)
     station_id = str(station["station_id"])
     station_name = station.get("station_name", "AWS Station")
@@ -131,8 +129,12 @@ def generate_station_trace(
             "available_to_detector": "1",
             "timestamp_offset_seconds": "0",
             "pressure_source": "METAR_QNH" if icao else "AWS_SEA_LEVEL_REDUCED",
-            "source_quality": "VALIDATED_AWS_TELEMETRY",
-            "raw_observation": f"AWS {station_id} ({station_name}) T={temp}C MSLP={mslp}hPa Pstn={stn_press}hPa RH={rh}%",
+            "source_quality": "CONTROLLED_SIMULATION",
+            "source_type": "CONTROLLED_SIMULATION",
+            "provider": "SKYGUARD_DETERMINISTIC_DEMO",
+            "is_direct_observation": False,
+            "is_model_value": False,
+            "raw_observation": f"CONTROLLED_SIMULATION {station_id} ({station_name}) T={temp}C MSLP={mslp}hPa Pstn={stn_press}hPa RH={rh}%",
             "source_receipt_time": ts_iso,
             "temperature": temp,
             "pressure": mslp,
@@ -215,13 +217,13 @@ def build_all_india_live_payload(
     all_readings.sort(key=lambda r: str(r["timestamp_utc"]), reverse=True)
 
     payload = {
-        "status": "live",
-        "mode": "live",
+        "status": "mixed_observed_and_simulation",
+        "mode": "offline_replay",
         "is_cached": False,
         "error": None,
-        "provider": "Indian AWS National Network & AviationWeather METAR",
-        "product": "All-India 545 AWS Automated Quality Control Feed",
-        "source_url": "https://aviationweather.gov / India Meteorological AWS Network",
+        "provider": "AviationWeather METAR + SkyGuard controlled simulation",
+        "product": "Legacy catalog replay; not a national live AWS feed",
+        "source_url": "https://aviationweather.gov",
         "fetched_at_utc": ts_now,
         "latest_observation_utc": ts_now,
         "source_age_minutes": 0.0,
@@ -229,7 +231,7 @@ def build_all_india_live_payload(
         "configured_icao_stations": sum(1 for s in stations if s.get("icao", "").strip()),
         "all_india_stations_count": len(stations),
         "total_network_stations": len(stations),
-        "reporting_stations": len(latest_by_station),
+        "reporting_stations": len(metar_by_station),
         "observation_count": len(all_readings),
         "model_alert_count": len(existing_metar_payload.get("alerts", [])) if existing_metar_payload else 0,
         "quality_alert_count": len(existing_metar_payload.get("quality_alerts", [])) if existing_metar_payload else 0,
@@ -247,9 +249,9 @@ def build_all_india_live_payload(
         "quality_alerts": existing_metar_payload.get("quality_alerts", []) if existing_metar_payload else [],
         "incidents": existing_metar_payload.get("incidents", []) if existing_metar_payload else [],
         "interpretation": (
-            "Live All-India Automatic Weather Station (AWS) feed: genuine terminal METAR "
-            "observations merged with comprehensive all-India surface AWS telemetry. "
-            "All 543 stations monitored for sensor freeze, pressure tendency, drift, and regional weather fronts."
+            "Genuine terminal METAR observations are direct observations. Remaining catalog "
+            "traces are explicitly controlled simulation for offline UI/QC demonstration and "
+            "must not be presented as live IMD AWS telemetry."
         ),
     }
 
@@ -439,4 +441,3 @@ def clear_faults_from_payload(payload: dict[str, Any], root: Path = ROOT) -> dic
     clean_payload["model_alert_count"] = len(clean_payload["alerts"])
     clean_payload["incident_shadow_active_count"] = len([i for i in clean_payload["incidents"] if i.get("active")])
     return clean_payload
-

@@ -425,6 +425,59 @@
                 <span id="trace-time" style="font-size:11px; color:#64748B;"></span>
               </div>
               <div class="trace-svg-host" id="sensor-chart" role="img" aria-label="Sensor Time Series Chart"></div>
+
+              <!-- NOAA MADIS Spatial Buddy Check & Mathematical Proof Card -->
+              <div class="madis-card" id="madis-qc-card" style="margin-top:16px; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E2E8F0; padding-bottom:10px; margin-bottom:12px;">
+                  <div>
+                    <strong style="font-size:13px; color:#0F172A; display:flex; align-items:center; gap:6px;">
+                      <span>📐 NOAA MADIS-Grade Spatial Buddy Check & 3-Stream Evidence</span>
+                    </strong>
+                    <small style="color:#64748B; display:block; margin-top:2px;">
+                      Leave-one-out spatial median with elevation lapse rate (-6.5°C/km) & Scaled MAD (1.4826·MAD)
+                    </small>
+                  </div>
+                  <span class="severity-pill healthy" id="madis-status-pill">CONSISTENT</span>
+                </div>
+
+                <!-- Mathematical Proof Metrics Row -->
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
+                  <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
+                    <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Observed (x)</span>
+                    <strong id="madis-observed" style="font-size:15px; color:#0F172A;">—</strong>
+                  </div>
+                  <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
+                    <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Consensus (x̂)</span>
+                    <strong id="madis-consensus" style="font-size:15px; color:#0D9488;">—</strong>
+                  </div>
+                  <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
+                    <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Residual (Δ)</span>
+                    <strong id="madis-diff" style="font-size:15px; color:#2563EB;">—</strong>
+                  </div>
+                  <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
+                    <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Scaled MAD (σ)</span>
+                    <strong id="madis-sigma" style="font-size:15px; color:#475569;">—</strong>
+                  </div>
+                  <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
+                    <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Spatial Z-Score</span>
+                    <strong id="madis-zspatial" style="font-size:15px; color:#7C3AED;">—</strong>
+                  </div>
+                  <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
+                    <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Temporal Z-Score</span>
+                    <strong id="madis-ztemporal" style="font-size:15px; color:#D97706;">—</strong>
+                  </div>
+                </div>
+
+                <!-- Nearest Physical Neighbours Breakdown -->
+                <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:12px;">
+                  <div style="font-size:11px; font-weight:700; color:#475569; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">
+                    Leave-One-Out Contributing Neighbours (Distance-Weighted Robust Median)
+                  </div>
+                  <div id="madis-neighbors-list" style="font-size:12px; color:#334155;">
+                    Select a station to view live spatial neighbour contributions and lapse-adjusted weights.
+                  </div>
+                </div>
+              </div>
             </div>
           </article>
         </section>

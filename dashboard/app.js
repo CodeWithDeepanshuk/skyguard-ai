@@ -470,6 +470,9 @@ function selectStation(stationId) {
       console.warn("Could not load station trace", err);
     });
   }
+  if (typeof renderSelectedStationQc === 'function') {
+    renderSelectedStationQc(stationId);
+  }
   renderNetwork();
   renderReadings();
 }
@@ -564,9 +567,71 @@ function renderCurrentValues(row) {
   }
 }
 
-function drawSensorChart(rows) {
+let currentStationTriplet = null;
+
+function renderSelectedStationQc(stationId) {
+  if (!stationId || typeof fetch === 'undefined') return;
+
+  // 1. Fetch 3-Trace synchronized history
+  fetch(`/api/v1/stations/${encodeURIComponent(stationId)}/history?hours=24`)
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (data && data.traces) {
+        currentStationTriplet = data.traces;
+        const stationRows = state.readings.filter(r => r.station_id === stationId);
+        drawSensorChart(stationRows, currentStationTriplet);
+      }
+    })
+    .catch(() => {});
+
+  // 2. Fetch NOAA MADIS Buddy Check & 3-Evidence QC
+  fetch(`/api/v1/stations/${encodeURIComponent(stationId)}/qc`)
+    .then(r => r.ok ? r.json() : null)
+    .then(data => {
+      if (!data || !data.analysis) return;
+      const analysis = data.analysis;
+      const ev = analysis.evidence?.temperature || {};
+      
+      if ($('madis-observed')) $('madis-observed').textContent = ev.observed != null ? `${Number(ev.observed).toFixed(1)}°C` : '—';
+      if ($('madis-consensus')) $('madis-consensus').textContent = ev.spatial_consensus != null ? `${Number(ev.spatial_consensus).toFixed(1)}°C` : '—';
+      if ($('madis-diff')) {
+        const d = ev.spatial_difference;
+        $('madis-diff').textContent = d != null ? `${d >= 0 ? '+' : ''}${Number(d).toFixed(1)}°C` : '—';
+      }
+      if ($('madis-sigma')) $('madis-sigma').textContent = ev.effective_sigma != null ? `±${Number(ev.effective_sigma).toFixed(2)}` : '—';
+      if ($('madis-zspatial')) $('madis-zspatial').textContent = ev.z_spatial != null ? Number(ev.z_spatial).toFixed(2) : '—';
+      if ($('madis-ztemporal')) $('madis-ztemporal').textContent = ev.z_temporal != null ? Number(ev.z_temporal).toFixed(2) : '—';
+
+      if ($('madis-status-pill')) {
+        const st = ev.spatial_status || 'CONSISTENT';
+        $('madis-status-pill').textContent = st;
+        $('madis-status-pill').className = `severity-pill ${st === 'DISCREPANT' ? 'critical' : st === 'SUSPECT' ? 'degraded' : 'healthy'}`;
+      }
+
+      // Populate contributing neighbours table
+      const listHost = $('madis-neighbors-list');
+      const details = analysis.buddy_check_details?.temperature;
+      if (listHost && details && details.neighbors && details.neighbors.length) {
+        let html = '<div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:8px; font-weight:600; color:#64748B; border-bottom:1px solid #F1F5F9; padding-bottom:4px; font-size:11px;">';
+        html += '<span>Station</span><span>Distance</span><span>Raw</span><span>Lapse-Adjusted</span><span>Weight</span></div>';
+        details.neighbors.forEach(n => {
+          html += `<div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:8px; padding:4px 0; border-bottom:1px solid #F8FAFC; font-size:11px;">
+            <strong>${n.station_name}</strong>
+            <span>${n.distance_km} km</span>
+            <span>${n.raw_value}°C</span>
+            <span style="color:#0D9488; font-weight:600;">${n.adjusted_value}°C</span>
+            <span style="color:#64748B;">${(n.weight * 100).toFixed(1)}%</span>
+          </div>`;
+        });
+        listHost.innerHTML = html;
+      }
+    })
+    .catch(() => {});
+}
+
+function drawSensorChart(rows, tripletTraces = null) {
   if (typeof window.renderSensorTrace === 'function') {
-    window.renderSensorTrace(rows);
+    window.renderSensorTrace(rows, 'all', tripletTraces || currentStationTriplet);
   }
 }
 

@@ -127,9 +127,17 @@ window.SkyGuardMap = (() => {
         sensor_fault: '#DC2626'
       };
 
+      const isReferenceOnly = Boolean(
+        station.is_reference_only ||
+        record.is_reference_only ||
+        record.source_type === 'REFERENCE_MODEL'
+      );
+
       const isCritical = record.status === 'critical' || record.status === 'sensor_fault' || record.has_active_fault;
-      const markerColor = statusMap[record.status] || (isBenchmark ? '#2563EB' : (zoneColors[station.climate_zone] || '#64748B'));
-      const label = `${station.station_name} (${station.icao || station.station_id})`;
+      const markerColor = isReferenceOnly 
+        ? '#0284C7' 
+        : (statusMap[record.status] || (isBenchmark ? '#2563EB' : (zoneColors[station.climate_zone] || '#64748B')));
+      const label = `${station.station_name} (${station.icao || station.station_id})${isReferenceOnly ? ' [REFERENCE MODEL]' : ''}`;
       const zoneTag = station.climate_zone || 'India AWS';
       const coordinate = `${Math.abs(lat).toFixed(4)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(4)}°${lon >= 0 ? 'E' : 'W'}`;
 
@@ -141,13 +149,15 @@ window.SkyGuardMap = (() => {
         className: 'station-div-icon',
         iconSize,
         iconAnchor: anchorSize,
-        html: `<div class="station-marker-pin${pulseClass}${selected ? ' active' : ''}" style="--marker-color:${markerColor}; width:${iconSize[0]}px; height:${iconSize[1]}px;"></div>`
+        html: `<div class="station-marker-pin${pulseClass}${selected ? ' active' : ''}" style="--marker-color:${markerColor}; width:${iconSize[0]}px; height:${iconSize[1]}px; border-radius:${isReferenceOnly ? '2px' : '50%'};"></div>`
       });
 
       const marker = L.marker([lat, lon], { icon, title: label, keyboard: true }).addTo(markers);
 
-      const health = record.label || record.status || (station.is_active_2024_plus ? 'Active 2024+' : 'AWS Station');
-      const score = record.score == null ? '' : ` · Health: ${Number(record.score).toFixed(1)}/100`;
+      const health = isReferenceOnly 
+        ? 'Independent Reference Model' 
+        : (record.label || record.status || (station.is_active_2024_plus ? 'Active 2024+' : 'AWS Station'));
+      const score = isReferenceOnly ? ' (Open-Meteo)' : (record.score == null ? '' : ` · Health: ${Number(record.score).toFixed(1)}/100`);
       const tempRead = record.temperature != null ? ` · Temp: <b>${record.temperature}°C</b>` : '';
 
       const tooltipContent = `
@@ -155,10 +165,11 @@ window.SkyGuardMap = (() => {
           <strong style="color:#0F172A; font-size:13px;">${station.station_name}</strong>
           <small style="color:#64748B; display:block;">${station.state ? station.state + ' · ' : ''}${zoneTag}</small>
           <div style="margin-top:4px; display:flex; align-items:center; gap:6px;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background-color:${markerColor};"></span>
+            <span style="display:inline-block; width:8px; height:8px; border-radius:${isReferenceOnly ? '2px' : '50%'}; background-color:${markerColor};"></span>
             <span style="font-weight:600; color:${markerColor};">${health}${score}</span>
           </div>
           ${tempRead ? `<div style="margin-top:2px; font-size:11px; color:#475569;">${tempRead}</div>` : ''}
+          ${isReferenceOnly ? `<div style="margin-top:4px; font-size:10px; color:#0369A1; font-weight:600; background:#F0F9FF; padding:2px 4px; border-radius:4px;">Independent NWP Reference · Not physical IMD AWS</div>` : ''}
         </div>
       `;
 
