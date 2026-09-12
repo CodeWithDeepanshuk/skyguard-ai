@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "pages": 28,
+  "features_downloaded": 27591,
+  "number_matched": 27591,
+  "decoded_reports": 1414,
+  "reporting_stations": 321,
+  "window_start_utc": "2026-09-11T19:02:46.487030+00:00",
+  "window_end_utc": "2026-09-12T19:02:46.487030+00:00",
+  "max_pages": 40,
+  "output_file": "data/observations/imd_wis2/latest_national.csv.gz",
+  "output_sha256": "d7bc7d2cf894eb81b0267ee0b948aa7b9873db0e526898b95e30d882c00148aa",
+  "source_type": "OBSERVED",
+  "provider": "IMD_WIS2",
+  "reference_rows_in_output": 0
+}

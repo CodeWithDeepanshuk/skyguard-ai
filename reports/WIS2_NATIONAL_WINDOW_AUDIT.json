@@ -1,0 +1,38 @@
+{
+  "source_type": "OBSERVED",
+  "provider": "IMD_WIS2",
+  "rows": 1414,
+  "reporting_stations": 321,
+  "verified_metadata_stations": 432,
+  "reporting_vs_metadata_pct": 74.31,
+  "reporting_vs_stated_1008_target_pct": 31.85,
+  "first_timestamp_utc": "2026-09-11T21:00:00+00:00",
+  "last_timestamp_utc": "2026-09-12T18:00:00+00:00",
+  "duplicate_station_timestamp_rows": 0,
+  "non_null": {
+    "temperature_c": 1414,
+    "pressure_hpa": 1371,
+    "relative_humidity_pct": 1414
+  },
+  "complete_three_parameter_rows": 1371,
+  "rh_source": {
+    "DERIVED": 1414
+  },
+  "reports_per_station": {
+    "min": 1,
+    "median": 4.0,
+    "max": 8
+  },
+  "gap_minutes": {
+    "median": 180.0,
+    "p90": 540.0,
+    "max": 540.0
+  },
+  "physical_range_failures": {
+    "temperature": 0,
+    "pressure": 0,
+    "humidity": 0
+  },
+  "reference_rows": 0,
+  "model_accuracy_measured": false
+}

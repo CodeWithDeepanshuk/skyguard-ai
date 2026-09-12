@@ -45,3 +45,30 @@ def test_wis2_rejects_other_station_and_empty_weather_report():
     with patch.object(provider, "station_metadata", return_value=[]), \
          patch("urllib.request.urlopen", return_value=Response({"features":[wrong]})):
         assert provider.fetch_history("0-20000-0-42182", 24) == []
+
+
+def test_network_fetch_follows_next_and_reports_completeness():
+    page1 = {"numberMatched": 2, "features": [feature("r1", "air_temperature", 30)],
+             "links": [{"rel":"next", "href":"https://example.test/page2"}]}
+    page2_feature = feature("r2", "air_temperature", 31)
+    page2_feature["properties"]["wigos_station_identifier"] = "0-20000-0-42798"
+    page2 = {"numberMatched": 2, "features": [page2_feature], "links": []}
+    provider = IMDWIS2Provider()
+    metadata = [{"wigos_id":"0-20000-0-42182", "latitude":28.6, "longitude":77.2},
+                {"wigos_id":"0-20000-0-42798", "latitude":22.8, "longitude":86.2}]
+    with patch.object(provider, "station_metadata", return_value=metadata), \
+         patch("urllib.request.urlopen", side_effect=[Response(page1), Response(page2)]):
+        rows, receipt = provider.fetch_network_history(hours=24, max_pages=3)
+    assert len(rows) == 2
+    assert receipt["complete"] is True and receipt["pages"] == 2
+    assert receipt["reporting_stations"] == 2 and receipt["features_downloaded"] == 2
+
+
+def test_network_fetch_marks_page_cap_incomplete():
+    page = {"numberMatched": 2000, "features": [feature("r1", "air_temperature", 30)],
+            "links": [{"rel":"next", "href":"https://example.test/page2"}]}
+    provider = IMDWIS2Provider()
+    with patch.object(provider, "station_metadata", return_value=[]), \
+         patch("urllib.request.urlopen", return_value=Response(page)):
+        _, receipt = provider.fetch_network_history(hours=24, max_pages=1)
+    assert receipt["complete"] is False and receipt["pages"] == 1

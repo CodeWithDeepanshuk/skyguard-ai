@@ -217,6 +217,47 @@ class IMDWIS2Provider(WeatherProvider):
         records.sort(key=lambda item: item.timestamp_utc, reverse=True)
         return records
 
+    def fetch_network_history(self, hours: int = 24, max_pages: int = 50) -> tuple[List[ObservationRecord], Dict[str, Any]]:
+        """Download a bounded national time window by following OGC `next` links."""
+        end = datetime.now(timezone.utc)
+        start = end - timedelta(hours=max(1, min(hours, 72)))
+        collection = urllib.parse.quote(SYNOP_COLLECTION, safe=":")
+        params = {"f": "json", "limit": 1000,
+                  "datetime": f"{start.isoformat().replace('+00:00', 'Z')}/{end.isoformat().replace('+00:00', 'Z')}"}
+        url: Optional[str] = f"{WIS2_BASE_URL}/collections/{collection}/items?{urllib.parse.urlencode(params)}"
+        features: List[Dict[str, Any]] = []
+        pages = 0
+        number_matched: Optional[int] = None
+        seen_urls = set()
+        while url and pages < max_pages and url not in seen_urls:
+            seen_urls.add(url)
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "SkyGuard-AI-SIH26073-Academic/1.0", "Accept": "application/geo+json,application/json"
+            })
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    payload = json.loads(resp.read().decode("utf-8"))
+            except Exception as exc:
+                return _decode_features(features, self.station_metadata()), {
+                    "complete": False, "pages": pages, "features_downloaded": len(features),
+                    "number_matched": number_matched, "error": str(exc), "window_start_utc": start.isoformat(),
+                    "window_end_utc": end.isoformat(),
+                }
+            pages += 1
+            if number_matched is None:
+                number_matched = payload.get("numberMatched")
+            features.extend(payload.get("features", []))
+            url = next((link.get("href") for link in payload.get("links", []) if link.get("rel") == "next"), None)
+        complete = not url
+        records = _decode_features(features, self.station_metadata())
+        return records, {
+            "complete": complete, "pages": pages, "features_downloaded": len(features),
+            "number_matched": number_matched, "decoded_reports": len(records),
+            "reporting_stations": len({row.station_id for row in records}),
+            "window_start_utc": start.isoformat(), "window_end_utc": end.isoformat(),
+            "max_pages": max_pages,
+        }
+
 
 def _number(value: Any) -> Optional[float]:
     try:
@@ -224,3 +265,49 @@ def _number(value: Any) -> Optional[float]:
         return number if math.isfinite(number) else None
     except (TypeError, ValueError):
         return None
+
+
+def _decode_features(features: List[Dict[str, Any]], stations: List[Dict[str, Any]]) -> List[ObservationRecord]:
+    metadata = {str(row.get("wigos_id")): row for row in stations if row.get("wigos_id")}
+    reports: Dict[tuple[str, str], Dict[str, Any]] = {}
+    for feature in features:
+        props = feature.get("properties") or {}
+        station_id = str(props.get("wigos_station_identifier") or "")
+        report_id = str(props.get("reportId") or props.get("reportTime") or "")
+        timestamp = str(props.get("reportTime") or props.get("phenomenonTime") or "")
+        name = str(props.get("name") or "")
+        if not station_id or not report_id or not timestamp or not name:
+            continue
+        bucket = reports.setdefault((station_id, report_id), {"timestamp": timestamp, "values": {}, "features": []})
+        bucket["values"][name] = props.get("value")
+        bucket["features"].append(feature)
+    output: List[ObservationRecord] = []
+    for (station_id, _), report in reports.items():
+        values = report["values"]
+        temperature = kelvin_to_celsius(_number(values.get("air_temperature")))
+        dewpoint = kelvin_to_celsius(_number(values.get("dewpoint_temperature")))
+        pressure = _number(values.get("pressure_reduced_to_mean_sea_level"))
+        if pressure is None:
+            pressure = _number(values.get("non_coordinate_pressure"))
+        humidity = _number(values.get("relative_humidity"))
+        humidity_source = RHSource.OBSERVED.value if humidity is not None else RHSource.UNAVAILABLE.value
+        if humidity is None and temperature is not None and dewpoint is not None:
+            humidity = calculate_rh_from_dewpoint(temperature, dewpoint)
+            humidity_source = RHSource.DERIVED.value
+        if temperature is None and pressure is None and humidity is None:
+            continue
+        coordinates = ((report["features"][0].get("geometry") or {}).get("coordinates") or [])
+        station = metadata.get(station_id, {})
+        latitude = float(coordinates[1]) if len(coordinates) > 1 else float(station.get("latitude") or 0)
+        longitude = float(coordinates[0]) if coordinates else float(station.get("longitude") or 0)
+        raw = json.dumps(report["features"], sort_keys=True, separators=(",", ":")).encode("utf-8")
+        output.append(ObservationRecord(
+            provider=ProviderName.IMD_WIS2.value, source_type=SourceType.OBSERVED.value,
+            station_id=station_id, timestamp_utc=report["timestamp"], latitude=latitude, longitude=longitude,
+            elevation_m=station.get("elevation_m"), temperature_c=temperature,
+            relative_humidity_pct=humidity, pressure_hpa=round(pressure, 2) if pressure is not None else None,
+            is_direct_observation=True, is_interpolated=False, is_model_field=False,
+            rh_source=humidity_source, raw_source_hash=hashlib.sha256(raw).hexdigest(),
+        ))
+    output.sort(key=lambda item: (item.timestamp_utc, item.station_id), reverse=True)
+    return output
