@@ -1,0 +1,18 @@
+version: iteration13-v1
+required_source: IMD_AUTHORIZED_AWS_API
+timestamp_timezone_must_be_confirmed: true
+minimum_pilot_stations: 50
+minimum_pilot_days_per_station: 30
+seasonal_claim_days: 365
+primary_inputs: [temperature_c, pressure_hpa, relative_humidity_pct]
+split:
+  station_holdout_fraction: 0.20
+  development_time_fraction: {train: 0.70, validation: 0.15, future_test: 0.15}
+promotion_gate:
+  defined_before_test: true
+  minimum_precision: 0.70
+  minimum_recall: 0.45
+  maximum_false_alerts_per_station_day: 0.05
+  maximum_unseen_station_f1_regression: 0.03
+  calibrated_confidence_required: true
+  automatic_promotion: false

@@ -4,6 +4,13 @@
 .env.development
 .env.test
 .env.production
+secrets*
+credentials*
+data/raw_imd/
+data/processed_imd/
+data/benchmark_injected/
+data/derived_features/
+models/iteration13/
 
 # Node & Next.js
 node_modules/

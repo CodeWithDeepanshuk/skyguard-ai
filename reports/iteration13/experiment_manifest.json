@@ -1,0 +1,13 @@
+{
+  "iteration": 13,
+  "status": "blocked_no_genuine_imd_temporal_history",
+  "reference_commit": "44bbb36",
+  "source_required": "IMD_AUTHORIZED_AWS_API",
+  "genuine_imd_rows_available_locally": 0,
+  "timezone_confirmed": false,
+  "metrics_generated": false,
+  "phase10_changed": false,
+  "split_before_injection": true,
+  "injection_seeds": {"train": 1301, "validation": 1307, "future_test": 1319, "unseen_station_test": 1321},
+  "warning": "Runtime manifest will replace this blocked manifest only after a genuine eligible run."
+}

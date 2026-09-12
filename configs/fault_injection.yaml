@@ -1,0 +1,30 @@
+version: iteration13-v1
+split_before_injection: true
+events_per_type: 3
+seeds:
+  train: 1301
+  validation: 1307
+  future_test: 1319
+  unseen_station_test: 1321
+severities: [subtle, moderate, severe]
+fault_types:
+  - spike
+  - frozen_sensor
+  - missing_block
+  - calibration_drift
+  - step_bias
+  - noise_burst_or_power_related_signature
+  - data_corruption
+  - multisensor_inconsistency
+  - slow_sensor_degradation
+provenance_required:
+  - source_is_genuine
+  - observation_modified
+  - injection_applied
+  - fault_type
+  - fault_parameters
+  - original_temperature_c
+  - original_pressure_hpa
+  - original_relative_humidity_pct
+  - injection_seed
+  - source_snapshot_hash

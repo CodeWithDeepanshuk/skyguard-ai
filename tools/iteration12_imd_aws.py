@@ -126,6 +126,7 @@ def normalize_aws(payload, *, source_timezone="UTC", collected_at_utc=None):
     out["humidity_reported_directly"] = True
     out["pressure_source"] = "IMD_MSLP"
     out["source"] = "IMD_AUTHORIZED_AWS_API"
+    out["source_is_genuine"] = True
     out["generated_or_simulated"] = False
     out["timestamp_valid"] = out.timestamp_utc.notna()
     out["coordinates_valid"] = (out.latitude.between(6, 38) & out.longitude.between(68, 98))
@@ -157,6 +158,7 @@ def archive_snapshot(root, payload, receipt, *, source_timezone="UTC"):
         raise FileExistsError(f"Immutable snapshot collision: {raw_path}")
     raw_path.write_bytes(encoded)
     frame = normalize_aws(payload, source_timezone=source_timezone, collected_at_utc=receipt["retrieved_at_utc"])
+    frame["source_snapshot_hash"] = payload_hash
     clean_dir = root / "normalized" / retrieved.strftime("%Y/%m/%d")
     clean_dir.mkdir(parents=True, exist_ok=True)
     clean_path = clean_dir / f"imd_aws_{stamp}.parquet"

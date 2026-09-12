@@ -1,0 +1,2 @@
+status,station_id,timestamp_utc,parameter,model_score,predicted_fault,actual_label,reason,neighbor_support,temporal_context
+NOT_RUN,,,,,,,,,
