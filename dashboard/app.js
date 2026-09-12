@@ -15,6 +15,7 @@ const state = {
   healthFilter: "all",
   lastThroughput: null,
   mode: "live",
+  publicMode: false,
   liveStatus: null,
   liveTimer: null,
   freshnessTimer: null,
@@ -106,6 +107,11 @@ async function replayAction(action) {
 }
 
 async function loadScenario(preview = true) {
+  if (state.publicMode) {
+    await refreshLiveData();
+    $("scenario-description").textContent = "Public read-only training and validation evidence. Run interactive fault/replay experiments locally; shared live data is protected.";
+    return;
+  }
   const name = $("scenario-select").value;
   await replayAction(async () => {
     await api(`/api/replay/load/${encodeURIComponent(name)}`, { method: "POST" });
@@ -721,6 +727,12 @@ async function initialize() {
       api("/api/sensor-health"),
     ]);
     state.summary = summary; state.stations = stations; state.health = health;
+    state.publicMode = healthCheck.public_read_only === true;
+    if (state.publicMode) {
+      document.querySelector('.live-fault-injection-box')?.classList.add('hidden');
+      document.querySelector('.replay-actions')?.classList.add('hidden');
+      document.querySelector('#mode-selector [data-mode="replay"]').textContent = 'Training & validation';
+    }
 
     const benchStations = stations.filter(st => st.is_benchmark == 1 || st.evaluation_role === 'development' || st.evaluation_role === 'station_holdout');
     const benchOptions = benchStations.map(st => `<option value="${esc(st.station_id)}">⭐ ${esc(st.station_name)} (${esc(st.icao || st.station_id)})</option>`).join('');

@@ -120,8 +120,8 @@
           <article class="panel map-panel">
             <div class="panel-head">
               <div>
-                <h3>All-India Automatic Weather Station (AWS) Network</h3>
-                <p>545 Indian weather stations indexed across 8 climate zones · <span id="station-count-badge" class="count-badge">545 stations plotted</span></p>
+                <h3>Indian Weather Station Catalog</h3>
+                <p>Catalog locations are not proof of live reporting · <span id="station-count-badge" class="count-badge">Loading catalog</span></p>
               </div>
               <div class="legend">
                 <span class="dot benchmark-dot"></span>Benchmark cluster (24)
@@ -131,7 +131,7 @@
             </div>
             <div class="map-controls-bar">
               <div class="map-filter-group">
-                <button id="filter-all-stations" class="toolbar-pill active" type="button">All India (545)</button>
+                <button id="filter-all-stations" class="toolbar-pill active" type="button">All catalog stations</button>
                 <button id="filter-active-stations" class="toolbar-pill" type="button">Active 2024+ (410)</button>
                 <button id="filter-benchmark-stations" class="toolbar-pill" type="button">Benchmark (24)</button>
               </div>
@@ -153,7 +153,7 @@
               </div>
             </div>
             <div class="station-search-container">
-              <input type="text" id="station-search-input" placeholder="🔍 Search 545 Indian weather stations by name, city, state, or ID..." aria-label="Search weather stations">
+              <input type="text" id="station-search-input" placeholder="Search station name, city or ID..." aria-label="Search weather stations">
             </div>
             <div class="station-map" id="station-map" role="region" aria-label="Interactive map of Indian Automatic Weather Stations"></div>
             <p id="map-status" role="status">Drag to pan · + / − to zoom · click any station marker to inspect telemetry</p>

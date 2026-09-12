@@ -27,6 +27,21 @@ Import the same repository using the Next.js preset. Set server-side SKYGUARD_AP
 
 Sites uses a different hosting runtime. The Python models require an external backend; the Next.js application cannot simply be uploaded as a Python service. Register/build a compatible Sites frontend only after its backend connection is available. Preserve the existing website and ML artifacts when adapting it.
 
+### Verified public deployment (12 September 2026)
+
+- Public website: https://skyguard-ai-weather.godxkalki.chatgpt.site
+- Python dashboard and backend: https://skyguard-ai-wbm9.onrender.com
+- Render service: `srv-daigismk1f9s73ck2pa0`, Free plan, Singapore.
+- Sites project: `appgprj_6aa50ab2361481919031dc3baabfb7eb`, public access.
+- Sites source commit: `1a6919438b6fc22beba2006863e6153159d8deb9`.
+- Separate Sites source checkout: `C:/Users/deepa/.codex/site-workspaces/skyguard-ai-public`.
+
+The Site is a dependency-free Worker gateway serving the existing Python map dashboard, assets and read-only APIs from the fixed Render origin. It forwards only GET/HEAD and the rate-limited live-refresh POST; it does not forward browser credentials. It does not host Python models, invent readings or deploy the separate Next.js application. The build uses `node build.mjs`; four gateway tests pass with `node --test worker.test.mjs`. Native Sites publication reported success for version 1.
+
+A real backend refresh at approximately 08:15 UTC returned 400 METAR observations from 60 reporting stations out of a 543-entry catalog. The other 483 catalog entries were explicitly without observations. These are time-specific availability counts, not proof of 543 live sensors, retraining on those stations, or measured live accuracy. Model incident evidence remained advisory-only.
+
+This Render service was imported using the public repository URL. After pushing a backend update, verify the deployed commit in Render; if it does not deploy automatically, choose **Manual Deploy > Deploy latest commit** for this existing service. Do not create another service or select a paid plan. The Sites gateway needs a new version only when gateway code or the backend origin changes.
+
 ## Operational limits
 
 The public service disables shared fault-injection/replay mutations and throttles live refresh to five minutes. METAR is a reported aviation observation source, not direct IMD AWS telemetry. Catalog-only stations have no fabricated readings or certified health scores. Model outputs remain research-only. Single-reading sandbox inference is explicitly unavailable until a tested API is implemented.
