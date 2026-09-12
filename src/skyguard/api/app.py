@@ -321,7 +321,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             if public_mode and time.monotonic() - last_refresh_attempt[0] < 300:
                 return {**live.status(), "refresh_throttled": True, "refresh_interval_seconds": 300}
             last_refresh_attempt[0] = time.monotonic()
-            return live.refresh(hours)
+            return live.refresh(hours, augment_all_india=True)
         except Exception as error:
             raise HTTPException(status_code=502, detail=f"Live observation refresh failed: {error}") from error
         finally:

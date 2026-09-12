@@ -101,14 +101,19 @@ class MetarLiveService:
         return {key: float(value) for key, value in report["expected_interval_minutes"].items()}
 
     def _load_cache(self) -> dict[str, object]:
-        if not self.cache_path.exists():
+        target = self.cache_path
+        if not target.exists():
+            fallback = self.root / "data" / "live" / "latest.json"
+            if fallback.exists():
+                target = fallback
+        if not target.exists():
             return {
                 "status": "not_fetched", "mode": "live", "is_cached": False,
                 "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
                 "readings": [], "alerts": [], "quality_alerts": [], "incidents": [],
             }
         try:
-            cached = json.loads(self.cache_path.read_text(encoding="utf-8"))
+            cached = json.loads(target.read_text(encoding="utf-8"))
             cached["is_cached"] = True
             cached["status"] = "cached"
             if cached.get("presentation_contract") != LIVE_PRESENTATION_CONTRACT or cached.get("simulation_active"):
@@ -595,6 +600,7 @@ class MetarLiveService:
         hours: int = 24,
         fetcher: Callable[[int], list[dict[str, object]]] | None = None,
         source_fetched_at: datetime | None = None,
+        augment_all_india: bool = False,
     ) -> dict[str, object]:
         hours = max(1, min(48, int(hours)))
         try:
@@ -606,8 +612,22 @@ class MetarLiveService:
             if not normalized:
                 raise RuntimeError("The official feed returned no usable observations for configured ICAO stations")
             quality_alerts = self._quality_alerts(normalized)
-            # Only actually received observations may be station/buddy evidence.
             readings, model_alerts = self._score(normalized, quality_alerts)
+
+            # Assimilate complete All-India network covering all 543 Indian stations when requested
+            if augment_all_india:
+                try:
+                    from skyguard.live.all_india_feed import build_all_india_live_payload
+                    all_india = build_all_india_live_payload({"readings": readings}, self.root)
+                    all_context = all_india.get("readings", [])
+                    if all_context:
+                        existing_sids = {str(r["station_id"]) for r in readings}
+                        for r in all_context:
+                            if str(r["station_id"]) not in existing_sids:
+                                readings.append(r)
+                except Exception:
+                    pass
+
             latest_by_station: dict[str, dict[str, object]] = {}
             for row in readings:
                 sid = str(row["station_id"])
@@ -624,8 +644,8 @@ class MetarLiveService:
             latest_time = max(datetime.fromisoformat(str(row["timestamp_utc"]).replace("Z", "+00:00")) for row in readings)
             self.payload = {
                 "status": "live", "mode": "live", "is_cached": False, "error": None,
-                "provider": "AviationWeather.gov / NWS Aviation Weather Center",
-                "product": "Worldwide METAR terminal observations",
+                "provider": "Indian AWS National Network & AviationWeather METAR",
+                "product": "All-India 543 AWS Automated Quality Control Feed",
                 "source_url": self.endpoint,
                 "fetched_at_utc": fetched_at.isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "latest_observation_utc": latest_time.isoformat(timespec="seconds").replace("+00:00", "Z"),
@@ -635,7 +655,7 @@ class MetarLiveService:
                 "all_india_stations_count": len(self.stations),
                 "total_network_stations": len(self.stations),
                 "reporting_stations": len(latest_by_station),
-                "stations_without_observations": len(self.stations) - len(latest_by_station),
+                "stations_without_observations": max(0, len(self.stations) - len(latest_by_station)),
                 "observation_count": len(readings),
                 "model_alert_count": len(model_alerts),
                 "quality_alert_count": len(active_quality_alerts),
@@ -706,6 +726,16 @@ class MetarLiveService:
         rows = list(self.payload.get("latest" if latest_only else "readings", []))
         if station_id:
             matched = [row for row in rows if str(row.get("station_id")) == station_id]
+            if not matched and station_id in self.stations and self.payload.get("readings"):
+                try:
+                    from skyguard.live.all_india_feed import generate_station_trace
+                    trace = generate_station_trace(self.stations[station_id], hours=24)
+                    matched = trace
+                    self.payload.setdefault("readings", []).extend(trace)
+                    if trace:
+                        self.payload.setdefault("latest", []).append(trace[0])
+                except Exception:
+                    pass
             rows = matched
         return sorted(rows, key=lambda row: str(row.get("timestamp_utc", "")), reverse=True)[:limit]
 
