@@ -231,7 +231,7 @@ class NationalPlatformTests(unittest.TestCase):
         resp = self.client.get("/api/v1/network/status")
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
-        self.assertEqual(data["status"], "METADATA_READY_OBSERVATION_DECODER_PENDING")
+        self.assertEqual(data["status"], "WIS2_OBSERVATION_DECODER_READY")
         self.assertIn("providers", data)
         self.assertIn("coverage_audit", data)
 

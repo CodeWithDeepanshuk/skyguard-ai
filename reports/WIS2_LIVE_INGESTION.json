@@ -1,0 +1,17 @@
+{
+  "run_date_ist": "2026-09-13",
+  "provider": "IMD_WIS2",
+  "source_type": "OBSERVED",
+  "station_id": "0-20000-0-42798",
+  "requested_hours": 24,
+  "decoded_reports": 8,
+  "latest_timestamp_utc": "2026-09-12T18:00:00Z",
+  "latest_temperature_c": 26.8,
+  "latest_pressure_hpa": 1010.3,
+  "latest_relative_humidity_pct": 93.7,
+  "rh_source": "DERIVED",
+  "observation_age_minutes_at_retrieval": 44.5,
+  "provider_health_latency_ms": 1899.1,
+  "national_live_coverage_measured": false,
+  "warning": "Single-station point-in-time decoder receipt; not a national performance metric"
+}

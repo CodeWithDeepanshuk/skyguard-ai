@@ -280,7 +280,7 @@ def create_v1_router(root: Path) -> APIRouter:
             "architecture_version": "2.0-MultiEvidence-WIS2-MADIS",
             "coverage_audit": audit,
             "providers": providers_health,
-            "status": "METADATA_READY_OBSERVATION_DECODER_PENDING",
+            "status": "WIS2_OBSERVATION_DECODER_READY",
         }
 
     return router

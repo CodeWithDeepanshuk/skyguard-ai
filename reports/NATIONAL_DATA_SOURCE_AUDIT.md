@@ -124,3 +124,11 @@ graph TD
 1. **Zero Data Falsification**: 432 rows are downloaded from the official IMD WIS2 station-metadata endpoint; no claim is made that all are currently reporting AWS sensors.
 2. **Deterministic Cryptographic Verification**: Every observation record is hashed with SHA-256 (`raw_source_hash`) to ensure audit trail immutability.
 3. **Independent Baseline Assurance**: Anomaly detection compares physical station telemetry against independent spatial neighbours and numerical reference models without circular self-validation.
+
+---
+
+## 6. Verified WIS2 Observation Decoder Result
+
+On 2026-09-13 IST, the OGC SYNOP collection was queried for the preceding 24 hours for WIGOS station `0-20000-0-42798`. The adapter decoded **8 direct reports**. The latest was `2026-09-12T18:00:00Z` with temperature 26.8 C, pressure 1010.3 hPa and RH 93.7% derived from observed temperature/dew point. Provider health latency measured immediately afterwards was 1899.1 ms.
+
+This is a decoder proof and single-station availability receipt, not a national live-coverage or model-accuracy claim. See `reports/WIS2_LIVE_INGESTION.md`.

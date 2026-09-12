@@ -7,11 +7,12 @@ canonical WIS2 notification/data payload is retrieved and validated.
 from __future__ import annotations
 
 import json
+import hashlib
 import logging
 import math
 import urllib.request
 import urllib.parse
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -144,9 +145,82 @@ class IMDWIS2Provider(WeatherProvider):
         return records[0] if records else None
 
     def fetch_history(self, station_id: str, hours: int = 24) -> List[ObservationRecord]:
-        """No rows until MQTT/canonical WIS2 payload decoding is validated.
+        """Fetch decoded OGC SYNOP parameters and group them into reports.
 
-        The discovery collection is metadata, not a queryable observation-feature
-        collection. Returning zero is scientifically safer than inventing a schema.
+        The collection contains one feature per parameter, so values are grouped by
+        reportId. Only actual features returned by IMD become OBSERVED records.
         """
-        return []
+        stations = self.station_metadata()
+        target = next((s for s in stations if station_id in {
+            str(s.get("wigos_id") or ""), str(s.get("traditional_id") or "")
+        }), None)
+        wigos_id = str(target.get("wigos_id")) if target else station_id
+        end = datetime.now(timezone.utc)
+        start = end - timedelta(hours=max(1, min(hours, 72)))
+        params = {
+            "f": "json", "limit": 1000, "wigos_station_identifier": wigos_id,
+            "datetime": f"{start.isoformat().replace('+00:00', 'Z')}/{end.isoformat().replace('+00:00', 'Z')}",
+        }
+        collection = urllib.parse.quote(SYNOP_COLLECTION, safe=":")
+        url = f"{WIS2_BASE_URL}/collections/{collection}/items?{urllib.parse.urlencode(params)}"
+        try:
+            req = urllib.request.Request(url, headers={
+                "User-Agent": "SkyGuard-AI-SIH26073-Academic/1.0", "Accept": "application/geo+json,application/json"
+            })
+            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+        except Exception as exc:
+            logger.warning("WIS2 observation query failed for %s: %s", wigos_id, exc)
+            return []
+
+        reports: Dict[str, Dict[str, Any]] = {}
+        for feature in payload.get("features", []):
+            props = feature.get("properties") or {}
+            if str(props.get("wigos_station_identifier") or "") != wigos_id:
+                continue
+            report_id = str(props.get("reportId") or props.get("reportTime") or "")
+            report_time = str(props.get("reportTime") or props.get("phenomenonTime") or "")
+            name = str(props.get("name") or "")
+            if not report_id or not report_time or not name:
+                continue
+            bucket = reports.setdefault(report_id, {"timestamp": report_time, "values": {}, "features": []})
+            bucket["values"][name] = props.get("value")
+            bucket["features"].append(feature)
+
+        records: List[ObservationRecord] = []
+        for report in reports.values():
+            values = report["values"]
+            temp_c = kelvin_to_celsius(_number(values.get("air_temperature")))
+            dew_c = kelvin_to_celsius(_number(values.get("dewpoint_temperature")))
+            pressure = _number(values.get("pressure_reduced_to_mean_sea_level"))
+            if pressure is None:
+                pressure = _number(values.get("non_coordinate_pressure"))
+            rh = _number(values.get("relative_humidity"))
+            rh_source = RHSource.OBSERVED.value if rh is not None else RHSource.UNAVAILABLE.value
+            if rh is None and temp_c is not None and dew_c is not None:
+                rh = calculate_rh_from_dewpoint(temp_c, dew_c)
+                rh_source = RHSource.DERIVED.value
+            if temp_c is None and pressure is None and rh is None:
+                continue
+            coords = ((report["features"][0].get("geometry") or {}).get("coordinates") or [])
+            lat = float(coords[1]) if len(coords) > 1 else float((target or {}).get("latitude") or 0)
+            lon = float(coords[0]) if coords else float((target or {}).get("longitude") or 0)
+            raw = json.dumps(report["features"], sort_keys=True, separators=(",", ":")).encode("utf-8")
+            records.append(ObservationRecord(
+                provider=self.name, source_type=SourceType.OBSERVED.value, station_id=wigos_id,
+                timestamp_utc=report["timestamp"], latitude=lat, longitude=lon,
+                elevation_m=(target or {}).get("elevation_m"), temperature_c=temp_c,
+                relative_humidity_pct=rh, pressure_hpa=round(pressure, 2) if pressure is not None else None,
+                is_direct_observation=True, is_interpolated=False, is_model_field=False,
+                rh_source=rh_source, raw_source_hash=hashlib.sha256(raw).hexdigest(),
+            ))
+        records.sort(key=lambda item: item.timestamp_utc, reverse=True)
+        return records
+
+
+def _number(value: Any) -> Optional[float]:
+    try:
+        number = float(value)
+        return number if math.isfinite(number) else None
+    except (TypeError, ValueError):
+        return None
