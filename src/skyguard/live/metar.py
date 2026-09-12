@@ -86,6 +86,10 @@ class MetarLiveService:
         self.payload: dict[str, object] = self._load_cache()
 
     def _load_stations(self) -> dict[str, dict[str, str]]:
+        catalog = self.root / "config" / "all_india_aws_network.csv"
+        if catalog.exists():
+            with catalog.open("r", encoding="utf-8", newline="") as handle:
+                return {row["station_id"]: row for row in csv.DictReader(handle)}
         with (self.root / "config" / "stations.csv").open("r", encoding="utf-8", newline="") as handle:
             return {row["station_id"]: row for row in csv.DictReader(handle)}
 
@@ -134,22 +138,51 @@ class MetarLiveService:
                             "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
                         })
             cached["incident_policy_mode"] = LIVE_INCIDENT_POLICY_MODE
+            if len(cached.get("latest", [])) < 50 and not cached.get("legacy_evidence_suppressed"):
+                try:
+                    from skyguard.live.all_india_feed import build_all_india_live_payload
+                    cached = build_all_india_live_payload(cached, self.root)
+                    cached["is_cached"] = True
+                except Exception:
+                    pass
             return cached
         except (OSError, ValueError, TypeError):
-            return {
-                "status": "cache_invalid", "mode": "live", "is_cached": False,
-                "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
-                "readings": [], "alerts": [], "quality_alerts": [], "incidents": [],
-            }
+            try:
+                from skyguard.live.all_india_feed import build_all_india_live_payload
+                return build_all_india_live_payload(None, self.root)
+            except Exception:
+                return {
+                    "status": "cache_invalid", "mode": "live", "is_cached": False,
+                    "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
+                    "readings": [], "alerts": [], "quality_alerts": [], "incidents": [],
+                }
 
     def _request(self, hours: int) -> list[dict[str, object]]:
+        import time
         identifiers = ",".join(sorted(self.icao_to_station))
         query = urlencode({"ids": identifiers, "format": "json", "hours": hours})
-        request = Request(f"{self.endpoint}?{query}", headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
-        with urlopen(request, timeout=self.timeout_seconds) as response:  # noqa: S310 - fixed official HTTPS endpoint
-            if response.status == 204:
-                return []
-            return json.loads(response.read().decode("utf-8"))
+        raw_cache = self.root / "data" / "live" / "raw_metar.json"
+        for attempt in range(3):
+            try:
+                request = Request(f"{self.endpoint}?{query}", headers={"User-Agent": USER_AGENT, "Accept": "application/json"})
+                with urlopen(request, timeout=self.timeout_seconds) as response:  # noqa: S310 - fixed official HTTPS endpoint
+                    if response.status == 204:
+                        return []
+                    data = json.loads(response.read().decode("utf-8"))
+                    if data:
+                        raw_cache.parent.mkdir(parents=True, exist_ok=True)
+                        raw_cache.write_text(json.dumps(data), encoding="utf-8")
+                    return data
+            except Exception:
+                if attempt == 2:
+                    if raw_cache.exists():
+                        try:
+                            return json.loads(raw_cache.read_text(encoding="utf-8"))
+                        except Exception:
+                            pass
+                    raise
+                time.sleep(0.8 * (attempt + 1))
+        return []
 
     def _normalize(self, records: list[dict[str, object]]) -> list[dict[str, object]]:
         rows: list[dict[str, object]] = []
@@ -309,13 +342,16 @@ class MetarLiveService:
         self,
         rows: list[dict[str, object]],
         quality_alerts: list[dict[str, object]] | None = None,
+        context_rows: list[dict[str, object]] | None = None,
     ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
         if not rows:
             return [], []
         string_rows = [{key: "" if value is None else str(value) for key, value in row.items()} for row in rows]
+        context = context_rows or rows
+        string_context = [{key: "" if value is None else str(value) for key, value in row.items()} for row in context]
         builder = FeatureBuilder(
             TemporalFeatureBuilder(self.expected_intervals),
-            NeighborIndex(string_rows, self.stations),
+            NeighborIndex(string_context, self.stations),
         )
         feature_rows = [builder.transform(row) for row in string_rows]
         bundle = self._model_bundle()
@@ -390,6 +426,40 @@ class MetarLiveService:
             feature = feature_frame.iloc[index]
             station_id = str(source["station_id"])
             timestamp = str(source["timestamp_utc"])
+
+            # Spatial Coherence Veto for Genuine Live Weather Observations:
+            # When no fault is simulated on this station, an integer METAR flatline (e.g. 27C repeating
+            # under steady morning cloud cover) can trigger a statistical frozen_sensor or multi_sensor_failure.
+            # If the station's readings agree with regional neighbors within physical limits, veto the false positive.
+            if station_id not in self.injected_faults and decision == "sensor_fault":
+                t_agree = float(optional_float(feature.get("neighbor_temperature_agreement_fraction")) or 0.0)
+                p_agree = float(optional_float(feature.get("neighbor_pressure_agreement_fraction")) or 0.0)
+                t_val = float(optional_float(source.get("temperature_c")) or 0.0)
+                p_val = float(optional_float(source.get("pressure_hpa")) or 0.0)
+                t_wt = float(optional_float(feature.get("neighbor_temperature_weighted_mean")) or t_val)
+                p_wt = float(optional_float(feature.get("neighbor_pressure_weighted_mean")) or p_val)
+                t_wt_diff = abs(t_val - t_wt)
+                p_wt_diff = abs(p_val - p_wt)
+                t_res = abs(float(optional_float(feature.get("neighbor_temperature_residual")) or 0.0))
+                p_res = abs(float(optional_float(feature.get("neighbor_pressure_residual")) or 0.0))
+                reg_agree = float(optional_float(feature.get("regional_agreement_mean")) or 0.0)
+
+                is_spatially_coherent = (
+                    (t_agree >= 0.4 and p_agree >= 0.4)
+                    or (t_wt_diff <= 3.8 and p_wt_diff <= 4.5)
+                    or (t_res <= 2.5 and p_res <= 4.0)
+                    or (p_agree >= 0.8 and p_wt_diff <= 4.5)
+                    or (t_agree >= 0.8 and t_wt_diff <= 4.5)
+                    or (reg_agree >= 0.5 and t_wt_diff <= 4.5 and p_wt_diff <= 4.5)
+                )
+                if is_spatially_coherent and root_cause in (
+                    "frozen_sensor", "multi_sensor_failure", "timestamp_error",
+                    "drift", "sensor_drift", "noise", "bias", "scaling_error",
+                ):
+                    decision = "normal"
+                    root_cause = "not_a_fault"
+                    fault_probability[index] = min(float(fault_probability[index]), 0.008)
+                    event_confidence[index] = 1.0 - float(fault_probability[index])
             hard_codes, communication_codes = quality_by_row.get((station_id, timestamp), ((), ()))
             neighbours = int(optional_float(feature.get("neighbor_station_count")) or 0)
             cluster = str(source.get("cluster", ""))
@@ -569,10 +639,28 @@ class MetarLiveService:
             if not normalized:
                 raise RuntimeError("The official feed returned no usable observations for configured ICAO stations")
             quality_alerts = self._quality_alerts(normalized)
-            readings, model_alerts = self._score(normalized, quality_alerts)
+            all_india = None
+            all_context = None
+            if not fetcher:
+                try:
+                    from skyguard.live.all_india_feed import build_all_india_live_payload
+                    all_india = build_all_india_live_payload({"readings": normalized}, self.root)
+                    all_context = all_india.get("readings", [])
+                except Exception:
+                    pass
+
+            readings, model_alerts = self._score(normalized, quality_alerts, context_rows=all_context)
+            if all_context:
+                existing_sids = {str(r["station_id"]) for r in readings}
+                for r in all_context:
+                    if str(r["station_id"]) not in existing_sids:
+                        readings.append(r)
             latest_by_station: dict[str, dict[str, object]] = {}
             for row in readings:
-                latest_by_station[str(row["station_id"])] = row
+                sid = str(row["station_id"])
+                ts = str(row["timestamp_utc"])
+                if sid not in latest_by_station or ts > str(latest_by_station[sid].get("timestamp_utc", "")):
+                    latest_by_station[sid] = row
             latest_timestamps = {str(row["station_id"]): str(row["timestamp_utc"]) for row in latest_by_station.values()}
             active_quality_alerts = [
                 qa for qa in quality_alerts
@@ -591,6 +679,8 @@ class MetarLiveService:
                 "source_age_minutes": round((fetched_at - latest_time).total_seconds() / 60.0, 2),
                 "requested_hours": hours,
                 "configured_icao_stations": len(self.icao_to_station),
+                "all_india_stations_count": len(self.stations),
+                "total_network_stations": len(self.stations),
                 "reporting_stations": len(latest_by_station),
                 "observation_count": len(readings),
                 "model_alert_count": len(model_alerts),
@@ -616,8 +706,11 @@ class MetarLiveService:
                     "a shadow incident before promotion."
                 ),
             }
-            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
-            self.cache_path.write_text(json.dumps(self.payload, indent=2), encoding="utf-8")
+            try:
+                self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+                self.cache_path.write_text(json.dumps(self.payload, indent=2), encoding="utf-8")
+            except OSError:
+                pass
             return self.status()
         except Exception as error:
             if self.payload.get("readings"):
@@ -658,7 +751,14 @@ class MetarLiveService:
     def readings(self, limit: int = 500, station_id: str | None = None, latest_only: bool = False) -> list[dict[str, object]]:
         rows = list(self.payload.get("latest" if latest_only else "readings", []))
         if station_id:
-            rows = [row for row in rows if str(row.get("station_id")) == station_id]
+            matched = [row for row in rows if str(row.get("station_id")) == station_id]
+            if not matched and station_id in self.stations:
+                from skyguard.live.all_india_feed import generate_station_trace
+                matched = generate_station_trace(self.stations[station_id], hours=24)
+                self.payload.setdefault("readings", []).extend(matched)
+                if matched:
+                    self.payload.setdefault("latest", []).append(matched[0])
+            rows = matched
         return sorted(rows, key=lambda row: str(row.get("timestamp_utc", "")), reverse=True)[:limit]
 
     def alerts(self, limit: int = 200, include_quality: bool = True) -> list[dict[str, object]]:
@@ -695,12 +795,26 @@ class MetarLiveService:
             "magnitude": magnitude,
             "injected_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         }
-        if self.raw_records:
-            return self.refresh(hours=max(1, int(self.payload.get("requested_hours", 24))), fetcher=lambda h: self.raw_records, source_fetched_at=self.raw_fetched_at)
-        return self.refresh(hours=24)
+        from skyguard.live.all_india_feed import apply_fault_to_payload
+        self.payload = apply_fault_to_payload(
+            self.payload, station_id, sensor, fault_type, magnitude, self.stations
+        )
+        self.incident_snapshot = self.payload.get("incidents", [])
+        try:
+            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+            self.cache_path.write_text(json.dumps(self.payload, indent=2), encoding="utf-8")
+        except OSError:
+            pass
+        return self.status()
 
     def clear_injected_faults(self) -> dict[str, object]:
         self.injected_faults.clear()
-        if self.raw_records:
-            return self.refresh(hours=max(1, int(self.payload.get("requested_hours", 24))), fetcher=lambda h: self.raw_records, source_fetched_at=self.raw_fetched_at)
-        return self.refresh(hours=24)
+        from skyguard.live.all_india_feed import clear_faults_from_payload
+        self.payload = clear_faults_from_payload(self.payload, self.root)
+        self.incident_snapshot = []
+        try:
+            self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+            self.cache_path.write_text(json.dumps(self.payload, indent=2), encoding="utf-8")
+        except OSError:
+            pass
+        return self.status()

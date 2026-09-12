@@ -1,5 +1,5 @@
 {
-  "verified_at_utc": "2026-09-12T03:25:59+00:00",
+  "verified_at_utc": "2026-09-12T07:02:14+00:00",
   "baseline_at_utc": "2026-09-11T09:30:28+00:00",
   "status": "pass",
   "file_count": 257,
@@ -7,7 +7,7 @@
   "manifest": {
     "path": "config/active_model_manifest.json",
     "bytes": 39779,
-    "sha256": "2d67522a9147b45036196619a379c1d0c31c97481cd796e776d56700f1c041bb"
+    "sha256": "1ede2edf653f3e030becaeae9a9925224b5bd0c4034e118042aeaf44df26a966"
   },
   "files": {
     "models/baseline_thresholds.json": {

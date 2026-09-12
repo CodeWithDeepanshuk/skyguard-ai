@@ -33,6 +33,7 @@ htmlcov/
 data/runtime/replay.db
 data/runtime/*.db-journal
 data/runtime/*.db-wal
+data/live/raw_metar.json
 scratch/
 
 # Large training / intermediate data

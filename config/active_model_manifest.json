@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "release": "R0-reliable-baseline",
-  "generated_at_utc": "2026-09-11T12:29:59+00:00",
+  "generated_at_utc": "2026-09-12T07:01:02+00:00",
   "model_version": "SkyGuard-P10-compliant",
   "model_changed": false,
   "status": "Frozen research comparator; not certified operational IMD deployment",
@@ -393,8 +393,8 @@
   },
   "runtime_source_hashes": {
     "src/skyguard/live/metar.py": {
-      "bytes": 38863,
-      "sha256": "df99174c36f4cf21b7f96c3b49d67ed1361e1c7adb303e31955194057f5bc4bb"
+      "bytes": 45166,
+      "sha256": "4fc179f286b916a71306aa4887e7d8329f4d27d31029a7ca27c12322039bc5d1"
     },
     "src/skyguard/features/builder.py": {
       "bytes": 1958,
@@ -405,8 +405,8 @@
       "sha256": "092145398686817517881add25dcb44e32576984ff1e4510bb665b0b9ac24197"
     },
     "src/skyguard/features/neighbors.py": {
-      "bytes": 5658,
-      "sha256": "56084c5056ec56a490de5e70a07fa1d580f2551993806ce6dcd3c6f650a8ada5"
+      "bytes": 7024,
+      "sha256": "8bd672a6ecd1f05b6aaa365a7492e86a4089f2dde0d6c6044134109012d99723"
     },
     "src/skyguard/features/phase10.py": {
       "bytes": 12565,
@@ -437,16 +437,16 @@
       "sha256": "4209abab0c0fa9f273e0bd61f3925cdb6c7e53287c388039c0be848739940746"
     },
     "dashboard/app.js": {
-      "bytes": 41689,
-      "sha256": "238ddbf5440c3d99e5189676ecf9cffc37dfcb1f19dc1ed218c2999276d2debd"
+      "bytes": 46726,
+      "sha256": "7308bf7bdd9438ac7a415d9d5fe2c8fe5cb70108441936b09e452b4f922e8f3f"
     },
     "dashboard/index.html": {
-      "bytes": 23401,
-      "sha256": "a985694c66034e8e5c9196eb07fdad51e41c871e28cd2627fc58d3b1ee962e66"
+      "bytes": 23431,
+      "sha256": "eb16ea5ec9c67c72e687d1676ad241511e73cfc9d5d9e43b16e6f1d862ce8f89"
     },
     "dashboard/styles.css": {
-      "bytes": 31180,
-      "sha256": "adffa79e2600b571a95585d2f7096d03dc046c3b710f85e292fbbda2ee035e5f"
+      "bytes": 31323,
+      "sha256": "fdc9a442c08b42c8d26f869ba1c12b4f373a24abdb44a68253ae6003aec62cae"
     },
     "dashboard/station-map.js": {
       "bytes": 6916,

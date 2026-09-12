@@ -130,9 +130,12 @@ def dashboard_summary(root: Path) -> dict[str, object]:
 
 def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI:
     if database is None:
-        runtime_dir = root / "data" / "runtime"
-        runtime_dir.mkdir(parents=True, exist_ok=True)
-        database = runtime_dir / "replay.db"
+        try:
+            runtime_dir = root / "data" / "runtime"
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            database = runtime_dir / "replay.db"
+        except OSError:
+            database = ":memory:"
     app = FastAPI(title="SkyGuard AI SIH 26073 API", version="1.0.0", docs_url="/docs")
     runtime = ReplayRuntime(root, database)
     app.state.runtime = runtime
@@ -302,7 +305,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     @app.get("/api/live/readings")
     def live_readings(
-        limit: int = Query(500, ge=1, le=5000),
+        limit: int = Query(20000, ge=1, le=50000),
         station_id: str | None = None,
         latest_only: bool = False,
     ) -> list[dict[str, object]]:

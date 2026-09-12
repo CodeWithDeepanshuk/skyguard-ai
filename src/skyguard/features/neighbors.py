@@ -87,28 +87,52 @@ class NeighborIndex:
             "pressure": self.config.pressure_neighbor_agreement,
             "humidity": self.config.humidity_neighbor_agreement,
         }
+        target_stn = self.stations.get(row.get("station_id", ""), {})
+        target_elev = optional_float(target_stn.get("elevation_m")) or 0.0
+
         for sensor, field in SENSORS.items():
             current = optional_float(row.get(field))
+            # Standardize surface pressure to sea-level equivalent for spatial comparison
+            if sensor == "pressure" and current is not None and current < 850.0 and target_elev > 100.0:
+                p_factor = math.pow(max(0.1, 1.0 - 2.25577e-5 * target_elev), 5.25588)
+                current_for_comparison = current / p_factor
+            else:
+                current_for_comparison = current
+
             values: list[tuple[float, float]] = []
             for neighbor_row, distance, _ in matched:
                 value = optional_float(neighbor_row.get(field))
                 if value is not None:
-                    values.append((value, distance))
+                    nbr_stn = self.stations.get(neighbor_row.get("station_id", ""), {})
+                    nbr_elev = optional_float(nbr_stn.get("elevation_m")) or 0.0
+                    adjusted_val = value
+
+                    # Altitude lapse rate adjustment for temperature (-6.5°C / 1000m)
+                    if sensor == "temperature" and abs(target_elev - nbr_elev) > 50.0:
+                        adjusted_val = value - 0.0065 * (target_elev - nbr_elev)
+
+                    # Sea-level reduction for surface pressure
+                    elif sensor == "pressure" and value < 850.0 and nbr_elev > 100.0:
+                        nbr_factor = math.pow(max(0.1, 1.0 - 2.25577e-5 * nbr_elev), 5.25588)
+                        adjusted_val = value / nbr_factor
+
+                    values.append((adjusted_val, distance))
+
             prefix = f"neighbor_{sensor}_"
             output[prefix + "count"] = len(values)
             if not values:
                 continue
             raw = [item[0] for item in values]
             weights = [1.0 / max(item[1], 1.0) ** 2 for item in values]
-            weighted_mean = sum(value * weight for value, weight in zip(raw, weights)) / sum(weights)
+            weighted_mean = sum(val * weight for val, weight in zip(raw, weights)) / sum(weights)
             center = median(raw)
-            mad = median([abs(value - center) for value in raw])
+            mad = median([abs(val - center) for val in raw])
             output[prefix + "weighted_mean"] = round(weighted_mean, 6)
             output[prefix + "median"] = round(center, 6)
             output[prefix + "mad"] = round(mad, 6)
-            if current is not None:
-                differences = [abs(current - value) for value in raw]
-                output[prefix + "residual"] = round(current - center, 6)
+            if current_for_comparison is not None:
+                differences = [abs(current_for_comparison - val) for val in raw]
+                output[prefix + "residual"] = round(current_for_comparison - center, 6)
                 output[prefix + "max_abs_difference"] = round(max(differences), 6)
                 output[prefix + "agreement_fraction"] = round(
                     sum(difference <= agreement_limits[sensor] for difference in differences) / len(differences), 6
