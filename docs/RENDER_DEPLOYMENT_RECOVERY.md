@@ -23,6 +23,7 @@ The Python service itself was healthy: both `/health` and `/` returned HTTP 200.
 - The browser retries health checks automatically and labels the state as waking instead of permanently unavailable.
 - Render uses pinned Python `3.11.9`, `python -m uvicorn`, and a build-time asset/route verification script.
 - `/health` includes a non-secret deployment revision, runtime and service name for future release verification.
+- The first public live-data request automatically refreshes the official observed feed after an ephemeral Render cold restart. A shared lock prevents duplicate refreshes and failed source calls are retried no faster than every 30 seconds.
 
 ## Required dashboard settings
 

@@ -67,3 +67,27 @@ def test_public_mode_disallows_shared_mutations_and_never_falls_back_to_history(
             assert client.get('/health').json()['public_read_only'] is True
     finally:
         app.state.runtime.store.close()
+
+
+def test_public_live_status_bootstraps_observed_feed_after_cold_restart():
+    with patch.dict('os.environ', {"SKYGUARD_PUBLIC_MODE": "true"}):
+        app = create_app(ROOT, ":memory:")
+    app.state.live.payload = {
+        "status": "not_fetched", "mode": "live", "readings": [],
+        "alerts": [], "quality_alerts": [], "incidents": [],
+    }
+    refreshed = {
+        "status": "live", "mode": "live", "observation_count": 1,
+        "presentation_contract": LIVE_PRESENTATION_CONTRACT,
+        "simulation_active": False,
+    }
+    try:
+        with patch.object(app.state.live, "refresh", return_value=refreshed) as refresh:
+            with TestClient(app) as client:
+                response = client.get('/api/live/status')
+        assert response.status_code == 200
+        assert response.json()["presentation_contract"] == LIVE_PRESENTATION_CONTRACT
+        assert response.json()["cold_start_bootstrap"] is True
+        refresh.assert_called_once_with(24)
+    finally:
+        app.state.runtime.store.close()

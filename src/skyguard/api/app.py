@@ -17,7 +17,7 @@ from fastapi.staticfiles import StaticFiles
 
 from skyguard.streaming.engine import ReplayEngine
 from skyguard.streaming.store import ReplayStore
-from skyguard.live.metar import MetarLiveService
+from skyguard.live.metar import LIVE_PRESENTATION_CONTRACT, MetarLiveService
 from skyguard.api.v1_router import create_v1_router
 
 
@@ -149,6 +149,56 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     public_mode = os.getenv("SKYGUARD_PUBLIC_MODE", "false").lower() == "true"
     refresh_lock = threading.Lock()
     last_refresh_attempt = [0.0]
+
+    def live_contract_ready(status: dict[str, object]) -> bool:
+        return (
+            status.get("presentation_contract") == LIVE_PRESENTATION_CONTRACT
+            and status.get("simulation_active") is False
+            and int(status.get("observation_count") or 0) > 0
+        )
+
+    def bootstrap_live_source() -> dict[str, object]:
+        """Self-heal the observed feed after a Render Free cold restart.
+
+        Render's ephemeral filesystem drops the live cache whenever the free
+        instance spins down.  The first public live request therefore performs
+        one official-source refresh. Concurrent requests wait for that refresh
+        instead of each launching another external request.
+        """
+        status = live.status()
+        if not public_mode or live_contract_ready(status):
+            return status
+        if not refresh_lock.acquire(blocking=False):
+            acquired_after_wait = refresh_lock.acquire(timeout=45)
+            if acquired_after_wait:
+                refresh_lock.release()
+            status = live.status()
+            return {
+                **status,
+                "refresh_in_progress": not live_contract_ready(status),
+                "cold_start_bootstrap": True,
+            }
+        try:
+            elapsed = time.monotonic() - last_refresh_attempt[0]
+            if last_refresh_attempt[0] and elapsed < 30:
+                return {
+                    **status,
+                    "refresh_throttled": True,
+                    "refresh_interval_seconds": 30,
+                    "cold_start_bootstrap": True,
+                }
+            last_refresh_attempt[0] = time.monotonic()
+            return {**live.refresh(24), "cold_start_bootstrap": True}
+        except Exception as error:
+            return {
+                **live.status(),
+                "status": "source_temporarily_unavailable",
+                "cold_start_bootstrap": True,
+                "refresh_retry_seconds": 30,
+                "error": str(error),
+            }
+        finally:
+            refresh_lock.release()
 
     @app.middleware("http")
     async def protect_public_state(request, call_next):
@@ -320,7 +370,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     @app.get("/api/live/status")
     def live_status() -> dict[str, object]:
-        return live.status()
+        return bootstrap_live_source()
 
     @app.post("/api/live/refresh")
     def live_refresh(hours: int = Query(24, ge=1, le=48)) -> dict[str, object]:
@@ -342,6 +392,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         station_id: str | None = None,
         latest_only: bool = False,
     ) -> list[dict[str, object]]:
+        bootstrap_live_source()
         return live.readings(limit, station_id, latest_only)
 
     @app.get("/api/live/alerts")
@@ -349,11 +400,13 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         limit: int = Query(200, ge=1, le=5000),
         include_quality: bool = True,
     ) -> list[dict[str, object]]:
+        bootstrap_live_source()
         return live.alerts(limit, include_quality)
 
     @app.get("/api/live/incidents")
     def live_incidents(active_only: bool = False) -> list[dict[str, object]]:
         """Return real-time live incidents from the active METAR stream."""
+        bootstrap_live_source()
         return live.incidents(active_only)
 
     @app.post("/api/live/inject-fault")
