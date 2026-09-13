@@ -235,6 +235,19 @@ class ObservationStore:
             rows = connection.execute(sql, (station_id, cutoff.isoformat(), limit)).fetchall()
         return [self._decode_row(row) for row in rows]
 
+    def recent_observations(self, *, hours: int = 48, limit: int = 250000) -> list[dict[str, Any]]:
+        """Return a bounded causal network window for batch operational QC."""
+        parameter = "%s" if self.backend == "postgresql" else "?"
+        cutoff = datetime.now(timezone.utc) - timedelta(hours=max(1, min(hours, 24 * 365)))
+        sql = f"""
+            SELECT * FROM observations
+            WHERE observation_timestamp_utc>={parameter}
+            ORDER BY observation_timestamp_utc ASC LIMIT {parameter}
+        """
+        with self._connection() as connection:
+            rows = connection.execute(sql, (cutoff.isoformat(), max(1, min(limit, 500000)))).fetchall()
+        return [self._decode_row(row) for row in rows]
+
     def begin_run(self, provider: str, metadata: Optional[dict[str, Any]] = None) -> str:
         run_id = str(uuid.uuid4())
         parameter = "%s" if self.backend == "postgresql" else "?"
@@ -401,6 +414,7 @@ class ObservationStore:
         now = datetime.now(timezone.utc)
         fresh = delayed = stale = 0
         reporting_ids: set[str] = set()
+        observed_ids: set[str] = set()
         latest_timestamp: Optional[datetime] = None
         source_counts: dict[str, int] = {}
         for row in latest:
@@ -411,7 +425,11 @@ class ObservationStore:
                 latest_timestamp = timestamp
             age = max(0.0, (now - timestamp).total_seconds() / 60.0)
             if age <= reporting_window_hours * 60:
-                reporting_ids.add(str(row["canonical_station_id"]))
+                station_id = str(row["canonical_station_id"])
+                observed_ids.add(station_id)
+                if station_id not in catalog:
+                    continue
+                reporting_ids.add(station_id)
                 source = str(row.get("provider") or "UNKNOWN")
                 source_counts[source] = source_counts.get(source, 0) + 1
                 if age <= freshness_minutes:
@@ -423,6 +441,8 @@ class ObservationStore:
         return {
             "catalog_stations": len(catalog),
             "currently_reporting_stations": len(reporting_ids),
+            "reporting_stations_outside_catalog": len(observed_ids - catalog),
+            "all_reporting_stations_in_store": len(observed_ids),
             "fresh_stations": fresh,
             "delayed_stations": delayed,
             "stale_reporting_stations": stale,

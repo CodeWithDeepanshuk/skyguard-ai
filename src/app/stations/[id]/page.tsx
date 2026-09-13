@@ -1,255 +1,197 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { 
-  ArrowLeft, 
-  MapPin, 
-  Activity, 
-  Thermometer, 
-  Gauge, 
-  Droplets, 
-  ShieldAlert, 
-  CheckCircle2,
-  Clock,
-  Radio
-} from 'lucide-react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  CartesianGrid 
-} from 'recharts';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, ArrowLeft, Clock3, Database, Droplets, Gauge, Hash, MapPin, RadioTower, ShieldCheck, Thermometer, WifiOff } from 'lucide-react';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { useOperational } from '@/context/OperationalContext';
+import { formatCoord, formatHumidity, formatPressure, formatTemp, formatTime } from '@/lib/formatters';
 
-interface StationDetailProps {
-  params: { id: string };
+interface Observation {
+  observation_key?: string;
+  provider?: string;
+  provider_station_id?: string | null;
+  canonical_station_id?: string;
+  wigos_id?: string | null;
+  icao_code?: string | null;
+  station_name?: string;
+  latitude?: number;
+  longitude?: number;
+  elevation_m?: number | null;
+  observation_timestamp_utc?: string;
+  provider_publication_timestamp_utc?: string | null;
+  ingestion_timestamp_utc?: string;
+  temperature_c?: number | null;
+  pressure_hpa?: number | null;
+  pressure_type?: string | null;
+  relative_humidity_pct?: number | null;
+  humidity_observation_type?: string | null;
+  raw_payload_hash?: string | null;
+  source_url?: string | null;
+  source_quality_flags?: string[];
 }
 
-interface TelemetryPoint {
-  timestamp_utc: string;
-  temperature_c: number;
-  pressure_hpa: number;
-  relative_humidity: number;
-  decision: string;
-  fault_probability: number;
-  weather_probability: number;
-  buddy_z_temperature: number;
-  cusum_drift_score: number;
-  freeze_repeat_count: number;
+interface Assessment {
+  decision?: string;
+  severity?: string;
+  anomaly_score?: number | null;
+  score_label?: string | null;
+  root_cause?: string | null;
+  affected_sensors?: string[];
+  evidence?: Array<Record<string, unknown>>;
+  neighbor_support?: Record<string, number>;
+  recommendation?: string | null;
+  corrections?: Array<Record<string, unknown>>;
 }
 
-export default function StationDetailPage({ params }: StationDetailProps) {
-  const { id } = params;
-  const [stationData, setStationData] = useState<any>(null);
+interface StationPayload {
+  metadata?: Record<string, unknown>;
+  latest?: Observation | null;
+  history?: Observation[];
+  neighbors?: Array<Record<string, unknown>>;
+  assessment?: Assessment | null;
+  communication?: Record<string, unknown> | null;
+  history_is_causal?: boolean;
+  source_observation_immutable?: boolean;
+  message?: string;
+}
+
+const sensorConfig = {
+  temperature: { label: 'Temperature', key: 'temperature_c', colour: '#D97706', unit: '°C', icon: Thermometer },
+  pressure: { label: 'Pressure', key: 'pressure_hpa', colour: '#1769AA', unit: 'hPa', icon: Gauge },
+  humidity: { label: 'Relative humidity', key: 'relative_humidity_pct', colour: '#7C3AED', unit: '%', icon: Droplets },
+} as const;
+
+type Sensor = keyof typeof sensorConfig;
+
+function numberOrNull(value: unknown): number | null {
+  const parsed = Number(value);
+  return value === null || value === undefined || value === '' || !Number.isFinite(parsed) ? null : parsed;
+}
+
+function spanHours(history: Observation[]): number {
+  const times = history.map(row => Date.parse(String(row.observation_timestamp_utc || ''))).filter(Number.isFinite);
+  if (times.length < 2) return 0;
+  return (Math.max(...times) - Math.min(...times)) / 3_600_000;
+}
+
+function sensorAssessment(sensor: Sensor, latest: Observation, assessment: Assessment | null | undefined): string {
+  const field = sensorConfig[sensor].key;
+  if (numberOrNull(latest[field]) === null) return 'Measurement unavailable';
+  const affected = new Set((assessment?.affected_sensors || []).map(value => value === 'relative_humidity' ? 'humidity' : value));
+  if (affected.has(sensor)) return 'Evidence requires review';
+  if (assessment?.decision === 'NORMAL') return 'No anomaly detected';
+  if (assessment?.decision === 'GENUINE_WEATHER_EVENT') return 'Coherent weather movement';
+  return 'Not independently assessed';
+}
+
+export default function StationDetailPage({ params }: { params: { id: string } }) {
+  const { timeMode } = useOperational();
+  const [payload, setPayload] = useState<StationPayload | null>(null);
+  const [sensor, setSensor] = useState<Sensor>('temperature');
   const [loading, setLoading] = useState(true);
-  const [selectedSensor, setSelectedSensor] = useState<'temp' | 'press' | 'humidity'>('temp');
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/stations/${encodeURIComponent(params.id)}?hours=72`, { cache: 'no-store' });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.message || body.error || 'Station observations are unavailable.');
+      setPayload(body);
+      setError(null);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Station observations are unavailable.');
+    } finally {
+      setLoading(false);
+    }
+  }, [params.id]);
 
   useEffect(() => {
-    fetch(`/api/stations/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setStationData(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setStationData(null);
-        setLoading(false);
-      });
-  }, [id]);
+    load();
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === 'visible') load();
+    }, 60_000);
+    return () => window.clearInterval(interval);
+  }, [load]);
 
-  if (loading) {
-    return (
-      <div className="p-16 text-center text-slate-400 flex flex-col items-center justify-center space-y-3">
-        <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
-        <span>Retrieving station telemetry...</span>
-      </div>
-    );
-  }
-
-  if (!stationData || !stationData.metadata) {
-    return (
-      <div className="p-12 text-center text-slate-400 bg-[#0c2234] border border-[#1a4163] rounded-xl">
-        <h2 className="text-xl font-bold text-white mb-2">Station Telemetry Unavailable</h2>
-        <p className="text-sm text-slate-400 mb-6">Could not locate metadata or active observations for station ID {id}.</p>
-        <Link href="/stations" className="inline-flex items-center px-4 py-2 rounded-lg bg-cyan-600 text-white text-xs font-bold">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Network Catalog
-        </Link>
-      </div>
-    );
-  }
-
-  const meta = stationData.metadata;
-  const readings: TelemetryPoint[] = stationData.readings || [];
-  if (!readings.length) return (
-    <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-8 space-y-4">
-      <Link href="/stations" className="text-cyan-400">Back to station catalog</Link>
-      <h1 className="text-2xl font-bold text-white">{meta.station_name || id}</h1>
-      <p>{meta.latitude}°, {meta.longitude}° · {meta.elevation_m} m</p>
-      <p role="status" className="text-amber-300">No observed telemetry available</p>
-      <p className="text-slate-300">{stationData.message || 'No reports have been received for this station.'}</p>
-      <p className="text-slate-400">No trace, sensor-health score or anomaly probability has been generated to fill this gap.</p>
-    </div>
-  );
-  const latest = readings[readings.length - 1];
-
-  const chartData = readings.map(r => ({
-    time: new Date(r.timestamp_utc).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    temperature: r.temperature_c,
-    pressure: r.pressure_hpa,
-    humidity: r.relative_humidity,
-    faultProb: +(r.fault_probability * 100).toFixed(1)
+  const metadata = payload?.metadata || {};
+  const history = useMemo(() => [...(payload?.history || [])].sort((left, right) => Date.parse(String(left.observation_timestamp_utc || '')) - Date.parse(String(right.observation_timestamp_utc || ''))), [payload]);
+  const latest = payload?.latest || history.at(-1) || null;
+  const config = sensorConfig[sensor];
+  const chart = history.map(row => ({
+    timestamp: row.observation_timestamp_utc,
+    value: numberOrNull(row[config.key]),
+    provider: row.provider || 'Unknown',
   }));
+  const historyHours = spanHours(history);
+
+  if (loading) return <div className="grid min-h-[60vh] place-items-center bg-[#F5F9FC] text-sm text-[#52667A]">Loading stored station observations…</div>;
 
   return (
-    <div className="space-y-6 animate-fadeIn">
-      {/* Back button & Breadcrumb */}
-      <div className="flex items-center space-x-2 text-xs text-slate-400">
-        <Link href="/stations" className="hover:text-cyan-400 flex items-center gap-1">
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>All Stations</span>
-        </Link>
-        <span>/</span>
-        <span className="text-slate-200">{meta.station_name || id}</span>
-      </div>
+    <main className="min-h-full space-y-5 bg-[#F5F9FC] p-4 sm:p-6">
+      <Link href="/stations" className="inline-flex min-h-11 items-center gap-2 rounded-xl px-2 text-xs font-bold text-[#1769AA] hover:bg-sky-50"><ArrowLeft className="h-4 w-4" />All stations</Link>
 
-      {/* Header Profile */}
-      <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2.5">
-            <h1 className="text-2xl sm:text-3xl font-black text-white">{meta.station_name || id}</h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800 font-mono font-bold">
-              AWS {id}
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
-            <span className="flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-              {parseFloat(meta.latitude).toFixed(2)}°N, {parseFloat(meta.longitude).toFixed(2)}°E · Elevation {meta.elevation_m}m
-            </span>
-            <span>•</span>
-            <span className="text-slate-300 font-medium">Zone: {meta.climate_zone}</span>
-            <span>•</span>
-            <span className="text-slate-300 font-medium">Role: {meta.evaluation_role || 'Standard AWS'}</span>
-          </div>
-        </div>
+      {error && <div role="alert" className="flex gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />{error} No telemetry was generated to fill this gap.</div>}
 
-        <div className="flex items-center space-x-3">
-          <span className="px-3 py-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4" />
-            Model signal: {latest.decision || 'Unverified'}
-          </span>
-        </div>
-      </div>
-
-      {/* Current Live Values Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div 
-          onClick={() => setSelectedSensor('temp')}
-          className={`cursor-pointer rounded-xl border p-5 transition-all ${
-            selectedSensor === 'temp' 
-              ? 'border-cyan-500 bg-[#143652] shadow-lg shadow-cyan-500/10' 
-              : 'border-[#1a4163] bg-[#0c2234] hover:bg-[#143652]/40'
-          }`}
-        >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Ambient Temperature</span>
-            <Thermometer className="w-4 h-4 text-cyan-400" />
-          </div>
-          <div className="text-3xl font-black text-white">{latest.temperature_c}°C</div>
-          <p className="text-xs text-slate-400 mt-1">Buddy residual: {latest.buddy_z_temperature ?? 'Not supplied'}</p>
-        </div>
-
-        <div 
-          onClick={() => setSelectedSensor('press')}
-          className={`cursor-pointer rounded-xl border p-5 transition-all ${
-            selectedSensor === 'press' 
-              ? 'border-cyan-500 bg-[#143652] shadow-lg shadow-cyan-500/10' 
-              : 'border-[#1a4163] bg-[#0c2234] hover:bg-[#143652]/40'
-          }`}
-        >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">METAR QNH Pressure</span>
-            <Gauge className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-3xl font-black text-white">{latest.pressure_hpa} hPa</div>
-          <p className="text-xs text-slate-400 mt-1">Not raw station pressure; preserve the pressure reference</p>
-        </div>
-
-        <div 
-          onClick={() => setSelectedSensor('humidity')}
-          className={`cursor-pointer rounded-xl border p-5 transition-all ${
-            selectedSensor === 'humidity' 
-              ? 'border-cyan-500 bg-[#143652] shadow-lg shadow-cyan-500/10' 
-              : 'border-[#1a4163] bg-[#0c2234] hover:bg-[#143652]/40'
-          }`}
-        >
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Relative Humidity</span>
-            <Droplets className="w-4 h-4 text-sky-400" />
-          </div>
-          <div className="text-3xl font-black text-white">{latest.relative_humidity}%</div>
-          <p className="text-xs text-slate-400 mt-1">Derived from reported temperature and dew point</p>
-        </div>
-      </div>
-
-      {/* 24-Hour Telemetry Chart */}
-      <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-6 shadow-xl">
-        <div className="flex items-center justify-between border-b border-[#1a4163] pb-4 mb-6">
+      <section className="rounded-3xl border border-[#D8E6EF] bg-white/90 p-6 shadow-[0_20px_70px_-40px_rgba(23,105,170,.45)] backdrop-blur-xl">
+        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-start">
           <div>
-            <h3 className="text-lg font-bold text-white">Received Observation Trace</h3>
-            <p className="text-xs text-slate-400">
-              Visualizing {selectedSensor === 'temp' ? 'Temperature (°C)' : selectedSensor === 'press' ? 'Pressure (hPa)' : 'Relative Humidity (%)'} across recent telemetry packets.
-            </p>
+            <div className="mb-3 flex flex-wrap gap-2"><span className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 font-mono text-[10px] font-bold text-[#1769AA]">Canonical ID {String(metadata.station_id || params.id)}</span>{latest?.provider && <span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-800">Observed via {latest.provider}</span>}</div>
+            <h1 className="text-3xl font-black tracking-tight text-[#102A43] sm:text-4xl">{String(metadata.station_name || latest?.station_name || params.id)}</h1>
+            <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs text-[#52667A]">
+              <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4 text-[#1769AA]" />{formatCoord(numberOrNull(metadata.latitude) ?? numberOrNull(latest?.latitude) ?? 0, numberOrNull(metadata.longitude) ?? numberOrNull(latest?.longitude) ?? 0)}</span>
+              <span>Elevation: {numberOrNull(metadata.elevation_m) ?? numberOrNull(latest?.elevation_m) ?? 'Not available'}{numberOrNull(metadata.elevation_m) !== null || numberOrNull(latest?.elevation_m) !== null ? ' m' : ''}</span>
+              <span>Climate cluster: {String(metadata.climate_zone || metadata.cluster || 'Not available')}</span>
+            </div>
           </div>
-          <div className="text-xs text-slate-400 font-mono">{stationData.is_cached ? 'Cached' : 'Source'} · Latest {new Date(latest.timestamp_utc).toLocaleString()}</div>
+          <div className="rounded-2xl border border-[#D8E6EF] bg-[#EDF6FB] p-4 text-xs">
+            <span className="block text-[9px] font-bold uppercase tracking-wider text-[#1769AA]">Operational decision</span>
+            <strong className="mt-1 block text-lg text-[#102A43]">{payload?.assessment?.decision || (latest ? 'INSUFFICIENT_CONTEXT' : 'NOT_ASSESSED')}</strong>
+            <span className="mt-1 block text-[#52667A]">Latest: {formatTime(latest?.observation_timestamp_utc, timeMode, true)}</span>
+          </div>
         </div>
+      </section>
 
-        <div className="h-72 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1a4163" />
-              <XAxis dataKey="time" stroke="#94a3b8" fontSize={11} />
-              <YAxis stroke="#94a3b8" fontSize={11} domain={['auto', 'auto']} />
-              <Tooltip 
-                contentStyle={{ backgroundColor: '#071521', borderColor: '#1a4163', borderRadius: '8px', color: '#fff' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey={selectedSensor === 'temp' ? 'temperature' : selectedSensor === 'press' ? 'pressure' : 'humidity'} 
-                stroke="#38bdf8" 
-                strokeWidth={2.5}
-                dot={{ r: 3, fill: '#38bdf8' }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      {!latest ? (
+        <section className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center"><WifiOff className="mx-auto h-8 w-8 text-slate-400" /><h2 className="mt-3 text-lg font-extrabold text-[#102A43]">Catalog metadata only</h2><p className="mt-1 text-sm text-[#52667A]">No received observation is stored for this station. Values, anomaly scores and sensor health remain unavailable.</p></section>
+      ) : (
+        <>
+          <section className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-wider text-amber-700">Temperature</span><Thermometer className="h-5 w-5 text-amber-600" /></div><strong className="mt-2 block text-3xl text-[#102A43]">{formatTemp(numberOrNull(latest.temperature_c))}</strong><p className="mt-2 text-[10px] text-[#52667A]">Direct/derived semantics: provider record</p></div>
+            <div className="rounded-2xl border border-sky-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-wider text-sky-700">Atmospheric pressure</span><Gauge className="h-5 w-5 text-[#1769AA]" /></div><strong className="mt-2 block text-3xl text-[#102A43]">{formatPressure(numberOrNull(latest.pressure_hpa))}</strong><p className="mt-2 text-[10px] font-bold text-sky-800">{latest.pressure_type || 'Pressure type unknown — spatial comparison disabled'}</p></div>
+            <div className="rounded-2xl border border-violet-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-wider text-violet-700">Relative humidity</span><Droplets className="h-5 w-5 text-violet-600" /></div><strong className="mt-2 block text-3xl text-[#102A43]">{formatHumidity(numberOrNull(latest.relative_humidity_pct))}</strong><p className="mt-2 text-[10px] font-bold text-violet-800">{latest.humidity_observation_type || 'Observation type not supplied'}</p></div>
+          </section>
 
-      {/* Diagnostic QC Health Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5">
-          <span className="text-xs font-bold uppercase text-slate-400">Integer Freeze Detection</span>
-          <div className="text-xl font-bold text-white mt-1">Unverified</div>
-          <p className="text-xs text-slate-400 mt-1">Repeated rounded values alone do not prove a frozen sensor.</p>
-        </div>
+          <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm sm:p-6">
+            <div className="flex flex-col justify-between gap-4 border-b border-slate-100 pb-4 sm:flex-row sm:items-center">
+              <div><h2 className="text-lg font-extrabold text-[#102A43]">Causal observation trace</h2><p className="mt-1 text-xs text-[#52667A]">{history.length} received records across {historyHours.toFixed(1)} hours. No forecast or interpolated value fills missing points.</p></div>
+              <div className="flex flex-wrap gap-2">{(Object.keys(sensorConfig) as Sensor[]).map(key => { const Icon = sensorConfig[key].icon; return <button key={key} onClick={() => setSensor(key)} className={sensor === key ? 'inline-flex min-h-11 items-center gap-2 rounded-xl bg-[#1769AA] px-3 text-xs font-bold text-white' : 'inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50'}><Icon className="h-4 w-4" />{sensorConfig[key].label}</button>; })}</div>
+            </div>
+            <div className="mt-5 h-72 w-full">
+              <ResponsiveContainer width="100%" height="100%"><LineChart data={chart}><CartesianGrid strokeDasharray="3 3" stroke="#D8E6EF" /><XAxis dataKey="timestamp" tickFormatter={value => value ? new Date(value).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: timeMode === 'UTC' ? 'UTC' : 'Asia/Kolkata' }) : ''} minTickGap={32} fontSize={10} stroke="#64748B" /><YAxis domain={['auto', 'auto']} fontSize={10} stroke="#64748B" unit={config.unit} /><Tooltip labelFormatter={value => formatTime(String(value), timeMode, true)} formatter={(value: number | string) => [`${Number(value).toFixed(1)} ${config.unit}`, config.label]} contentStyle={{ borderRadius: 12, borderColor: '#D8E6EF', boxShadow: '0 14px 35px -20px rgba(15,23,42,.35)' }} /><Line type="monotone" dataKey="value" stroke={config.colour} strokeWidth={2.5} dot={{ r: 2 }} connectNulls={false} isAnimationActive={false} /></LineChart></ResponsiveContainer>
+            </div>
+          </section>
 
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5">
-          <span className="text-xs font-bold uppercase text-slate-400">CUSUM Drift State</span>
-          <div className="text-xl font-bold text-white mt-1">Score: {latest.cusum_drift_score ?? 'Not supplied'}</div>
-          <p className="text-xs text-slate-400 mt-1">No calibrated drift diagnosis is claimed.</p>
-        </div>
+          <section className="grid gap-4 xl:grid-cols-[1.1fr_.9fr]">
+            <div className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm sm:p-6">
+              <h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><ShieldCheck className="h-5 w-5 text-[#0F9D8A]" />Sensor-level evidence</h2>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">{(Object.keys(sensorConfig) as Sensor[]).map(key => <div key={key} className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">{sensorConfig[key].label}</span><strong className="mt-1 block text-sm text-[#102A43]">{sensorAssessment(key, latest, payload?.assessment)}</strong></div>)}</div>
+              <div className="mt-5 rounded-2xl bg-[#EDF6FB] p-4 text-xs leading-5 text-[#52667A]"><strong className="block text-[#102A43]">Assessment: {payload?.assessment?.root_cause || 'No root-cause conclusion available'}</strong><span className="mt-1 block">Anomaly evidence score: {payload?.assessment?.anomaly_score == null ? 'Not available' : `${payload.assessment.anomaly_score.toFixed(3)} (not a calibrated probability)`}</span><span className="mt-1 block">{payload?.assessment?.recommendation || 'Continue collecting causal history and review only when evidence persists.'}</span></div>
+              <div className="mt-4 space-y-2">{(payload?.assessment?.evidence || []).map((item, index) => <div key={index} className="rounded-xl border border-slate-200 p-3 text-xs text-slate-700"><span className="mr-2 font-mono text-[9px] font-bold text-[#1769AA]">E{index + 1}</span>{String(item.message || item.reason || item.code || 'Recorded QC evidence')}</div>)}</div>
+            </div>
 
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5">
-          <span className="text-xs font-bold uppercase text-slate-400">Transport & Heartbeat SLA</span>
-          <div className="text-xl font-bold text-amber-400 mt-1">SLA unverified</div>
-          <p className="text-xs text-slate-400 mt-1">A missing archive report does not establish communication failure.</p>
-        </div>
-      </div>
-    </div>
+            <div className="space-y-4">
+              <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm">
+                <h2 className="flex items-center gap-2 text-sm font-extrabold text-[#102A43]"><RadioTower className="h-4 w-4 text-[#1769AA]" />Aligned neighbour support</h2>
+                {(payload?.neighbors || []).length ? <div className="mt-3 space-y-2">{(payload?.neighbors || []).slice(0, 8).map((neighbor, index) => <div key={String(neighbor.station_id || index)} className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3 text-xs"><div><strong className="text-[#102A43]">{String(neighbor.station_name || neighbor.station_id || 'Unknown')}</strong><p className="mt-0.5 text-[9px] text-slate-500">{numberOrNull(neighbor.distance_km)?.toFixed(1) || 'Unknown'} km · time-aligned at/before target</p></div><span className="font-mono text-[9px] text-slate-500">T {formatTemp(numberOrNull(neighbor.temperature_c))}</span></div>)}</div> : <p className="mt-3 rounded-xl border border-dashed border-slate-300 p-4 text-xs text-slate-500">Insufficient time-aligned neighbour observations.</p>}
+              </section>
+              <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm"><h2 className="flex items-center gap-2 text-sm font-extrabold text-[#102A43]"><Clock3 className="h-4 w-4 text-amber-600" />Communication and maintenance</h2><p className="mt-3 text-xs leading-5 text-[#52667A]">{String(payload?.communication?.reason || 'Communication cadence has not been assessed.')}</p><div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950"><strong>{historyHours >= 168 ? 'Longer-term review enabled' : 'Warming up for degradation trends'}</strong><p className="mt-1">{historyHours >= 168 ? 'At least seven days of stored history are available; maintenance evidence must still be reviewed.' : 'A defensible maintenance horizon needs roughly 7–30 days of reliable station history. No deadline is generated yet.'}</p></div></section>
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm sm:p-6"><h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><Database className="h-5 w-5 text-[#1769AA]" />Observation provenance</h2><dl className="mt-4 grid gap-3 text-xs sm:grid-cols-2 xl:grid-cols-4"><div className="rounded-xl bg-slate-50 p-3"><dt className="text-[9px] font-bold uppercase text-slate-400">Provider identity</dt><dd className="mt-1 break-all font-semibold text-slate-800">{latest.provider || 'Not available'} · {latest.provider_station_id || 'ID unavailable'}</dd></div><div className="rounded-xl bg-slate-50 p-3"><dt className="text-[9px] font-bold uppercase text-slate-400">WIGOS / ICAO</dt><dd className="mt-1 font-semibold text-slate-800">{latest.wigos_id || 'Not available'} / {latest.icao_code || 'Not available'}</dd></div><div className="rounded-xl bg-slate-50 p-3"><dt className="text-[9px] font-bold uppercase text-slate-400">Ingested</dt><dd className="mt-1 font-semibold text-slate-800">{formatTime(latest.ingestion_timestamp_utc, timeMode, true)}</dd></div><div className="rounded-xl bg-slate-50 p-3"><dt className="text-[9px] font-bold uppercase text-slate-400">Raw payload hash</dt><dd className="mt-1 flex items-center gap-1 break-all font-mono text-[9px] text-slate-700"><Hash className="h-3 w-3 shrink-0" />{latest.raw_payload_hash || 'Not available'}</dd></div></dl><p className="mt-4 text-[10px] text-slate-500">Source observation immutable: {payload?.source_observation_immutable === true ? 'Yes' : 'Not recorded'} · history causal: {payload?.history_is_causal === true ? 'Yes' : 'Not recorded'} · quality flags: {(latest.source_quality_flags || []).join(', ') || 'None supplied'}</p></section>
+        </>
+      )}
+    </main>
   );
 }

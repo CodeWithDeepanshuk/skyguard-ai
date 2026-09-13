@@ -90,27 +90,6 @@ def dashboard_summary(root: Path) -> dict[str, object]:
     streaming = read_report(root, "streaming_platform.json")
     competition = read_report(root, "competition_readiness.json")
 
-    final_block_path = root / "reports" / "final_evaluation" / "final_result_block.json"
-    if final_block_path.exists():
-        try:
-            final_block = json.loads(final_block_path.read_text(encoding="utf-8"))
-            if final_block.get("promoted"):
-                classifier["model_version"] = "SkyGuard-Production-v1.2 (Neural Causal TCN + LightGBM Multi-Model Ensemble)"
-                if "time_test" in classifier.get("evaluation", {}):
-                    bfd = classifier["evaluation"]["time_test"].get("binary_fault_detection", {})
-                    bfd["precision"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("precision", 0.8950)
-                    bfd["recall"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("recall", 0.8650)
-                    bfd["f1"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("f1", 0.8800)
-                    bfd["false_alarms_per_station_day"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("false_alerts_per_station_day", 0.0075)
-                if "station_test" in classifier.get("evaluation", {}):
-                    bfd_st = classifier["evaluation"]["station_test"].get("binary_fault_detection", {})
-                    bfd_st["precision"] = 0.8880
-                    bfd_st["recall"] = 0.8520
-                    bfd_st["f1"] = 0.8700
-                    bfd_st["false_alarms_per_station_day"] = 0.0082
-        except Exception:
-            pass
-
     return {
         "project": {
             "name": "SkyGuard AI",
@@ -118,7 +97,7 @@ def dashboard_summary(root: Path) -> dict[str, object]:
             "phase": 10,
             "mode": "offline replay + live METAR",
             "model_version": classifier["model_version"],
-            "evaluation_status": "Production Promoted: 25 / 25 Gates Passed (100.0%)",
+            "evaluation_status": "Frozen offline injected-data benchmark; not a live-field accuracy claim",
         },
         "dataset": {
             "ready": data["ready_for_anomaly_injection"],
@@ -290,7 +269,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         )
         return {
             "status": "ok", "offline": True, "live_capable": True, "scenario_loaded": runtime.engine is not None,
-            "model_version": "SkyGuard-Production-v1.2 (Neural Causal TCN + LightGBM Multi-Model Ensemble)",
+            "model_version": "SkyGuard-P10-compliant",
             "detector_inputs": ["temperature", "pressure", "relative_humidity"],
             "communication_gap_policy": "verified heartbeat required; unknown cadence is advisory",
             "live_contract": live.status().get("presentation_contract"),
@@ -414,25 +393,6 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         classifier = read_report(root, "phase10_final.json")
         correction = read_report(root, "correction_health.json")
         safe_repair = read_report(root, "safe_repair.json")
-        final_block_path = root / "reports" / "final_evaluation" / "final_result_block.json"
-        if final_block_path.exists():
-            try:
-                final_block = json.loads(final_block_path.read_text(encoding="utf-8"))
-                if final_block.get("promoted"):
-                    if "time_test" in classifier.get("evaluation", {}):
-                        bfd = classifier["evaluation"]["time_test"].get("binary_fault_detection", {})
-                        bfd["precision"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("precision", 0.8950)
-                        bfd["recall"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("recall", 0.8650)
-                        bfd["f1"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("f1", 0.8800)
-                        bfd["false_alarms_per_station_day"] = final_block.get("incident_confirmation", {}).get("fault", {}).get("false_alerts_per_station_day", 0.0075)
-                    if "station_test" in classifier.get("evaluation", {}):
-                        bfd_st = classifier["evaluation"]["station_test"].get("binary_fault_detection", {})
-                        bfd_st["precision"] = 0.8880
-                        bfd_st["recall"] = 0.8520
-                        bfd_st["f1"] = 0.8700
-                        bfd_st["false_alarms_per_station_day"] = 0.0082
-            except Exception:
-                pass
         return {
             "classification": classifier["evaluation"]["time_test"],
             "correction": correction["evaluation"]["time_test"],

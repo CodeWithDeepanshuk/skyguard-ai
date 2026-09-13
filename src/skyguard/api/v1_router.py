@@ -10,8 +10,12 @@ Provides:
 from __future__ import annotations
 
 import csv
+import hashlib
 import logging
 import os
+import threading
+import time
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -71,12 +75,147 @@ def create_v1_router(
         return parsed.astimezone(timezone.utc)
 
     catalog_by_id = {str(row.get("station_id") or ""): row for row in identity.catalog}
+    snapshot_lock = threading.Lock()
+    snapshot_cache: dict[str, Any] = {"created_monotonic": 0.0, "payload": None}
 
     def station_metadata(station_id: str) -> Optional[dict[str, Any]]:
         if station_id in catalog_by_id:
             return dict(catalog_by_id[station_id])
         official = registry.get_station(station_id)
         return official.to_dict() if official else None
+
+    def observation_status(observation: Optional[dict[str, Any]], now: datetime) -> tuple[str, Optional[float]]:
+        if not observation:
+            return "NOT_OBSERVED_IN_STORE", None
+        timestamp = parse_time(observation.get("observation_timestamp_utc"))
+        if timestamp is None:
+            return "INVALID_TIMESTAMP", None
+        age = max(0.0, (now - timestamp).total_seconds() / 60.0)
+        if age <= 90:
+            return "FRESH", age
+        if age <= 180:
+            return "DELAYED", age
+        if age <= 1440:
+            return "STALE", age
+        return "NO_RECENT_REPORT", age
+
+    def quality_state(decision: Optional[str], observation_state: str, communication: Optional[dict[str, Any]]) -> str:
+        if communication and communication.get("decision") == "COMMUNICATION_FAILURE":
+            return "COMMUNICATION_FAILURE"
+        if observation_state in {"DELAYED", "STALE", "NO_RECENT_REPORT", "INVALID_TIMESTAMP"}:
+            return observation_state
+        return {
+            "NORMAL": "NO_ANOMALY_DETECTED",
+            "GENUINE_WEATHER_EVENT": "GENUINE_WEATHER_EVENT",
+            "PROBABLE_SENSOR_FAULT": "PROBABLE_FAULT",
+            "INSUFFICIENT_CONTEXT": "WARMING_UP",
+        }.get(str(decision or ""), "NOT_ASSESSED")
+
+    def build_operational_snapshot(*, max_age_seconds: int = 60) -> dict[str, Any]:
+        """Build one causal network snapshot and cache it briefly.
+
+        The calculation is intentionally based on the append-only observation
+        store.  Catalog membership never creates readings, health or scores.
+        """
+        created = float(snapshot_cache.get("created_monotonic") or 0.0)
+        cached = snapshot_cache.get("payload")
+        if cached is not None and time.monotonic() - created <= max_age_seconds:
+            return cached
+        with snapshot_lock:
+            created = float(snapshot_cache.get("created_monotonic") or 0.0)
+            cached = snapshot_cache.get("payload")
+            if cached is not None and time.monotonic() - created <= max_age_seconds:
+                return cached
+
+            store = require_store()
+            now = datetime.now(timezone.utc)
+            history_rows = store.recent_observations(hours=72, limit=500000)
+            histories: dict[str, list[dict[str, Any]]] = defaultdict(list)
+            for row in history_rows:
+                station_id = str(row.get("canonical_station_id") or "")
+                if station_id:
+                    histories[station_id].append(row)
+            for rows in histories.values():
+                rows.sort(key=lambda item: parse_time(item.get("observation_timestamp_utc")) or datetime.min.replace(tzinfo=timezone.utc))
+
+            latest_rows = require_store().latest_observations(limit=5000)
+            latest = {str(row.get("canonical_station_id") or ""): row for row in latest_rows}
+            provider_freshness = {
+                str(item.get("provider") or ""): item for item in store.source_freshness()
+            }
+            assessments: dict[str, dict[str, Any]] = {}
+            communications: dict[str, dict[str, Any]] = {}
+            neighbor_rows: dict[str, list[dict[str, Any]]] = {}
+
+            for station_id, target in latest.items():
+                target_time = parse_time(target.get("observation_timestamp_utc"))
+                if target_time is None:
+                    continue
+                peers: list[tuple[float, dict[str, Any]]] = []
+                for candidate_id, candidate in latest.items():
+                    if candidate_id == station_id:
+                        continue
+                    candidate_time = parse_time(candidate.get("observation_timestamp_utc"))
+                    if candidate_time is None or abs((target_time - candidate_time).total_seconds()) > 90 * 60:
+                        continue
+                    try:
+                        distance = haversine_km(
+                            float(target["latitude"]), float(target["longitude"]),
+                            float(candidate["latitude"]), float(candidate["longitude"]),
+                        )
+                    except (KeyError, TypeError, ValueError):
+                        continue
+                    if distance > 350.0:
+                        continue
+                    peer = dict(candidate)
+                    peer["distance_km"] = round(distance, 1)
+                    candidate_history = histories.get(candidate_id, [])
+                    previous = next(
+                        (
+                            row for row in reversed(candidate_history)
+                            if (parse_time(row.get("observation_timestamp_utc")) or target_time) < candidate_time
+                        ),
+                        None,
+                    )
+                    if previous:
+                        for field in ("temperature_c", "pressure_hpa", "relative_humidity_pct"):
+                            try:
+                                peer[f"{field}_delta"] = float(peer[field]) - float(previous[field])
+                            except (KeyError, TypeError, ValueError):
+                                pass
+                    peers.append((distance, peer))
+                aligned = [row for _, row in sorted(peers, key=lambda item: item[0])[:8]]
+                neighbor_rows[station_id] = aligned
+                assessment = operational_qc.analyze(target, histories.get(station_id, []), aligned, now=now)
+                assessments[station_id] = assessment.to_dict()
+                communication = operational_qc.assess_communication(
+                    station_id, histories.get(station_id, []), now=now
+                )
+                provider_state = provider_freshness.get(str(target.get("provider") or ""), {})
+                if (
+                    communication.get("decision") == "COMMUNICATION_FAILURE"
+                    and provider_state.get("freshness") == "STALE"
+                ):
+                    communication = {
+                        **communication,
+                        "decision": "INSUFFICIENT_CONTEXT",
+                        "source_outage_suspected": True,
+                        "reason": "The provider feed is stale network-wide; this is not attributed to station hardware.",
+                    }
+                communications[station_id] = communication
+
+            payload = {
+                "generated_at_utc": now.isoformat().replace("+00:00", "Z"),
+                "latest": latest,
+                "histories": dict(histories),
+                "neighbors": neighbor_rows,
+                "assessments": assessments,
+                "communications": communications,
+                "provider_freshness": provider_freshness,
+            }
+            snapshot_cache["created_monotonic"] = time.monotonic()
+            snapshot_cache["payload"] = payload
+            return payload
 
     def aligned_neighbors(target: dict[str, Any], *, tolerance_minutes: int = 90) -> list[dict[str, Any]]:
         store = require_store()
@@ -399,27 +538,16 @@ def create_v1_router(
         freshness: str = Query(""),
         limit: int = Query(2000, ge=1, le=5000),
     ) -> Dict[str, Any]:
-        store = require_store()
-        latest = {
-            str(row.get("canonical_station_id") or ""): row
-            for row in store.latest_observations(limit=max(2500, len(catalog_by_id) * 2))
-        }
+        snapshot = build_operational_snapshot()
+        latest = snapshot["latest"]
         now = datetime.now(timezone.utc)
         rows: list[dict[str, Any]] = []
         for station_id, raw_meta in catalog_by_id.items():
             meta = dict(raw_meta)
             observation = latest.get(station_id)
-            age: Optional[float] = None
-            if observation:
-                timestamp = parse_time(observation.get("observation_timestamp_utc"))
-                if timestamp:
-                    age = max(0.0, (now - timestamp).total_seconds() / 60.0)
-            status = (
-                "FRESH" if age is not None and age <= 90
-                else "DELAYED" if age is not None and age <= 180
-                else "STALE" if age is not None and age <= 1440
-                else "NO_RECENT_REPORT" if observation else "NOT_OBSERVED_IN_STORE"
-            )
+            status, age = observation_status(observation, now)
+            assessment = snapshot["assessments"].get(station_id)
+            communication = snapshot["communications"].get(station_id)
             item = {
                 **meta,
                 "station_id": station_id,
@@ -427,9 +555,25 @@ def create_v1_router(
                 "latest_observation_utc": observation.get("observation_timestamp_utc") if observation else None,
                 "observation_age_minutes": round(age, 1) if age is not None else None,
                 "latest_provider": observation.get("provider") if observation else None,
+                "provider_station_id": observation.get("provider_station_id") if observation else None,
+                "wigos_id": observation.get("wigos_id") if observation else None,
+                "icao_code": observation.get("icao_code") if observation else None,
+                "temperature_c": observation.get("temperature_c") if observation else None,
+                "pressure_hpa": observation.get("pressure_hpa") if observation else None,
+                "relative_humidity_pct": observation.get("relative_humidity_pct") if observation else None,
                 "pressure_type": observation.get("pressure_type") if observation else None,
                 "humidity_observation_type": observation.get("humidity_observation_type") if observation else None,
-                "health_status": "NOT_ASSESSED",
+                "source_quality_flags": observation.get("source_quality_flags", []) if observation else [],
+                "assessment_decision": assessment.get("decision") if assessment else None,
+                "assessment_severity": assessment.get("severity") if assessment else None,
+                "anomaly_score": assessment.get("anomaly_score") if assessment else None,
+                "score_label": assessment.get("score_label") if assessment else None,
+                "root_cause": assessment.get("root_cause") if assessment else None,
+                "neighbor_support": assessment.get("neighbor_support") if assessment else None,
+                "communication": communication,
+                "health_status": quality_state(
+                    assessment.get("decision") if assessment else None, status, communication
+                ),
             }
             q = query.strip().lower()
             if q and q not in str(item.get("station_name") or "").lower() and q not in station_id.lower():
@@ -445,7 +589,9 @@ def create_v1_router(
             "catalog_stations": len(catalog_by_id),
             "matched_stations": len(rows),
             "stations": rows[:limit],
-            "status_note": "Freshness is based on received observations; health is not inferred from catalog membership.",
+            "generated_at_utc": snapshot["generated_at_utc"],
+            "status_note": "Values and QC states exist only for received observations; catalog membership never creates readings or health.",
+            "score_contract": "Operational QC exposes an uncalibrated anomaly evidence score, not a fault probability.",
         }
 
     @router.get("/operational/stations/{station_id}")
@@ -469,18 +615,85 @@ def create_v1_router(
                 "communication": operational_qc.assess_communication(station_id, []),
                 "message": "No physical observation for this station exists in the operational store.",
             }
-        neighbors = aligned_neighbors(latest)
-        assessment = operational_qc.analyze(latest, history, neighbors)
+        snapshot = build_operational_snapshot()
+        neighbors = snapshot["neighbors"].get(station_id) or aligned_neighbors(latest)
+        cached_assessment = snapshot["assessments"].get(station_id)
+        assessment = cached_assessment or operational_qc.analyze(latest, history, neighbors).to_dict()
         communication_history = store.history(station_id, hours=max(hours, 48), limit=10000)
         return {
             "metadata": metadata,
             "latest": latest,
             "history": history,
             "neighbors": neighbors,
-            "assessment": assessment.to_dict(),
-            "communication": operational_qc.assess_communication(station_id, communication_history),
+            "assessment": assessment,
+            "communication": snapshot["communications"].get(station_id) or operational_qc.assess_communication(station_id, communication_history),
             "history_is_causal": True,
             "source_observation_immutable": True,
+        }
+
+    @router.get("/operational/incidents")
+    def operational_incidents(limit: int = Query(100, ge=1, le=1000)) -> Dict[str, Any]:
+        """Return evidence-backed active incidents from the stored observation snapshot.
+
+        Weak statistical evidence remains ``SUSPECTED``.  Only an explicit
+        physical-range violation is promoted immediately to ``CONFIRMED``.
+        """
+        snapshot = build_operational_snapshot()
+        incidents: list[dict[str, Any]] = []
+        for station_id, assessment in snapshot["assessments"].items():
+            communication = snapshot["communications"].get(station_id, {})
+            target = snapshot["latest"].get(station_id, {})
+            decision = assessment.get("decision")
+            is_communication = communication.get("decision") == "COMMUNICATION_FAILURE"
+            if decision != "PROBABLE_SENSOR_FAULT" and not is_communication:
+                continue
+            metadata = station_metadata(station_id) or {}
+            evidence = assessment.get("evidence") or []
+            hard = any(item.get("code") == "PHYSICAL_RANGE_VIOLATION" for item in evidence)
+            detected = str(target.get("observation_timestamp_utc") or snapshot["generated_at_utc"])
+            fingerprint = f"{station_id}|{detected}|{'COMMUNICATION_FAILURE' if is_communication else decision}"
+            incident_id = "SG-" + hashlib.sha256(fingerprint.encode("utf-8")).hexdigest()[:12].upper()
+            incidents.append({
+                "incident_id": incident_id,
+                "station_id": station_id,
+                "station_name": metadata.get("station_name") or target.get("station_name") or station_id,
+                "latitude": target.get("latitude") if target.get("latitude") is not None else metadata.get("latitude"),
+                "longitude": target.get("longitude") if target.get("longitude") is not None else metadata.get("longitude"),
+                "state": metadata.get("state") or metadata.get("climate_zone"),
+                "decision": "COMMUNICATION_FAILURE" if is_communication else decision,
+                "incident_state": "CONFIRMED" if hard else "SUSPECTED",
+                "severity": (
+                    "MEDIUM" if is_communication
+                    else "CRITICAL" if hard
+                    else assessment.get("severity") if assessment.get("severity") in {"HIGH", "MEDIUM", "LOW"}
+                    else "HIGH"
+                ),
+                "anomaly_score": None if is_communication else assessment.get("anomaly_score"),
+                "score_label": None if is_communication else assessment.get("score_label"),
+                "calibrated_probability_available": False,
+                "root_cause": "communication gap" if is_communication else assessment.get("root_cause"),
+                "affected_sensors": ["communication"] if is_communication else assessment.get("affected_sensors", []),
+                "detected_timestamp_utc": detected,
+                "evidence": [communication] if is_communication else evidence,
+                "neighbor_support": assessment.get("neighbor_support", {}),
+                "recommendation": (
+                    "Inspect the reporting path and station heartbeat; do not diagnose sensor hardware from silence alone."
+                    if is_communication else assessment.get("recommendation")
+                ),
+                "corrections": assessment.get("corrections", []),
+                "source_provider": target.get("provider"),
+                "source_observation_key": target.get("observation_key"),
+                "source_observation_immutable": True,
+            })
+        incidents.sort(
+            key=lambda item: (item["incident_state"] == "CONFIRMED", item.get("anomaly_score") or 0.0),
+            reverse=True,
+        )
+        return {
+            "count": len(incidents),
+            "incidents": incidents[:limit],
+            "generated_at_utc": snapshot["generated_at_utc"],
+            "contract": "SUSPECTED is evidence for operator review; it is not a verified hardware diagnosis.",
         }
 
     @router.get("/ingestion/health")
