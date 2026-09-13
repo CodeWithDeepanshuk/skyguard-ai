@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Activity, BarChart3, CloudSun, RadioTower, ShieldCheck } from 'lucide-react';
+import ServiceStatus from '@/components/service-status';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -60,14 +61,7 @@ export default function RootLayout({
           </nav>
 
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2 rounded-full border border-emerald-300/25 bg-emerald-400/[0.07] px-3 py-1.5 text-[11px] font-bold tracking-wide text-emerald-300 shadow-[0_0_24px_rgba(52,211,153,0.08)]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="hidden sm:inline">Live Engine Connected</span>
-              <span className="sm:hidden">Online</span>
-            </div>
+            <ServiceStatus />
           </div>
         </header>
 
