@@ -40,6 +40,8 @@ htmlcov/
 
 # Local database and runtimes
 data/runtime/replay.db
+data/runtime/observations.db
+data/runtime/*.db
 data/runtime/*.db-journal
 data/runtime/*.db-wal
 data/runtime/live_latest.json

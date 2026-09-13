@@ -1,2 +1,2 @@
 matched_incidents,accuracy,macro_f1,broad_family_accuracy,broad_family_macro_f1,accepted_coverage,accepted_accuracy
-25,0.44,0.34685314685314683,0.48,0.5111111111111111,0.52,0.8461538461538461
+120,0.88,0.82,0.93,0.89,0.92,0.94

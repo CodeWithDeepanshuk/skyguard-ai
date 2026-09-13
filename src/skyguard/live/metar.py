@@ -235,11 +235,17 @@ class MetarLiveService:
                 "available_to_detector": "1",
                 "timestamp_offset_seconds": "0",
                 "pressure_source": "METAR_QNH",
+                "pressure_type": "ALTIMETER_QNH",
                 "source_quality": source_quality,
                 "raw_observation": item.get("rawOb", ""),
                 "source_receipt_time": item.get("receiptTime", ""),
                 "observation_origin": observation_origin,
                 "humidity_origin": "derived_from_temperature_and_dew_point",
+                "humidity_observation_type": "DERIVED",
+                "provider": "METAR",
+                "provider_station_id": icao,
+                "canonical_station_id": station["station_id"],
+                "source_url": self.endpoint,
             })
         rows.sort(key=lambda row: (str(row["timestamp_utc"]), str(row["station_id"])))
         if self.injected_faults:

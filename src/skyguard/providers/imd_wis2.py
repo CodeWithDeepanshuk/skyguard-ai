@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Optional
 
 from skyguard.providers.base import (
     ObservationRecord,
+    PressureType,
     ProviderName,
     RHSource,
     SourceType,
@@ -183,18 +184,33 @@ class IMDWIS2Provider(WeatherProvider):
             name = str(props.get("name") or "")
             if not report_id or not report_time or not name:
                 continue
-            bucket = reports.setdefault(report_id, {"timestamp": report_time, "values": {}, "features": []})
+            publication_time = str(
+                props.get("resultTime")
+                or props.get("publicationTime")
+                or props.get("created")
+                or props.get("updated")
+                or ""
+            )
+            bucket = reports.setdefault(
+                report_id,
+                {
+                    "timestamp": report_time,
+                    "publication_timestamp": publication_time,
+                    "values": {},
+                    "features": [],
+                },
+            )
+            if publication_time and not bucket.get("publication_timestamp"):
+                bucket["publication_timestamp"] = publication_time
             bucket["values"][name] = props.get("value")
             bucket["features"].append(feature)
 
         records: List[ObservationRecord] = []
-        for report in reports.values():
+        for report_id, report in reports.items():
             values = report["values"]
             temp_c = kelvin_to_celsius(_number(values.get("air_temperature")))
             dew_c = kelvin_to_celsius(_number(values.get("dewpoint_temperature")))
-            pressure = _number(values.get("pressure_reduced_to_mean_sea_level"))
-            if pressure is None:
-                pressure = _number(values.get("non_coordinate_pressure"))
+            pressure, pressure_type = _extract_pressure(values)
             rh = _number(values.get("relative_humidity"))
             rh_source = RHSource.OBSERVED.value if rh is not None else RHSource.UNAVAILABLE.value
             if rh is None and temp_c is not None and dew_c is not None:
@@ -205,7 +221,10 @@ class IMDWIS2Provider(WeatherProvider):
             coords = ((report["features"][0].get("geometry") or {}).get("coordinates") or [])
             lat = float(coords[1]) if len(coords) > 1 else float((target or {}).get("latitude") or 0)
             lon = float(coords[0]) if coords else float((target or {}).get("longitude") or 0)
-            raw = json.dumps(report["features"], sort_keys=True, separators=(",", ":")).encode("utf-8")
+            raw_payload_json = json.dumps(
+                report["features"], sort_keys=True, separators=(",", ":")
+            )
+            raw = raw_payload_json.encode("utf-8")
             records.append(ObservationRecord(
                 provider=self.name, source_type=SourceType.OBSERVED.value, station_id=wigos_id,
                 timestamp_utc=report["timestamp"], latitude=lat, longitude=lon,
@@ -213,6 +232,11 @@ class IMDWIS2Provider(WeatherProvider):
                 relative_humidity_pct=rh, pressure_hpa=round(pressure, 2) if pressure is not None else None,
                 is_direct_observation=True, is_interpolated=False, is_model_field=False,
                 rh_source=rh_source, raw_source_hash=hashlib.sha256(raw).hexdigest(),
+                provider_station_id=wigos_id, canonical_station_id=wigos_id,
+                wigos_id=wigos_id, station_name=str((target or {}).get("station_name") or ""),
+                provider_publication_timestamp_utc=str(report.get("publication_timestamp") or ""),
+                pressure_type=pressure_type, source_url=url, message_id=str(report_id),
+                raw_payload_json=raw_payload_json,
             ))
         records.sort(key=lambda item: item.timestamp_utc, reverse=True)
         return records
@@ -277,6 +301,17 @@ def _number(value: Any) -> Optional[float]:
         return None
 
 
+def _extract_pressure(values: Dict[str, Any]) -> tuple[Optional[float], str]:
+    """Return pressure with explicit semantics from WIS2 parameter names."""
+    mean_sea_level = _number(values.get("pressure_reduced_to_mean_sea_level"))
+    if mean_sea_level is not None:
+        return mean_sea_level, PressureType.MEAN_SEA_LEVEL_PRESSURE.value
+    station = _number(values.get("non_coordinate_pressure"))
+    if station is not None:
+        return station, PressureType.STATION_PRESSURE.value
+    return None, PressureType.UNKNOWN.value
+
+
 def _decode_features(features: List[Dict[str, Any]], stations: List[Dict[str, Any]]) -> List[ObservationRecord]:
     metadata = {str(row.get("wigos_id")): row for row in stations if row.get("wigos_id")}
     reports: Dict[tuple[str, str], Dict[str, Any]] = {}
@@ -288,7 +323,24 @@ def _decode_features(features: List[Dict[str, Any]], stations: List[Dict[str, An
         name = str(props.get("name") or "")
         if not station_id or not report_id or not timestamp or not name:
             continue
-        bucket = reports.setdefault((station_id, report_id), {"timestamp": timestamp, "values": {}, "features": []})
+        publication_time = str(
+            props.get("resultTime")
+            or props.get("publicationTime")
+            or props.get("created")
+            or props.get("updated")
+            or ""
+        )
+        bucket = reports.setdefault(
+            (station_id, report_id),
+            {
+                "timestamp": timestamp,
+                "publication_timestamp": publication_time,
+                "values": {},
+                "features": [],
+            },
+        )
+        if publication_time and not bucket.get("publication_timestamp"):
+            bucket["publication_timestamp"] = publication_time
         bucket["values"][name] = props.get("value")
         bucket["features"].append(feature)
     output: List[ObservationRecord] = []
@@ -296,9 +348,7 @@ def _decode_features(features: List[Dict[str, Any]], stations: List[Dict[str, An
         values = report["values"]
         temperature = kelvin_to_celsius(_number(values.get("air_temperature")))
         dewpoint = kelvin_to_celsius(_number(values.get("dewpoint_temperature")))
-        pressure = _number(values.get("pressure_reduced_to_mean_sea_level"))
-        if pressure is None:
-            pressure = _number(values.get("non_coordinate_pressure"))
+        pressure, pressure_type = _extract_pressure(values)
         humidity = _number(values.get("relative_humidity"))
         humidity_source = RHSource.OBSERVED.value if humidity is not None else RHSource.UNAVAILABLE.value
         if humidity is None and temperature is not None and dewpoint is not None:
@@ -310,7 +360,11 @@ def _decode_features(features: List[Dict[str, Any]], stations: List[Dict[str, An
         station = metadata.get(station_id, {})
         latitude = float(coordinates[1]) if len(coordinates) > 1 else float(station.get("latitude") or 0)
         longitude = float(coordinates[0]) if coordinates else float(station.get("longitude") or 0)
-        raw = json.dumps(report["features"], sort_keys=True, separators=(",", ":")).encode("utf-8")
+        raw_payload_json = json.dumps(
+            report["features"], sort_keys=True, separators=(",", ":")
+        )
+        raw = raw_payload_json.encode("utf-8")
+        message_id = str((report["features"][0].get("properties") or {}).get("reportId") or "")
         output.append(ObservationRecord(
             provider=ProviderName.IMD_WIS2.value, source_type=SourceType.OBSERVED.value,
             station_id=station_id, timestamp_utc=report["timestamp"], latitude=latitude, longitude=longitude,
@@ -318,6 +372,11 @@ def _decode_features(features: List[Dict[str, Any]], stations: List[Dict[str, An
             relative_humidity_pct=humidity, pressure_hpa=round(pressure, 2) if pressure is not None else None,
             is_direct_observation=True, is_interpolated=False, is_model_field=False,
             rh_source=humidity_source, raw_source_hash=hashlib.sha256(raw).hexdigest(),
+            provider_station_id=station_id, canonical_station_id=station_id,
+            wigos_id=station_id, station_name=str(station.get("station_name") or ""),
+            provider_publication_timestamp_utc=str(report.get("publication_timestamp") or ""),
+            pressure_type=pressure_type, source_url=f"{WIS2_BASE_URL}/collections/{SYNOP_COLLECTION}/items",
+            message_id=message_id, raw_payload_json=raw_payload_json,
         ))
     output.sort(key=lambda item: (item.timestamp_utc, item.station_id), reverse=True)
     return output

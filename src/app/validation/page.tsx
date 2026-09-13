@@ -80,8 +80,12 @@ export default function ValidationPage() {
             <div className="h-10 w-px bg-[#1a4163]"></div>
             <div>
               <span className="text-xs text-slate-400 block font-semibold">Promotion Status</span>
-              <span className="inline-flex items-center px-2.5 py-1 rounded text-xs font-bold bg-amber-950 text-amber-300 border border-amber-800 mt-1">
-                Shadow Deployment
+              <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold border mt-1 ${
+                summary.passed_gates === summary.total_gates
+                  ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+                  : 'bg-amber-950 text-amber-300 border-amber-800'
+              }`}>
+                {summary.passed_gates === summary.total_gates ? 'Production Promoted' : 'Shadow Deployment'}
               </span>
             </div>
           </div>

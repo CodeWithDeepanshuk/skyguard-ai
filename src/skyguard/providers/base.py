@@ -1,7 +1,11 @@
-"""Base abstractions and standardized schemas for weather data providers.
+"""Base abstractions and normalized schemas for weather data providers.
 
-Enforces strict scientific provenance separating direct station observations
-(IMD AWS, IMD WIS2, METAR, Meteostat observed) from reference models (Open-Meteo).
+The provider contract is deliberately stricter than the model feature contract.
+Models may only see temperature, pressure and relative humidity, while the
+operational platform also needs identifiers, timestamps and provenance to avoid
+mixing unlike observations.  In particular, pressure semantics are explicit:
+station pressure, mean-sea-level pressure and aviation QNH are never silently
+treated as interchangeable.
 """
 from __future__ import annotations
 
@@ -34,6 +38,19 @@ class RHSource(str, Enum):
     UNAVAILABLE = "UNAVAILABLE"
 
 
+class HumidityObservationType(str, Enum):
+    DIRECT = "DIRECT"
+    DERIVED = "DERIVED"
+    UNAVAILABLE = "UNAVAILABLE"
+
+
+class PressureType(str, Enum):
+    STATION_PRESSURE = "STATION_PRESSURE"
+    MEAN_SEA_LEVEL_PRESSURE = "MEAN_SEA_LEVEL_PRESSURE"
+    ALTIMETER_QNH = "ALTIMETER_QNH"
+    UNKNOWN = "UNKNOWN"
+
+
 class StalenessStatus(str, Enum):
     CURRENT = "CURRENT"      # < 60 min
     DELAYED = "DELAYED"      # 60 - 180 min
@@ -61,8 +78,46 @@ class ObservationRecord:
     raw_source_hash: str = ""
     observation_age_minutes: Optional[float] = None
     quality_status: str = StalenessStatus.CURRENT.value
+    provider_station_id: str = ""
+    canonical_station_id: str = ""
+    wigos_id: str = ""
+    icao_code: str = ""
+    station_name: str = ""
+    state: str = ""
+    district: str = ""
+    provider_publication_timestamp_utc: str = ""
+    ingestion_timestamp_utc: str = ""
+    pressure_type: str = PressureType.UNKNOWN.value
+    humidity_observation_type: str = HumidityObservationType.UNAVAILABLE.value
+    source_quality_flags: tuple[str, ...] = ()
+    source_url: str = ""
+    message_id: str = ""
+    schema_version: str = "1.0"
+    raw_payload_json: str = field(default="", repr=False)
 
     def __post_init__(self):
+        self.provider_station_id = self.provider_station_id or self.station_id
+        self.canonical_station_id = self.canonical_station_id or self.station_id
+        self.ingestion_timestamp_utc = self.ingestion_timestamp_utc or self.retrieved_at_utc
+
+        if not self.humidity_observation_type or self.humidity_observation_type == HumidityObservationType.UNAVAILABLE.value:
+            if self.relative_humidity_pct is None:
+                self.humidity_observation_type = HumidityObservationType.UNAVAILABLE.value
+            elif self.rh_source == RHSource.DERIVED.value:
+                self.humidity_observation_type = HumidityObservationType.DERIVED.value
+            else:
+                self.humidity_observation_type = HumidityObservationType.DIRECT.value
+
+        allowed_pressure_types = {item.value for item in PressureType}
+        if self.pressure_type not in allowed_pressure_types:
+            raise ValueError(f"Unsupported pressure_type: {self.pressure_type}")
+
+        allowed_humidity_types = {item.value for item in HumidityObservationType}
+        if self.humidity_observation_type not in allowed_humidity_types:
+            raise ValueError(
+                f"Unsupported humidity_observation_type: {self.humidity_observation_type}"
+            )
+
         if self.source_type == SourceType.OBSERVED.value and not self.is_direct_observation:
             raise ValueError("OBSERVED requires a direct station observation")
         if self.source_type == SourceType.REFERENCE_MODEL.value and not self.is_model_field:
@@ -86,13 +141,51 @@ class ObservationRecord:
                 self.observation_age_minutes = None
                 self.quality_status = StalenessStatus.OFFLINE.value
 
-        # This is a normalized-record fingerprint, not a substitute for hashing raw bytes.
+        # This fallback is only a normalized-record fingerprint. Providers that
+        # have the raw message must supply its SHA-256 and raw_payload_json.
         if not self.raw_source_hash:
             fingerprint = f"{self.provider}|{self.station_id}|{self.timestamp_utc}|{self.temperature_c}|{self.pressure_hpa}|{self.relative_humidity_pct}"
             self.raw_source_hash = hashlib.sha256(fingerprint.encode("utf-8")).hexdigest()
+            if "NORMALIZED_FINGERPRINT_ONLY" not in self.source_quality_flags:
+                self.source_quality_flags = (*self.source_quality_flags, "NORMALIZED_FINGERPRINT_ONLY")
 
-    def to_dict(self) -> Dict[str, Any]:
-        return asdict(self)
+        if self.pressure_hpa is not None and self.pressure_type == PressureType.UNKNOWN.value:
+            if "PRESSURE_SEMANTICS_UNKNOWN" not in self.source_quality_flags:
+                self.source_quality_flags = (*self.source_quality_flags, "PRESSURE_SEMANTICS_UNKNOWN")
+
+    @property
+    def observation_key(self) -> str:
+        # A WIS2 report can be relayed by more than one Global Cache.  The raw
+        # GeoJSON envelope can therefore differ even though the authoritative
+        # provider message is the same.  Prefer the provider message ID for an
+        # idempotency key; fall back to the normalized three-parameter payload
+        # only when the source has no stable message identifier.
+        source_identity = self.message_id or "|".join(
+            (
+                str(self.temperature_c), str(self.pressure_hpa), self.pressure_type,
+                str(self.relative_humidity_pct), self.humidity_observation_type,
+            )
+        )
+        identity = (
+            f"{self.provider}|{self.provider_station_id}|{self.timestamp_utc}|"
+            f"{source_identity}"
+        )
+        return hashlib.sha256(identity.encode("utf-8")).hexdigest()
+
+    @property
+    def measurement_confidence_factor(self) -> float:
+        """Return a provenance factor, not a probability of sensor health."""
+        if self.relative_humidity_pct is not None and self.humidity_observation_type == HumidityObservationType.DERIVED.value:
+            return 0.85
+        return 1.0
+
+    def to_dict(self, *, include_raw: bool = False) -> Dict[str, Any]:
+        payload = asdict(self)
+        payload["observation_key"] = self.observation_key
+        payload["measurement_confidence_factor"] = self.measurement_confidence_factor
+        if not include_raw:
+            payload.pop("raw_payload_json", None)
+        return payload
 
 
 class WeatherProvider(abc.ABC):

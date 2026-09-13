@@ -16,11 +16,36 @@ export interface GateItem {
 
 export async function GET() {
   const root = process.cwd();
+  const fileFinalResult = path.join(root, 'reports', 'final_evaluation', 'final_result_block.json');
+  const fileGateResults = path.join(root, 'reports', 'final_evaluation', 'gate_results.json');
   const file11 = path.join(root, 'iteration 11 result', 'iteration11_result_block.json');
   const file10 = path.join(root, 'iteration 10 result', 'iteration10_result_block (1).json');
 
-  let rawData = null;
-  if (fs.existsSync(file11)) {
+  let rawData: any = null;
+  let gateResultsMap: Record<string, boolean> = {};
+
+  if (fs.existsSync(fileFinalResult)) {
+    try {
+      rawData = JSON.parse(fs.readFileSync(fileFinalResult, 'utf-8'));
+    } catch {
+      // Fallback
+    }
+  }
+
+  if (fs.existsSync(fileGateResults)) {
+    try {
+      const parsedGates = JSON.parse(fs.readFileSync(fileGateResults, 'utf-8'));
+      for (const [k, v] of Object.entries(parsedGates)) {
+        if (v && typeof v === 'object' && 'passed' in v) {
+          gateResultsMap[k] = (v as any).passed === true;
+        }
+      }
+    } catch {
+      // Fallback
+    }
+  }
+
+  if (!rawData && fs.existsSync(file11)) {
     try {
       rawData = JSON.parse(fs.readFileSync(file11, 'utf-8'));
     } catch {
@@ -35,7 +60,10 @@ export async function GET() {
     }
   }
 
-  const rawGates: Record<string, boolean> = rawData?.promotion_gates || {};
+  const rawGates: Record<string, boolean> = {
+    ...(rawData?.promotion_gates || {}),
+    ...gateResultsMap
+  };
 
   const gateDefinitions: Array<Omit<GateItem, 'actual_status' | 'status_label'>> = [
     {

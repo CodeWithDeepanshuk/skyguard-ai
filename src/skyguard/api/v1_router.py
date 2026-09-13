@@ -9,23 +9,27 @@ Provides:
 """
 from __future__ import annotations
 
+import csv
 import logging
+import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Header, HTTPException, Query
 
 from skyguard.detection.multi_evidence import MultiEvidenceAnomalyDetector
 from skyguard.providers.base import ObservationRecord, SourceType
 from skyguard.providers.manager import WeatherProviderManager
+from skyguard.ingestion import IngestionService
+from skyguard.ingestion.identity import StationIdentityResolver
+from skyguard.operational import OperationalQC
 from skyguard.spatial.buddy_check import SpatialBuddyCheck
 from skyguard.spatial.graph import SpatialNeighborGraph
-from skyguard.stations.registry import MasterStationRegistry
+from skyguard.stations.registry import MasterStationRegistry, haversine_km
+from skyguard.storage import ObservationStore
 
 logger = logging.getLogger(__name__)
-
-router = APIRouter(prefix="/api/v1", tags=["AWS Operational Intelligence v1"])
-
 
 def get_services(root: Path) -> tuple[MasterStationRegistry, SpatialNeighborGraph, WeatherProviderManager, MultiEvidenceAnomalyDetector]:
     registry = MasterStationRegistry(root=root)
@@ -35,8 +39,84 @@ def get_services(root: Path) -> tuple[MasterStationRegistry, SpatialNeighborGrap
     return registry, graph, manager, detector
 
 
-def create_v1_router(root: Path) -> APIRouter:
+def create_v1_router(
+    root: Path,
+    observation_store: Optional[ObservationStore] = None,
+    initial_store_error: str = "",
+) -> APIRouter:
+    router = APIRouter(prefix="/api/v1", tags=["AWS Operational Intelligence v1"])
     registry, graph, manager, detector = get_services(root)
+    store_error = initial_store_error
+    if observation_store is None and not store_error:
+        try:
+            observation_store = ObservationStore(root=root)
+        except Exception as exc:  # database boundary: keep diagnostics available
+            logger.exception("Operational observation store unavailable")
+            store_error = str(exc)
+    identity = StationIdentityResolver(root)
+    operational_qc = OperationalQC()
+
+    def require_store() -> ObservationStore:
+        if observation_store is None:
+            raise HTTPException(status_code=503, detail=f"Operational observation store unavailable: {store_error}")
+        return observation_store
+
+    def parse_time(value: object) -> Optional[datetime]:
+        try:
+            parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        except (TypeError, ValueError):
+            return None
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc)
+
+    catalog_by_id = {str(row.get("station_id") or ""): row for row in identity.catalog}
+
+    def station_metadata(station_id: str) -> Optional[dict[str, Any]]:
+        if station_id in catalog_by_id:
+            return dict(catalog_by_id[station_id])
+        official = registry.get_station(station_id)
+        return official.to_dict() if official else None
+
+    def aligned_neighbors(target: dict[str, Any], *, tolerance_minutes: int = 90) -> list[dict[str, Any]]:
+        store = require_store()
+        target_time = parse_time(target.get("observation_timestamp_utc"))
+        if target_time is None:
+            return []
+        ranked: list[tuple[float, dict[str, Any]]] = []
+        for candidate in store.latest_observations(limit=2500):
+            candidate_id = str(candidate.get("canonical_station_id") or "")
+            if candidate_id == str(target.get("canonical_station_id") or ""):
+                continue
+            candidate_time = parse_time(candidate.get("observation_timestamp_utc"))
+            if candidate_time is None or abs((target_time - candidate_time).total_seconds()) > tolerance_minutes * 60:
+                continue
+            try:
+                distance = haversine_km(
+                    float(target["latitude"]), float(target["longitude"]),
+                    float(candidate["latitude"]), float(candidate["longitude"]),
+                )
+            except (KeyError, TypeError, ValueError):
+                continue
+            if distance > 350.0:
+                continue
+            ranked.append((distance, candidate))
+
+        output: list[dict[str, Any]] = []
+        for distance, candidate in sorted(ranked, key=lambda item: item[0])[:8]:
+            row = dict(candidate)
+            row["distance_km"] = round(distance, 1)
+            prior = store.history(str(candidate["canonical_station_id"]), hours=48, limit=200)
+            prior = [item for item in prior if (parse_time(item.get("observation_timestamp_utc")) or target_time) < (parse_time(candidate.get("observation_timestamp_utc")) or target_time)]
+            if prior:
+                previous = prior[-1]
+                for field in ("temperature_c", "pressure_hpa", "relative_humidity_pct"):
+                    try:
+                        row[f"{field}_delta"] = float(row[field]) - float(previous[field])
+                    except (KeyError, TypeError, ValueError):
+                        pass
+            output.append(row)
+        return output
 
     @router.get("/stations")
     def list_master_stations(
@@ -282,5 +362,201 @@ def create_v1_router(root: Path) -> APIRouter:
             "providers": providers_health,
             "status": "WIS2_OBSERVATION_DECODER_READY",
         }
+
+    @router.get("/observations/latest")
+    def latest_operational_observations(
+        limit: int = Query(1000, ge=1, le=5000),
+        provider: str = Query(""),
+    ) -> Dict[str, Any]:
+        """Return immutable direct observations from the operational store."""
+        rows = require_store().latest_observations(limit=limit, provider=provider or None)
+        return {
+            "count": len(rows),
+            "observations": rows,
+            "contract": {
+                "meteorological_inputs": ["temperature_c", "pressure_hpa", "relative_humidity_pct"],
+                "pressure_semantics_explicit": True,
+                "derived_humidity_labelled": True,
+                "reference_fields_excluded": True,
+            },
+        }
+
+    @router.get("/network/operational-summary")
+    def operational_network_summary() -> Dict[str, Any]:
+        store = require_store()
+        summary = store.network_summary(catalog_by_id.keys())
+        summary["catalog_basis"] = "NOAA/ISD station metadata used by the Iteration 11 national catalog"
+        summary["catalog_is_live_aws_coverage"] = False
+        summary["reporting_count_definition"] = "Distinct catalog-mapped stations with an observation in the latest 24 hours"
+        summary["generated_at_utc"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+        return summary
+
+    @router.get("/network/stations")
+    def operational_station_map(
+        query: str = Query(""),
+        state: str = Query(""),
+        source: str = Query(""),
+        freshness: str = Query(""),
+        limit: int = Query(2000, ge=1, le=5000),
+    ) -> Dict[str, Any]:
+        store = require_store()
+        latest = {
+            str(row.get("canonical_station_id") or ""): row
+            for row in store.latest_observations(limit=max(2500, len(catalog_by_id) * 2))
+        }
+        now = datetime.now(timezone.utc)
+        rows: list[dict[str, Any]] = []
+        for station_id, raw_meta in catalog_by_id.items():
+            meta = dict(raw_meta)
+            observation = latest.get(station_id)
+            age: Optional[float] = None
+            if observation:
+                timestamp = parse_time(observation.get("observation_timestamp_utc"))
+                if timestamp:
+                    age = max(0.0, (now - timestamp).total_seconds() / 60.0)
+            status = (
+                "FRESH" if age is not None and age <= 90
+                else "DELAYED" if age is not None and age <= 180
+                else "STALE" if age is not None and age <= 1440
+                else "NO_RECENT_REPORT" if observation else "NOT_OBSERVED_IN_STORE"
+            )
+            item = {
+                **meta,
+                "station_id": station_id,
+                "observation_status": status,
+                "latest_observation_utc": observation.get("observation_timestamp_utc") if observation else None,
+                "observation_age_minutes": round(age, 1) if age is not None else None,
+                "latest_provider": observation.get("provider") if observation else None,
+                "pressure_type": observation.get("pressure_type") if observation else None,
+                "humidity_observation_type": observation.get("humidity_observation_type") if observation else None,
+                "health_status": "NOT_ASSESSED",
+            }
+            q = query.strip().lower()
+            if q and q not in str(item.get("station_name") or "").lower() and q not in station_id.lower():
+                continue
+            if state and state.lower() not in str(item.get("state") or item.get("climate_zone") or "").lower():
+                continue
+            if source and source.upper() != str(item.get("latest_provider") or "").upper():
+                continue
+            if freshness and freshness.upper() != status:
+                continue
+            rows.append(item)
+        return {
+            "catalog_stations": len(catalog_by_id),
+            "matched_stations": len(rows),
+            "stations": rows[:limit],
+            "status_note": "Freshness is based on received observations; health is not inferred from catalog membership.",
+        }
+
+    @router.get("/operational/stations/{station_id}")
+    def operational_station_detail(
+        station_id: str,
+        hours: int = Query(24, ge=1, le=24 * 30),
+    ) -> Dict[str, Any]:
+        store = require_store()
+        metadata = station_metadata(station_id)
+        if metadata is None:
+            raise HTTPException(status_code=404, detail=f"Station '{station_id}' is not in the catalog")
+        history = store.history(station_id, hours=hours, limit=10000)
+        latest = history[-1] if history else None
+        if latest is None:
+            return {
+                "metadata": metadata,
+                "latest": None,
+                "history": [],
+                "neighbors": [],
+                "assessment": None,
+                "communication": operational_qc.assess_communication(station_id, []),
+                "message": "No physical observation for this station exists in the operational store.",
+            }
+        neighbors = aligned_neighbors(latest)
+        assessment = operational_qc.analyze(latest, history, neighbors)
+        communication_history = store.history(station_id, hours=max(hours, 48), limit=10000)
+        return {
+            "metadata": metadata,
+            "latest": latest,
+            "history": history,
+            "neighbors": neighbors,
+            "assessment": assessment.to_dict(),
+            "communication": operational_qc.assess_communication(station_id, communication_history),
+            "history_is_causal": True,
+            "source_observation_immutable": True,
+        }
+
+    @router.get("/ingestion/health")
+    def ingestion_health() -> Dict[str, Any]:
+        health = require_store().ingestion_health()
+        health["store_error"] = store_error or None
+        return health
+
+    @router.get("/sources/freshness")
+    def source_freshness() -> Dict[str, Any]:
+        store = require_store()
+        freshness = store.source_freshness()
+        observed = {str(row.get("provider")): row for row in freshness}
+        providers = []
+        for provider, access in (
+            ("IMD_AWS", "configured" if manager.imd_api.configured else "credentials_not_configured"),
+            ("IMD_WIS2", "public_official_fallback"),
+            ("METAR", "airport_observation_fallback"),
+        ):
+            providers.append({
+                "provider": provider,
+                "access": access,
+                "freshness": observed.get(provider),
+            })
+        return {
+            "providers": providers,
+            "source_events": store.source_events(limit=50),
+            "reference_model_is_station_observation": False,
+        }
+
+    @router.get("/provenance")
+    def data_provenance() -> Dict[str, Any]:
+        return {
+            "priority": ["IMD_AWS", "IMD_WIS2", "METAR", "REFERENCE_MODEL"],
+            "sources": {
+                "IMD_AWS": {
+                    "role": "primary physical AWS/ARG observations",
+                    "configured": manager.imd_api.configured,
+                    "endpoint": manager.imd_api.endpoint,
+                },
+                "IMD_WIS2": {
+                    "role": "official public SYNOP observation fallback",
+                    "endpoint": "https://wis2box.imd.gov.in/oapi",
+                },
+                "METAR": {
+                    "role": "limited airport observation fallback",
+                    "relative_humidity": "derived from reported temperature and dew point",
+                    "pressure": "ALTIMETER_QNH",
+                },
+                "REFERENCE_MODEL": {
+                    "role": "regional weather context only",
+                    "persisted_as_station_observation": False,
+                },
+            },
+            "scientific_contract": {
+                "model_meteorological_inputs": ["temperature_c", "pressure_hpa", "relative_humidity_pct"],
+                "pressure_types_never_silently_mixed": True,
+                "raw_values_overwritten": False,
+                "uncalibrated_scores_labelled_as_probability": False,
+            },
+            "storage": require_store().durability,
+        }
+
+    @router.post("/ingestion/run")
+    def run_ingestion(
+        providers: str = Query("IMD_API,WIS2,METAR"),
+        authorization: Optional[str] = Header(None),
+    ) -> Dict[str, Any]:
+        expected = os.getenv("SKYGUARD_INGESTION_TOKEN", "").strip()
+        if not expected:
+            raise HTTPException(status_code=503, detail="SKYGUARD_INGESTION_TOKEN is not configured")
+        supplied = (authorization or "").removeprefix("Bearer ").strip()
+        if supplied != expected:
+            raise HTTPException(status_code=401, detail="Invalid ingestion token")
+        service = IngestionService(require_store(), root=root)
+        requested = [item.strip() for item in providers.split(",") if item.strip()]
+        return service.run_once(requested)
 
     return router

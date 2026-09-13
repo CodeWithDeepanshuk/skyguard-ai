@@ -11,6 +11,7 @@ Never presented as physical in-situ IMD AWS hardware sensor telemetry.
 from __future__ import annotations
 
 import json
+import hashlib
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +20,7 @@ import urllib.request
 
 from skyguard.providers.base import (
     ObservationRecord,
+    PressureType,
     ProviderName,
     RHSource,
     SourceType,
@@ -138,6 +140,18 @@ class ReferenceWeatherProvider(WeatherProvider):
                 is_interpolated=True,
                 is_model_field=True,
                 rh_source=RHSource.DERIVED.value if rh_val is not None else RHSource.UNAVAILABLE.value,
+                provider_station_id=station_id,
+                canonical_station_id=station_id,
+                pressure_type=PressureType.STATION_PRESSURE.value,
+                source_quality_flags=("MODEL_FIELD_REFERENCE_ONLY",),
+                source_url=self.endpoint,
+                message_id=f"open-meteo|{station_id}|{iso_time}",
+                raw_source_hash=hashlib.sha256(
+                    json.dumps(
+                        {"time": iso_time, "temperature_2m": t_val, "relative_humidity_2m": rh_val, "surface_pressure": p_val},
+                        sort_keys=True,
+                    ).encode("utf-8")
+                ).hexdigest(),
             )
             records.append(rec)
 

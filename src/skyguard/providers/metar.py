@@ -6,6 +6,7 @@ Strictly tagged as SourceType.OBSERVED with is_direct_observation=True.
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 import os
@@ -17,6 +18,7 @@ import urllib.request
 
 from skyguard.providers.base import (
     ObservationRecord,
+    PressureType,
     ProviderName,
     RHSource,
     SourceType,
@@ -100,13 +102,9 @@ class MetarWeatherProvider(WeatherProvider):
             return []
 
         url = f"{self.endpoint}?ids={icao}&format=json&hours={min(hours, 72)}"
-        req = urllib.request.Request(url, headers={"User-Agent": "SkyGuard-AI/2.0"})
-        records: List[ObservationRecord] = []
-
-        raw_data = None
+        raw_data: Any = None
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout_seconds) as resp:
-                raw_data = json.loads(resp.read().decode("utf-8"))
+            raw_data = self._fetch_json(url)
         except Exception:
             # Fallback to local cache if present
             if self.cache_path.exists():
@@ -118,15 +116,52 @@ class MetarWeatherProvider(WeatherProvider):
 
         if not raw_data or not isinstance(raw_data, list):
             return []
+        return self._normalize(raw_data, requested_station_id=station_id)
 
-        meta = self._station_lookup.get(station_id) or self._icao_lookup.get(icao) or {}
-        lat = float(meta.get("latitude", 0.0)) if meta.get("latitude") else 0.0
-        lon = float(meta.get("longitude", 0.0)) if meta.get("longitude") else 0.0
-        elev = float(meta.get("elevation_m", 0.0)) if meta.get("elevation_m") else None
+    def fetch_network_history(self, hours: int = 24) -> List[ObservationRecord]:
+        """Fetch all configured Indian aerodromes in one bounded bulk request."""
+        identifiers = sorted({key for key in self._icao_lookup if len(key) == 4 and key.startswith("V")})
+        if not identifiers:
+            return []
+        url = f"{self.endpoint}?ids={','.join(identifiers)}&format=json&hours={min(hours, 72)}"
+        try:
+            payload = self._fetch_json(url)
+        except Exception:
+            return []
+        return self._normalize(payload if isinstance(payload, list) else [])
+
+    def _fetch_json(self, url: str) -> Any:
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "SkyGuard-AI/2.0", "Accept": "application/json"},
+        )
+        with urllib.request.urlopen(req, timeout=self.timeout_seconds) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    def _normalize(
+        self,
+        raw_data: List[Dict[str, Any]],
+        *,
+        requested_station_id: Optional[str] = None,
+    ) -> List[ObservationRecord]:
+        records: List[ObservationRecord] = []
+        requested_icao = self._resolve_icao(requested_station_id) if requested_station_id else None
 
         for item in raw_data:
             if not isinstance(item, dict):
                 continue
+            icao = str(item.get("icaoId") or requested_icao or "").strip().upper()
+            if not icao or icao not in self._icao_lookup:
+                continue
+            meta = (
+                self._station_lookup.get(requested_station_id or "")
+                or self._icao_lookup.get(icao)
+                or {}
+            )
+            canonical_station_id = str(meta.get("station_id") or requested_station_id or icao)
+            lat = float(meta.get("latitude", 0.0)) if meta.get("latitude") else 0.0
+            lon = float(meta.get("longitude", 0.0)) if meta.get("longitude") else 0.0
+            elev = float(meta.get("elevation_m", 0.0)) if meta.get("elevation_m") else None
             rep_time = item.get("reportTime") or ""
             if not rep_time and item.get("obsTime"):
                 try:
@@ -151,11 +186,16 @@ class MetarWeatherProvider(WeatherProvider):
             td_val = float(dewp) if dewp is not None else None
             p_val = float(altim) if altim is not None else None
             rh_val = calc_relative_humidity(t_val, td_val)
+            raw_payload_json = json.dumps(item, sort_keys=True, separators=(",", ":"))
+            raw_hash = hashlib.sha256(raw_payload_json.encode("utf-8")).hexdigest()
+            source_flags = tuple(
+                [str(item.get("qcField"))] if item.get("qcField") not in (None, "") else []
+            )
 
             rec = ObservationRecord(
                 provider=self.name,
                 source_type=self.source_type.value,
-                station_id=station_id,
+                station_id=canonical_station_id,
                 timestamp_utc=str(rep_time),
                 latitude=item_lat,
                 longitude=item_lon,
@@ -167,6 +207,17 @@ class MetarWeatherProvider(WeatherProvider):
                 is_interpolated=False,
                 is_model_field=False,
                 rh_source=RHSource.DERIVED.value if rh_val is not None else RHSource.UNAVAILABLE.value,
+                raw_source_hash=raw_hash,
+                provider_station_id=icao,
+                canonical_station_id=canonical_station_id,
+                icao_code=icao,
+                station_name=str(meta.get("station_name") or meta.get("name") or canonical_station_id),
+                provider_publication_timestamp_utc=str(item.get("receiptTime") or ""),
+                pressure_type=PressureType.ALTIMETER_QNH.value,
+                source_quality_flags=source_flags,
+                source_url=self.endpoint,
+                message_id=str(item.get("rawOb") or f"{icao}|{rep_time}"),
+                raw_payload_json=raw_payload_json,
             )
             records.append(rec)
 

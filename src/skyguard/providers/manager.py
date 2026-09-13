@@ -21,6 +21,7 @@ from skyguard.providers.base import (
     WeatherProvider,
 )
 from skyguard.providers.imd_wis2 import IMDWIS2Provider
+from skyguard.providers.imd_api import IMDAWSAPIProvider
 from skyguard.providers.metar import MetarWeatherProvider
 from skyguard.providers.meteostat import MeteostatWeatherProvider
 from skyguard.providers.reference_weather import ReferenceWeatherProvider
@@ -34,11 +35,13 @@ class WeatherProviderManager:
     def __init__(self, root: Path = ROOT):
         self.root = root
         self.wis2 = IMDWIS2Provider()
+        self.imd_api = IMDAWSAPIProvider()
         self.metar = MetarWeatherProvider()
         self.meteostat = MeteostatWeatherProvider()
         self.reference = ReferenceWeatherProvider()
 
         self._providers: Dict[str, WeatherProvider] = {
+            ProviderName.IMD_AWS.value: self.imd_api,
             ProviderName.IMD_WIS2.value: self.wis2,
             ProviderName.METAR.value: self.metar,
             ProviderName.METEOSTAT.value: self.meteostat,
@@ -79,17 +82,22 @@ class WeatherProviderManager:
 
     def fetch_observation(self, station_id: str) -> Optional[ObservationRecord]:
         """Fetch the highest-priority genuine direct physical observation."""
-        # 1. Check IMD WIS 2.0
+        # 1. Check the credentialed IMD AWS/ARG API.
+        rec = self.imd_api.fetch_current(station_id)
+        if rec and rec.temperature_c is not None:
+            return rec
+
+        # 2. Check IMD WIS 2.0.
         rec = self.wis2.fetch_current(station_id)
         if rec and rec.temperature_c is not None:
             return rec
 
-        # 2. Check METAR
+        # 3. Check METAR
         rec = self.metar.fetch_current(station_id)
         if rec and rec.temperature_c is not None:
             return rec
 
-        # 3. Check Meteostat
+        # 4. Check Meteostat
         rec = self.meteostat.fetch_current(station_id)
         if rec and rec.temperature_c is not None:
             return rec

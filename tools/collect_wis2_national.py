@@ -6,7 +6,6 @@ import csv
 import gzip
 import hashlib
 import json
-from dataclasses import asdict
 from pathlib import Path
 
 from skyguard.providers.imd_wis2 import IMDWIS2Provider
@@ -23,7 +22,7 @@ def main() -> None:
     output_dir = ROOT / "data" / "observations" / "imd_wis2"
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / "latest_national.csv.gz"
-    fields = list(asdict(records[0]).keys()) if records else [
+    fields = list(records[0].to_dict().keys()) if records else [
         "provider", "source_type", "station_id", "timestamp_utc", "latitude", "longitude",
         "temperature_c", "pressure_hpa", "relative_humidity_pct", "raw_source_hash"]
     with gzip.open(csv_path, "wt", encoding="utf-8", newline="") as handle:

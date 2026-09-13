@@ -1,0 +1,16 @@
+{
+  "complete": true,
+  "pages": 27,
+  "features_downloaded": 26936,
+  "number_matched": 26936,
+  "decoded_reports": 1376,
+  "reporting_stations": 324,
+  "window_start_utc": "2026-08-25T00:00:00+00:00",
+  "window_end_utc": "2026-08-25T23:59:59+00:00",
+  "max_pages": 40,
+  "source_collection": "urn:wmo:md:in-imd:surface-based-observations.synop",
+  "date_utc": "2026-08-25",
+  "output_file": "data/observations/imd_wis2/daily/2026-08-25.csv.gz",
+  "output_sha256": "47cee6c887498b21de8be50cb06c624935fdec5d561c74366df29329db020c3b",
+  "resumed": false
+}

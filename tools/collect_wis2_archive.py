@@ -6,7 +6,6 @@ import csv
 import gzip
 import hashlib
 import json
-from dataclasses import asdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -40,7 +39,7 @@ def main() -> None:
             if receipt.get("complete") and receipt.get("output_sha256") == hashlib.sha256(data_path.read_bytes()).hexdigest():
                 receipt["resumed"] = True; manifest.append(receipt); print(f"resume {stem}"); continue
         records, receipt = provider.fetch_network_window(start, end, args.max_pages_per_day)
-        fields = list(asdict(records[0]).keys()) if records else ["provider","source_type","station_id","timestamp_utc"]
+        fields = list(records[0].to_dict().keys()) if records else ["provider","source_type","station_id","timestamp_utc"]
         with gzip.open(data_path, "wt", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore"); writer.writeheader()
             for record in records: writer.writerow(record.to_dict())
