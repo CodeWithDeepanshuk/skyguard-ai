@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Activity, BarChart3, CloudSun, RadioTower, ShieldCheck } from 'lucide-react';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,70 +15,79 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-[#071521] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
-        <header className="sticky top-0 z-50 border-b border-[#1a4163] bg-[#0c2234]/90 backdrop-blur-md px-4 sm:px-8 py-3.5 flex flex-wrap items-center justify-between gap-4">
+      <body className="min-h-screen flex flex-col text-slate-100">
+        <header className="sky-header sticky top-0 z-50 border-b backdrop-blur-xl px-4 sm:px-7 py-3 flex flex-wrap items-center justify-between gap-3 lg:gap-5">
+          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center space-x-2.5 group">
-              <span className="h-8 w-8 rounded-lg bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+              <span className="relative h-10 w-10 overflow-hidden rounded-xl bg-gradient-to-br from-cyan-300 via-blue-500 to-indigo-600 flex items-center justify-center font-black text-white shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+                <span aria-hidden="true" className="absolute inset-[1px] rounded-[11px] border border-white/25" />
                 SG
               </span>
               <div>
-                <div className="font-extrabold text-white text-base tracking-tight flex items-center gap-2">
+                <div className="font-black text-white text-base tracking-tight flex items-center gap-2">
                   SkyGuard AI
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800">
+                  <span className="text-[10px] uppercase font-extrabold tracking-[0.12em] px-1.5 py-0.5 rounded-md bg-cyan-400/10 text-cyan-300 border border-cyan-300/20">
                     SIH 26073
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-400 font-medium">Weather Network Command Centre</div>
+                <div className="text-[11px] text-slate-400 font-medium tracking-wide">Weather trust command centre</div>
               </div>
             </Link>
           </div>
 
-          <nav className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm font-medium">
-            <Link href="/" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-[#143652] transition-colors">
+          <nav aria-label="Primary navigation" className="sky-nav order-3 flex w-full items-center gap-1 overflow-x-auto rounded-xl p-1 text-xs font-semibold sm:text-sm lg:order-none lg:w-auto">
+            <Link href="/" className="sky-nav-link inline-flex items-center gap-1.5 rounded-lg px-3 py-2">
+              <CloudSun className="h-4 w-4 text-cyan-300" />
               Command Centre
             </Link>
-            <Link href="/stations" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-[#143652] transition-colors">
+            <Link href="/stations" className="sky-nav-link inline-flex items-center gap-1.5 rounded-lg px-3 py-2">
+              <RadioTower className="h-4 w-4 text-blue-300" />
               AWS Network
             </Link>
-            <Link href="/incidents" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-[#143652] transition-colors">
+            <Link href="/incidents" className="sky-nav-link inline-flex items-center gap-1.5 rounded-lg px-3 py-2">
+              <Activity className="h-4 w-4 text-rose-300" />
               Incidents
             </Link>
-            <Link href="/analytics" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-[#143652] transition-colors">
+            <Link href="/analytics" className="sky-nav-link inline-flex items-center gap-1.5 rounded-lg px-3 py-2">
+              <BarChart3 className="h-4 w-4 text-emerald-300" />
               Analytics
             </Link>
-            <Link href="/validation" className="px-3 py-1.5 rounded-md text-slate-300 hover:text-white hover:bg-[#143652] transition-colors">
+            <Link href="/validation" className="sky-nav-link inline-flex items-center gap-1.5 rounded-lg px-3 py-2">
+              <ShieldCheck className="h-4 w-4 text-violet-300" />
               25-Gate Validation
             </Link>
           </nav>
 
           <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-[#071521] border border-emerald-500/30 text-emerald-400 text-xs font-mono">
+            <div className="flex items-center space-x-2 rounded-full border border-emerald-300/25 bg-emerald-400/[0.07] px-3 py-1.5 text-[11px] font-bold tracking-wide text-emerald-300 shadow-[0_0_24px_rgba(52,211,153,0.08)]">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span>Live Engine Connected</span>
+              <span className="hidden sm:inline">Live Engine Connected</span>
+              <span className="sm:hidden">Online</span>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        <main className="relative z-10 flex-1 max-w-[1440px] w-full mx-auto p-4 sm:p-6 lg:px-8 lg:py-7">
           {children}
         </main>
 
-        <footer className="border-t border-[#1a4163] bg-[#071521] text-xs text-slate-400 py-6 px-4 sm:px-8 mt-12">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <footer className="relative border-t border-cyan-100/10 bg-[#050d18]/80 text-xs text-slate-400 py-6 px-4 sm:px-8 mt-12 backdrop-blur-lg">
+          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
+          <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <p className="font-semibold text-slate-300">SkyGuard AI · Automatic Weather Station Anomaly Intelligence</p>
+              <p className="font-bold text-slate-200">SkyGuard AI · Automatic Weather Station Anomaly Intelligence</p>
               <p className="text-slate-500 mt-0.5">Strict Three-Parameter Physical Contract: Temperature, Pressure, Relative Humidity</p>
             </div>
-            <div className="flex items-center space-x-4 text-slate-400">
-              <span>Phase 10 Compliant</span>
-              <span>•</span>
-              <span>Zero-Fake Validation</span>
-              <span>•</span>
-              <span>Vercel + Render Hybrid</span>
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-slate-400">
+              <span>Evidence-first</span>
+              <span className="text-cyan-600">•</span>
+              <span>Three-signal contract</span>
+              <span className="text-cyan-600">•</span>
+              <span>Vercel + Render</span>
             </div>
           </div>
         </footer>

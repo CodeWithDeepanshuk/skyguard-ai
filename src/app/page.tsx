@@ -5,17 +5,15 @@ import Link from 'next/link';
 import { 
   ShieldCheck, 
   Activity, 
-  AlertTriangle, 
-  CloudRain, 
   Radio, 
   Cpu, 
-  ChevronRight, 
   ArrowUpRight, 
-  Play, 
   CheckCircle2, 
-  XCircle,
-  RefreshCw,
-  Gauge
+  Gauge,
+  Database,
+  Layers3,
+  Network,
+  Info
 } from 'lucide-react';
 
 interface HealthData {
@@ -32,37 +30,16 @@ interface HealthData {
   };
 }
 
-interface PredictionResponse {
-  status: string;
-  station_id: string;
-  prediction: {
-    decision_state: string;
-    p_normal: number;
-    p_weather: number;
-    p_fault: number;
-    severity: string;
-  };
-  diagnostics: {
-    freeze_detected: boolean;
-    transport_gap: boolean;
-    regional_agreement: number;
-    explanation: string;
-  };
-  backend_mode: string;
-}
-
 export default function Dashboard() {
   const [health, setHealth] = useState<HealthData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [stationCount, setStationCount] = useState<number | null>(null);
 
-  // Anomaly testing sandbox state
+  // Three-signal contract preview. Production inference requires ordered history.
   const [testStation, setTestStation] = useState('43279099999'); // Chennai Intl
   const [testTemp, setTestTemp] = useState('32.4');
   const [testPress, setTestPress] = useState('1008.2');
   const [testHumidity, setTestHumidity] = useState('74.0');
-  const [evaluating, setEvaluating] = useState(false);
-  const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
-  const [predictionError, setPredictionError] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -91,37 +68,17 @@ export default function Dashboard() {
     };
 
     void checkBackend();
+    void fetch('/api/stations', { cache: 'no-store' })
+      .then(response => response.json())
+      .then(rows => {
+        if (!cancelled && Array.isArray(rows)) setStationCount(rows.length);
+      })
+      .catch(() => undefined);
     return () => {
       cancelled = true;
       if (retryTimer) clearTimeout(retryTimer);
     };
   }, []);
-
-  const handlePredict = async () => {
-    setEvaluating(true);
-    setPrediction(null);
-    setPredictionError('');
-    try {
-      const res = await fetch('/api/predict', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          station_id: testStation,
-          temperature: parseFloat(testTemp),
-          pressure: parseFloat(testPress),
-          humidity: parseFloat(testHumidity),
-          timestamp: new Date().toISOString()
-        })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Inference is unavailable.');
-      setPrediction(data);
-    } catch (error) {
-      setPredictionError(error instanceof Error ? error.message : 'Inference request failed');
-    } finally {
-      setEvaluating(false);
-    }
-  };
 
   const applyPreset = (temp: string, press: string, hum: string) => {
     setTestTemp(temp);
@@ -129,240 +86,251 @@ export default function Dashboard() {
     setTestHumidity(hum);
   };
 
+  const observationContractValid = Boolean(testStation.trim()) &&
+    [testTemp, testPress, testHumidity].every(value => value.trim() !== '' && Number.isFinite(Number(value)));
+
   return (
     <div className="space-y-8 animate-fadeIn">
-      {/* Top Banner */}
-      <div className="rounded-2xl border border-[#1a4163] bg-gradient-to-r from-[#0c2234] via-[#0f2b42] to-[#071521] p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-800/80 text-cyan-400 text-xs font-semibold">
-              <Radio className="w-3.5 h-3.5 animate-pulse" />
-              <span>SIH 26073 · Operational Anomaly Intelligence</span>
+      {/* Judge-facing mission banner */}
+      <section className="command-hero rounded-[28px] p-6 sm:p-8 lg:p-10">
+        <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[1.25fr_0.75fr]">
+          <div>
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-300/20 bg-cyan-300/[0.07] px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-cyan-200">
+              <Radio className="h-3.5 w-3.5 animate-pulse" />
+              SIH 26073 · Operational anomaly intelligence
             </div>
-            <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
-              Trust Every Weather Reading.
+            <h1 className="gradient-heading max-w-4xl text-4xl font-black leading-[1.04] tracking-[-0.045em] sm:text-5xl lg:text-[3.65rem]">
+              Trust every weather reading.
             </h1>
-            <p className="text-slate-300 max-w-2xl text-sm sm:text-base leading-relaxed">
-              Explore the Indian station catalog and available METAR observations. Research models flag readings for review using temperature, pressure and relative humidity. Catalog coverage is not live sensor coverage.
+            <p className="mt-5 max-w-3xl text-sm leading-7 text-slate-300 sm:text-[17px]">
+              SkyGuard separates probable sensor faults from genuine weather using only temperature, pressure and relative humidity—then exposes the evidence behind every advisory.
             </p>
+            <div className="mt-6 flex flex-wrap gap-2.5">
+              <span className="data-chip inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-200">
+                <Database className="h-4 w-4 text-cyan-300" />
+                <strong className="text-white">{stationCount ?? '—'}</strong> catalog stations
+              </span>
+              <span className="data-chip inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-200">
+                <Layers3 className="h-4 w-4 text-blue-300" />
+                3-sensor physical contract
+              </span>
+              <span className="data-chip inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold text-slate-200">
+                <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                Evidence-first alerting
+              </span>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-start sm:items-center gap-3">
-            <div className="bg-[#071521]/90 border border-[#1a4163] rounded-xl p-4 flex items-center space-x-3.5">
-              <div className={`p-2.5 rounded-lg ${health?.ml_service ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
-                <Cpu className={`w-5 h-5 ${loading ? 'animate-pulse' : ''}`} />
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Inference Engine</div>
-                <div className="text-sm font-bold text-white flex items-center gap-1.5">
-                  {health?.ml_service
-                    ? 'ML service connected · research mode'
-                    : loading
-                    ? 'Connecting to ML service…'
-                    : 'ML service waking · automatic retry'}
-                  <span className={`w-2 h-2 rounded-full ${health?.ml_service ? 'bg-emerald-400' : 'bg-amber-400'} ${loading ? 'animate-pulse' : ''}`}></span>
+          <aside className="engine-card rounded-2xl p-5 sm:p-6" aria-label="Inference engine status">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`rounded-xl p-3 ${health?.ml_service ? 'bg-emerald-400/10 text-emerald-300' : 'bg-amber-400/10 text-amber-300'}`}>
+                  <Cpu className={`h-6 w-6 ${loading ? 'animate-pulse' : ''}`} />
+                </div>
+                <div>
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-500">Inference engine</p>
+                  <p className="mt-1 text-sm font-extrabold text-white">
+                    {health?.ml_service ? 'Connected · advisory mode' : loading ? 'Connecting securely…' : 'Waking · auto retry active'}
+                  </p>
                 </div>
               </div>
+              <span className={`mt-1 h-2.5 w-2.5 rounded-full ${health?.ml_service ? 'bg-emerald-400 shadow-[0_0_16px_#34d399]' : 'bg-amber-400'} ${loading ? 'animate-pulse' : ''}`} />
             </div>
-          </div>
+
+            <div className="my-5 h-px bg-gradient-to-r from-transparent via-cyan-100/15 to-transparent" />
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                ['T', 'Temperature', 'text-rose-300'],
+                ['P', 'Pressure', 'text-blue-300'],
+                ['RH', 'Humidity', 'text-cyan-300']
+              ].map(([symbol, label, tone]) => (
+                <div key={symbol} className="rounded-xl border border-white/[0.06] bg-white/[0.025] p-3 text-center">
+                  <div className={`font-mono text-lg font-black ${tone}`}>{symbol}</div>
+                  <div className="mt-1 text-[10px] font-semibold text-slate-500">{label}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-cyan-300/10 bg-[#03101c]/55 px-4 py-3">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Decision context</p>
+                <p className="mt-0.5 text-xs font-semibold text-slate-300">Causal history + spatial neighbours</p>
+              </div>
+              <div className="flex h-8 items-end gap-1" aria-hidden="true">
+                {[12, 22, 16, 28, 20].map((height, index) => (
+                  <span key={height} className="signal-bar" style={{ height, animationDelay: `${index * 110}ms` }} />
+                ))}
+              </div>
+            </div>
+          </aside>
         </div>
+      </section>
+
+      {/* Operational proof grid */}
+      <section aria-label="Platform proof points" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="metric-card [--card-accent:#22d3ee] rounded-2xl p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">National catalog</span>
+            <Database className="h-5 w-5 text-cyan-300" />
+          </div>
+          <div className="font-mono text-3xl font-black tabular-nums text-white">{stationCount ?? '—'}</div>
+          <p className="mt-1.5 text-xs leading-5 text-slate-400">Indian station coordinates available for network exploration</p>
+        </div>
+
+        <div className="metric-card [--card-accent:#60a5fa] rounded-2xl p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Allowed inputs</span>
+            <Activity className="h-5 w-5 text-blue-300" />
+          </div>
+          <div className="font-mono text-3xl font-black tabular-nums text-white">03</div>
+          <p className="mt-1.5 text-xs leading-5 text-slate-400">Temperature · Pressure · Relative humidity only</p>
+        </div>
+
+        <div className="metric-card [--card-accent:#a78bfa] rounded-2xl p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Promotion checks</span>
+            <ShieldCheck className="h-5 w-5 text-violet-300" />
+          </div>
+          <div className="font-mono text-3xl font-black tabular-nums text-white">25</div>
+          <p className="mt-1.5 text-xs leading-5 text-slate-400">Integrity, leakage, calibration and deployment gates</p>
+        </div>
+
+        <div className="metric-card [--card-accent:#34d399] rounded-2xl p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-400">Service state</span>
+            <Network className="h-5 w-5 text-emerald-300" />
+          </div>
+          <div className={`text-2xl font-black ${health?.ml_service ? 'text-emerald-300' : loading ? 'text-cyan-200' : 'text-amber-300'}`}>
+            {health?.ml_service ? 'Connected' : loading ? 'Checking…' : 'Auto-retry'}
+          </div>
+          <p className="mt-1.5 text-xs leading-5 text-slate-400">Vercel control plane + Render inference service</p>
+        </div>
+      </section>
+
+      <div className="integrity-strip flex flex-col gap-3 rounded-2xl px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-3">
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-300" />
+          <p className="text-xs leading-5 text-slate-300 sm:text-sm">
+            <strong className="text-white">Scientific integrity guardrail:</strong> live outputs are advisory. Accuracy claims remain attached to their named offline holdout; catalog membership never implies a currently healthy sensor.
+          </p>
+        </div>
+        <Link href="/analytics" className="shrink-0 text-xs font-bold text-cyan-300 transition hover:text-cyan-100">
+          Inspect evidence →
+        </Link>
       </div>
 
-      {/* KPI Metric Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-cyan-500/50 transition-colors">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Unseen-Station Precision</span>
-            <ShieldCheck className="w-4 h-4 text-cyan-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">Not measured</div>
-          <p className="text-xs text-slate-400 mt-1">Live precision requires independently verified fault labels</p>
-        </div>
-
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-emerald-500/50 transition-colors">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Detection Latency</span>
-            <Activity className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">Not measured</div>
-          <p className="text-xs text-slate-400 mt-1">Public-host runtime has not been benchmarked</p>
-        </div>
-
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-amber-500/50 transition-colors">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">False Alert Rate</span>
-            <AlertTriangle className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">Unverified</div>
-          <p className="text-xs text-slate-400 mt-1">No live false-alarm guarantee is available</p>
-        </div>
-
-        <div className="rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 shadow-lg relative hover:border-purple-500/50 transition-colors">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider">Weather Veto Specificity</span>
-            <CloudRain className="w-4 h-4 text-purple-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-black text-white">Research only</div>
-          <p className="text-xs text-slate-400 mt-1">See offline validation; real weather events need independent review</p>
-        </div>
-      </div>
-
-      {/* Interactive Inference Sandbox */}
-      <div className="rounded-2xl border border-[#1a4163] bg-[#0c2234] p-6 shadow-xl">
-        <div className="border-b border-[#1a4163] pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Input contract explorer: intentionally does not fake one-row ML output. */}
+      <section className="glass-panel soft-grid-panel rounded-[24px] p-5 sm:p-7">
+        <div className="mb-6 flex flex-col justify-between gap-4 border-b border-cyan-100/10 pb-5 lg:flex-row lg:items-center">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-              <Gauge className="w-5 h-5 text-cyan-400" />
-              Single-reading sandbox · not deployed
+            <div className="mb-2 text-[10px] font-extrabold uppercase tracking-[0.18em] text-cyan-300">Safe interaction zone</div>
+            <h2 className="flex items-center gap-2 text-xl font-black text-white sm:text-2xl">
+              <Gauge className="h-5 w-5 text-cyan-300" />
+              Three-signal observation contract
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
-              A single reading cannot supply temporal history or neighbouring observations. Use station telemetry for the deployed history-based model.
+            <p className="mt-1 max-w-3xl text-xs leading-5 text-slate-400 sm:text-sm">
+              Preview the exact payload accepted by SkyGuard. A trustworthy anomaly decision is shown only inside station telemetry, where ordered history and neighbouring observations are available.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs text-slate-400 font-semibold mr-1">Presets:</span>
+            <span className="mr-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-500">Signal presets</span>
             <button 
               type="button"
               onClick={() => applyPreset('32.4', '1008.2', '74.0')}
-              className="text-xs px-2.5 py-1 rounded bg-[#143652] text-slate-200 hover:bg-cyan-900 hover:text-cyan-200 border border-slate-700 transition"
+              className="rounded-lg border border-cyan-100/10 bg-white/[0.035] px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-emerald-300/30 hover:bg-emerald-400/[0.07] hover:text-emerald-200"
             >
-              Normal
+              <span className="mr-1.5 text-emerald-300">●</span>Nominal
             </button>
             <button 
               type="button"
               onClick={() => applyPreset('58.5', '1008.0', '40.0')}
-              className="text-xs px-2.5 py-1 rounded bg-[#143652] text-amber-300 hover:bg-amber-950 border border-slate-700 transition"
+              className="rounded-lg border border-cyan-100/10 bg-white/[0.035] px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-amber-300/30 hover:bg-amber-400/[0.07] hover:text-amber-200"
             >
-              🔥 Temp Spike
+              <span className="mr-1.5 text-amber-300">●</span>Temperature spike
             </button>
             <button 
               type="button"
               onClick={() => applyPreset('28.0', '950.0', '85.0')}
-              className="text-xs px-2.5 py-1 rounded bg-[#143652] text-rose-300 hover:bg-rose-950 border border-slate-700 transition"
+              className="rounded-lg border border-cyan-100/10 bg-white/[0.035] px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-rose-300/30 hover:bg-rose-400/[0.07] hover:text-rose-200"
             >
-              📉 Pressure Drop
+              <span className="mr-1.5 text-rose-300">●</span>Pressure drop
             </button>
             <button 
               type="button"
               onClick={() => applyPreset('34.0', '985.0', '92.0')}
-              className="text-xs px-2.5 py-1 rounded bg-[#143652] text-sky-300 hover:bg-sky-950 border border-slate-700 transition"
+              className="rounded-lg border border-cyan-100/10 bg-white/[0.035] px-3 py-1.5 text-xs font-semibold text-slate-200 transition hover:border-violet-300/30 hover:bg-violet-400/[0.07] hover:text-violet-200"
             >
-              ⛈️ Severe Weather
+              <span className="mr-1.5 text-violet-300">●</span>Severe weather
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Station ID</label>
+            <label className="mb-1.5 block text-xs font-bold text-slate-300">Station ID</label>
             <input 
               type="text" 
               value={testStation} 
               onChange={e => setTestStation(e.target.value)}
-              className="w-full bg-[#071521] border border-[#1a4163] rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-cyan-500 focus:outline-none"
+              className="w-full rounded-xl border border-cyan-100/15 bg-[#040f1b]/80 px-3 py-2.5 font-mono text-sm text-white transition placeholder:text-slate-600 focus:border-cyan-400 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Temperature (°C)</label>
+            <label className="mb-1.5 block text-xs font-bold text-slate-300">Temperature (°C)</label>
             <input 
               type="number" 
               step="0.1" 
               value={testTemp} 
               onChange={e => setTestTemp(e.target.value)}
-              className="w-full bg-[#071521] border border-[#1a4163] rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-cyan-500 focus:outline-none"
+              className="w-full rounded-xl border border-cyan-100/15 bg-[#040f1b]/80 px-3 py-2.5 font-mono text-sm text-white transition focus:border-rose-300 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Station Pressure (hPa)</label>
+            <label className="mb-1.5 block text-xs font-bold text-slate-300">Station Pressure (hPa)</label>
             <input 
               type="number" 
               step="0.1" 
               value={testPress} 
               onChange={e => setTestPress(e.target.value)}
-              className="w-full bg-[#071521] border border-[#1a4163] rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-cyan-500 focus:outline-none"
+              className="w-full rounded-xl border border-cyan-100/15 bg-[#040f1b]/80 px-3 py-2.5 font-mono text-sm text-white transition focus:border-blue-300 focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">Relative Humidity (%)</label>
+            <label className="mb-1.5 block text-xs font-bold text-slate-300">Relative Humidity (%)</label>
             <input 
               type="number" 
               step="0.5" 
               value={testHumidity} 
               onChange={e => setTestHumidity(e.target.value)}
-              className="w-full bg-[#071521] border border-[#1a4163] rounded-lg px-3 py-2 text-sm text-white font-mono focus:border-cyan-500 focus:outline-none"
+              className="w-full rounded-xl border border-cyan-100/15 bg-[#040f1b]/80 px-3 py-2.5 font-mono text-sm text-white transition focus:border-cyan-300 focus:outline-none"
             />
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={handlePredict}
-            disabled={evaluating}
-            className="flex items-center space-x-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all disabled:opacity-50"
-          >
-            {evaluating ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>Evaluating...</span>
-              </>
-            ) : (
-              <>
-                <Play className="w-4 h-4 fill-current" />
-                <span>Run SkyGuard Anomaly Inference</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Prediction Output Card */}
-        {predictionError && <p role="alert" className="mt-4 text-amber-300">{predictionError}</p>}
-        {prediction && (
-          <div className="mt-6 rounded-xl border border-cyan-500/30 bg-[#071521] p-5 animate-slideDown">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1a4163] pb-4">
-              <div>
-                <span className="text-xs text-slate-400 uppercase tracking-wider font-semibold">Decision State</span>
-                <div className="text-xl font-black text-white flex items-center gap-2 mt-0.5">
-                  <span className={`px-3 py-1 rounded-md text-xs font-extrabold uppercase ${
-                    prediction.prediction.decision_state === 'NORMAL' 
-                      ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
-                      : prediction.prediction.decision_state === 'GENUINE_WEATHER_EVENT'
-                      ? 'bg-cyan-950 text-cyan-400 border border-cyan-800'
-                      : 'bg-rose-950 text-rose-400 border border-rose-800'
-                  }`}>
-                    {prediction.prediction.decision_state}
-                  </span>
-                  <span className="text-sm font-medium text-slate-400">Severity: {prediction.prediction.severity}</span>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4 text-xs font-mono">
-                <div>
-                  <span className="text-slate-500 block">P(Normal)</span>
-                  <span className="text-emerald-400 font-bold">{(prediction.prediction.p_normal * 100).toFixed(1)}%</span>
-                </div>
-                <div>
-                  <span className="text-slate-500 block">P(Weather)</span>
-                  <span className="text-cyan-400 font-bold">{(prediction.prediction.p_weather * 100).toFixed(1)}%</span>
-                </div>
-                <div>
-                  <span className="text-slate-500 block">P(Fault)</span>
-                  <span className="text-rose-400 font-bold">{(prediction.prediction.p_fault * 100).toFixed(1)}%</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 text-xs text-slate-300">
-              <strong className="text-cyan-400">Diagnostic Explanation: </strong>
-              {prediction.diagnostics.explanation}
+        <div className="flex flex-col gap-4 rounded-2xl border border-cyan-100/10 bg-[#040f1b]/65 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className={`mt-0.5 h-5 w-5 shrink-0 ${observationContractValid ? 'text-emerald-300' : 'text-amber-300'}`} />
+            <div>
+              <p className="text-sm font-bold text-white">
+                {observationContractValid ? 'Payload matches the three-signal contract' : 'Complete every field to validate the payload'}
+              </p>
+              <p className="mt-0.5 text-xs text-slate-500">No synthetic probability is produced from a context-free row.</p>
             </div>
           </div>
-        )}
-      </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href="/stations" className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-2 text-xs font-extrabold text-white shadow-lg shadow-cyan-500/15 transition hover:-translate-y-0.5 hover:from-cyan-400 hover:to-blue-500">
+              Open station telemetry
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
+            <Link href="/validation" className="inline-flex min-h-10 items-center rounded-lg border border-cyan-100/15 bg-white/[0.035] px-4 py-2 text-xs font-bold text-slate-200 transition hover:border-cyan-300/30 hover:text-white">
+              View verification gates
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* Feature Sections Navigation */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Link href="/stations" className="group rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 hover:border-cyan-500/50 hover:bg-[#0f2b42] transition-all">
+      <section aria-label="SkyGuard workspaces" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Link href="/stations" className="glass-panel group rounded-2xl p-5 transition-all hover:-translate-y-1 hover:border-cyan-300/35">
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-bold uppercase text-cyan-400">Network Map</span>
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -371,7 +339,7 @@ export default function Dashboard() {
           <p className="text-xs text-slate-400">Station metadata, coordinates and available source observations.</p>
         </Link>
 
-        <Link href="/incidents" className="group rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 hover:border-cyan-500/50 hover:bg-[#0f2b42] transition-all">
+        <Link href="/incidents" className="glass-panel group rounded-2xl p-5 transition-all hover:-translate-y-1 hover:border-rose-300/30">
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-bold uppercase text-rose-400">Alert Center</span>
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-rose-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -380,7 +348,7 @@ export default function Dashboard() {
           <p className="text-xs text-slate-400">Stateful incident transitions with root-cause diagnostic rationales.</p>
         </Link>
 
-        <Link href="/analytics" className="group rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 hover:border-cyan-500/50 hover:bg-[#0f2b42] transition-all">
+        <Link href="/analytics" className="glass-panel group rounded-2xl p-5 transition-all hover:-translate-y-1 hover:border-emerald-300/30">
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-bold uppercase text-emerald-400">Evidence</span>
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -389,7 +357,7 @@ export default function Dashboard() {
           <p className="text-xs text-slate-400">Verified benchmark scores from frozen 2024 holdout evaluations.</p>
         </Link>
 
-        <Link href="/validation" className="group rounded-xl border border-[#1a4163] bg-[#0c2234] p-5 hover:border-cyan-500/50 hover:bg-[#0f2b42] transition-all">
+        <Link href="/validation" className="glass-panel group rounded-2xl p-5 transition-all hover:-translate-y-1 hover:border-violet-300/30">
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-bold uppercase text-purple-400">Compliance</span>
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-purple-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -397,7 +365,7 @@ export default function Dashboard() {
           <h3 className="text-lg font-bold text-white mb-1">25-Gate Verification</h3>
           <p className="text-xs text-slate-400">Full audit checklist and promotion gates from pipeline runs.</p>
         </Link>
-      </div>
+      </section>
     </div>
   );
 }
