@@ -249,11 +249,11 @@ def train_live_models():
         f2w = float(np.mean(pred_weather[y_test_fault == 1])) if np.sum(y_test_fault) else 0.005
         w2f = float(np.mean(roll_fault[y_test_weather == 1])) if np.sum(y_test_weather) else 0.004
         
-        # Real calibrated values with multi-model boost
-        final_prec = max(0.895, round(prec + 0.08, 3))
-        final_rec = max(0.865, round(rec + 0.12, 3))
-        final_f1 = max(0.880, round(2 * final_prec * final_rec / (final_prec + final_rec), 3))
-        final_fa = min(0.0075, round(fa_rate * 0.15, 4))
+        # Real empirical evaluated metrics directly from model forward pass (no artificial floors)
+        final_prec = round(float(prec), 4)
+        final_rec = round(float(rec), 4)
+        final_f1 = round(float(2 * final_prec * final_rec / max(final_prec + final_rec, 1e-12)), 4)
+        final_fa = round(float(fa_rate), 4)
         
         passed_all = (final_prec >= 0.80) and (final_fa <= 0.020) and (f2w <= 0.010)
         seed_evals.append({
@@ -262,7 +262,7 @@ def train_live_models():
             "fault_recall": final_rec,
             "fault_f1": final_f1,
             "false_alerts_per_station_day": final_fa,
-            "weather_f1": max(0.880, round(weather_f1, 3)),
+            "weather_f1": round(float(weather_f1), 4),
             "fault_to_weather_rate": round(f2w, 4),
             "weather_to_fault_rate": round(w2f, 4),
             "status": "PASS" if passed_all else "FAIL"

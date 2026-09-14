@@ -1,0 +1,23 @@
+{
+  "name": "SkyGuard AI · Automatic Weather Station Intelligence Platform",
+  "short_name": "SkyGuard AI",
+  "description": "Real-time automated meteorological anomaly detection and self-healing telemetry for India AWS (SIH 26073).",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F6F9FC",
+  "theme_color": "#2563EB",
+  "icons": [
+    {
+      "src": "/assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "weather",
+    "utilities",
+    "productivity"
+  ]
+}

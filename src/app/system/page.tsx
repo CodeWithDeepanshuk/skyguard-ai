@@ -1,186 +1,79 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { 
-  CheckCircle2, 
-  Clock, 
-  Cpu, 
-  Database, 
-  Globe, 
-  Radio, 
-  RefreshCw, 
-  Server, 
-  ShieldCheck, 
-  Wifi, 
-  WifiOff 
-} from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import { AlertTriangle, CheckCircle2, Clock3, Cloud, Cpu, Database, RefreshCw, Server, ShieldCheck, WifiOff } from 'lucide-react';
 import { formatTime } from '@/lib/formatters';
 
+interface SystemState {
+  health: Record<string, any> | null;
+  summary: Record<string, any> | null;
+  ingestion: Record<string, any> | null;
+}
+
+function StatusChip({ state }: { state: 'CONNECTED' | 'DEGRADED' | 'NOT CONFIGURED' | 'LOCAL FALLBACK' | 'DURABLE' }) {
+  const style = state === 'CONNECTED' || state === 'DURABLE'
+    ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+    : state === 'DEGRADED' || state === 'LOCAL FALLBACK'
+      ? 'border-amber-200 bg-amber-50 text-amber-900'
+      : 'border-slate-200 bg-slate-100 text-slate-700';
+  return <span className={`rounded-full border px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${style}`}>{state}</span>;
+}
+
 export default function SystemHealthPage() {
-  const [healthData, setHealthData] = useState<any>(null);
+  const [state, setState] = useState<SystemState>({ health: null, summary: null, ingestion: null });
   const [loading, setLoading] = useState(true);
-  const [lastCheckTime, setLastCheckTime] = useState<string>(new Date().toISOString());
+  const [checkedAt, setCheckedAt] = useState<string | null>(null);
 
-  async function probeHealth() {
+  const probe = useCallback(async () => {
     setLoading(true);
-    try {
-      const res = await fetch('/api/health');
-      if (res.ok) {
-        const data = await res.json();
-        setHealthData(data);
-      } else {
-        setHealthData({ status: 'DEGRADED', error: 'HTTP 503 from backend' });
-      }
-    } catch (err: any) {
-      setHealthData({ status: 'DEGRADED', error: err.message });
-    } finally {
-      setLastCheckTime(new Date().toISOString());
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    probeHealth();
+    const results = await Promise.allSettled(['/api/health', '/api/network-summary', '/api/ingestion-health'].map(async endpoint => {
+      const response = await fetch(endpoint, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`${endpoint}: HTTP ${response.status}`);
+      return response.json();
+    }));
+    const value = (index: number) => results[index].status === 'fulfilled' ? results[index].value : null;
+    setState({ health: value(0), summary: value(1), ingestion: value(2) });
+    setCheckedAt(new Date().toISOString());
+    setLoading(false);
   }, []);
 
-  const components = [
-    {
-      name: 'Next.js 14 App Router Frontend',
-      role: 'User Interface & Geospatial Visualization',
-      status: 'OPERATIONAL',
-      endpoint: 'https://skyguard-ai-iota.vercel.app',
-      latency: '24 ms',
-      details: 'Next.js 14.2.35 · React 18.3.1 · MapLibre GL JS · Tailwind CSS',
-    },
-    {
-      name: 'FastAPI Production Inference Engine',
-      role: 'PyTorch Causal TCN & Spatial Buddy Ingestion',
-      status: healthData?.status === 'ok' || healthData?.status === 'OPERATIONAL' ? 'OPERATIONAL' : 'CONNECTED',
-      endpoint: 'https://skyguard-ai-wbm9.onrender.com',
-      latency: '180 ms',
-      details: 'Python 3.10 · PyTorch 2.1 · LightGBM · FastAPI v1 Operational Router',
-    },
-    {
-      name: 'Master Station Catalog Service',
-      role: 'Indian AWS & ARG Coordinates Registry',
-      status: 'OPERATIONAL',
-      endpoint: 'config/all_india_aws_network.csv',
-      latency: '0 ms (Local Memory)',
-      details: '543 Verified Stations Indexed · 8 Climate Zones · Geodesic Index Active',
-    },
-    {
-      name: 'Observation & Incident Store',
-      role: 'Durable Telemetry & Incident Episodes',
-      status: 'OPERATIONAL',
-      endpoint: 'data/skyguard_operational.db',
-      latency: '4 ms',
-      details: 'SQLite / PostgreSQL · Immutable Observation Storage · Causal Timelines',
-    },
-    {
-      name: 'WMO WIS 2.0 / METAR Ingestion Stream',
-      role: 'Public Meteorological Telemetry Feeds',
-      status: 'STANDBY / ACTIVE',
-      endpoint: 'https://wis2box.imd.gov.in/oapi',
-      latency: '320 ms',
-      details: 'Zero Data Fabrication · Unverified Catalog Fallback Isolation',
-    },
-    {
-      name: '25-Gate Operational Gatekeeper',
-      role: 'Model Certification & Stability Auditor',
-      status: 'CERTIFIED (100.0%)',
-      endpoint: 'reports/final_evaluation/gate_results.json',
-      latency: '0 ms',
-      details: '25/25 Gates Passed · Multi-Seed Stability Certified (Seeds 111, 222, 333)',
-    },
+  useEffect(() => { probe(); }, [probe]);
+
+  const connected = state.health?.ml_service === true;
+  const storage = state.summary?.storage || state.health?.operational_storage || state.ingestion?.storage;
+  const durable = storage?.durable === true;
+  const imdConfigured = state.health?.imd_aws_credentials_configured === true;
+  const ingestionRuns: Array<Record<string, any>> = state.ingestion?.providers || [];
+
+  const services = [
+    { name: 'Next.js command interface', role: 'Responsive map, station and incident evidence views', endpoint: 'Current Vercel deployment', status: 'CONNECTED' as const, detail: 'Browser UI is running; this does not prove backend health.' },
+    { name: 'FastAPI operational service', role: 'Provider adapters, append-only store and causal QC', endpoint: 'Configured SKYGUARD_API_URL / canonical Render service', status: connected ? 'CONNECTED' as const : 'DEGRADED' as const, detail: connected ? `Revision ${state.health?.backend_revision || 'not supplied'} · model artifact loaded: ${state.health?.model_loaded ? 'yes' : 'no'}` : 'Backend did not return a valid health response.' },
+    { name: 'Observation store', role: 'Immutable telemetry, watermarks, run receipts and dead letters', endpoint: storage?.backend || 'Not available', status: durable ? 'DURABLE' as const : 'LOCAL FALLBACK' as const, detail: durable ? 'Database reports durable storage.' : 'SQLite/local filesystem is development-only; configure PostgreSQL for restart-safe production history.' },
+    { name: 'Credentialed IMD AWS adapter', role: 'Primary physical AWS/ARG source when IMD access is granted', endpoint: 'Environment-only credentials', status: imdConfigured ? 'CONNECTED' as const : 'NOT CONFIGURED' as const, detail: imdConfigured ? 'Credentials are configured without being exposed to the browser.' : 'Public WIS2 and METAR fallback remain available; no IMD readings are fabricated.' },
   ];
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 select-none font-sans bg-slate-50 min-h-full">
-      {/* Header */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-lift">
-        <div>
-          <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-lg tracking-tight">
-            <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shadow-sm">
-              <Cpu className="w-5 h-5 text-blue-600" />
-            </div>
-            <h1>System Health & Operational Telemetry</h1>
-          </div>
-          <p className="text-xs text-slate-500 font-mono mt-1">
-            Live diagnostic health checks across dual-stack Vercel frontend and Render ML services.
-          </p>
-        </div>
+    <main className="min-h-full space-y-5 bg-[#F5F9FC] p-4 sm:p-6">
+      <section className="rounded-3xl border border-[#D8E6EF] bg-white/90 p-6 shadow-[0_20px_70px_-40px_rgba(23,105,170,.45)] backdrop-blur-xl">
+        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end"><div><div className="mb-3 inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[.18em] text-[#1769AA]"><Cpu className="h-3.5 w-3.5" /> System health</div><h1 className="text-3xl font-black tracking-tight text-[#102A43] sm:text-4xl">Operational truth, including what is missing.</h1><p className="mt-3 max-w-3xl text-sm leading-6 text-[#52667A]">Health cards report observed API state. They do not use hardcoded latency, station counts, model promotion or database durability.</p></div><button onClick={probe} disabled={loading} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#1769AA] px-4 text-xs font-bold text-white hover:bg-[#12588f] disabled:opacity-60"><RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />Probe services</button></div>
+      </section>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={probeHealth}
-            disabled={loading}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-mono font-bold text-slate-700 transition-colors disabled:opacity-50 shadow-xs cursor-pointer"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-blue-600 ${loading ? 'animate-spin' : ''}`} />
-            <span>Probe Health Now</span>
-          </button>
-        </div>
-      </div>
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-2xl border border-[#D8E6EF] bg-white p-4 shadow-sm"><span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Backend service</span><div className="mt-2 flex items-center gap-2">{connected ? <CheckCircle2 className="h-5 w-5 text-emerald-600" /> : <WifiOff className="h-5 w-5 text-amber-600" />}<strong className="text-lg text-[#102A43]">{connected ? 'Connected' : 'Unavailable'}</strong></div></div>
+        <div className="rounded-2xl border border-[#D8E6EF] bg-white p-4 shadow-sm"><span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Storage</span><strong className="mt-2 block text-lg text-[#102A43]">{storage ? `${String(storage.backend).toUpperCase()} · ${durable ? 'durable' : 'not durable'}` : 'Not available'}</strong></div>
+        <div className="rounded-2xl border border-[#D8E6EF] bg-white p-4 shadow-sm"><span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Stored observations</span><strong className="mt-2 block text-lg tabular-nums text-[#102A43]">{typeof state.summary?.observation_records === 'number' ? state.summary.observation_records.toLocaleString('en-IN') : 'Not available'}</strong></div>
+        <div className="rounded-2xl border border-[#D8E6EF] bg-white p-4 shadow-sm"><span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Last probe</span><strong className="mt-2 block text-sm text-[#102A43]">{formatTime(checkedAt, 'UTC', true)}</strong></div>
+      </section>
 
-      {/* Global Status Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 font-mono text-xs">
-        <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm card-lift">
-          <span className="text-[11px] text-slate-500 font-bold block">Overall System State</span>
-          <div className="flex items-center gap-2 mt-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/50" />
-            <span className="font-extrabold text-slate-900 text-sm tracking-tight">OPERATIONAL</span>
-          </div>
-        </div>
+      {!connected && !loading && <div role="alert" className="flex gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />The interface is online but the observation service is not reachable. Map telemetry and health must remain unavailable rather than switching to generated values.</div>}
+      {!durable && storage && <div className="flex gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><Database className="mt-0.5 h-4 w-4 shrink-0" />Production acceptance blocker: the active store reports {String(storage.backend)} / {String(storage.status)}. Add Render PostgreSQL through DATABASE_URL so 24-hour history survives service restarts.</div>}
 
-        <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm card-lift">
-          <span className="text-[11px] text-slate-500 font-bold block">Active Model Version</span>
-          <div className="font-extrabold text-blue-700 text-sm mt-1.5">Production v1.2</div>
-          <span className="text-[10px] text-slate-400 block mt-0.5">PyTorch TCN + LightGBM</span>
-        </div>
+      <section className="overflow-hidden rounded-3xl border border-[#D8E6EF] bg-white shadow-sm"><div className="border-b border-slate-100 p-5"><h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><Server className="h-5 w-5 text-[#1769AA]" />Subsystem status</h2></div><div className="divide-y divide-slate-100">{services.map(service => <div key={service.name} className="flex flex-col justify-between gap-3 p-5 sm:flex-row sm:items-center"><div><div className="flex flex-wrap items-center gap-2"><h3 className="text-sm font-extrabold text-[#102A43]">{service.name}</h3><StatusChip state={service.status} /></div><p className="mt-1 text-xs text-[#52667A]">{service.role}</p><p className="mt-1 text-[10px] leading-4 text-slate-500">{service.detail}</p></div><span className="max-w-sm break-all font-mono text-[9px] text-slate-500">{service.endpoint}</span></div>)}</div></section>
 
-        <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm card-lift">
-          <span className="text-[11px] text-slate-500 font-bold block">Gatekeeper Certification</span>
-          <div className="font-extrabold text-emerald-700 text-sm mt-1.5">25 / 25 PASS (100%)</div>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Multi-seed certified</span>
-        </div>
-
-        <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm card-lift">
-          <span className="text-[11px] text-slate-500 font-bold block">Last Diagnostic Probe</span>
-          <div className="font-extrabold text-slate-800 text-xs mt-1.5">{formatTime(lastCheckTime, 'UTC', true)}</div>
-          <span className="text-[10px] text-slate-400 block mt-0.5">Auto-monitored</span>
-        </div>
-      </div>
-
-      {/* Component Services Inventory */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm card-lift">
-        <div className="p-4 bg-slate-50/80 border-b border-slate-200 font-mono text-xs text-slate-500 uppercase tracking-wider flex items-center justify-between font-bold">
-          <span>Subsystem Status Matrix</span>
-          <span className="text-emerald-700 font-bold">All Nodes Verified</span>
-        </div>
-
-        <div className="divide-y divide-slate-100">
-          {components.map((comp) => (
-            <div key={comp.name} className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 transition-colors">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <h4 className="font-bold text-slate-900 text-xs sm:text-sm font-sans">{comp.name}</h4>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-300">
-                    {comp.status}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-600 font-sans mt-1">{comp.role}</p>
-                <div className="text-[11px] font-mono text-slate-400 mt-1">{comp.details}</div>
-              </div>
-
-              <div className="text-left sm:text-right font-mono text-xs flex-shrink-0">
-                <div className="text-blue-600 font-bold">{comp.latency}</div>
-                <div className="text-[10px] text-slate-400 truncate max-w-xs">{comp.endpoint}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+      <section className="grid gap-4 xl:grid-cols-[1.1fr_.9fr]">
+        <div className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm"><h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><Cloud className="h-5 w-5 text-[#0EA5E9]" />Latest provider runs</h2><div className="mt-4 space-y-3">{ingestionRuns.map(run => <div key={String(run.run_id)} className="rounded-2xl border border-slate-200 bg-slate-50 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><strong className="text-sm text-[#102A43]">{String(run.provider)}</strong><StatusChip state={run.status === 'SUCCESS' ? 'CONNECTED' : 'DEGRADED'} /></div><div className="mt-3 grid grid-cols-2 gap-2 text-[10px] text-[#52667A] sm:grid-cols-4"><span>Fetched <b>{Number(run.fetched_count || 0).toLocaleString('en-IN')}</b></span><span>Inserted <b>{Number(run.inserted_count || 0).toLocaleString('en-IN')}</b></span><span>Duplicates <b>{Number(run.duplicate_count || 0).toLocaleString('en-IN')}</b></span><span>Dead letters <b>{Number(run.dead_letter_count || 0).toLocaleString('en-IN')}</b></span></div><p className="mt-2 text-[9px] text-slate-500">Finished: {formatTime(run.finished_at_utc, 'UTC', true)}</p></div>)}{!ingestionRuns.length && <p className="rounded-xl border border-dashed border-slate-300 p-4 text-xs text-slate-500">No ingestion-run receipt is available.</p>}</div></div>
+        <div className="space-y-4"><section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm"><h2 className="flex items-center gap-2 text-sm font-extrabold text-[#102A43]"><ShieldCheck className="h-4 w-4 text-[#0F9D8A]" />Deployment revision</h2><dl className="mt-3 space-y-2 text-xs"><div className="flex justify-between gap-3"><dt className="text-slate-500">Backend revision</dt><dd className="font-mono text-slate-800">{state.health?.backend_revision || 'Not supplied'}</dd></div><div className="flex justify-between gap-3"><dt className="text-slate-500">Model artifact</dt><dd className="text-right font-semibold text-slate-800">{state.health?.model_version || 'Not available'}</dd></div><div className="flex justify-between gap-3"><dt className="text-slate-500">Model loaded</dt><dd className="font-semibold text-slate-800">{state.health?.model_loaded ? 'Yes' : 'No'}</dd></div><div className="flex justify-between gap-3"><dt className="text-slate-500">Continuous history ready</dt><dd className="font-semibold text-slate-800">{state.health?.continuous_history_ready ? 'Yes' : 'No'}</dd></div></dl></section><section className="rounded-3xl border border-sky-200 bg-sky-50 p-5"><h2 className="flex items-center gap-2 text-sm font-extrabold text-sky-950"><Clock3 className="h-4 w-4" />No invented runtime metrics</h2><p className="mt-2 text-xs leading-5 text-sky-900">Latency and throughput are shown only after a measured benchmark artifact is available. A successful health probe is connectivity evidence, not an accuracy or performance result.</p></section></div>
+      </section>
+    </main>
   );
 }

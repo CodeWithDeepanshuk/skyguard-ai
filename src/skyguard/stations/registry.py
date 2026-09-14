@@ -96,6 +96,28 @@ class MasterStationRegistry:
         except Exception:
             self.build_master_catalog()
 
+        # Also load all 543 stations from all_india_aws_network.csv so registry has 100% station coverage
+        all_india_csv = self.root / "config" / "all_india_aws_network.csv"
+        if all_india_csv.exists():
+            with all_india_csv.open("r", encoding="utf-8") as f:
+                for r in csv.DictReader(f):
+                    sid = r.get("station_id", "").strip()
+                    if sid and sid not in self.stations:
+                        self.stations[sid] = StationMetadata(
+                            station_id=sid,
+                            station_name=r.get("station_name") or sid,
+                            state=r.get("state") or r.get("climate_zone") or "India",
+                            latitude=float(r.get("latitude", 0.0)),
+                            longitude=float(r.get("longitude", 0.0)),
+                            elevation_m=float(r.get("elevation_m") or 0.0),
+                            wigos_id=sid,
+                            wmo_id=sid[:5] if len(sid) >= 5 and sid[:5].isdigit() else "",
+                            icao=r.get("icao", ""),
+                            network_type="IMD_AWS",
+                            primary_provider="IMD_AWS",
+                            is_reference_only=False,
+                        )
+
     def build_master_catalog(self) -> None:
         """Merge All-India AWS network, stations.csv, and IMD WIS 2.0 with deduplication."""
         from skyguard.providers.imd_wis2 import IMDWIS2Provider
@@ -241,8 +263,15 @@ class MasterStationRegistry:
         if sid in self.stations:
             return self.stations[sid]
         sid_upper = sid.upper()
+        sid_clean = sid.split()[0].strip()
         for s in self.stations.values():
-            if s.station_id.upper() == sid_upper or (s.icao and s.icao.upper() == sid_upper) or (s.wmo_id and s.wmo_id == sid) or (s.wigos_id and s.wigos_id == sid):
+            if (
+                s.station_id.upper() == sid_upper
+                or s.station_id == sid_clean
+                or (s.icao and s.icao.upper() == sid_upper)
+                or (s.wmo_id and (s.wmo_id == sid or s.wmo_id == sid[:5]))
+                or (s.wigos_id and (s.wigos_id == sid or s.wigos_id.endswith(sid[:5])))
+            ):
                 return s
         return None
 

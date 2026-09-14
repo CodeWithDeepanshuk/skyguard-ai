@@ -1,0 +1,73 @@
+{
+  "raw_data": {
+    "path": "data\\processed\\aws_observations_2022_2024.csv",
+    "sha256": "8d1bbfd21cb9032c2242b3215432d2c2490e745e9ea79fa07d27e329c5671d08",
+    "rows": 578448,
+    "stations": 24,
+    "start_utc": "2022-01-01T00:00:00+00:00",
+    "end_utc": "2024-12-31T23:30:00+00:00",
+    "source_counts": {
+      "NOAA/NCEI Global Hourly ISD 2022": 193807,
+      "NOAA/NCEI Global Hourly ISD 2024": 192792,
+      "NOAA/NCEI Global Hourly ISD 2023": 191849
+    },
+    "pressure_source_counts": {
+      "ma1_altimeter": 415243,
+      "slp": 154586,
+      "nan": 8619
+    },
+    "is_authenticated_imd_aws": false,
+    "label_provenance": "real observations with injected/simulated fault and weather-event labels"
+  },
+  "feature_splits": {
+    "train": {
+      "path": "data\\features_phase10\\train_features.csv.gz",
+      "sha256": "4aa8363f08d67f7eb22898b433ed02351592cb28b4a6473964bf79801e20ac67",
+      "rows_available_to_detector": 182122,
+      "stations": 20,
+      "fault_rows": 2270,
+      "weather_rows": 498,
+      "start_utc": "2022-01-01T00:00:00+00:00",
+      "end_utc": "2022-12-31T23:30:00+00:00"
+    },
+    "validation": {
+      "path": "data\\features_phase10\\validation_features.csv.gz",
+      "sha256": "a0e8052503068080f9319693b4f8f3c9cb12481ff6583b3ce64ed262b31b4435",
+      "rows_available_to_detector": 181308,
+      "stations": 20,
+      "fault_rows": 1534,
+      "weather_rows": 511,
+      "start_utc": "2023-01-01T00:00:00+00:00",
+      "end_utc": "2023-12-31T23:30:00+00:00"
+    },
+    "time_test": {
+      "path": "data\\features_phase10\\time_test_features.csv.gz",
+      "sha256": "be7d9d54b01db38f2fa03abe1b133206e45ebc366b187fd2e2f0f75befcdf3d6",
+      "rows_available_to_detector": 182053,
+      "stations": 20,
+      "fault_rows": 1841,
+      "weather_rows": 824,
+      "start_utc": "2024-01-01T00:00:00+00:00",
+      "end_utc": "2024-12-31T23:30:00+00:00"
+    },
+    "station_test": {
+      "path": "data\\features_phase10\\station_test_features.csv.gz",
+      "sha256": "8c1b5afb584ba6279212c202d7fafd76666a29e8371716caef40dd5f0b7edc65",
+      "rows_available_to_detector": 10491,
+      "stations": 4,
+      "fault_rows": 250,
+      "weather_rows": 0,
+      "start_utc": "2024-01-01T00:00:00+00:00",
+      "end_utc": "2024-12-31T21:00:00+00:00"
+    }
+  },
+  "leakage_controls": {
+    "normalization_fit_on": "2022 training only",
+    "epoch_selection": "Jan-Feb 2023 only",
+    "calibration": "Mar-Apr 2023 only",
+    "policy_and_blend_selection": "May-Aug 2023 only",
+    "development_confirmation": "Sep-Dec 2023; never used for selection",
+    "sealed_time_holdout": "2024; never used for fitting/calibration/selection",
+    "sealed_station_holdout": "four stations in 2024; never used for fitting/calibration/selection"
+  }
+}

@@ -9,6 +9,7 @@ import {
   Command, 
   Globe, 
   HelpCircle, 
+  Menu,
   Radio, 
   Search, 
   ShieldCheck, 
@@ -22,6 +23,7 @@ interface TopBarProps {
   activeView: WorkingViewFilter;
   setActiveView: (view: WorkingViewFilter) => void;
   onOpenCommandPalette: () => void;
+  onToggleMobileMenu?: () => void;
   engineStatus?: 'OPERATIONAL' | 'DEGRADED' | 'OFFLINE';
   lastObservationUtc?: string;
 }
@@ -32,6 +34,7 @@ export function TopBar({
   activeView,
   setActiveView,
   onOpenCommandPalette,
+  onToggleMobileMenu,
   engineStatus = 'DEGRADED',
   lastObservationUtc,
 }: TopBarProps) {
@@ -51,9 +54,18 @@ export function TopBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 py-2.5 flex items-center justify-between gap-3 text-slate-800 select-none shadow-sm">
-        {/* Left: Logo & Crest with animated pulse */}
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-40 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 md:px-4 py-2.5 flex items-center justify-between gap-2 md:gap-3 text-slate-800 select-none shadow-sm">
+        {/* Left: Mobile Toggle + Logo & Crest */}
+        <div className="flex items-center gap-2 md:gap-3">
+          {onToggleMobileMenu && (
+            <button
+              onClick={onToggleMobileMenu}
+              className="md:hidden p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-colors"
+              aria-label="Toggle navigation menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 via-indigo-600 to-sky-500 flex items-center justify-center font-black text-white text-xs shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
               <span className="absolute inset-0.5 rounded-[6px] border border-white/30" />

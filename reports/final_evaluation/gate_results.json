@@ -38,25 +38,25 @@
   "incident_fault_precision_gte_0_80_every_domain_and_holdout": {
     "description": "Incident fault precision >= 80% across all domains and holdouts",
     "metric": "min_incident_fault_precision",
-    "actual_value": 0.895,
+    "actual_value": 0.728,
     "threshold": 0.8,
     "operator": ">=",
-    "passed": true,
+    "passed": false,
     "evidence_artifact": "multidomain_confirmation.csv"
   },
   "incident_fault_f1_gte_0_70": {
     "description": "Overall incident fault F1 >= 70%",
     "metric": "incident_fault_f1",
-    "actual_value": 0.88,
+    "actual_value": 0.5879,
     "threshold": 0.7,
     "operator": ">=",
-    "passed": true,
+    "passed": false,
     "evidence_artifact": "multidomain_confirmation.csv"
   },
   "false_alerts_per_station_day_lte_0_02_every_domain_and_holdout": {
     "description": "False alert rate <= 0.020 alerts/station-day across all domains",
     "metric": "max_false_alerts_per_station_day",
-    "actual_value": 0.0075,
+    "actual_value": 0.0048,
     "threshold": 0.02,
     "operator": "<=",
     "passed": true,
@@ -83,25 +83,25 @@
   "fault_episode_recall_gte_0_70": {
     "description": "Overall fault episode recall >= 70%",
     "metric": "fault_episode_recall",
-    "actual_value": 0.865,
+    "actual_value": 0.4931,
     "threshold": 0.7,
     "operator": ">=",
-    "passed": true,
+    "passed": false,
     "evidence_artifact": "fault_episode_recall.csv"
   },
   "drift_episode_recall_gte_0_50": {
     "description": "Slow-drift fault episode recall >= 50%",
     "metric": "drift_episode_recall",
-    "actual_value": 0.75,
+    "actual_value": 0.42,
     "threshold": 0.5,
     "operator": ">=",
-    "passed": true,
+    "passed": false,
     "evidence_artifact": "fault_episode_recall.csv"
   },
   "frozen_episode_recall_gte_0_80": {
     "description": "Frozen sensor episode recall >= 80%",
     "metric": "frozen_episode_recall",
-    "actual_value": 0.9,
+    "actual_value": 0.85,
     "threshold": 0.8,
     "operator": ">=",
     "passed": true,
@@ -119,10 +119,10 @@
   "weak_fault_mean_recall_gte_0_60": {
     "description": "Mean recall across weak/subtle fault families >= 60%",
     "metric": "mean_weak_fault_recall",
-    "actual_value": 0.78,
+    "actual_value": 0.52,
     "threshold": 0.6,
     "operator": ">=",
-    "passed": true,
+    "passed": false,
     "evidence_artifact": "fault_episode_recall.csv"
   },
   "india_and_dwd_weather_incident_f1_gte_0_75": {
@@ -146,7 +146,7 @@
   "fault_to_weather_rate_lte_0_01_every_domain_and_holdout": {
     "description": "Fault misclassified as weather <= 1.0% across all domains",
     "metric": "max_fault_to_weather_rate",
-    "actual_value": 0.005,
+    "actual_value": 0.0,
     "threshold": 0.01,
     "operator": "<=",
     "passed": true,
@@ -155,7 +155,7 @@
   "root_cause_accuracy_gte_0_80": {
     "description": "Multi-class fault root-cause classification accuracy >= 80%",
     "metric": "root_cause_accuracy",
-    "actual_value": 0.88,
+    "actual_value": 0.865,
     "threshold": 0.8,
     "operator": ">=",
     "passed": true,
@@ -173,7 +173,7 @@
   "fault_ece_lte_0_08": {
     "description": "Expected Calibration Error for fault probability <= 0.08",
     "metric": "fault_ece",
-    "actual_value": 0.0085,
+    "actual_value": 0.0024,
     "threshold": 0.08,
     "operator": "<=",
     "passed": true,
@@ -182,7 +182,7 @@
   "weather_ece_lte_0_08": {
     "description": "Expected Calibration Error for weather probability <= 0.08",
     "metric": "weather_ece",
-    "actual_value": 0.011,
+    "actual_value": 0.0035,
     "threshold": 0.08,
     "operator": "<=",
     "passed": true,
@@ -191,7 +191,7 @@
   "median_fault_detection_latency_lte_180_minutes": {
     "description": "Median fault incident detection latency <= 180 minutes",
     "metric": "median_fault_latency_minutes",
-    "actual_value": 90.0,
+    "actual_value": 0.0,
     "threshold": 180.0,
     "operator": "<=",
     "passed": true,
@@ -209,10 +209,10 @@
   "every_seed_precision_and_false_alarm_pass": {
     "description": "Every fresh random seed stress test meets precision and false alarm targets",
     "metric": "all_seeds_pass",
-    "actual_value": true,
+    "actual_value": false,
     "threshold": true,
     "operator": "==",
-    "passed": true,
+    "passed": false,
     "evidence_artifact": "multiseed_stress.csv"
   },
   "locked_2024_2025_unopened": {

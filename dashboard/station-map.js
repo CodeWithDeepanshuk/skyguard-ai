@@ -218,6 +218,16 @@ window.SkyGuardMap = (() => {
       if (map) map.setView([lat, lon], zoom);
     },
 
+    invalidateFull() {
+      if (fullMap) {
+        fullMap.invalidateSize({ pan: false });
+        fullMap.fitBounds([[7.0, 67.0], [37.0, 98.0]], { padding: [15, 15] });
+      }
+      if (map) {
+        map.invalidateSize({ pan: false });
+      }
+    },
+
     finish() {
       if (!fitted) {
         map.fitBounds([[7.0, 67.0], [37.0, 98.0]], { padding: [15, 15] });

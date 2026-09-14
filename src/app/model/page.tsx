@@ -1,258 +1,71 @@
 'use client';
 
-import React, { useState } from 'react';
-import { 
-  BrainCircuit, 
-  Cpu, 
-  Database, 
-  Layers, 
-  Network, 
-  ShieldAlert, 
-  ShieldCheck, 
-  Workflow, 
-  Zap,
-  Info
-} from 'lucide-react';
-import { Tooltip, SCIENTIFIC_EXPLANATIONS } from '@/components/common/Tooltip';
+import { useEffect, useState } from 'react';
+import { AlertTriangle, ArrowRight, BrainCircuit, Clock3, Database, GitBranch, Layers3, Network, Scale, ShieldCheck } from 'lucide-react';
+
+interface MetricsPayload {
+  benchmark?: {
+    model_version?: string | null;
+    feature_count?: number | null;
+    input_parameters?: string[] | null;
+    claim_scope?: string;
+    tcn_role?: string | null;
+    evaluation?: Record<string, any>;
+  } | null;
+}
+
+const operationalStages = [
+  ['A', 'Transport and schema QC', 'Duplicates, lateness, impossible time, missing fields and communication cadence are evaluated before sensor logic.'],
+  ['B', 'Physical QC', 'Temperature, pressure and RH range/rate checks plus stuck-at and cross-parameter evidence.'],
+  ['C', 'Causal temporal QC', 'Past-only rolling median/MAD, EWMA, freeze run and CUSUM evidence. No future observation enters its own baseline.'],
+  ['D', 'Spatial buddy QC', 'Time-aligned neighbours, minimum support and pressure-type compatibility protect genuine regional weather.'],
+  ['E', 'Decision and incident state', 'NORMAL, WEATHER, PROBABLE FAULT, COMMUNICATION or INSUFFICIENT CONTEXT; weak evidence remains SUSPECTED.'],
+];
+
+const researchModels = [
+  ['LightGBM / CatBoost', 'Primary interpretable tabular research detectors', 'Retained because mixed temporal, spatial and missingness features are naturally tabular and SHAP-compatible.'],
+  ['Causal TCN', 'Temporal challenger / advisory evidence', 'Evaluated on past-only sequences; it is not automatically trusted more than the tabular and physical evidence.'],
+  ['LSTM autoencoder', 'Unsupervised challenger', 'Useful for unknown patterns, but reconstruction error is only an anomaly score and can learn faulty behaviour.'],
+  ['Isolation Forest', 'Supporting novelty detector', 'Adds weak unsupervised evidence; never confirms a hardware failure by itself.'],
+];
+
+function metric(value: unknown): string {
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toFixed(3) : 'Not available';
+}
 
 export default function ModelIntelligencePage() {
-  const [selectedNode, setSelectedNode] = useState<string>('TCN');
-
-  const nodes: Record<string, { title: string; subtitle: string; codeFile: string; math: string; desc: string }> = {
-    TCN: {
-      title: 'PyTorch Causal Temporal Convolutional Network (TCN)',
-      subtitle: 'Deep Sequence History Model',
-      codeFile: 'src/skyguard/models/tcn.py',
-      math: 'y_t = \\sum_{k=0}^{K-1} f_k \\cdot x_{t - d \\cdot k}, \\quad d \\in \\{1, 2, 4\\}',
-      desc: 'Dilated causal 1D convolutions ensuring zero future information leakage. The receptive field spans a complete 24-hour diurnal cycle, detecting sudden accelerations, unphysical rate-of-change, and temporal discontinuities.',
-    },
-    SPATIAL_QC: {
-      title: 'Geodesic Spatial Buddy Consistency Engine',
-      subtitle: 'Multi-Station Spatial Correlation',
-      codeFile: 'src/skyguard/features/spatial_qc.py',
-      math: 'w_i = \\frac{1}{d(s_0, s_i)^p}, \\quad \\hat{y}_0 = \\frac{\\sum w_i y_i}{\\sum w_i}, \\quad r = |y_0 - \\hat{y}_0|',
-      desc: 'Haversine geodesic distance-weighted median consensus across nearest valid physical Automatic Weather Stations (k=5). Differentiates isolated sensor faults from synoptic squalls and convective fronts.',
-    },
-    FREEZE: {
-      title: 'Quantization-Aware Hardware Freeze Specialist',
-      subtitle: 'Flatline Dwell Filter',
-      codeFile: 'src/skyguard/features/freeze.py',
-      math: '\\text{Var}(y_{t-H:t}) < \\epsilon \\quad (\\epsilon = 10^{-4}, \\; H \\ge 24)',
-      desc: '79.3% of Indian AWS readings are reported as rounded integers. This specialist distinguishes normal nocturnal integer temperature dwell from catastrophic hardware ADC analog-to-digital freeze.',
-    },
-    CUSUM: {
-      title: 'Two-Sided Cumulative Sum (CUSUM) Drift Specialist',
-      subtitle: 'Subtle Calibration Degradation',
-      codeFile: 'src/skyguard/features/drift_cusum.py',
-      math: 'S_t^+ = \\max(0, S_{t-1}^+ + r_t - k), \\quad S_t^- = \\min(0, S_{t-1}^- + r_t + k)',
-      desc: 'Tracks accumulated spatial-temporal residuals against reference drift allowance k=0.5. Triggers when drift exceeds decision threshold h=3.5, achieving 75.0% recall on weak calibration loss within 90 min.',
-    },
-    CALIBRATION: {
-      title: 'Isotonic Probability Calibration',
-      subtitle: 'Reliability Alignment',
-      codeFile: 'src/skyguard/evaluation/calibration.py',
-      math: '\\min_m \\sum (y_i - m(p_i))^2, \\quad \\text{ECE} = \\sum_{b=1}^B \\frac{|B_b|}{N} |\\text{acc}(B_b) - \\text{conf}(B_b)|',
-      desc: 'Transforms raw neural log-odds into empirically calibrated probabilities. Reduces Expected Calibration Error to 0.0085, guaranteeing that a 90% confidence alert reflects genuine 90% empirical event frequency.',
-    },
-    PERSISTENCE: {
-      title: 'Causal Persistence State Machine (k=3, n=5)',
-      subtitle: 'Operational Noise Suppression',
-      codeFile: 'src/skyguard/incidents/state_machine.py',
-      math: '\\sum_{i=0}^{n-1} \\mathbb{I}(\\text{score}_{t-i} > \\tau) \\ge k \\quad (k=3, \\; n=5)',
-      desc: 'Prevents single-packet noisy bursts from triggering false alarms. A station must be flagged 3 times in a rolling 5-observation causal window before promotion to a confirmed operator incident.',
-    },
-    ROOT_CAUSE: {
-      title: 'Multi-Class Root-Cause Classifier',
-      subtitle: 'Physical Failure Attribution',
-      codeFile: 'src/skyguard/evaluation/classification.py',
-      math: '\\hat{c} = \\arg\\max_{c \\in \\mathcal{C}} P(c \\mid \\mathbf{x}_{\\text{features}}), \\quad |\\mathcal{C}| = 12',
-      desc: 'Attributes confirmed anomalies to 12 distinct physical failure classes: temperature spike, pressure step, humidity saturation freeze, calibration drift, communication dropout, and multi-sensor failure.',
-    },
-  };
-
-  const active = nodes[selectedNode];
+  const [metrics, setMetrics] = useState<MetricsPayload | null>(null);
+  useEffect(() => { fetch('/api/metrics', { cache: 'no-store' }).then(response => response.ok ? response.json() : null).then(setMetrics).catch(() => setMetrics(null)); }, []);
+  const benchmark = metrics?.benchmark;
+  const time = benchmark?.evaluation?.time_test?.binary_fault_detection;
+  const station = benchmark?.evaluation?.station_test?.binary_fault_detection;
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 select-none font-sans bg-slate-50 min-h-full">
-      {/* Header */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-lift">
-        <div>
-          <div className="flex items-center gap-2.5 text-slate-900 font-extrabold text-lg tracking-tight">
-            <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center shadow-sm">
-              <BrainCircuit className="w-5 h-5 text-blue-600" />
-            </div>
-            <h1>Model Intelligence & Architecture Specification</h1>
-          </div>
-          <p className="text-xs text-slate-500 font-mono mt-1">
-            Strict Three-Parameter Physical Contract (Temperature, Pressure, Relative Humidity) Multi-Model Ensemble Architecture (SIH 26073).
-          </p>
+    <main className="min-h-full space-y-5 bg-[#F5F9FC] p-4 sm:p-6">
+      <section className="rounded-3xl border border-[#D8E6EF] bg-white/90 p-6 shadow-[0_20px_70px_-40px_rgba(23,105,170,.45)] backdrop-blur-xl">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[10px] font-bold uppercase tracking-[.18em] text-violet-800"><BrainCircuit className="h-3.5 w-3.5" /> Model intelligence</div>
+        <h1 className="max-w-4xl text-3xl font-black tracking-tight text-[#102A43] sm:text-4xl">Hybrid evidence beats a single black box.</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-[#52667A]">The live service currently uses causal operational QC and exposes an uncalibrated evidence score. The trained Phase 10 ensemble remains a verified offline research baseline until provider-domain calibration and independent live fault labels are available.</p>
+        <div className="mt-5 flex flex-wrap gap-2 text-[10px] font-bold"><span className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-800">Operational QC online</span><span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-violet-800">ML baseline: offline research</span><span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-900">Live calibration unavailable</span></div>
+      </section>
+
+      <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex items-center justify-between gap-3"><div><h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><GitBranch className="h-5 w-5 text-[#1769AA]" />Live causal decision path</h2><p className="mt-1 text-xs text-[#52667A]">Every stage can abstain when evidence is insufficient.</p></div><span className="rounded-full bg-emerald-50 px-3 py-1 text-[9px] font-bold uppercase text-emerald-800">Deployed path</span></div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-5">{operationalStages.map(([number, title, description], index) => <div key={number} className="relative rounded-2xl border border-slate-200 bg-slate-50 p-4"><span className="grid h-7 w-7 place-items-center rounded-lg bg-sky-100 font-mono text-[10px] font-black text-[#1769AA]">{number}</span><h3 className="mt-3 text-sm font-extrabold text-[#102A43]">{title}</h3><p className="mt-2 text-[11px] leading-5 text-[#52667A]">{description}</p>{index < operationalStages.length - 1 && <ArrowRight className="absolute -right-2.5 top-1/2 z-10 hidden h-5 w-5 rounded-full bg-white text-sky-400 lg:block" />}</div>)}</div>
+      </section>
+
+      <section className="grid gap-4 xl:grid-cols-[1.05fr_.95fr]">
+        <div className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm sm:p-6"><h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><Layers3 className="h-5 w-5 text-violet-600" />Offline research ensemble</h2><p className="mt-1 text-xs text-[#52667A]">Model version: {benchmark?.model_version || 'Artifact unavailable'} · feature count: {benchmark?.feature_count ?? 'Not available'}</p><div className="mt-4 space-y-3">{researchModels.map(([name, role, description]) => <div key={name} className="rounded-2xl border border-slate-200 p-4"><div className="flex flex-col justify-between gap-1 sm:flex-row"><h3 className="text-sm font-extrabold text-[#102A43]">{name}</h3><span className="text-[9px] font-bold uppercase text-violet-700">{role}</span></div><p className="mt-2 text-[11px] leading-5 text-[#52667A]">{description}</p></div>)}</div></div>
+        <div className="space-y-4">
+          <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm"><h2 className="flex items-center gap-2 text-sm font-extrabold text-[#102A43]"><Database className="h-4 w-4 text-[#1769AA]" />Strict input contract</h2><div className="mt-3 grid gap-2">{(benchmark?.input_parameters || ['temperature', 'pressure', 'relative humidity']).map(parameter => <div key={parameter} className="rounded-xl bg-[#EDF6FB] px-3 py-2 text-xs font-bold text-[#1769AA]">{parameter}</div>)}</div><p className="mt-3 text-[10px] leading-4 text-slate-500">Station ID, coordinates, timestamps, source and missingness support alignment. Wind, rain, dew point and forecast fields are not model inputs.</p></section>
+          <section className="rounded-3xl border border-amber-200 bg-amber-50 p-5 shadow-sm"><h2 className="flex items-center gap-2 text-sm font-extrabold text-amber-950"><Clock3 className="h-4 w-4" />Cold-start policy</h2><ul className="mt-3 space-y-2 text-xs leading-5 text-amber-900"><li>Immediately: physical and transport QC.</li><li>With aligned peers: spatial disagreement evidence.</li><li>After ~24 h: short-term spike, freeze and drift evidence with a warm-up label.</li><li>After ~7–30 days: stronger degradation trend; seasonality needs longer history or transferred climatology.</li></ul></section>
         </div>
+      </section>
 
-        <div className="px-3.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-300 text-xs font-mono font-bold shadow-sm self-start sm:self-auto">
-          25 / 25 Gates Passed · Zero Leakage
-        </div>
-      </div>
+      <section className="rounded-3xl border border-[#D8E6EF] bg-white p-5 shadow-sm sm:p-6"><div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center"><div><h2 className="flex items-center gap-2 text-lg font-extrabold text-[#102A43]"><Scale className="h-5 w-5 text-[#0F9D8A]" />Verified offline baseline</h2><p className="mt-1 text-xs text-[#52667A]">Fault-injected holdouts; not live-field accuracy.</p></div><span className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-[9px] font-bold text-[#1769AA]">{benchmark?.claim_scope || 'Evidence unavailable'}</span></div><div className="mt-5 grid gap-3 md:grid-cols-2"><div className="rounded-2xl bg-[#EDF6FB] p-4"><h3 className="text-sm font-extrabold text-[#102A43]">2024 time holdout</h3><div className="mt-3 grid grid-cols-4 gap-2 text-center">{[['Precision', time?.precision], ['Recall', time?.recall], ['F1', time?.f1], ['AUCPR', time?.aucpr]].map(([label, value]) => <div key={String(label)}><strong className="block text-lg tabular-nums text-[#1769AA]">{metric(value)}</strong><span className="text-[9px] uppercase text-slate-500">{label}</span></div>)}</div></div><div className="rounded-2xl bg-violet-50 p-4"><h3 className="text-sm font-extrabold text-[#102A43]">Unseen-station holdout</h3><div className="mt-3 grid grid-cols-4 gap-2 text-center">{[['Precision', station?.precision], ['Recall', station?.recall], ['F1', station?.f1], ['AUCPR', station?.aucpr]].map(([label, value]) => <div key={String(label)}><strong className="block text-lg tabular-nums text-violet-700">{metric(value)}</strong><span className="text-[9px] uppercase text-slate-500">{label}</span></div>)}</div></div></div><div className="mt-4 flex gap-2 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-5 text-amber-950"><AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />Unseen-station recall is the major weakness. More genuine Indian station history and independently labelled faults—not a bigger neural network alone—are needed to improve it credibly.</div></section>
 
-      {/* 1. Interactive Model Architecture Graph */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 sm:p-6 shadow-sm space-y-4 card-lift">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2">
-            <Workflow className="w-4 h-4 text-blue-600" />
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800">
-              Interactive System Topology Graph
-            </h3>
-          </div>
-          <span className="text-[10px] font-mono text-slate-500 font-semibold">Click node to inspect formulation</span>
-        </div>
-
-        {/* Visual Graph Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-xs">
-          {/* Input Contract */}
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col justify-between card-lift">
-            <div>
-              <span className="text-[10px] text-blue-600 font-bold block mb-1">INPUT CONTRACT</span>
-              <div className="font-bold text-slate-900 mb-2">T / P / RH Telemetry</div>
-              <ul className="text-[11px] text-slate-600 space-y-1">
-                <li>• Air Temperature (°C)</li>
-                <li>• Station Pressure (hPa)</li>
-                <li>• Relative Humidity (%)</li>
-              </ul>
-            </div>
-            <div className="mt-4 pt-2.5 border-t border-slate-200 text-[10px] text-emerald-600 font-bold flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              Range & Schema QC
-            </div>
-          </div>
-
-          {/* Parallel Specialized Streams */}
-          <div className="md:col-span-2 grid grid-rows-3 gap-2.5">
-            {/* Temporal TCN */}
-            <button
-              onClick={() => setSelectedNode('TCN')}
-              className={`p-3 rounded-xl border text-left transition-all ${
-                selectedNode === 'TCN'
-                  ? 'bg-blue-50 border-blue-500 shadow-sm text-blue-950 font-bold'
-                  : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 text-xs">PyTorch Causal TCN</span>
-                <span className="text-[10px] font-bold text-blue-600 bg-blue-100/60 px-2 py-0.5 rounded">24h Sequence</span>
-              </div>
-              <div className="text-[10px] text-slate-500 mt-1">Dilated 1D Convolutions (d=1,2,4)</div>
-            </button>
-
-            {/* Spatial QC */}
-            <button
-              onClick={() => setSelectedNode('SPATIAL_QC')}
-              className={`p-3 rounded-xl border text-left transition-all ${
-                selectedNode === 'SPATIAL_QC'
-                  ? 'bg-blue-50 border-blue-500 shadow-sm text-blue-950 font-bold'
-                  : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 text-xs">Spatial Buddy QC</span>
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded">k=5 Neighbours</span>
-              </div>
-              <div className="text-[10px] text-slate-500 mt-1">Haversine Geodesic Residuals</div>
-            </button>
-
-            {/* Specialist Detectors */}
-            <div className="grid grid-cols-2 gap-2.5">
-              <button
-                onClick={() => setSelectedNode('FREEZE')}
-                className={`p-2.5 rounded-xl border text-left transition-all ${
-                  selectedNode === 'FREEZE'
-                    ? 'bg-blue-50 border-blue-500 shadow-sm'
-                    : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-                }`}
-              >
-                <div className="font-bold text-slate-900 text-[11px]">Freeze Specialist</div>
-                <div className="text-[10px] text-slate-500 mt-0.5">Quantization Dwell</div>
-              </button>
-
-              <button
-                onClick={() => setSelectedNode('CUSUM')}
-                className={`p-2.5 rounded-xl border text-left transition-all ${
-                  selectedNode === 'CUSUM'
-                    ? 'bg-blue-50 border-blue-500 shadow-sm'
-                    : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-                }`}
-              >
-                <div className="font-bold text-slate-900 text-[11px]">CUSUM Specialist</div>
-                <div className="text-[10px] text-slate-500 mt-0.5">Slow Drift (&le; 90 min)</div>
-              </button>
-            </div>
-          </div>
-
-          {/* Ensemble & Persistence Gate */}
-          <div className="space-y-2.5">
-            <button
-              onClick={() => setSelectedNode('CALIBRATION')}
-              className={`w-full p-3 rounded-xl border text-left transition-all ${
-                selectedNode === 'CALIBRATION'
-                  ? 'bg-blue-50 border-blue-500 shadow-sm'
-                  : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-              }`}
-            >
-              <div className="font-bold text-slate-900 text-xs">Isotonic Calibration</div>
-              <div className="text-[10px] text-slate-500 mt-1">ECE = 0.0085</div>
-            </button>
-
-            <button
-              onClick={() => setSelectedNode('PERSISTENCE')}
-              className={`w-full p-3 rounded-xl border text-left transition-all ${
-                selectedNode === 'PERSISTENCE'
-                  ? 'bg-blue-50 border-blue-500 shadow-sm'
-                  : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-              }`}
-            >
-              <div className="font-bold text-slate-900 text-xs">Persistence Gate</div>
-              <div className="text-[10px] text-slate-500 mt-1">k=3 in n=5 Voting</div>
-            </button>
-
-            <button
-              onClick={() => setSelectedNode('ROOT_CAUSE')}
-              className={`w-full p-3 rounded-xl border text-left transition-all ${
-                selectedNode === 'ROOT_CAUSE'
-                  ? 'bg-blue-50 border-blue-500 shadow-sm'
-                  : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-700'
-              }`}
-            >
-              <div className="font-bold text-slate-900 text-xs">Root-Cause Classifier</div>
-              <div className="text-[10px] text-slate-500 mt-1">12 Fault Classes</div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Active Node Detailed Mathematical & Code Breakdown */}
-      <div className="bg-white border border-blue-200 rounded-xl p-5 sm:p-6 shadow-sm space-y-4 font-mono text-xs card-lift">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-2">
-          <div>
-            <span className="text-[10px] text-blue-600 font-bold uppercase tracking-wider block">Component Inspection</span>
-            <h3 className="text-sm sm:text-base font-bold text-slate-900 font-sans mt-0.5">{active.title}</h3>
-            <div className="text-slate-500 text-[11px] mt-0.5">{active.subtitle}</div>
-          </div>
-          <div className="text-left sm:text-right">
-            <span className="text-[10px] text-slate-400 block">Source Code Implementation</span>
-            <span className="text-blue-700 font-bold bg-blue-50 px-2.5 py-1 rounded border border-blue-200 inline-block mt-0.5">
-              {active.codeFile}
-            </span>
-          </div>
-        </div>
-
-        {/* Formulation Box */}
-        <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-          <span className="text-[11px] text-slate-500 font-bold block mb-1.5">Mathematical Formulation:</span>
-          <div className="text-blue-900 font-mono text-sm py-1 font-semibold">{active.math}</div>
-        </div>
-
-        <p className="text-xs text-slate-600 font-sans leading-relaxed">
-          {active.desc}
-        </p>
-      </div>
-    </div>
+      <section className="grid gap-4 md:grid-cols-3"><div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><ShieldCheck className="h-5 w-5 text-emerald-700" /><h3 className="mt-2 text-sm font-extrabold text-emerald-950">Explainable evidence</h3><p className="mt-1 text-xs leading-5 text-emerald-900">Physical, temporal and spatial signals are shown separately before an operator acts.</p></div><div className="rounded-2xl border border-sky-200 bg-sky-50 p-4"><Network className="h-5 w-5 text-sky-700" /><h3 className="mt-2 text-sm font-extrabold text-sky-950">Weather preservation</h3><p className="mt-1 text-xs leading-5 text-sky-900">Regional coherence reduces single-sensor blame during genuine widespread changes.</p></div><div className="rounded-2xl border border-violet-200 bg-violet-50 p-4"><BrainCircuit className="h-5 w-5 text-violet-700" /><h3 className="mt-2 text-sm font-extrabold text-violet-950">Honest uncertainty</h3><p className="mt-1 text-xs leading-5 text-violet-900">Uncalibrated live output is called an evidence score, never a fault probability.</p></div></section>
+    </main>
   );
 }

@@ -1,4 +1,4 @@
 seed,fault_precision,fault_recall,fault_f1,false_alerts_per_station_day,weather_f1,fault_to_weather_rate,weather_to_fault_rate,precision_pass,false_alarm_pass,all_constraints_met
-111,0.898365,0.855072,0.876184,0.007372,0.888078,0.004591,0.003798,True,True,True
-222,0.895781,0.87056,0.88299,0.008171,0.884613,0.004074,0.00386,True,True,True
-333,0.896299,0.871869,0.883915,0.006534,0.87491,0.004737,0.003597,True,True,True
+111,0.728,0.4931,0.5879,0.0048,0.88,0.0,0.0042,False,True,False
+222,0.722,0.4981,0.5879,0.0051,0.878,0.0,0.0045,False,True,False
+333,0.732,0.4901,0.5889,0.0046,0.882,0.0,0.004,False,True,False

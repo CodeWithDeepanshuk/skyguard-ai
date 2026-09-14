@@ -1,4 +1,13 @@
 # 🛰️ SkyGuard AI — Complete Project Handbook & Guide
+
+> [!WARNING]
+> **Legacy narrative — final SIH PPT ke liye is file ke performance claims use na karein.**
+> Presentation ka current, audited source of truth
+> [`SIH26073_PPT_MASTER_GUIDE_HINGLISH.md`](SIH26073_PPT_MASTER_GUIDE_HINGLISH.md)
+> hai. Us guide mein Phase 10 ke scoped precision/recall/F1 results, current data
+> boundaries aur production blockers verify karke diye gaye hain. Is legacy file
+> mein `99.5% accuracy` jaise unsupported narrative claims ho sakte hain.
+
 ### Everything You Need to Know (Zero Coding Required)
 *Problem Statement: Smart India Hackathon (SIH) 26073*  
 *Project Name: SkyGuard AI · Autonomous Weather Network Resilience & Quality Assurance*  

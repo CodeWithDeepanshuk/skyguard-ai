@@ -22,6 +22,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   } = useOperational();
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [allStations, setAllStations] = useState<StationObservation[]>([]);
   const [kpis, setKpis] = useState<OperationalNetworkKPIs>({
     catalog_stations: null,
@@ -112,12 +113,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           activeView={activeView}
           setActiveView={setActiveView}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+          onToggleMobileMenu={() => setMobileDrawerOpen(prev => !prev)}
           engineStatus={kpis.engine_status}
           lastObservationUtc={kpis.last_eval_timestamp_utc ?? undefined}
         />
         <StatusBar kpis={kpis} timeMode={timeMode} />
         <div className="flex-1 flex min-h-0">
-          <Sidebar collapsed={sidebarCollapsed} setCollapsed={setSidebarCollapsed} />
+          <Sidebar
+            collapsed={sidebarCollapsed}
+            setCollapsed={setSidebarCollapsed}
+            mobileOpen={mobileDrawerOpen}
+            onCloseMobile={() => setMobileDrawerOpen(false)}
+          />
           <main className="flex-1 min-w-0 overflow-y-auto bg-white/28 relative flex flex-col">
             {children}
           </main>

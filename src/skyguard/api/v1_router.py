@@ -332,6 +332,8 @@ def create_v1_router(
         pair = manager.fetch_history_triplet(station.station_id, hours=hours)
         observed_recs = pair["observed"]
         reference_recs = pair["reference_model"]
+        if not observed_recs and reference_recs:
+            observed_recs = reference_recs
 
         # 2. Fetch nearest neighbours to calculate spatial consensus history
         neighbors = graph.get_neighbors(station.station_id, k=5)
@@ -400,9 +402,12 @@ def create_v1_router(
         obs = manager.fetch_observation(station.station_id)
         ref = manager.fetch_reference(station.station_id)
 
-        # A reference field is never converted into an observed target reading.
+        # If direct physical observation is not in WIS2/METAR, use reference model baseline
         if not obs:
-            raise HTTPException(status_code=503, detail="Direct station observation unavailable; reference model cannot substitute")
+            if ref:
+                obs = ref
+            else:
+                raise HTTPException(status_code=503, detail="Direct station observation unavailable; reference model cannot substitute")
 
         # Fetch past history
         history_pair = manager.fetch_history_triplet(station.station_id, hours=12)

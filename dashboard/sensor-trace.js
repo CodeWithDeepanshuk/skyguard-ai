@@ -1,15 +1,23 @@
 /* ==========================================================================
    SkyGuard AI · Sensor Trace Chart (Light Meteorological SVG Renderer)
-   Supports 3-Trace Comparison:
-   1. Observed In-Situ Telemetry (Solid Teal/Indigo/Amber)
-   2. Independent Reference Model - Open-Meteo (Dashed Indigo)
-   3. Spatial Neighbour Consensus - NOAA MADIS (Dotted Amber)
-   Box Format for Each Term: Temperature, Pressure, Relative Humidity
+   Supports:
+   1. 3-Trace Comparison: Observed In-Situ, Open-Meteo Reference, MADIS Spatial Consensus
+   2. Time Window Filtering: 1h, 6h, 24h, 7d
+   3. Tap-to-Inspect Value Readout for Touchscreens & Mobile Devices
+   4. Anomaly Markers with Visual Highlight
    ========================================================================== */
 
-window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null) => {
+window.currentSensorTimeWindow = '24h';
+window.currentInspectedPoint = null;
+
+window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null, timeWindow = null) => {
   const host = document.getElementById('sensor-chart');
   if (!host) return;
+
+  if (timeWindow) {
+    window.currentSensorTimeWindow = timeWindow;
+  }
+  const activeWindow = window.currentSensorTimeWindow || '24h';
 
   const ns = 'http://www.w3.org/2000/svg';
   const element = (name, attrs, text) => {
@@ -19,19 +27,61 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
     return node;
   };
 
+  const rawValidRows = (rows || []).filter(r => Number.isFinite(Date.parse(r.timestamp_utc)));
+
+  // Time window filter
+  const windowMillis = {
+    '1h': 3600000,
+    '6h': 6 * 3600000,
+    '24h': 24 * 3600000,
+    '7d': 7 * 24 * 3600000,
+  }[activeWindow] || (24 * 3600000);
+
+  let maxTime = rawValidRows.length ? Math.max(...rawValidRows.map(r => Date.parse(r.timestamp_utc))) : Date.now();
+  const minTimeCutoff = maxTime - windowMillis;
+
+  const validRows = rawValidRows.filter(r => Date.parse(r.timestamp_utc) >= minTimeCutoff);
+
   const signature = JSON.stringify([
-    (rows || []).map(r => [r.station_id, r.timestamp_utc, r.temperature, r.pressure, r.humidity]),
+    (validRows || []).map(r => [r.station_id, r.timestamp_utc, r.temperature, r.pressure, r.humidity]),
+    activeWindow,
     tripletTraces ? 'triplet' : 'standard'
   ]);
   const changed = host.dataset.signature !== signature;
   host.dataset.signature = signature;
   host.replaceChildren();
 
-  const validRows = (rows || []).filter(r => Number.isFinite(Date.parse(r.timestamp_utc)));
+  // Create Window Selector & Inspection Tooltip Bar
+  const controlsBar = document.createElement('div');
+  controlsBar.className = 'sensor-chart-controls-bar';
+  controlsBar.innerHTML = `
+    <div class="chart-window-pills" role="radiogroup" aria-label="Select Telemetry Time Span">
+      <button class="window-pill ${activeWindow === '1h' ? 'active' : ''}" data-window="1h" type="button">1 Hour</button>
+      <button class="window-pill ${activeWindow === '6h' ? 'active' : ''}" data-window="6h" type="button">6 Hours</button>
+      <button class="window-pill ${activeWindow === '24h' ? 'active' : ''}" data-window="24h" type="button">24 Hours</button>
+      <button class="window-pill ${activeWindow === '7d' ? 'active' : ''}" data-window="7d" type="button">7 Days</button>
+    </div>
+    <div class="chart-inspect-banner" id="chart-inspect-banner">
+      <span class="inspect-icon">👆</span>
+      <span class="inspect-text">Tap or click any data point to inspect exact observation, reference model, and residual.</span>
+    </div>
+  `;
+  host.appendChild(controlsBar);
+
+  // Bind window pill events
+  controlsBar.querySelectorAll('.window-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const w = btn.dataset.window;
+      window.currentSensorTimeWindow = w;
+      window.renderSensorTrace(rows, activeParameter, tripletTraces, w);
+    });
+  });
+
   if (!validRows.length && !tripletTraces) {
     const empty = document.createElement('div');
-    empty.style.cssText = 'padding: 40px 20px; text-align: center; color: #64748B; font-size: 13px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px;';
-    empty.textContent = 'No observations available for the selected station. Telemetry will appear as observations arrive.';
+    empty.className = 'chart-empty-state';
+    empty.style.cssText = 'padding: 30px 20px; text-align: center; color: #64748B; font-size: 13px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; margin-top: 10px;';
+    empty.textContent = `No observations available for the selected ${activeWindow} time span. Telemetry will appear as observations arrive.`;
     host.appendChild(empty);
     return;
   }
@@ -41,10 +91,10 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
   if (tripletTraces && tripletTraces.reference_model) {
     tripletTraces.reference_model.forEach(r => {
       const t = Date.parse(r.timestamp_utc);
-      if (Number.isFinite(t)) allTimes.push(t);
+      if (Number.isFinite(t) && t >= minTimeCutoff) allTimes.push(t);
     });
   }
-  if (!allTimes.length) allTimes = [Date.now() - 86400000, Date.now()];
+  if (!allTimes.length) allTimes = [Date.now() - windowMillis, Date.now()];
 
   const start = Math.min(...allTimes), end = Math.max(...allTimes);
   const leftMargin = 85;
@@ -70,8 +120,11 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
     if (tripletTraces) {
       ['observed', 'reference_model', 'neighbor_consensus'].forEach(tKey => {
         (tripletTraces[tKey] || []).forEach(r => {
-          const v = r[paramKey] != null ? r[paramKey] : r[key];
-          if (numeric(v)) values.push(Number(v));
+          const t = Date.parse(r.timestamp_utc);
+          if (t >= minTimeCutoff) {
+            const v = r[paramKey] != null ? r[paramKey] : r[key];
+            if (numeric(v)) values.push(Number(v));
+          }
         });
       });
     }
@@ -106,7 +159,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
     if (!values.length) {
       const emptyNote = document.createElement('div');
       emptyNote.style.cssText = 'padding: 24px; text-align: center; color: #94A3B8; font-size: 12px;';
-      emptyNote.textContent = `No ${title} telemetry reported for this station.`;
+      emptyNote.textContent = `No ${title} telemetry reported for this station within ${activeWindow}.`;
       box.appendChild(emptyNote);
       host.appendChild(box);
       continue;
@@ -135,7 +188,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       const value = low + (high - low) * (i / numYSteps);
       const py = y(value);
 
-      // Horizontal faint gridline
       svg.appendChild(element('line', {
         x1: leftMargin + 1,
         x2: rightMargin,
@@ -146,7 +198,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
         'stroke-width': 1
       }));
 
-      // Broad Y-axis Tick mark
       svg.appendChild(element('line', {
         x1: leftMargin - 7,
         y1: py,
@@ -156,7 +207,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
         'stroke-width': 2
       }));
 
-      // Bold Y-axis Tick label
       svg.appendChild(element('text', {
         x: leftMargin - 11,
         y: py + 4,
@@ -186,7 +236,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       'stroke-width': 2.5
     }));
 
-    // Y-Axis Unit Title at top-left
     svg.appendChild(element('text', {
       x: leftMargin,
       y: yTop - 10,
@@ -196,7 +245,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       'font-size': '11px'
     }, `▲ ${unit}`));
 
-    // X-Axis Title at bottom-right
     svg.appendChild(element('text', {
       x: rightMargin,
       y: yBottom + 30,
@@ -212,7 +260,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       const tVal = start + (end - start) * (i / numXSteps);
       const px = x(tVal);
 
-      // X-axis Tick Mark
       svg.appendChild(element('line', {
         x1: px,
         y1: yBottom,
@@ -222,7 +269,6 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
         'stroke-width': 2
       }));
 
-      // Vertical faint grid line
       if (i > 0 && i < numXSteps) {
         svg.appendChild(element('line', {
           x1: px,
@@ -235,8 +281,11 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
         }));
       }
 
-      // Time Text Label
-      const timeStr = new Date(tVal).toISOString().slice(11, 16) + ' UTC';
+      const dateObj = new Date(tVal);
+      const timeStr = activeWindow === '7d'
+        ? `${dateObj.getDate()} ${dateObj.toLocaleString('en-IN', { month: 'short' })}`
+        : dateObj.toISOString().slice(11, 16) + ' UTC';
+
       svg.appendChild(element('text', {
         x: px,
         y: yBottom + 18,
@@ -247,10 +296,13 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       }, timeStr));
     }
 
-    // Helper to draw a polyline path
+    // Draw reference traces
     const drawTracePath = (traceData, strokeColor, strokeWidth, dashArray, valueGetter) => {
       let d = '', pen = false;
-      const sorted = [...traceData].sort((a, b) => Date.parse(a.timestamp_utc) - Date.parse(b.timestamp_utc));
+      const sorted = [...traceData]
+        .filter(r => Date.parse(r.timestamp_utc) >= minTimeCutoff)
+        .sort((a, b) => Date.parse(a.timestamp_utc) - Date.parse(b.timestamp_utc));
+
       sorted.forEach(r => {
         const val = valueGetter(r);
         const t = Date.parse(r.timestamp_utc);
@@ -272,38 +324,51 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       }
     };
 
-    // 1. Draw Reference Model Trace (Dashed Indigo) if available
     if (tripletTraces && tripletTraces.reference_model) {
-      drawTracePath(
-        tripletTraces.reference_model,
-        '#6366F1',
-        2.0,
-        '5 3',
-        r => (r[paramKey] != null ? r[paramKey] : r[key])
-      );
+      drawTracePath(tripletTraces.reference_model, '#6366F1', 2.0, '5 3', r => (r[paramKey] != null ? r[paramKey] : r[key]));
     }
 
-    // 2. Draw Spatial Consensus Trace (Dotted Amber) if available
     if (tripletTraces && tripletTraces.neighbor_consensus) {
-      drawTracePath(
-        tripletTraces.neighbor_consensus,
-        '#F59E0B',
-        2.2,
-        '2 3',
-        r => (r[paramKey] != null ? r[paramKey] : r[key])
-      );
+      drawTracePath(tripletTraces.neighbor_consensus, '#F59E0B', 2.2, '2 3', r => (r[paramKey] != null ? r[paramKey] : r[key]));
     }
 
-    // 3. Draw Observed In-Situ Primary Path (Solid Line with Points)
+    // Draw Observed In-Situ Primary Path
     let obsData = validRows;
     let obsGetter = r => r[key];
     if (tripletTraces && tripletTraces.observed && tripletTraces.observed.length) {
-      obsData = tripletTraces.observed;
+      obsData = tripletTraces.observed.filter(r => Date.parse(r.timestamp_utc) >= minTimeCutoff);
       obsGetter = r => (r[paramKey] != null ? r[paramKey] : r[key]);
     }
 
     let path = '', pen = false;
     const sortedObs = [...obsData].sort((a, b) => Date.parse(a.timestamp_utc) - Date.parse(b.timestamp_utc));
+    
+    // Tap-to-Inspect handler function
+    const onPointInspect = (pointData, pointVal, pointTime, isFault, circleNode) => {
+      const banner = document.getElementById('chart-inspect-banner');
+      if (banner) {
+        const timeUtcStr = new Date(pointTime).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+        const istStr = new Date(pointTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' }) + ' IST';
+        
+        banner.className = `chart-inspect-banner ${isFault ? 'anomaly-active' : 'inspected'}`;
+        banner.innerHTML = `
+          <div class="inspect-detail-row">
+            <span class="inspect-pill-time">🕒 ${timeUtcStr} (${istStr})</span>
+            <span class="inspect-pill-metric"><strong>${title}:</strong> ${Number(pointVal).toFixed(1)} ${unit}</span>
+            <span class="inspect-pill-status ${isFault ? 'critical' : 'nominal'}">
+              ${isFault ? '⚠️ SUSPECTED SENSOR ANOMALY' : '✓ Nominal Telemetry'}
+            </span>
+          </div>
+        `;
+      }
+
+      // Highlight tapped circle
+      svg.querySelectorAll('circle.tapped-highlight').forEach(c => c.classList.remove('tapped-highlight'));
+      if (circleNode) {
+        circleNode.classList.add('tapped-highlight');
+      }
+    };
+
     sortedObs.forEach(r => {
       const val = obsGetter(r);
       const t = Date.parse(r.timestamp_utc);
@@ -312,17 +377,28 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null)
       path += `${pen ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)} `;
       pen = true;
 
-      // Point highlight & anomaly detection marker
+      // Anomaly marker vs standard dot
       const isFault = r.event_decision === 'sensor_fault' || (r.fault_probability && Number(r.fault_probability) > 0.8);
       const dot = element('circle', {
         cx: px.toFixed(1),
         cy: py.toFixed(1),
-        r: isFault ? 6 : 4,
+        r: isFault ? 6.5 : 4.5,
         fill: isFault ? '#DC2626' : color,
         stroke: '#FFFFFF',
         'stroke-width': isFault ? 2.5 : 1.5,
+        class: isFault ? 'chart-anomaly-dot' : 'chart-obs-dot',
+        style: 'cursor: pointer; -webkit-tap-highlight-color: transparent;',
         tabindex: 0
       });
+
+      // Interactive Touch & Click Tap-to-Inspect
+      const handleTrigger = (e) => {
+        e.stopPropagation();
+        onPointInspect(r, val, t, isFault, dot);
+      };
+
+      dot.addEventListener('click', handleTrigger);
+      dot.addEventListener('touchstart', handleTrigger, { passive: true });
 
       const tooltipTime = new Date(t).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
       dot.appendChild(element('title', {}, `${tooltipTime} UTC: ${Number(val).toFixed(1)} ${unit}${isFault ? ' (ANOMALY DETECTED)' : ''}`));

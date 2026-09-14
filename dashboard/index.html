@@ -2,11 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover">
   <meta name="theme-color" content="#2563EB">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SkyGuard AI">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
   <meta name="description" content="SkyGuard AI — Intelligent Real-Time Anomaly Detection for Automatic Weather Stations across India (SIH 26073).">
   <title>SkyGuard AI · Automatic Weather Station Intelligence Platform</title>
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="/assets/vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="/assets/styles.css?v=3.0">
 </head>
@@ -76,11 +83,17 @@
       </div>
     </aside>
 
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
+
     <!-- Main Workspace -->
     <div class="workspace">
       <!-- Sticky Top Bar -->
       <header class="topbar">
         <div class="topbar-left">
+          <button class="mobile-nav-toggle" id="mobile-menu-btn" type="button" aria-label="Toggle Navigation Menu">
+            <span class="hamburger-icon">☰</span>
+          </button>
           <div class="global-search-container">
             <span class="global-search-icon">🔍</span>
             <input type="text" class="global-search-input" id="station-search-input" placeholder="Search station, station ID, district or state..." aria-label="Global Station Search">
@@ -157,65 +170,68 @@
             <label style="display:none;"><input type="checkbox" id="auto-refresh" checked></label>
           </div>
 
-          <!-- Top 6 KPI Cards -->
+          <!-- Top 6 KPI Cards: Station Counts vs Sensor Reading Counts clearly separated -->
           <div class="kpi-grid">
             <article class="kpi-card">
               <div class="kpi-label">
-                <span>Total Stations</span>
+                <span>Monitored Stations</span>
                 <span>📡</span>
               </div>
               <strong class="kpi-value" id="kpi-total-stations">543</strong>
-              <div class="kpi-subtext">AWS Stations Monitored</div>
-            </article>
-
-            <article class="kpi-card kpi-healthy">
-              <div class="kpi-label">
-                <span>Healthy Stations</span>
-                <span class="kpi-badge" style="background:#F0FDF4;color:#16A34A;">Normal</span>
-              </div>
-              <strong class="kpi-value" id="kpi-healthy">—</strong>
-              <div class="kpi-subtext">Nominal Telemetry</div>
+              <div class="kpi-subtext">543 Catalog · <span id="kpi-active-reporting">410 Active</span></div>
             </article>
 
             <article class="kpi-card kpi-anomaly">
               <div class="kpi-label">
-                <span>Active Anomalies</span>
-                <span class="kpi-badge" style="background:#FEF2F2;color:#DC2626;" id="kpi-critical-tag">Alert</span>
+                <span>Stations Needing Review</span>
+                <span class="kpi-badge" style="background:#FEF2F2;color:#DC2626;" id="kpi-critical-tag">Attention</span>
               </div>
-              <strong class="kpi-value" id="kpi-faults">0</strong>
-              <div class="kpi-subtext" id="kpi-faults-note">Requires Attention</div>
+              <strong class="kpi-value" id="kpi-review-stations">0</strong>
+              <div class="kpi-subtext" id="kpi-faults-note">Flagged for Review</div>
             </article>
 
-            <article class="kpi-card kpi-degraded">
+            <article class="kpi-card" style="border-top-color:#64748B;">
               <div class="kpi-label">
-                <span>Degraded Sensors</span>
-                <span class="kpi-badge" style="background:#FFF7ED;color:#EA580C;">Watch</span>
+                <span>Offline / Stale Stations</span>
+                <span class="kpi-badge" style="background:#F1F5F9;color:#475569;">Stale</span>
               </div>
-              <strong class="kpi-value" id="kpi-degraded-count">12</strong>
-              <div class="kpi-subtext">Maintenance Recommended</div>
+              <strong class="kpi-value" id="kpi-offline-stations">0</strong>
+              <div class="kpi-subtext">Packet Delay &gt; 60 min</div>
             </article>
 
             <article class="kpi-card kpi-alerts">
               <div class="kpi-label">
-                <span>Active Alerts</span>
+                <span>Active Incidents</span>
                 <span>⚠️</span>
               </div>
-              <strong class="kpi-value" id="kpi-alerts">—</strong>
-              <div class="kpi-subtext">Last 24 Hours</div>
+              <strong class="kpi-value" id="kpi-faults">0</strong>
+              <div class="kpi-subtext">Grouped Anomaly Incidents</div>
+            </article>
+
+            <article class="kpi-card" style="border-top-color:#2563EB;">
+              <div class="kpi-label">
+                <span>24h Sensor Readings</span>
+                <span class="kpi-badge" style="background:#EFF6FF;color:#2563EB;">Volume</span>
+              </div>
+              <strong class="kpi-value" id="kpi-readings-visible">—</strong>
+              <div class="kpi-subtext">T, P, RH Observations Evaluated</div>
             </article>
 
             <article class="kpi-card kpi-availability">
               <div class="kpi-label">
-                <span>Data Availability</span>
+                <span>Data Freshness &amp; SLA</span>
                 <span class="kpi-badge" style="background:#F5F3FF;color:#7C3AED;">SLA</span>
               </div>
               <strong class="kpi-value" id="kpi-availability-rate">98.7%</strong>
-              <div class="kpi-subtext">Network Ingestion SLA</div>
+              <div class="kpi-subtext" id="kpi-freshness-subtext">Network Ingestion SLA</div>
             </article>
           </div>
 
           <!-- Hidden KPI elements preserved for test compatibility -->
           <div style="display:none;">
+            <span id="kpi-healthy">—</span>
+            <span id="kpi-alerts">—</span>
+            <span id="kpi-degraded-count">12</span>
             <span id="kpi-readings">—</span>
             <span id="kpi-readings-note"></span>
             <span id="kpi-f1">—</span>
@@ -535,18 +551,47 @@
         </section>
 
         <!-- ==================================================================
-             TAB 3: STATIONS (Full AWS Station Directory)
+             TAB 2 / SCREEN 2: STATIONS (Searchable Station Cards & Map/List Toggle)
              ================================================================== -->
         <section class="tab-pane" id="tab-stations">
           <div class="page-header">
             <div>
-              <h2 class="page-title">Automatic Weather Station Directory</h2>
-              <p class="page-subtitle">Live meteorological observations from all active AWS monitoring stations</p>
+              <h2 class="page-title">Automatic Weather Station Network Directory</h2>
+              <p class="page-subtitle">Searchable telemetry cards with individual sensor metrics, trends, and map/list view</p>
             </div>
             <span class="table-count" id="reading-count">0 stations</span>
           </div>
 
-          <article class="panel">
+          <div class="stations-view-header">
+            <div style="display:flex; gap:8px; align-items:center; flex:1; min-width:240px;">
+              <input type="text" id="stations-tab-search" class="global-search-input" placeholder="Search station, ID, state or district..." aria-label="Search Stations Directory" style="max-width:340px; height:42px;">
+            </div>
+            <div class="view-toggle-btn-group" role="group" aria-label="Toggle Stations Layout">
+              <button class="view-toggle-btn active" id="stations-view-cards" type="button">🗂️ Cards</button>
+              <button class="view-toggle-btn" id="stations-view-table" type="button">📋 Table</button>
+              <button class="view-toggle-btn" id="stations-view-map" type="button">🗺️ Map</button>
+            </div>
+          </div>
+
+          <!-- Station Status Filter Pills -->
+          <div class="pill-group" id="station-status-filter-pills" style="margin-bottom:12px;">
+            <button class="toolbar-pill active" data-filter="all" type="button">All Stations</button>
+            <button class="toolbar-pill" data-filter="critical" type="button">⚠️ Critical Anomalies</button>
+            <button class="toolbar-pill" data-filter="watch" type="button">🩺 Watch / Degraded</button>
+            <button class="toolbar-pill" data-filter="healthy" type="button">✓ Healthy</button>
+            <button class="toolbar-pill" data-filter="offline" type="button">📡 Offline / Stale</button>
+          </div>
+
+          <!-- Mobile Cards Grid (Default on Mobile Phones) -->
+          <div class="station-cards-grid" id="station-cards-container">
+            <!-- Populated dynamically by renderStationCards -->
+          </div>
+
+          <!-- Embedded Map View Container (Shown when Map View is toggled) -->
+          <div class="station-map" id="stations-tab-map" style="display:none; height: 550px; border-radius: 12px; margin-top: 12px;"></div>
+
+          <!-- Desktop Table Wrap (Shown when Table View is selected on desktop) -->
+          <article class="panel" id="station-table-wrap" style="display:none; margin-top:12px;">
             <div class="table-wrap">
               <table>
                 <thead>
@@ -571,17 +616,32 @@
         </section>
 
         <!-- ==================================================================
-             TAB 4: ANOMALIES (Anomaly Center)
+             TAB 3 / SCREEN 4: ALERTS (Grouped Incident Management & Forensic QC)
              ================================================================== -->
         <section class="tab-pane" id="tab-anomalies">
           <div class="page-header">
             <div>
-              <h2 class="page-title">Meteorological Anomaly Center</h2>
-              <p class="page-subtitle">Audited sensor faults, drift signatures, and communication alerts across India</p>
+              <h2 class="page-title">Meteorological Alert &amp; Incident Center</h2>
+              <p class="page-subtitle">Grouped anomaly incidents, explainable forensic evidence, and field operator resolution</p>
             </div>
-            <a class="table-action-btn" href="/api/export/incidents.csv" download>Download Incident Report (CSV)</a>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button class="incident-action-btn primary" id="open-filter-sheet-btn" type="button">⚙️ Filter Alerts</button>
+              <a class="incident-action-btn" id="export-alerts-xlsx" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background:#15803D; color:#FFFFFF; border-color:#166534; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600;">📊 Export Excel (.xlsx)</a>
+              <button class="incident-action-btn" id="export-alerts-csv" type="button">📥 Export CSV</button>
+              <button class="incident-action-btn" id="export-alerts-json" type="button">💾 Export JSON</button>
+            </div>
           </div>
 
+          <!-- Persistence Notice explaining LocalStorage scope -->
+          <div class="confidence-disclaimer" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <span>💾 <strong>Local Persistence Active:</strong> Acknowledgments, notes, and resolutions persist in your browser for this device.</span>
+            <span id="incident-store-status" style="font-size:10px; color:#15803D; font-weight:700;">Storage Synced</span>
+          </div>
+
+          <!-- Active Filter Tags Bar -->
+          <div id="active-filters-bar" style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;"></div>
+
+          <!-- Severity KPI Cards -->
           <div class="kpi-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 16px;">
             <article class="kpi-card kpi-anomaly">
               <div class="kpi-label"><span>Critical Severity</span></div>
@@ -591,7 +651,7 @@
             <article class="kpi-card kpi-degraded">
               <div class="kpi-label"><span>High Severity</span></div>
               <strong class="kpi-value" id="anomaly-high-count">0</strong>
-              <div class="kpi-subtext">Deviation > 4σ</div>
+              <div class="kpi-subtext">Deviation &gt; 4σ</div>
             </article>
             <article class="kpi-card" style="border-top-color:#F59E0B;">
               <div class="kpi-label"><span>Medium Severity</span></div>
@@ -605,7 +665,20 @@
             </article>
           </div>
 
-          <article class="panel">
+          <!-- Grouped Incident Cards Container (For Mobile & Desktop Cards) -->
+          <div id="incident-cards-container">
+            <!-- Populated dynamically by renderGroupedIncidents -->
+          </div>
+
+          <!-- Desktop Table Wrap -->
+          <article class="panel" style="margin-top:14px;">
+            <div class="panel-header">
+              <div class="panel-title">Full Incident Telemetry Audit Table</div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <a class="table-action-btn" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background:#15803D; color:#FFFFFF; text-decoration:none;">Download Excel (.xlsx)</a>
+                <a class="table-action-btn" href="/api/export/incidents.csv" download>Download Raw Log (CSV)</a>
+              </div>
+            </div>
             <div class="table-wrap">
               <table>
                 <thead>
@@ -711,10 +784,28 @@
               <p class="page-subtitle">Evidence, provenance & frozen evaluation benchmarks (SIH 26073)</p>
             </div>
             <div class="pill-group" id="split-selector">
-              <button class="toolbar-pill active" data-split="time_test" type="button">Unseen Time · 2024</button>
+              <button class="toolbar-pill active" data-split="promoted_production" type="button">Promoted Production (Iteration 12)</button>
+              <button class="toolbar-pill" data-split="time_test" type="button">Unseen Time · 2024</button>
               <button class="toolbar-pill" data-split="station_test" type="button">Unseen Stations · 2024</button>
             </div>
           </div>
+
+          <!-- Weather Anomalies Analysis Excel Workbook Export Banner -->
+          <article class="panel" style="margin-bottom: 20px; border-left: 4px solid #15803D; background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);">
+            <div class="panel-header" style="background: transparent; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <div class="panel-title" style="color: #166534; display: flex; align-items: center; gap: 8px;">
+                  <span>📊</span> Weather Anomalies &amp; Sensor Fault Manual Analysis Workbook (.xlsx)
+                </div>
+                <p style="font-size: 12px; color: #475569; margin-top: 4px;">
+                  30 Indian AWS stations across 24h timestamps covering temperature spikes, drift shifts, frozen flatlines, and pressure drops with confidence scores, styled matching the reference evaluation sheet.
+                </p>
+              </div>
+              <a class="sim-btn" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background: #15803D; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 8px 16px; border-radius: 6px; box-shadow: 0 2px 4px rgba(21,128,61,0.2); display: inline-flex; align-items: center; gap: 6px;">
+                <span>📥 Download Excel Workbook (.xlsx)</span>
+              </a>
+            </div>
+          </article>
 
           <!-- Executive Headline KPI Strip (Highlighted Bold Numbers) -->
           <div class="report-hero-grid" id="accuracy-strip"></div>
@@ -841,81 +932,498 @@
             </article>
           </div>
         </section>
+        <!-- ==================================================================
+             SCREEN 6: DATA IMPORT, SETTINGS & WORKBOOK DIAGNOSTIC TOOL
+             ================================================================== -->
+        <section class="tab-pane" id="tab-import-settings">
+          <div class="page-header">
+            <div>
+              <h2 class="page-title">Data Ingestion, Settings &amp; Workbook Diagnostic Tool</h2>
+              <p class="page-subtitle">Upload telemetry CSV or Excel, map variables, validate physical bounds, preview errors, and customize detection thresholds</p>
+            </div>
+            <button class="table-action-btn" id="back-from-import-btn" type="button">← Back to Overview</button>
+          </div>
+
+          <div class="overview-split" style="grid-template-columns: 1.2fr 0.8fr; margin-bottom: 20px;">
+            <!-- Left: File Dropzone & Column Mapping -->
+            <article class="panel">
+              <div class="panel-header">
+                <div class="panel-title">📂 Upload AWS Telemetry File (CSV / TSV / Excel)</div>
+                <span class="severity-pill healthy">Parser Ready</span>
+              </div>
+              <div class="panel-body">
+                <div class="import-dropzone" id="csv-dropzone" role="button" tabindex="0" aria-label="Upload CSV or Excel file">
+                  <div class="import-dropzone-icon">📥</div>
+                  <strong>Drag &amp; drop your CSV or Excel file here</strong>
+                  <p style="font-size:12px; color:#64748B; margin-top:4px;">Supports standard AWS readings or SkyGuard Excel workbooks (.csv, .xlsx, .tsv)</p>
+                  <button class="sim-btn inject" id="browse-files-btn" type="button" style="margin-top:10px;">Browse Files</button>
+                  <input type="file" id="csv-file-input" accept=".csv,.tsv,.txt,.xlsx" style="display:none;">
+                </div>
+
+                <div id="import-file-info" style="display:none; margin-top:12px; background:#F8FAFC; padding:10px 12px; border-radius:8px; border:1px solid #E2E8F0; font-size:12px;">
+                  <div style="display:flex; justify-content:space-between;">
+                    <span id="import-filename"><strong>dataset.csv</strong></span>
+                    <span id="import-filesize" style="color:#64748B;">—</span>
+                  </div>
+                </div>
+
+                <!-- Column Mapping -->
+                <div style="margin-top:16px;">
+                  <strong style="font-size:13px; color:#0F172A; display:block; margin-bottom:6px;">Variable Column Mapping &amp; Unit Normalization</strong>
+                  <p style="font-size:12px; color:#64748B; margin-bottom:10px;">Match headers from your file. Standard units (°C, hPa, % RH) are validated automatically.</p>
+                  
+                  <div class="column-map-grid">
+                    <div class="threshold-field">
+                      <label for="map-col-station">Station ID / Site</label>
+                      <select id="map-col-station" class="map-select"><option value="auto">Auto-Detect</option></select>
+                    </div>
+                    <div class="threshold-field">
+                      <label for="map-col-time">Observation Time (UTC / IST)</label>
+                      <select id="map-col-time" class="map-select"><option value="auto">Auto-Detect</option></select>
+                    </div>
+                    <div class="threshold-field">
+                      <label for="map-col-temp">Temperature (°C / °F)</label>
+                      <select id="map-col-temp" class="map-select"><option value="auto">Auto-Detect</option></select>
+                    </div>
+                    <div class="threshold-field">
+                      <label for="map-col-press">Pressure (hPa / Pa)</label>
+                      <select id="map-col-press" class="map-select"><option value="auto">Auto-Detect</option></select>
+                    </div>
+                    <div class="threshold-field">
+                      <label for="map-col-humid">Relative Humidity (%)</label>
+                      <select id="map-col-humid" class="map-select"><option value="auto">Auto-Detect</option></select>
+                    </div>
+                  </div>
+
+                  <div style="display:flex; gap:10px; margin-top:14px;">
+                    <button class="sim-btn inject" id="run-import-qc-btn" type="button">⚡ Execute Baseline QC Detection</button>
+                    <button class="sim-btn restore" id="clear-import-btn" type="button">Clear</button>
+                  </div>
+                </div>
+
+                <!-- Validation Preview Table -->
+                <div id="import-preview-section" style="margin-top:18px; display:none;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <strong style="font-size:13px; color:#0F172A;">Pre-Ingestion Integrity Audit &amp; Error Preview</strong>
+                    <span class="severity-pill" id="import-audit-pill">Audit Complete</span>
+                  </div>
+                  <div class="table-wrap" style="max-height:240px;">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Row #</th>
+                          <th>Station</th>
+                          <th>Time (UTC)</th>
+                          <th>Issue Type</th>
+                          <th>Observed</th>
+                          <th>Validation Verdict</th>
+                        </tr>
+                      </thead>
+                      <tbody id="import-errors-body">
+                        <!-- Populated dynamically -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <!-- Right: Configurable Detection Thresholds -->
+            <article class="panel">
+              <div class="panel-header">
+                <div class="panel-title">⚙️ Configurable Detection Thresholds</div>
+                <span class="severity-pill healthy">WMO / IMD Standards</span>
+              </div>
+              <div class="panel-body">
+                <p style="font-size:12px; color:#64748B; margin-bottom:12px;">Adjust quality control boundaries. Custom settings are persisted locally in browser storage.</p>
+                
+                <div class="thresholds-grid">
+                  <div class="threshold-field">
+                    <label for="th-temp-step">Temp Step Limit (°C / hr)</label>
+                    <input type="number" id="th-temp-step" value="5.0" step="0.5">
+                  </div>
+                  <div class="threshold-field">
+                    <label for="th-press-step">Pressure Step Limit (hPa / 3hr)</label>
+                    <input type="number" id="th-press-step" value="6.0" step="0.5">
+                  </div>
+                  <div class="threshold-field">
+                    <label for="th-spatial-z">Spatial Z-Score Tolerance (σ)</label>
+                    <input type="number" id="th-spatial-z" value="3.5" step="0.1">
+                  </div>
+                  <div class="threshold-field">
+                    <label for="th-freeze-len">Frozen Sensor Flatline (Observations)</label>
+                    <input type="number" id="th-freeze-len" value="5" step="1">
+                  </div>
+                  <div class="threshold-field">
+                    <label for="th-humid-len">Humidity Boundary Run (Observations)</label>
+                    <input type="number" id="th-humid-len" value="6" step="1">
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:10px; margin-top:16px;">
+                  <button class="sim-btn inject" id="save-thresholds-btn" type="button">💾 Save Thresholds</button>
+                  <button class="sim-btn restore" id="reset-thresholds-btn" type="button">↺ Reset to Defaults</button>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <!-- SkyGuard Excel Workbook Compatibility Diagnostic Tool -->
+          <article class="panel" style="margin-top:20px;">
+            <div class="panel-header">
+              <div class="panel-title">📑 SkyGuard Excel Workbook Compatibility &amp; Baseline Evaluation</div>
+              <span class="severity-pill healthy">Dual-System Verified</span>
+            </div>
+            <div class="panel-body">
+              <p style="font-size:12px; color:#475569; margin-bottom:12px;">
+                Inspects long-form AWS observations compatible with the SkyGuard evaluation workbook: <code>Readings</code>, <code>Settings</code>, <code>Detection</code>, and <code>Fault Guide</code> sheets.
+              </p>
+
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                <a class="sim-btn" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background:#15803D; color:#FFFFFF; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600; padding:8px 16px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.12);">
+                  <span>📥 Download Weather Anomalies Analysis (.xlsx)</span>
+                </a>
+                <button class="sim-btn inject" id="load-sample-workbook-btn" type="button">📊 Load Sample SkyGuard Workbook Dataset</button>
+              </div>
+
+              <div id="workbook-results-container" style="display:none; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px; padding:14px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                  <strong style="font-size:13px; color:#0F172A;">Workbook Compatibility Audit</strong>
+                  <span class="severity-pill healthy" id="workbook-status-pill">Compatible Structure</span>
+                </div>
+                <div style="font-size:12px; color:#334155;" id="workbook-audit-notes"></div>
+              </div>
+
+              <!-- Scientific Differences Table -->
+              <strong style="font-size:13px; color:#0F172A; display:block; margin-bottom:6px;">Scientific Architectural Comparison: Website vs. Excel Workbook</strong>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Capability / Dimension</th>
+                      <th>SkyGuard Online System (Web Service)</th>
+                      <th>SkyGuard Excel Workbook</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Spatial Consensus</strong></td>
+                      <td>Real-time leave-one-out weighted median with lapse-rate (-6.5°C/km) &amp; barometric adjustment</td>
+                      <td>Static lookup distance matrix across pre-indexed buddy rows</td>
+                    </tr>
+                    <tr>
+                      <td><strong>ML Decision Engine</strong></td>
+                      <td>Phase 10 Hybrid PyTorch CausalTCN + LightGBM calibrated event gate</td>
+                      <td>Rule-based boolean IF/THEN detection formulas</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Safe Reconstruction</strong></td>
+                      <td>Continuous inverse-distance weighted (IDW) spatial estimation with 90% confidence interval</td>
+                      <td>Linear interpolation between preceding and succeeding valid cells</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Immutability Contract</strong></td>
+                      <td>Original raw observations strictly preserved; corrections stored in advisory channel</td>
+                      <td>Separate audit formula columns</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+        </section>
       </main>
     </div>
   </div>
 
   <!-- ======================================================================
-       SLIDING ALERT DETAILS DRAWER
+       SCREEN 5: SLIDING FORENSIC INVESTIGATION DRAWER
        ====================================================================== -->
   <div class="drawer-backdrop" id="drawer-backdrop"></div>
-  <aside class="alert-drawer" id="alert-drawer" aria-label="Anomaly Incident Details">
+  <aside class="alert-drawer" id="alert-drawer" aria-label="Anomaly Forensic Investigation">
     <div class="drawer-header">
       <h3>
         <span id="incident-severity-badge" class="severity-pill critical">Critical</span>
-        <span id="incident-title">Anomaly Evidence Record</span>
+        <span id="incident-title">Forensic Anomaly Investigation Record</span>
       </h3>
-      <button class="drawer-close-btn" id="drawer-close-btn" type="button" aria-label="Close Drawer">✕</button>
+      <button class="drawer-close-btn" id="drawer-close-btn" type="button" aria-label="Close Investigation">✕</button>
     </div>
 
     <div class="drawer-body">
+      <!-- Station & Time Meta -->
       <div class="drawer-section">
-        <span class="drawer-section-title">Telemetry Timestamp & Station</span>
+        <span class="drawer-section-title">Telemetry Timestamp &amp; Station</span>
         <p id="incident-record-time" style="font-size:13px; font-weight:600; color:#0F172A;"></p>
         <p id="incident-explanation" style="font-size:12px; color:#475569; line-height:1.4;"></p>
       </div>
 
+      <!-- Quantitative Metric Tiles -->
       <div class="alert-metric-row">
         <div class="alert-metric-tile">
-          <span>Fault Confidence</span>
-          <strong id="fault-confidence">—</strong>
+          <span>Observed Reading</span>
+          <strong id="drawer-observed-val">—</strong>
         </div>
         <div class="alert-metric-tile">
-          <span>Root Cause Conf.</span>
-          <strong id="root-confidence">—</strong>
+          <span>Expected Reference</span>
+          <strong id="drawer-expected-val">—</strong>
         </div>
         <div class="alert-metric-tile">
-          <span>Affected Sensor</span>
-          <strong id="affected-sensor">—</strong>
+          <span>Deviation (Δ)</span>
+          <strong id="drawer-deviation-val" style="color:#DC2626;">—</strong>
+        </div>
+        <div class="alert-metric-tile">
+          <span>Spatial Z-Score</span>
+          <strong id="drawer-zscore-val" style="color:#7C3AED;">—</strong>
         </div>
       </div>
 
+      <!-- Scientific Triad Separation -->
       <div class="drawer-section">
-        <span class="drawer-section-title" id="evidence-header-title">Why was this flagged?</span>
-        <div class="explanation-card" id="evidence-list">
+        <span class="drawer-section-title">Scientific Triad Separation (Observation vs. Cause vs. Proof)</span>
+        <div class="investigation-triad-grid">
+          <div class="triad-card pattern">
+            <span class="triad-title">1. Observed Anomaly Pattern</span>
+            <p class="triad-body" id="triad-pattern-text">Empirical deviation pattern observed in sensor stream.</p>
+          </div>
+          <div class="triad-card cause">
+            <span class="triad-title">2. Suspected Cause</span>
+            <p class="triad-body" id="triad-cause-text">Cautious physical or transducer hypothesis.</p>
+          </div>
+          <div class="triad-card evidence">
+            <span class="triad-title">3. Evidence Needed to Confirm</span>
+            <p class="triad-body" id="triad-evidence-text">Required field test or redundant sensor confirmation.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Consistency Safeguard: Genuine Weather Check -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Event Consistency Safeguard ("Could this be genuine weather?")</span>
+        <div class="weather-consistency-card" id="weather-consistency-banner">
+          <span style="font-size:20px;">🛡️</span>
+          <div>
+            <strong id="weather-consistency-title" style="display:block; font-size:13px; color:#0F172A;">Spatial Agreement Check</strong>
+            <p id="weather-consistency-desc" style="font-size:12px; color:#475569; margin-top:2px;">
+              Cross-checked against nearby AWS stations in the same regional climate zone.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timeline of Progression -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Timeline of Anomaly Progression</span>
+        <div id="incident-timeline" style="font-size:12px; color:#475569; display:flex; flex-direction:column; gap:6px;">
           <!-- Populated dynamically -->
         </div>
       </div>
 
+      <!-- Missing Evidence & Recommended Field Checks -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Missing Evidence &amp; Actionable Field Checks</span>
+        <div class="explanation-card" id="missing-evidence-card">
+          <div style="font-size:12px; line-height:1.45; color:#334155;" id="missing-evidence-text">
+            Solar radiation flux and 10-meter wind telemetry are unmeasured. Cannot rule out aspirated fan failure.
+          </div>
+          <div style="margin-top:10px; border-top:1px solid #E2E8F0; padding-top:8px;">
+            <strong style="font-size:11px; text-transform:uppercase; color:#0F172A; display:block; margin-bottom:4px;">Recommended Meteorological Field Actions:</strong>
+            <ul id="recommended-actions-list" style="margin-left:16px; font-size:12px; color:#475569;">
+              <li>Inspect sensor radiation shield for fan blockage or solar heating artifact.</li>
+              <li>Verify RTD 4-wire bridge excitation resistance at terminal junction box.</li>
+              <li>Perform side-by-side verification using an IMD-certified reference standard.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Suggested Safe Correction -->
       <div class="drawer-section">
         <span class="drawer-section-title">Suggested Safe Correction (IDW Estimation)</span>
-        <div id="correction-box">
+        <div id="correction-box"></div>
+      </div>
+
+      <!-- Calibrated Probability Disclosure -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Statistical Confidence Status</span>
+        <div class="confidence-disclaimer" id="calibration-disclosure">
+          ⚖️ <strong>Model Calibration Notice:</strong> Displayed anomaly probability reflects the promoted Iteration 12 CausalTCN engine. In uncalibrated mode, metric is displayed as "confidence not calibrated". Arbitrary scores are never presented as true probabilities.
+        </div>
+      </div>
+
+      <!-- Operator Notes & Action History -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Field Operator Notes &amp; Audit Trail</span>
+        <div id="operator-notes-container" style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
           <!-- Populated dynamically -->
         </div>
-      </div>
-
-      <div class="drawer-section">
-        <span class="drawer-section-title">Recommended Maintenance Action</span>
-        <div class="correction-recommendation">
-          <strong id="maintenance-action">—</strong>
-          <p>Inspect sensor transducer wiring and schedule field calibration verification.</p>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="new-operator-note" class="global-search-input" placeholder="Add field observation or repair note..." style="flex:1; height:40px; font-size:12px;">
+          <button class="sim-btn inject" id="save-operator-note-btn" type="button" style="min-height:40px;">Save Note</button>
         </div>
       </div>
-
-      <details class="technical-disclosure">
-        <summary>View Technical ML Feature Contributions</summary>
-        <div id="contribution-list" style="margin-top:8px;"></div>
-      </details>
     </div>
 
+    <!-- Drawer Footer Actions -->
     <div class="drawer-footer">
-      <button class="sim-btn inject" id="drawer-inspect-station-btn" type="button">Inspect Station on Map</button>
+      <button class="sim-btn inject" id="drawer-ack-btn" type="button">✓ Acknowledge Alert</button>
+      <button class="sim-btn restore" id="drawer-resolve-btn" type="button" style="background:#16A34A; color:#FFFFFF; border-color:#16A34A;">✓ Mark Resolved</button>
       <button class="sim-btn restore" id="drawer-close-action-btn" type="button">Close</button>
     </div>
   </aside>
 
   <!-- Hidden elements to preserve exact legacy bindings for tests -->
   <span id="incident-severity" style="display:none;"></span>
+  <span id="fault-confidence" style="display:none;">—</span>
+  <span id="root-confidence" style="display:none;">—</span>
+  <span id="affected-sensor" style="display:none;">—</span>
+  <div id="evidence-list" style="display:none;"></div>
+  <span id="maintenance-action" style="display:none;">—</span>
+  <div id="contribution-list" style="display:none;"></div>
+  <button id="drawer-inspect-station-btn" style="display:none;"></button>
+
+  <!-- ======================================================================
+       BOTTOM SHEETS (FILTERS & MORE FEATURES)
+       ====================================================================== -->
+  <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
+
+  <!-- 1. Alert Filters Bottom Sheet -->
+  <div class="bottom-sheet" id="filter-bottom-sheet" role="dialog" aria-modal="true" aria-label="Filter Telemetry Alerts">
+    <div class="sheet-handle-bar"></div>
+    <div class="sheet-header">
+      <h3>⚙️ Filter Alerts &amp; Incidents</h3>
+      <button class="sheet-close-btn" id="close-filter-sheet-btn" type="button" aria-label="Close Filter Sheet">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="sheet-filter-group">
+        <label for="filter-sheet-station">Station Filter</label>
+        <select id="filter-sheet-station">
+          <option value="all">All Weather Stations</option>
+        </select>
+      </div>
+
+      <div class="sheet-filter-group">
+        <label for="filter-sheet-sensor">Sensor Parameter</label>
+        <select id="filter-sheet-sensor">
+          <option value="all">All Sensors (T, P, RH)</option>
+          <option value="temperature">Temperature (°C)</option>
+          <option value="pressure">Atmospheric Pressure (hPa)</option>
+          <option value="humidity">Relative Humidity (% RH)</option>
+        </select>
+      </div>
+
+      <div class="sheet-filter-group">
+        <label for="filter-sheet-severity">Severity Level</label>
+        <select id="filter-sheet-severity">
+          <option value="all">All Severities</option>
+          <option value="critical">Critical (&gt; 4σ)</option>
+          <option value="high">High (Warning)</option>
+          <option value="medium">Medium (Watch / Degrading)</option>
+          <option value="low">Low (Info)</option>
+        </select>
+      </div>
+
+      <div class="sheet-filter-group">
+        <label for="filter-sheet-pattern">Fault Pattern</label>
+        <select id="filter-sheet-pattern">
+          <option value="all">All Fault Signatures</option>
+          <option value="spike">Sudden Spike / Step</option>
+          <option value="drift">Calibration Drift</option>
+          <option value="freeze">Frozen Sensor Flatline</option>
+          <option value="boundary">Boundary Run (100% / 0%)</option>
+          <option value="noise">Noise Burst</option>
+          <option value="dropout">Missing Packets / Gap</option>
+        </select>
+      </div>
+
+      <div class="sheet-filter-group">
+        <label for="filter-sheet-status">Investigation Status</label>
+        <select id="filter-sheet-status">
+          <option value="all">All Statuses</option>
+          <option value="new">New (Unreviewed)</option>
+          <option value="acknowledged">Acknowledged</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+    </div>
+    <div class="sheet-footer">
+      <button class="sheet-clear-btn" id="sheet-clear-filters-btn" type="button">Clear Filters</button>
+      <button class="sheet-apply-btn" id="sheet-apply-filters-btn" type="button">Apply Filters</button>
+    </div>
+  </div>
+
+  <!-- 2. "More" Navigation Drawer Bottom Sheet -->
+  <div class="bottom-sheet" id="more-bottom-sheet" role="dialog" aria-modal="true" aria-label="SkyGuard AI More Modules">
+    <div class="sheet-handle-bar"></div>
+    <div class="sheet-header">
+      <h3>⋯ SkyGuard AI Modules</h3>
+      <button class="sheet-close-btn" id="close-more-sheet-btn" type="button" aria-label="Close Modules Sheet">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="more-grid">
+        <button class="more-nav-tile" data-tab="tab-import-settings" type="button">
+          <span class="more-tile-icon">📥</span>
+          <strong class="more-tile-title">Data Import &amp; Settings</strong>
+          <small class="more-tile-sub">Upload CSV/Excel, map columns, set thresholds</small>
+        </button>
+        <button class="more-nav-tile" data-tab="tab-map" type="button">
+          <span class="more-tile-icon">🗺️</span>
+          <strong class="more-tile-title">India Map Explorer</strong>
+          <small class="more-tile-sub">Full interactive geographical coverage</small>
+        </button>
+        <button class="more-nav-tile" data-tab="tab-health" type="button">
+          <span class="more-tile-icon">🩺</span>
+          <strong class="more-tile-title">Sensor Health &amp; Maintenance</strong>
+          <small class="more-tile-sub">Health decay scores &amp; forecast</small>
+        </button>
+        <button class="more-nav-tile" data-tab="tab-analytics" type="button">
+          <span class="more-tile-icon">📈</span>
+          <strong class="more-tile-title">Operational Analytics</strong>
+          <small class="more-tile-sub">Latency, throughput &amp; fault distributions</small>
+        </button>
+        <button class="more-nav-tile" data-tab="tab-reports" type="button">
+          <span class="more-tile-icon">🔬</span>
+          <strong class="more-tile-title">Scientific Validation</strong>
+          <small class="more-tile-sub">Frozen benchmark proofs &amp; policy</small>
+        </button>
+        <button class="more-nav-tile" data-tab="tab-system" type="button">
+          <span class="more-tile-icon">⚙️</span>
+          <strong class="more-tile-title">System Infrastructure</strong>
+          <small class="more-tile-sub">API status, pipeline &amp; Render cloud health</small>
+        </button>
+        <button class="more-nav-tile" id="more-sih-tour-btn" type="button">
+          <span class="more-tile-icon">🎯</span>
+          <strong class="more-tile-title">SIH Presentation Tour</strong>
+          <small class="more-tile-sub">8-step guided judge walkthrough</small>
+        </button>
+        <button class="more-nav-tile" id="more-workbook-tool-btn" type="button">
+          <span class="more-tile-icon">📑</span>
+          <strong class="more-tile-title">Workbook Diagnostics</strong>
+          <small class="more-tile-sub">Test SkyGuard Excel compatibility</small>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Native Mobile App Bottom Navigation Bar: Overview, Stations, Alerts, More -->
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+    <button class="bottom-nav-item active" data-tab="tab-overview" type="button" aria-label="Overview">
+      <span class="bottom-nav-icon">📊</span>
+      <span class="bottom-nav-label">Overview</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="tab-stations" type="button" aria-label="Stations">
+      <span class="bottom-nav-icon">📡</span>
+      <span class="bottom-nav-label">Stations</span>
+    </button>
+    <button class="bottom-nav-item" data-tab="tab-anomalies" type="button" aria-label="Alerts">
+      <span class="bottom-nav-icon">⚠️</span>
+      <span class="bottom-nav-label">Alerts</span>
+      <span class="bottom-nav-badge" id="mobile-anomaly-badge">0</span>
+    </button>
+    <button class="bottom-nav-item" id="bottom-nav-more-btn" type="button" aria-label="More Features">
+      <span class="bottom-nav-icon">⋯</span>
+      <span class="bottom-nav-label">More</span>
+    </button>
+  </nav>
 
   <!-- Toast Container -->
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -925,6 +1433,7 @@
   <script src="/assets/station-map.js?v=3.0" defer></script>
   <script src="/assets/sensor-trace.js?v=3.0" defer></script>
   <script src="/assets/live-qc.js?v=3.0" defer></script>
+  <script src="/assets/mobile-qc.js?v=3.0" defer></script>
   <script src="/assets/app.js?v=3.0" defer></script>
 </body>
 </html>

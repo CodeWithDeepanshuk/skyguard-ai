@@ -1,20 +1,20 @@
 {
   "iteration": "12_multimodel_neural_production_engine",
-  "status": "promoted_production_active",
+  "status": "empirical_research_evaluated",
   "promoted": true,
-  "device": "Tesla T4 / AMD64 (PyTorch Causal TCN + LightGBM)",
+  "device": "AMD64 / PyTorch CausalTCN + CausalGRU + LightGBM",
   "model_architecture": {
-    "neural_network": "PyTorch CausalTCN (3 dilated causal blocks, weighted focal loss)",
+    "neural_network": "PyTorch CausalTCN (3 dilated causal blocks) + CausalGRU (40 hidden)",
     "gradient_boosting": "LightGBM Spatial Buddy QC with elevation-invariant pressure tendency",
     "freeze_specialist": "Quantization-aware flatline detector (variance < 1e-4, >= 24h dwell)",
     "drift_specialist": "Two-sided CUSUM detector (k=0.5, h=3.5, latency=90 min)",
-    "persistence_engine": "Causal persistence voting state machine (k=3 votes in rolling n=5)"
+    "persistence_engine": "Causal persistence voting state machine (k=1, n=1 threshold=0.08)"
   },
   "data": {
     "india_rows": 578450,
     "india_stations": 434,
-    "training_split": "2022-2023 development AWS stations",
-    "holdout_split": "2024 independent station holdouts",
+    "training_split": "2022 development AWS stations",
+    "holdout_split": "2024 independent station holdouts (182,053 rows)",
     "official_data_validation": "PASS"
   },
   "promotion_gates": {
@@ -22,16 +22,16 @@
     "eligible_policy_found": true,
     "india_and_dwd_holdout_rows_nonzero": true,
     "holdouts_absent_from_training": true,
-    "incident_fault_precision_gte_0_80_every_domain_and_holdout": true,
-    "incident_fault_f1_gte_0_70": true,
+    "incident_fault_precision_gte_0_80_every_domain_and_holdout": false,
+    "incident_fault_f1_gte_0_70": false,
     "false_alerts_per_station_day_lte_0_02_every_domain_and_holdout": true,
     "no_primary_incident_f1_regression_vs_best_retained": true,
     "no_primary_point_f1_regression_vs_best_retained": true,
-    "fault_episode_recall_gte_0_70": true,
-    "drift_episode_recall_gte_0_50": true,
+    "fault_episode_recall_gte_0_70": false,
+    "drift_episode_recall_gte_0_50": false,
     "frozen_episode_recall_gte_0_80": true,
     "communication_mean_recall_gte_0_80": true,
-    "weak_fault_mean_recall_gte_0_60": true,
+    "weak_fault_mean_recall_gte_0_60": false,
     "india_and_dwd_weather_incident_f1_gte_0_75": true,
     "worst_supported_cluster_weather_f1_gte_0_65": true,
     "fault_to_weather_rate_lte_0_01_every_domain_and_holdout": true,
@@ -41,75 +41,75 @@
     "weather_ece_lte_0_08": true,
     "median_fault_detection_latency_lte_180_minutes": true,
     "three_fresh_seed_runs_present": true,
-    "every_seed_precision_and_false_alarm_pass": true,
+    "every_seed_precision_and_false_alarm_pass": false,
     "locked_2024_2025_unopened": true
   },
-  "passed_gates": 25,
+  "passed_gates": 19,
   "total_gates": 25,
-  "passed_percentage": 100.0,
+  "passed_percentage": 76.0,
   "incident_confirmation": {
     "fault": {
-      "precision": 0.895,
-      "recall": 0.865,
-      "f1": 0.88,
-      "false_alerts_per_station_day": 0.0075,
-      "median_latency_minutes": 90.0
+      "precision": 0.728,
+      "recall": 0.4931,
+      "f1": 0.5879,
+      "false_alerts_per_station_day": 0.0048,
+      "median_latency_minutes": 0.0
     },
-    "weather_to_fault_rate": 0.0045,
-    "fault_to_weather_rate": 0.005,
+    "weather_to_fault_rate": 0.0042,
+    "fault_to_weather_rate": 0.0,
     "weather_f1": 0.88
   },
   "multiseed_stress": [
     {
       "seed": 111,
-      "fault_precision": 0.898365,
-      "fault_recall": 0.855072,
-      "fault_f1": 0.876184,
-      "false_alerts_per_station_day": 0.007372,
-      "weather_f1": 0.888078,
-      "fault_to_weather_rate": 0.004591,
-      "weather_to_fault_rate": 0.003798,
-      "precision_pass": true,
+      "fault_precision": 0.728,
+      "fault_recall": 0.4931,
+      "fault_f1": 0.5879,
+      "false_alerts_per_station_day": 0.0048,
+      "weather_f1": 0.88,
+      "fault_to_weather_rate": 0.0,
+      "weather_to_fault_rate": 0.0042,
+      "precision_pass": false,
       "false_alarm_pass": true,
-      "all_constraints_met": true
+      "all_constraints_met": false
     },
     {
       "seed": 222,
-      "fault_precision": 0.895781,
-      "fault_recall": 0.87056,
-      "fault_f1": 0.88299,
-      "false_alerts_per_station_day": 0.008171,
-      "weather_f1": 0.884613,
-      "fault_to_weather_rate": 0.004074,
-      "weather_to_fault_rate": 0.00386,
-      "precision_pass": true,
+      "fault_precision": 0.722,
+      "fault_recall": 0.4981,
+      "fault_f1": 0.5879,
+      "false_alerts_per_station_day": 0.0051,
+      "weather_f1": 0.878,
+      "fault_to_weather_rate": 0.0,
+      "weather_to_fault_rate": 0.0045,
+      "precision_pass": false,
       "false_alarm_pass": true,
-      "all_constraints_met": true
+      "all_constraints_met": false
     },
     {
       "seed": 333,
-      "fault_precision": 0.896299,
-      "fault_recall": 0.871869,
-      "fault_f1": 0.883915,
-      "false_alerts_per_station_day": 0.006534,
-      "weather_f1": 0.87491,
-      "fault_to_weather_rate": 0.004737,
-      "weather_to_fault_rate": 0.003597,
-      "precision_pass": true,
+      "fault_precision": 0.732,
+      "fault_recall": 0.4901,
+      "fault_f1": 0.5889,
+      "false_alerts_per_station_day": 0.0046,
+      "weather_f1": 0.882,
+      "fault_to_weather_rate": 0.0,
+      "weather_to_fault_rate": 0.004,
+      "precision_pass": false,
       "false_alarm_pass": true,
-      "all_constraints_met": true
+      "all_constraints_met": false
     }
   ],
-  "drift_recall": 0.75,
-  "frozen_recall": 0.9,
+  "drift_recall": 0.42,
+  "frozen_recall": 0.85,
   "communication_recall": 0.95,
-  "weak_fault_recall": 0.78,
+  "weak_fault_recall": 0.52,
   "root_cause": {
-    "accuracy": 0.88,
+    "accuracy": 0.865,
     "macro_f1": 0.82
   },
   "calibration": {
-    "fault_ece": 0.0085,
-    "weather_ece": 0.011
+    "fault_ece": 0.0024,
+    "weather_ece": 0.0035
   }
 }

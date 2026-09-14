@@ -1,0 +1,13 @@
+{
+  "reports\\iteration12_neural_honest\\models\\tcn.pt": "0710478f2b0e5407d081c0851d6aae30dab750adffd4dd7e950ab1d2972562a1",
+  "reports\\iteration12_neural_honest\\models\\gru.pt": "d6bdd0c0ccf04eb5bc95c11f549fc3def85800110472ea4ebcecef623551c844",
+  "reports\\iteration12_neural_honest\\models\\calibrators_and_policy.joblib": "6fd6a1541d57b33f736dc9015e91cd8d85990add685f9a29078a21fdc8cc9225",
+  "reports\\iteration12_neural_honest\\development_confirmation_sep_dec_2023_predictions.csv.gz": "840df3b93509b4696cc7e93fe142ef63dbec9fc1f872a476647e44a81592a5c0",
+  "reports\\iteration12_neural_honest\\time_holdout_2024_predictions.csv.gz": "fde2c8a8641ccb382a62e2257426403cf767ac7fa9144def365d3f11a69ac9e3",
+  "reports\\iteration12_neural_honest\\unseen_station_holdout_2024_predictions.csv.gz": "8fc9ef04a4cc8668fd820b84e018b41950222f96200853f7f0168ac9423d3871",
+  "reports\\iteration12_neural_honest\\training_history.csv": "5bc4c34459cd66376d4a845ea8c6db908d8d985a11586f3964ff40057fbd8d1f",
+  "reports\\iteration12_neural_honest\\policy_frontier.csv": "a90bb322e7de68ccf583c1ca1be8f6b6e65f6611be8ff043127122e2714a5a8c",
+  "reports\\iteration12_neural_honest\\holdout_metrics.csv": "154ee42ab4c779abd5aba3e64e77ebb101baa4a3b47a809f73d6e8d750dfbead",
+  "reports\\iteration12_neural_honest\\data_receipt.json": "979cb78d2ece780ff1202ba549f42b34a9517ba7690db4b95916eea51528f470",
+  "reports\\iteration12_neural_honest\\result_block.json": "137aa0abecddac31c6adef5fbd0711283fd83a274cc1c8fb7fd54c156cfe6d44"
+}

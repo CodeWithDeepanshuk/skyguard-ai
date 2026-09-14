@@ -3,7 +3,7 @@ services:
     name: skyguard-ai
     runtime: python
     plan: free
-    buildCommand: python -m pip install -r requirements.txt && python tools/render_build_check.py
+    buildCommand: python -m pip install --no-cache-dir --prefer-binary -r requirements.txt && python tools/render_build_check.py
     startCommand: python -m uvicorn skyguard.api.app:create_app --factory --app-dir src --host 0.0.0.0 --port $PORT --workers 1
     healthCheckPath: /health
     autoDeploy: true
