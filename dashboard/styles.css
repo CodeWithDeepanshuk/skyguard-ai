@@ -2788,6 +2788,90 @@ circle.tapped-highlight {
   margin-top: 6px;
 }
 
+/* Fault-Causing Sensor Specifications & Hardware Diagnostics */
+.sensor-specs-card {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-top: 3px solid #6366F1;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 10px 0;
+}
+
+.sensor-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.sensor-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sensor-spec-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.sensor-spec-value {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+/* AI & ML Multi-Evidence Decision Scores */
+.ml-scores-card {
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
+  border-top: 3px solid #9333EA;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 10px 0;
+}
+
+.ml-scores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ml-score-tile {
+  background: #FFFFFF;
+  border: 1px solid #E9D5FF;
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ml-score-name {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6B21A8;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.ml-score-val {
+  font-size: 15px;
+  font-weight: 800;
+  color: #581C87;
+  font-family: var(--font-mono, monospace);
+}
+
+.ml-score-sub {
+  font-size: 10px;
+  color: #7E22CE;
+}
+
 /* --------------------------------------------------------------------------
    Data Import & Settings Screen
    -------------------------------------------------------------------------- */

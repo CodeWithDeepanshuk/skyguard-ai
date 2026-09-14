@@ -607,6 +607,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     def export_incidents() -> StreamingResponse:
         incidents = read_jsonl(root / "data" / "incidents" / "time_test_incidents.jsonl.gz", 5000)
         output = io.StringIO()
+        output.write("\ufeff")  # Prepend UTF-8 BOM for Microsoft Excel on Windows
         fields = [
             "incident_id", "station_id", "timestamp_utc", "decision", "severity",
             "fault_probability", "root_cause", "root_cause_confidence", "affected_sensors",
@@ -635,11 +636,14 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 "recommended_action": incident.get("recommended_action", ""),
                 "explanation": incident.get("explanation", ""),
             })
-        response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv")
+        response = StreamingResponse(iter([output.getvalue()]), media_type="text/csv; charset=utf-8")
         response.headers["Content-Disposition"] = "attachment; filename=skyguard_incidents_2024.csv"
         return response
 
     @app.get("/api/export/weather_anomalies.xlsx")
+    @app.get("/data/weather_anomalies_analysis.xlsx")
+    @app.get("/dashboard/assets/weather_anomalies_analysis.xlsx")
+    @app.get("/assets/weather_anomalies_analysis.xlsx")
     def export_weather_anomalies_excel() -> FileResponse:
         excel_path = root / "data" / "demo" / "weather_anomalies_analysis.xlsx"
         if not excel_path.exists():
@@ -649,6 +653,10 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             path=str(excel_path),
             filename="skyguard_weather_anomalies_analysis.xlsx",
             media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Content-Disposition": "attachment; filename=skyguard_weather_anomalies_analysis.xlsx",
+            },
         )
 
     return app

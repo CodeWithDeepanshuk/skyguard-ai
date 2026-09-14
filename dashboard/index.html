@@ -626,9 +626,9 @@
             </div>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
               <button class="incident-action-btn primary" id="open-filter-sheet-btn" type="button">⚙️ Filter Alerts</button>
-              <a class="incident-action-btn" id="export-alerts-xlsx" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background:#15803D; color:#FFFFFF; border-color:#166534; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600;">📊 Export Excel (.xlsx)</a>
-              <button class="incident-action-btn" id="export-alerts-csv" type="button">📥 Export CSV</button>
-              <button class="incident-action-btn" id="export-alerts-json" type="button">💾 Export JSON</button>
+              <button class="incident-action-btn" id="export-alerts-xlsx" onclick="SkyGuardApp.downloadExcel();" style="background:#15803D; color:#FFFFFF; border-color:#166534; display:inline-flex; align-items:center; gap:5px; font-weight:600; cursor:pointer;" type="button">📊 Export Excel (.xlsx)</button>
+              <button class="incident-action-btn" id="export-alerts-csv" onclick="SkyGuardApp.exportAlertsCSV();" style="cursor:pointer;" type="button">📥 Export CSV</button>
+              <button class="incident-action-btn" id="export-alerts-json" onclick="SkyGuardApp.exportAlertsJSON();" style="cursor:pointer;" type="button">💾 Export JSON</button>
             </div>
           </div>
 
@@ -675,8 +675,8 @@
             <div class="panel-header">
               <div class="panel-title">Full Incident Telemetry Audit Table</div>
               <div style="display:flex; gap:8px; align-items:center;">
-                <a class="table-action-btn" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background:#15803D; color:#FFFFFF; text-decoration:none;">Download Excel (.xlsx)</a>
-                <a class="table-action-btn" href="/api/export/incidents.csv" download>Download Raw Log (CSV)</a>
+                <button class="table-action-btn" onclick="SkyGuardApp.downloadExcel();" style="background:#15803D; color:#FFFFFF; border:none; cursor:pointer; font-weight:600; padding:6px 14px; border-radius:6px;" type="button">Download Excel (.xlsx)</button>
+                <button class="table-action-btn" onclick="SkyGuardApp.exportAlertsCSV();" style="background:#FFFFFF; border:1px solid #CBD5E1; color:#1E293B; cursor:pointer; font-weight:600; padding:6px 14px; border-radius:6px;" type="button">Download Raw Log (CSV)</button>
               </div>
             </div>
             <div class="table-wrap">
@@ -801,9 +801,9 @@
                   30 Indian AWS stations across 24h timestamps covering temperature spikes, drift shifts, frozen flatlines, and pressure drops with confidence scores, styled matching the reference evaluation sheet.
                 </p>
               </div>
-              <a class="sim-btn" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background: #15803D; color: #FFFFFF; text-decoration: none; font-weight: 700; padding: 8px 16px; border-radius: 6px; box-shadow: 0 2px 4px rgba(21,128,61,0.2); display: inline-flex; align-items: center; gap: 6px;">
+              <button class="sim-btn" onclick="SkyGuardApp.downloadExcel();" style="background: #15803D; color: #FFFFFF; font-weight: 700; padding: 8px 16px; border-radius: 6px; box-shadow: 0 2px 4px rgba(21,128,61,0.2); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none;" type="button">
                 <span>📥 Download Excel Workbook (.xlsx)</span>
-              </a>
+              </button>
             </div>
           </article>
 
@@ -1080,9 +1080,9 @@
               </p>
 
               <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
-                <a class="sim-btn" href="/api/export/weather_anomalies.xlsx" download="skyguard_weather_anomalies_analysis.xlsx" style="background:#15803D; color:#FFFFFF; text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600; padding:8px 16px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.12);">
+                <button class="sim-btn" onclick="SkyGuardApp.downloadExcel();" style="background:#15803D; color:#FFFFFF; display:inline-flex; align-items:center; gap:6px; font-weight:600; padding:8px 16px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.12); cursor:pointer; border:none;" type="button">
                   <span>📥 Download Weather Anomalies Analysis (.xlsx)</span>
-                </a>
+                </button>
                 <button class="sim-btn inject" id="load-sample-workbook-btn" type="button">📊 Load Sample SkyGuard Workbook Dataset</button>
               </div>
 
@@ -1174,6 +1174,86 @@
         <div class="alert-metric-tile">
           <span>Spatial Z-Score</span>
           <strong id="drawer-zscore-val" style="color:#7C3AED;">—</strong>
+        </div>
+      </div>
+
+      <!-- Fault-Causing Sensor Specifications & Hardware Diagnostics -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">Fault-Causing Sensor Specifications &amp; Transducer Details</span>
+        <div class="sensor-specs-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E2E8F0; padding-bottom:6px; margin-bottom:8px;">
+            <strong id="drawer-sensor-header" style="font-size:13px; color:#1E293B;">Class A Pt100 Platinum RTD 4-Wire</strong>
+            <span class="severity-pill critical" id="drawer-sensor-health-pill">Fault Detected</span>
+          </div>
+          <div class="sensor-specs-grid">
+            <div class="sensor-spec-item">
+              <span class="sensor-spec-label">Transducer Model</span>
+              <span class="sensor-spec-value" id="drawer-sensor-model">Met One 062 / Rotronic Pt100</span>
+            </div>
+            <div class="sensor-spec-item">
+              <span class="sensor-spec-label">WMO Standard Tolerance</span>
+              <span class="sensor-spec-value" id="drawer-sensor-tolerance">WMO No. 8 Class A (±0.2°C)</span>
+            </div>
+            <div class="sensor-spec-item">
+              <span class="sensor-spec-label">Standard Operating Range</span>
+              <span class="sensor-spec-value" id="drawer-sensor-range">-40.0°C to +60.0°C</span>
+            </div>
+            <div class="sensor-spec-item">
+              <span class="sensor-spec-label">Interface &amp; Housing</span>
+              <span class="sensor-spec-value" id="drawer-sensor-housing">Aspirated Radiation Shield (4-Wire)</span>
+            </div>
+            <div class="sensor-spec-item">
+              <span class="sensor-spec-label">Suspected Failure Mode</span>
+              <span class="sensor-spec-value" id="drawer-sensor-failure-mode" style="color:#DC2626;">Zero-Variance Integer ADC Freeze</span>
+            </div>
+            <div class="sensor-spec-item">
+              <span class="sensor-spec-label">Field Test Protocol</span>
+              <span class="sensor-spec-value" id="drawer-sensor-protocol">4-Wire Decade Bridge Resistance Test</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI & ML Multi-Evidence Decision Scores -->
+      <div class="drawer-section">
+        <span class="drawer-section-title">AI &amp; Machine Learning Anomaly Detection Scores</span>
+        <div class="ml-scores-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong style="font-size:12px; color:#581C87;">Ensemble Neural &amp; Spatial Decision Pipeline</strong>
+            <span style="font-size:11px; font-weight:700; color:#7E22CE;" id="drawer-ml-version">SkyGuard Phase 10 / I-12 Neural</span>
+          </div>
+          <div class="ml-scores-grid">
+            <div class="ml-score-tile">
+              <span class="ml-score-name">LightGBM Anomaly Score</span>
+              <span class="ml-score-val" id="drawer-ml-lgb">0.942</span>
+              <span class="ml-score-sub">Gradient Forest Anomaly</span>
+            </div>
+            <div class="ml-score-tile">
+              <span class="ml-score-name">PyTorch CausalTCN</span>
+              <span class="ml-score-val" id="drawer-ml-tcn">0.918</span>
+              <span class="ml-score-sub">Temporal Sequence Score</span>
+            </div>
+            <div class="ml-score-tile">
+              <span class="ml-score-name">NOAA MADIS Buddy Score</span>
+              <span class="ml-score-val" id="drawer-ml-madis">+3.4σ</span>
+              <span class="ml-score-sub">Spatial Consensus Residual</span>
+            </div>
+            <div class="ml-score-tile">
+              <span class="ml-score-name">Physics Bounds Gate</span>
+              <span class="ml-score-val" id="drawer-ml-physics">1.000</span>
+              <span class="ml-score-sub">Step-Change &amp; Persistence</span>
+            </div>
+            <div class="ml-score-tile">
+              <span class="ml-score-name">Fault Probability P(Fault)</span>
+              <span class="ml-score-val" style="color:#DC2626;" id="drawer-ml-pfault">94.1%</span>
+              <span class="ml-score-sub">Transducer Hardware Failure</span>
+            </div>
+            <div class="ml-score-tile">
+              <span class="ml-score-name">Weather Probability P(Wx)</span>
+              <span class="ml-score-val" style="color:#16A34A;" id="drawer-ml-pwx">0.2%</span>
+              <span class="ml-score-sub">Spatial Coherence Ratio</span>
+            </div>
+          </div>
         </div>
       </div>
 
