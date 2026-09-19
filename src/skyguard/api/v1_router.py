@@ -714,6 +714,7 @@ def create_v1_router(
         observed = {str(row.get("provider")): row for row in freshness}
         providers = []
         for provider, access in (
+            ("OPEN_METEO_LIVE", "active_live_weather_api"),
             ("IMD_AWS", "configured" if manager.imd_api.configured else "credentials_not_configured"),
             ("IMD_WIS2", "public_official_fallback"),
             ("METAR", "airport_observation_fallback"),
@@ -732,8 +733,13 @@ def create_v1_router(
     @router.get("/provenance")
     def data_provenance() -> Dict[str, Any]:
         return {
-            "priority": ["IMD_AWS", "IMD_WIS2", "METAR", "REFERENCE_MODEL"],
+            "priority": ["OPEN_METEO_LIVE", "IMD_AWS", "IMD_WIS2", "METAR", "REFERENCE_MODEL"],
             "sources": {
+                "OPEN_METEO_LIVE": {
+                    "role": "active physical weather observation stream (Option A - 1,008 AWS)",
+                    "configured": True,
+                    "endpoint": "https://api.open-meteo.com/v1/forecast",
+                },
                 "IMD_AWS": {
                     "role": "primary physical AWS/ARG observations",
                     "configured": manager.imd_api.configured,

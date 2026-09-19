@@ -157,6 +157,7 @@ class MetarLiveService:
                             "incident_policy_mode": LIVE_INCIDENT_POLICY_MODE,
                         })
             cached["incident_policy_mode"] = LIVE_INCIDENT_POLICY_MODE
+            cached["mode"] = "live"
             return cached
         except (OSError, ValueError, TypeError):
             return {

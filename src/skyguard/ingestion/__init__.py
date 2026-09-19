@@ -1,6 +1,5 @@
-"""Scheduled, provenance-preserving observation ingestion."""
+"""Ingestion services for SkyGuard AI."""
+from skyguard.ingestion.service import IngestionService
+from skyguard.ingestion.open_meteo import OpenMeteoIngestionService
 
-from .service import IngestionService
-
-__all__ = ["IngestionService"]
-
+__all__ = ["IngestionService", "OpenMeteoIngestionService"]

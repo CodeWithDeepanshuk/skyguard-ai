@@ -1,0 +1,46 @@
+{
+  "version": "iteration14-1008-aws-live-v1",
+  "benchmark_date_utc": "2026-09-19T17:43:35.866299+00:00",
+  "network_scope": "All-India 1,008 Automatic Weather Stations",
+  "telemetry_source": "Open-Meteo High-Resolution Live Ground Stream (Option A)",
+  "spatial_qc": {
+    "methodology": "NOAA MADIS-Grade Adaptive Concentric KDTree",
+    "lapse_rate_correction": "Environmental Lapse Rate (-6.5 C/1000m) & Barometric (-0.12 hPa/m)",
+    "k_neighbors": 5,
+    "search_radii_km": [
+      25.0,
+      50.0,
+      75.0,
+      100.0,
+      150.0,
+      250.0
+    ]
+  },
+  "live_summary": {
+    "total_stations_evaluated": 1008,
+    "normal_stations": 890,
+    "weather_event_stations": 3,
+    "sensor_fault_stations": 115,
+    "transport_gap_stations": 0
+  },
+  "performance_metrics": {
+    "simulation_samples": 1000,
+    "precision": 0.699,
+    "fault_recall": 0.973,
+    "f1_score": 0.8136,
+    "binary_accuracy": 0.934,
+    "multi_class_accuracy": 0.934,
+    "false_alarm_rate": 0.0728,
+    "weather_misclassified_as_fault_rate": 0.0,
+    "true_positives": 144,
+    "false_positives": 62,
+    "true_negatives": 790,
+    "false_negatives": 4
+  },
+  "classification_breakdown": {
+    "NORMAL": 890,
+    "GENUINE_WEATHER_EVENT": 3,
+    "SENSOR_FAULT": 115,
+    "TRANSPORT_OR_DATA_GAP": 0
+  }
+}

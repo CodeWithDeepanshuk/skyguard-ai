@@ -1,0 +1,1009 @@
+station_id,station_name,latitude,longitude,elevation_m,climate_zone,cluster,temperature_c,pressure_hpa,relative_humidity_pct,temp_z,press_z,rh_z,max_z,decision,confidence,severity,neighbors_evaluated
+43900000997,Nubra Diskit AWS,34.57,77.56,3144.0,Northern Himalayas,northern_himalayas,5.6,708.5,61,-1.04,1.06,-0.17,1.06,NORMAL,0.95,NONE,5
+43900000996,Kargil High-Alt AWS,34.56,76.13,2676.0,Northern Himalayas,northern_himalayas,12.1,749.1,50,1.32,2.95,-2.7,2.95,GENUINE_WEATHER_EVENT,0.91,ADVISORY,5
+43900000980,Kupwara AWS,34.53,74.25,1609.0,Northern Himalayas,northern_himalayas,12.9,836.8,67,-0.38,-3.98,0.67,3.98,SENSOR_FAULT,0.711,HIGH,5
+42030099999,Dras,34.433,75.767,3066.0,Northern Himalayas,northern_himalayas,7.0,709.6,65,0.34,0.21,-0.06,0.34,NORMAL,0.95,NONE,5
+43542099999,Dras,34.433,75.767,3066.0,Northern Himalayas,northern_himalayas,7.0,709.6,65,0.34,0.21,-0.06,0.34,NORMAL,0.95,NONE,5
+43900000984,Bandipora AWS,34.42,74.64,1578.0,Northern Himalayas,northern_himalayas,12.0,838.5,62,-1.27,-4.87,-0.84,4.87,SENSOR_FAULT,0.764,HIGH,5
+42029099999,Sonamarg,34.317,75.317,2515.0,Northern Himalayas,northern_himalayas,0.4,650.3,78,-1.88,-72.1,2.19,72.1,SENSOR_FAULT,0.98,HIGH,5
+43541099999,Sonamarg          &,34.317,75.317,2515.0,Northern Himalayas,northern_himalayas,0.4,650.3,78,-1.88,-72.1,2.19,72.1,SENSOR_FAULT,0.98,HIGH,5
+43900000985,Ganderbal AWS,34.22,74.78,1619.0,Northern Himalayas,northern_himalayas,13.5,843.0,62,-0.75,0.86,-0.79,0.86,NORMAL,0.95,NONE,5
+43900000978,Baramulla AWS,34.2,74.36,1593.0,Northern Himalayas,northern_himalayas,16.5,845.0,63,2.39,0.39,-0.54,2.39,NORMAL,0.95,NONE,5
+42034099999,Leh               &,34.15,77.567,3513.0,Northern Himalayas,northern_himalayas,7.5,687.1,46,0.73,2.31,-2.53,2.53,NORMAL,0.95,NONE,5
+42705399999,Leh,34.136,77.547,3255.9,Northern Himalayas,northern_himalayas,7.4,695.9,62,-0.24,-0.66,0.79,0.79,NORMAL,0.95,NONE,5
+42027099999,Srinagar,34.083,74.833,1587.0,Northern Himalayas,northern_himalayas,14.3,844.8,90,-0.41,-0.39,2.02,2.02,NORMAL,0.95,NONE,5
+42026099999,Gulmarg,34.05,74.4,2655.0,Northern Himalayas,northern_himalayas,10.2,745.5,69,2.4,1.11,0.34,2.4,NORMAL,0.95,NONE,5
+43900000979,Pahalgam AWS,34.01,75.32,2130.0,Northern Himalayas,northern_himalayas,10.4,791.1,66,0.59,0.55,-2.53,2.53,NORMAL,0.95,NONE,5
+42042099999,Srinagar,33.983,74.783,1664.0,Northern Himalayas,northern_himalayas,14.7,837.7,70,0.58,0.21,0.06,0.58,NORMAL,0.95,NONE,5
+43900000981,Pulwama AWS,33.87,74.89,1630.0,Northern Himalayas,northern_himalayas,11.2,836.4,81,-2.45,-2.95,0.62,2.95,PROBABLE_FAULT,0.76,LOW,5
+43900000991,Poonch AWS,33.77,74.1,1005.0,Northern Himalayas,northern_himalayas,17.6,902.9,67,-1.12,-1.58,-0.34,1.58,NORMAL,0.95,NONE,5
+43900000977,Anantnag AWS,33.73,75.15,1601.0,Northern Himalayas,northern_himalayas,14.0,843.3,82,0.58,0.66,2.36,2.36,NORMAL,0.95,NONE,5
+43900000982,Shopian AWS,33.72,74.83,2057.0,Northern Himalayas,northern_himalayas,12.3,801.1,53,0.8,1.62,-1.04,1.62,NORMAL,0.95,NONE,5
+43900000983,Kulgam AWS,33.65,75.02,1739.0,Northern Himalayas,northern_himalayas,13.4,830.0,64,0.16,0.6,-0.21,0.6,NORMAL,0.95,NONE,5
+42044099999,Qazi Gund,33.583,75.083,1690.0,Northern Himalayas,northern_himalayas,15.2,821.4,55,0.99,-4.13,-2.19,4.13,SENSOR_FAULT,0.72,HIGH,5
+42045099999,Banihal,33.5,75.167,1630.0,Northern Himalayas,northern_himalayas,12.6,804.7,68,-1.05,-11.56,0.3,11.56,SENSOR_FAULT,0.98,HIGH,5
+43900000993,Ramban Banihal AWS,33.49,75.2,1666.0,Northern Himalayas,northern_himalayas,11.9,792.3,71,-1.38,-14.22,0.52,14.22,SENSOR_FAULT,0.98,HIGH,5
+43900000992,Rajouri AWS,33.38,74.3,915.0,Northern Himalayas,northern_himalayas,18.8,909.0,70,-0.15,-0.78,0.2,0.78,NORMAL,0.95,NONE,5
+43900000995,Kishtwar AWS,33.32,75.77,1638.0,Northern Himalayas,northern_himalayas,14.8,837.0,68,-0.08,0.58,0.0,0.58,NORMAL,0.95,NONE,5
+43900000998,Nyoma Changthang AWS,33.19,78.65,4180.0,Northern Himalayas,northern_himalayas,5.4,630.3,55,1.53,0.5,-1.18,1.53,NORMAL,0.95,NONE,5
+43900000988,Reasi AWS,33.08,74.83,466.0,Northern Himalayas,northern_himalayas,21.9,955.5,83,-0.19,-0.74,0.45,0.74,NORMAL,0.95,NONE,5
+43900000987,Katra Mata Vaishno Devi AWS,32.99,74.95,875.0,Northern Himalayas,northern_himalayas,20.4,911.0,77,0.76,-1.17,-0.51,1.17,NORMAL,0.95,NONE,5
+43900000994,Doda Bhadarwah AWS,32.98,75.71,1613.0,Northern Himalayas,northern_himalayas,15.1,841.1,61,0.12,0.36,-3.04,3.04,PROBABLE_FAULT,0.76,LOW,5
+43900000986,Udhampur AWS,32.93,75.14,756.0,Northern Himalayas,northern_himalayas,21.8,929.7,76,1.29,0.96,-0.59,1.29,NORMAL,0.95,NONE,5
+42055099999,Jammu (In-Afb),32.683,74.833,314.0,Northern Himalayas,northern_himalayas,22.8,978.8,92,-1.05,0.62,2.53,2.53,NORMAL,0.95,NONE,5
+42056099999,Jammu,32.667,74.833,367.0,Northern Himalayas,northern_himalayas,22.8,979.1,92,-0.76,2.22,2.53,2.53,NORMAL,0.95,NONE,5
+42063099999,Kyelong,32.583,77.067,3348.0,Northern Himalayas,northern_himalayas,3.9,666.2,65,-0.01,-0.91,-0.67,0.91,NORMAL,0.95,NONE,5
+43900000963,Lahaul Keylong AWS,32.57,77.03,3080.0,Northern Himalayas,northern_himalayas,7.7,715.7,66,0.69,1.05,-0.51,1.05,NORMAL,0.95,NONE,5
+43900000990,Samba AWS,32.56,75.12,384.0,Northern Himalayas,northern_himalayas,24.1,967.9,75,1.19,-0.48,-2.87,2.87,PROBABLE_FAULT,0.76,LOW,5
+43900000960,Chamba AWS,32.55,76.13,1006.0,Northern Himalayas,northern_himalayas,19.4,917.7,79,0.59,2.28,-0.76,2.28,NORMAL,0.95,NONE,5
+42059099999,Dalhousie,32.533,75.967,1959.0,Northern Himalayas,northern_himalayas,12.5,808.8,80,-0.1,3.63,-1.35,3.63,PROBABLE_FAULT,0.76,LOW,5
+43900000989,Kathua AWS,32.37,75.52,307.0,Northern Himalayas,northern_himalayas,22.9,975.3,92,-0.65,-0.99,0.67,0.99,NORMAL,0.95,NONE,5
+42060099999,Kathua,32.333,75.5,380.0,Northern Himalayas,northern_himalayas,23.2,977.8,90,0.26,6.43,0.34,6.43,SENSOR_FAULT,0.858,HIGH,5
+43900000923,Pathankot AWS,32.27,75.65,332.0,Northern Himalayas,northern_himalayas,23.2,973.8,88,0.1,-0.11,0.0,0.11,NORMAL,0.95,NONE,5
+42062099999,Dharmsala,32.267,76.383,1211.0,Northern Himalayas,northern_himalayas,6.1,719.2,100,-10.09,-16.72,2.36,16.72,SENSOR_FAULT,0.98,HIGH,5
+42065099999,Manali,32.267,77.167,2039.0,Northern Himalayas,northern_himalayas,10.4,770.1,69,-1.21,-2.15,-0.97,2.15,NORMAL,0.95,NONE,5
+42057099999,Pathankot (In-Afb)&,32.233,75.633,312.0,Northern Himalayas,northern_himalayas,23.2,976.6,88,-0.11,0.13,0.0,0.13,NORMAL,0.95,NONE,5
+43900000964,Spiti Kaza High-Alt AWS,32.22,78.07,3650.0,Northern Himalayas,northern_himalayas,7.3,671.7,49,3.24,1.4,-3.37,3.37,GENUINE_WEATHER_EVENT,0.91,ADVISORY,5
+43900000956,Dharamshala Kangra AWS,32.219,76.3234,1457.0,Northern Himalayas,northern_himalayas,19.0,873.3,69,2.62,1.77,-1.06,2.62,PROBABLE_FAULT,0.76,LOW,5
+43900000915,Gurdaspur AWS,32.04,75.4,242.0,Northern Himalayas,northern_himalayas,25.2,981.7,81,1.19,-1.76,-1.18,1.76,NORMAL,0.95,NONE,5
+42705199999,Kullu Manali,31.877,77.154,1089.1,Northern Himalayas,northern_himalayas,18.6,898.3,82,1.71,0.86,-0.67,1.71,NORMAL,0.95,NONE,5
+42081099999,Bhuntar,31.833,77.167,1084.0,Northern Himalayas,northern_himalayas,17.5,896.3,86,0.75,0.53,0.29,0.75,NORMAL,0.95,NONE,5
+42078099999,Mandi,31.717,76.967,761.0,Northern Himalayas,northern_himalayas,15.6,894.3,91,-2.38,-9.42,1.35,9.42,SENSOR_FAULT,0.98,HIGH,5
+42071099999,Amritsar,31.71,74.797,230.4,Northern Himalayas,northern_himalayas,25.2,985.5,81,-0.31,0.35,0.0,0.35,NORMAL,0.95,NONE,5
+43900000957,Mandi AWS,31.7087,76.932,760.0,Northern Himalayas,northern_himalayas,18.4,928.5,90,-0.72,-0.71,1.18,1.18,NORMAL,0.95,NONE,5
+43900000961,Hamirpur HP AWS,31.68,76.52,785.0,Northern Himalayas,northern_himalayas,22.9,928.6,73,3.39,1.16,-2.87,3.39,GENUINE_WEATHER_EVENT,0.91,ADVISORY,5
+04207199999,Amritsar AWS,31.6333,74.8667,234.0,Northern Himalayas,northern_himalayas,25.7,985.2,87,0.21,0.43,1.01,1.01,NORMAL,0.95,NONE,5
+43900000962,Kinnaur Reckong Peo AWS,31.54,78.27,2290.0,Northern Himalayas,northern_himalayas,12.3,781.1,69,0.16,-0.34,-1.46,1.46,NORMAL,0.95,NONE,5
+42079099999,Sundernagar,31.533,76.9,874.0,Northern Himalayas,northern_himalayas,18.3,909.5,83,-1.53,-2.21,-1.18,2.21,NORMAL,0.95,NONE,5
+43900000916,Hoshiarpur AWS,31.53,75.92,296.0,Northern Himalayas,northern_himalayas,24.5,976.7,79,-0.22,0.23,-0.51,0.51,NORMAL,0.95,NONE,5
+42075099999,Jullundur,31.467,75.583,100.0,Northern Himalayas,northern_himalayas,25.5,984.6,82,-0.77,-10.52,0.51,10.52,SENSOR_FAULT,0.98,HIGH,5
+42077099999,Una,31.467,76.267,369.0,Northern Himalayas,northern_himalayas,22.3,968.6,87,-1.75,-0.64,1.01,1.75,NORMAL,0.95,NONE,5
+43900000929,Tarn Taran AWS,31.45,74.93,226.0,Northern Himalayas,northern_himalayas,25.5,985.5,83,-0.08,-0.35,0.34,0.35,NORMAL,0.95,NONE,5
+43900000918,Kapurthala AWS,31.38,75.38,225.0,Northern Himalayas,northern_himalayas,25.6,985.5,77,0.08,0.37,-0.84,0.84,NORMAL,0.95,NONE,5
+42074099999,Kapurthala,31.333,75.333,229.0,Northern Himalayas,northern_himalayas,25.9,986.5,76,0.27,0.99,-1.18,1.18,NORMAL,0.95,NONE,5
+43900000917,Jalandhar AWS,31.33,75.58,229.0,Northern Himalayas,northern_himalayas,25.8,983.9,84,0.19,-0.76,1.18,1.18,NORMAL,0.95,NONE,5
+43900000959,Bilaspur HP AWS,31.33,76.76,673.0,Northern Himalayas,northern_himalayas,22.4,948.1,94,0.13,1.41,1.24,1.41,NORMAL,0.95,NONE,5
+42080099999,Bilaspur,31.25,76.667,587.0,Northern Himalayas,northern_himalayas,24.1,953.7,85,1.2,2.25,-0.34,2.25,NORMAL,0.95,NONE,5
+43900000928,Shahid Bhagat Singh Nagar Nawanshahr AWS,31.13,76.12,244.0,Northern Himalayas,northern_himalayas,25.1,982.4,81,0.11,-0.43,0.34,0.43,NORMAL,0.95,NONE,5
+42083099999,Shimla,31.1,77.167,2202.0,Northern Himalayas,northern_himalayas,13.0,809.9,88,0.55,1.21,-0.51,1.21,NORMAL,0.95,NONE,5
+43900000925,Rupnagar Ropar AWS,30.97,76.53,260.0,Northern Himalayas,northern_himalayas,24.8,980.4,77,-0.43,-0.64,-0.9,0.9,NORMAL,0.95,NONE,5
+43900000914,Firozpur AWS,30.92,74.61,197.0,Northern Himalayas,northern_himalayas,25.6,988.8,81,-0.69,-0.03,0.34,0.69,NORMAL,0.95,NONE,5
+42096099999,Ferozepur,30.917,74.667,200.0,Northern Himalayas,northern_himalayas,25.6,989.1,81,-0.67,0.44,0.34,0.67,NORMAL,0.95,NONE,5
+43900000958,Solan Nauni Agro-AWS,30.9045,77.0967,1502.0,Northern Himalayas,northern_himalayas,15.5,857.8,96,-1.44,-0.4,1.18,1.44,NORMAL,0.95,NONE,5
+43900000919,Ludhiana PAU AWS,30.9,75.81,247.0,Northern Himalayas,northern_himalayas,26.7,983.5,75,0.86,0.34,-0.67,0.86,NORMAL,0.95,NONE,5
+43900000966,Kasauli AWS,30.9,76.96,1927.0,Northern Himalayas,northern_himalayas,14.0,827.3,91,-0.21,0.46,0.34,0.46,NORMAL,0.95,NONE,5
+42107099999,Dharmpur,30.9,77.017,1986.0,Northern Himalayas,northern_himalayas,16.0,858.2,91,2.01,2.77,0.34,2.77,PROBABLE_FAULT,0.76,LOW,5
+42099099999,Ludhiana,30.867,75.933,255.0,Northern Himalayas,northern_himalayas,26.0,983.0,79,0.67,1.27,0.34,1.27,NORMAL,0.95,NONE,5
+43900000921,Moga AWS,30.82,75.17,217.0,Northern Himalayas,northern_himalayas,26.7,986.5,75,1.02,-0.41,-0.67,1.02,NORMAL,0.95,NONE,5
+42098099999,Halwara,30.75,75.633,241.0,Northern Himalayas,northern_himalayas,25.3,984.6,79,-0.67,0.5,0.51,0.67,NORMAL,0.95,NONE,5
+42105099999,Chandigarh(Iafb),30.733,76.883,347.0,Northern Himalayas,northern_himalayas,23.3,965.7,89,-1.19,-1.81,0.17,1.81,NORMAL,0.95,NONE,5
+42108099999,Uttarkashi,30.733,78.45,1200.0,Northern Himalayas,northern_himalayas,19.1,894.4,63,0.9,1.02,-4.22,4.22,SENSOR_FAULT,0.725,HIGH,5
+43900000926,Sahibzada Ajit Singh Nagar Mohali AWS,30.7,76.72,316.0,Northern Himalayas,northern_himalayas,25.4,976.0,79,0.72,0.05,-1.52,1.52,NORMAL,0.95,NONE,5
+43900000944,Panchkula AWS,30.69,76.86,365.0,Northern Himalayas,northern_himalayas,24.6,973.9,88,0.29,0.36,-0.17,0.36,NORMAL,0.95,NONE,5
+42705299999,Chandigarh,30.673,76.789,308.5,Northern Himalayas,northern_himalayas,24.6,976.6,88,-0.31,-0.25,0.0,0.31,NORMAL,0.95,NONE,5
+43900000911,Faridkot AWS,30.67,74.76,196.0,Northern Himalayas,northern_himalayas,26.5,987.9,79,0.07,-0.69,0.0,0.69,NORMAL,0.95,NONE,5
+43900000912,Fatehgarh Sahib AWS,30.65,76.4,246.0,Northern Himalayas,northern_himalayas,25.4,981.9,71,0.14,-1.27,-1.69,1.69,NORMAL,0.95,NONE,5
+43900000965,Sirmaur Nahan AWS,30.56,77.3,932.0,Northern Himalayas,northern_himalayas,19.6,916.9,88,-0.63,0.63,-0.17,0.63,NORMAL,0.95,NONE,5
+42116099999,Joshimath,30.55,79.567,1875.0,Northern Himalayas,northern_himalayas,11.5,802.0,79,-2.15,-1.71,-0.4,2.15,NORMAL,0.95,NONE,5
+43900000922,Muktsar AWS,30.47,74.52,184.0,Northern Himalayas,northern_himalayas,26.5,988.8,79,-0.07,-1.01,0.0,1.01,NORMAL,0.95,NONE,5
+42112099999,Mussoorie,30.45,78.083,2042.0,Northern Himalayas,northern_himalayas,15.0,822.4,92,2.22,7.98,1.01,7.98,SENSOR_FAULT,0.951,HIGH,5
+42104099999,Nahan,30.4,76.767,958.0,Northern Himalayas,northern_himalayas,26.0,981.7,69,4.43,52.54,-1.16,52.54,SENSOR_FAULT,0.98,HIGH,5
+42114099999,Tehri,30.4,78.483,770.0,Northern Himalayas,northern_himalayas,21.0,923.7,100,0.23,-0.23,2.02,2.02,NORMAL,0.95,NONE,5
+42117099999,Chamoli,30.4,79.333,1160.0,Northern Himalayas,northern_himalayas,18.7,890.4,69,0.44,0.3,-3.04,3.04,PROBABLE_FAULT,0.76,LOW,5
+04211499999,New Tehri AWS,30.3833,78.4333,770.0,Northern Himalayas,northern_himalayas,15.5,842.4,88,-4.33,-13.35,-0.34,13.35,SENSOR_FAULT,0.98,HIGH,5
+42103099999,Ambala,30.383,76.767,272.0,Northern Himalayas,northern_himalayas,26.0,981.0,69,0.67,-0.07,-1.16,1.16,NORMAL,0.95,NONE,5
+43900000909,Barnala AWS,30.38,75.55,227.0,Northern Himalayas,northern_himalayas,25.5,985.5,84,-0.39,-0.03,1.35,1.35,NORMAL,0.95,NONE,5
+43900000967,Dehradun Forest Research AWS,30.34,78.0,682.0,Northern Himalayas,northern_himalayas,21.4,939.8,86,0.14,-0.19,0.0,0.19,NORMAL,0.95,NONE,5
+42101099999,Patiala,30.333,76.467,251.0,Northern Himalayas,northern_himalayas,25.2,983.0,81,-0.52,-0.3,1.69,1.69,NORMAL,0.95,NONE,5
+43900000924,Patiala AWS,30.33,76.38,251.0,Northern Himalayas,northern_himalayas,25.4,983.2,82,-0.36,-0.16,1.85,1.85,NORMAL,0.95,NONE,5
+42111099999,Dehradun,30.317,78.033,682.0,Northern Himalayas,northern_himalayas,21.4,940.6,86,0.14,0.18,0.0,0.18,NORMAL,0.95,NONE,5
+04211199999,Dehradun AWS,30.2833,78.0833,683.0,Northern Himalayas,northern_himalayas,21.2,942.7,84,-0.12,1.01,-0.34,1.01,NORMAL,0.95,NONE,5
+43900000973,Rudraprayag AWS,30.28,78.98,895.0,Northern Himalayas,northern_himalayas,20.8,926.0,85,0.52,1.59,-0.29,1.59,NORMAL,0.95,NONE,5
+43900000927,Sangrur AWS,30.25,75.84,232.0,Northern Himalayas,northern_himalayas,25.7,984.8,76,0.15,-0.42,-1.01,1.01,NORMAL,0.95,NONE,5
+43900000976,Srinagar Garhwal AWS,30.22,78.78,560.0,Northern Himalayas,northern_himalayas,21.9,950.5,95,-0.59,-0.4,1.35,1.35,NORMAL,0.95,NONE,5
+43900000910,Bathinda Bhisiana AWS,30.21,74.95,201.0,Northern Himalayas,northern_himalayas,27.1,988.3,76,0.53,-0.13,-0.84,0.84,NORMAL,0.95,NONE,5
+43900000968,Dehradun Jolly Grant AWS,30.19,78.18,558.0,Northern Himalayas,northern_himalayas,21.1,951.7,84,-0.93,-0.84,-0.34,0.93,NORMAL,0.95,NONE,5
+42097099999,Bhatinda,30.167,74.583,211.0,Northern Himalayas,northern_himalayas,26.5,989.4,81,0.08,1.91,0.84,1.91,NORMAL,0.95,NONE,5
+42135099999,Sangrur,30.167,75.833,236.0,Northern Himalayas,northern_himalayas,25.9,985.6,74,0.34,0.75,-1.35,1.35,NORMAL,0.95,NONE,5
+42110099999,Pauri,30.15,78.783,1845.0,Northern Himalayas,northern_himalayas,18.1,867.5,87,3.78,14.56,-0.17,14.56,SENSOR_FAULT,0.98,HIGH,5
+43900000913,Fazilka Abohar AWS,30.14,74.2,180.0,Northern Himalayas,northern_himalayas,26.6,990.2,74,-0.49,-0.57,0.0,0.57,NORMAL,0.95,NONE,5
+43900000950,Yamunanagar AWS,30.13,77.28,274.0,Northern Himalayas,northern_himalayas,25.7,980.2,86,-0.03,-0.65,1.18,1.18,NORMAL,0.95,NONE,5
+42121099999,Munsyari,30.117,80.25,3414.0,Northern Himalayas,northern_himalayas,14.0,865.4,72,4.03,9.15,-1.6,9.15,SENSOR_FAULT,0.98,HIGH,5
+43900000920,Mansa AWS,29.98,75.38,212.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.4,987.3,82,0.29,0.05,1.01,1.01,NORMAL,0.95,NONE,5
+43900000940,Kurukshetra AWS,29.97,76.85,260.0,Indo-Gangetic Plains,indo_gangetic_plains,26.0,982.8,79,0.18,0.19,-0.27,0.27,NORMAL,0.95,NONE,5
+43900000641,Saharanpur AWS,29.9678,77.5511,269.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,980.6,78,-0.11,-0.09,-0.77,0.77,NORMAL,0.95,NONE,5
+43900000969,Haridwar AWS,29.95,78.16,249.0,Indo-Gangetic Plains,indo_gangetic_plains,23.0,979.1,96,-0.86,-1.91,1.69,1.91,NORMAL,0.95,NONE,5
+42123099999,Ganganagar,29.917,73.917,177.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.9,991.6,74,0.99,0.47,0.0,0.99,NORMAL,0.95,NONE,5
+04212399999,Ganganagar AWS,29.9167,73.8833,177.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.9,991.4,74,0.99,0.34,0.0,0.99,NORMAL,0.95,NONE,5
+42140099999,Roorkee,29.85,77.883,274.0,Indo-Gangetic Plains,indo_gangetic_plains,24.5,982.0,88,0.42,0.35,0.45,0.45,NORMAL,0.95,NONE,5
+43900000974,Bageshwar AWS,29.85,79.77,1004.0,Northern Himalayas,northern_himalayas,18.2,900.1,91,-1.44,-3.84,-1.35,3.84,SENSOR_FAULT,0.702,HIGH,5
+42151099999,Dharchula,29.85,80.533,817.0,Indo-Gangetic Plains,indo_gangetic_plains,17.3,873.3,79,-2.76,-4.93,-2.7,4.93,SENSOR_FAULT,0.768,HIGH,5
+43900000938,Kaithal AWS,29.8,76.4,237.0,Indo-Gangetic Plains,indo_gangetic_plains,25.1,985.2,86,-0.5,0.05,0.84,0.84,NORMAL,0.95,NONE,5
+42137099999,Karnal,29.7,77.033,249.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,984.5,79,0.03,0.28,-0.34,0.34,NORMAL,0.95,NONE,5
+43900000939,Karnal NDRI AWS,29.69,76.98,252.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,983.9,81,-0.23,0.11,0.0,0.23,NORMAL,0.95,NONE,5
+43900000971,Ranikhet AWS,29.64,79.43,1869.0,Northern Himalayas,northern_himalayas,13.6,824.4,100,-0.05,0.98,0.84,0.98,NORMAL,0.95,NONE,5
+42143099999,Najibabad,29.617,78.383,270.0,Indo-Gangetic Plains,indo_gangetic_plains,22.9,980.6,95,-0.71,0.21,1.85,1.85,NORMAL,0.95,NONE,5
+43900000970,Almora AWS,29.6,79.66,1638.0,Northern Himalayas,northern_himalayas,16.0,849.6,95,0.76,0.72,-0.67,0.76,NORMAL,0.95,NONE,5
+43900000708,Hanumangarh AWS,29.58,74.32,177.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.2,990.9,74,0.1,-0.47,0.0,0.47,NORMAL,0.95,NONE,5
+43900000972,Pithoragarh AWS,29.58,80.22,1636.0,Northern Himalayas,northern_himalayas,17.0,852.3,99,1.48,0.95,0.67,1.48,NORMAL,0.95,NONE,5
+43900000948,Sirsa AWS,29.53,75.03,205.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.9,988.4,83,-0.1,0.24,0.67,0.67,NORMAL,0.95,NONE,5
+43900000933,Fatehabad AWS,29.52,75.45,208.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.0,987.7,79,0.1,-0.56,0.0,0.56,NORMAL,0.95,NONE,5
+43900000637,Muzaffarnagar AWS,29.4727,77.7085,232.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,984.1,77,0.33,-1.09,-0.67,1.09,NORMAL,0.95,NONE,5
+42147099999,Mukteshwar Kumaon,29.467,79.65,2311.0,Northern Himalayas,northern_himalayas,10.8,784.5,99,0.05,0.72,0.0,0.72,NORMAL,0.95,NONE,5
+43900000644,Shamli AWS,29.45,77.3167,248.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,984.7,81,0.11,1.06,0.0,1.06,NORMAL,0.95,NONE,5
+42146099999,Nainital,29.4,79.467,1953.0,Northern Himalayas,northern_himalayas,11.9,794.8,99,-1.0,-6.74,0.67,6.74,SENSOR_FAULT,0.876,HIGH,5
+43900000945,Panipat AWS,29.39,76.97,228.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,985.1,86,-0.11,-1.08,0.84,1.08,NORMAL,0.95,NONE,5
+43900000609,Bijnor AWS,29.3724,78.1358,225.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,985.0,84,-0.46,-0.98,0.51,0.98,NORMAL,0.95,NONE,5
+43900000975,Champawat AWS,29.33,80.1,1610.0,Northern Himalayas,northern_himalayas,15.6,844.6,99,0.15,-1.64,0.0,1.64,NORMAL,0.95,NONE,5
+43900000937,Jind AWS,29.32,76.32,227.0,Indo-Gangetic Plains,indo_gangetic_plains,26.5,986.3,77,-0.55,-0.05,-0.34,0.55,NORMAL,0.95,NONE,5
+42131099999,Hisar,29.179,75.755,213.4,Western Arid/Semi-Arid,delhi,27.3,987.9,79,0.38,0.14,0.0,0.38,NORMAL,0.95,NONE,5
+42122099999,Anupgarh,29.167,73.167,154.0,Western Arid/Semi-Arid,western_arid_semi_arid,28.5,994.0,61,0.38,-0.07,-2.19,2.19,NORMAL,0.95,NONE,5
+43900000935,Hisar HAU Agro-AWS,29.15,75.72,215.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.3,987.9,79,0.39,0.27,0.0,0.39,NORMAL,0.95,NONE,5
+42148099999,Pantnagar,29.033,79.467,233.0,Indo-Gangetic Plains,indo_gangetic_plains,25.4,986.2,92,-0.01,0.45,-0.27,0.45,NORMAL,0.95,NONE,5
+42139099999,Meerut,29.017,77.717,222.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,986.8,81,0.56,0.1,-0.34,0.56,NORMAL,0.95,NONE,5
+43900000949,Sonipat AWS,28.99,77.02,224.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,986.8,78,-0.15,0.59,-0.17,0.59,NORMAL,0.95,NONE,5
+04213999999,Meerut AWS,28.9667,77.7333,221.9,Indo-Gangetic Plains,indo_gangetic_plains,26.6,986.9,81,0.55,0.16,-0.34,0.55,NORMAL,0.95,NONE,5
+43900000603,Baghpat AWS,28.9454,77.2208,220.0,Indo-Gangetic Plains,indo_gangetic_plains,25.7,986.4,83,-1.12,-0.4,0.51,1.12,NORMAL,0.95,NONE,5
+43900000598,Amroha AWS,28.9044,78.4678,211.0,Indo-Gangetic Plains,indo_gangetic_plains,25.7,987.2,91,-0.48,-0.59,0.51,0.59,NORMAL,0.95,NONE,5
+43900000947,Rohtak AWS,28.9,76.58,220.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,985.8,72,0.83,-0.99,-1.01,1.01,NORMAL,0.95,NONE,5
+42176099999,Rohtak,28.833,76.583,222.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,987.1,76,0.51,0.28,-0.51,0.51,NORMAL,0.95,NONE,5
+42187099999,Moradabad,28.833,78.75,202.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,989.8,87,0.54,0.45,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000640,Rampur AWS,28.8154,79.0257,192.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,990.3,89,0.65,-0.39,-0.34,0.65,NORMAL,0.95,NONE,5
+43900000930,Bhiwani AWS,28.78,76.13,215.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,987.5,83,-0.54,-0.27,0.84,0.84,NORMAL,0.95,NONE,5
+42188099999,Rampur,28.75,79.0,191.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,991.0,88,0.48,0.39,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000620,Hapur AWS,28.7306,77.7759,213.0,Indo-Gangetic Plains,indo_gangetic_plains,26.0,987.7,86,0.24,-0.16,-0.11,0.24,NORMAL,0.95,NONE,5
+43900000954,Delhi Pitampura AWS,28.7,77.13,219.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,986.2,80,0.62,-0.82,0.0,0.82,NORMAL,0.95,NONE,5
+43900000951,Delhi Ridge AWS,28.67,77.21,233.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,985.4,76,0.73,-0.26,-1.18,1.18,NORMAL,0.95,NONE,5
+43900000618,Ghaziabad AWS,28.6692,77.4538,214.0,Indo-Gangetic Plains,indo_gangetic_plains,25.2,987.7,91,-0.93,-0.11,1.18,1.18,NORMAL,0.95,NONE,5
+42190099999,Pilibhit,28.633,79.8,188.0,Indo-Gangetic Plains,indo_gangetic_plains,25.7,990.8,94,-0.02,-0.07,0.84,0.84,NORMAL,0.95,NONE,5
+43900000936,Jhajjar AWS,28.61,76.65,220.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,987.6,81,-0.3,0.25,0.51,0.51,NORMAL,0.95,NONE,5
+43900000953,Delhi Najafgarh AWS,28.61,76.98,213.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,987.4,79,0.93,-0.45,-0.84,0.93,NORMAL,0.95,NONE,5
+43900000931,Charkhi Dadri AWS,28.6,76.27,222.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,987.0,78,-0.11,0.22,0.17,0.22,NORMAL,0.95,NONE,5
+43900000955,Delhi Mayur Vihar AWS,28.6,77.3,207.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,988.9,84,0.21,0.15,0.17,0.21,NORMAL,0.95,NONE,5
+42182099999,Safdarjung,28.585,77.206,214.9,Indo-Gangetic Plains,delhi,26.3,987.9,83,-0.29,-0.05,0.51,0.51,NORMAL,0.95,NONE,5
+43900000642,Sambhal AWS,28.5833,78.55,193.0,Indo-Gangetic Plains,indo_gangetic_plains,25.8,989.5,92,-0.49,-0.85,0.51,0.85,NORMAL,0.95,NONE,5
+42181099999,Indira Gandhi Intl,28.567,77.103,236.8,Indo-Gangetic Plains,delhi,26.5,986.7,80,0.28,1.4,-0.51,1.4,NORMAL,0.95,NONE,5
+43900000617,Gautam Buddha Nagar AWS,28.5355,77.391,200.0,Indo-Gangetic Plains,indo_gangetic_plains,25.8,989.5,87,-0.5,0.11,0.51,0.51,NORMAL,0.95,NONE,5
+43900000952,Delhi Ayanagar AWS,28.47,77.13,274.0,Indo-Gangetic Plains,indo_gangetic_plains,25.1,981.7,86,-0.46,0.47,0.34,0.47,NORMAL,0.95,NONE,5
+43900000934,Gurugram Cybercity AWS,28.46,77.03,220.0,Indo-Gangetic Plains,indo_gangetic_plains,25.4,986.2,84,-0.73,-0.79,0.17,0.79,NORMAL,0.95,NONE,5
+42189099999,Bareilly,28.422,79.451,176.8,Indo-Gangetic Plains,delhi,25.8,992.6,88,-0.04,0.33,0.0,0.33,NORMAL,0.95,NONE,5
+42178099999,Gurgaon,28.417,77.0,224.0,Indo-Gangetic Plains,indo_gangetic_plains,25.4,986.9,84,-0.71,0.04,0.17,0.71,NORMAL,0.95,NONE,5
+43900000932,Faridabad AWS,28.41,77.32,204.0,Indo-Gangetic Plains,indo_gangetic_plains,26.1,988.7,87,-0.23,-0.37,0.51,0.51,NORMAL,0.95,NONE,5
+42183099999,Bulandshahr,28.4,77.867,218.0,Indo-Gangetic Plains,indo_gangetic_plains,25.5,989.7,93,-0.39,1.66,1.01,1.66,NORMAL,0.95,NONE,5
+43900000607,Bareilly Agro-AWS,28.367,79.4304,177.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,992.2,88,0.09,0.07,0.0,0.09,NORMAL,0.95,NONE,5
+04218999999,Bareilly AWS,28.3667,79.4,169.0,Indo-Gangetic Plains,indo_gangetic_plains,25.7,992.9,89,-0.17,-0.16,0.17,0.17,NORMAL,0.95,NONE,5
+43900000718,Pilani BITS AWS,28.3639,75.5872,288.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.6,978.4,70,0.15,-0.47,-0.51,0.51,NORMAL,0.95,NONE,5
+42174099999,Pilani,28.333,75.583,301.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.6,978.5,70,0.22,1.08,-0.51,1.08,NORMAL,0.95,NONE,5
+43900000704,Churu AWS,28.29,74.96,286.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.0,979.4,70,0.33,-0.12,0.0,0.33,NORMAL,0.95,NONE,5
+42170099999,Churu,28.25,74.917,291.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.5,979.0,73,-0.14,0.12,0.51,0.51,NORMAL,0.95,NONE,5
+43900000946,Rewari AWS,28.18,76.62,242.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,984.1,77,0.57,-0.47,-0.84,0.84,NORMAL,0.95,NONE,5
+04221699999,Along AWS,28.1667,94.8,1768.0,Northeast Hills,northeast_hills,25.3,984.7,93,7.15,111.98,1.21,111.98,SENSOR_FAULT,0.98,HIGH,5
+43900000943,Palwal AWS,28.14,77.33,195.0,Indo-Gangetic Plains,indo_gangetic_plains,25.3,989.3,88,-0.44,-0.67,0.34,0.67,NORMAL,0.95,NONE,5
+43900000710,Jhunjhunu AWS,28.13,75.4,323.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.2,974.1,77,-0.22,-0.8,1.18,1.18,NORMAL,0.95,NONE,5
+43900000942,Nuh Mewat AWS,28.11,77.02,199.0,Indo-Gangetic Plains,indo_gangetic_plains,25.8,990.4,82,0.2,0.86,-0.34,0.86,NORMAL,0.95,NONE,5
+42220099999,Pasighat,28.1,95.383,157.0,Northeast Hills,northeast_hills,26.1,991.7,73,-1.03,-2.33,-1.48,2.33,NORMAL,0.95,NONE,5
+43900000941,Mahendragarh Narnaul AWS,28.04,76.11,300.0,Indo-Gangetic Plains,indo_gangetic_plains,26.1,977.7,73,-0.04,0.23,0.0,0.23,NORMAL,0.95,NONE,5
+43900000602,Badaun AWS,28.0326,79.1275,169.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,992.9,87,0.17,0.0,-0.34,0.34,NORMAL,0.95,NONE,5
+42165099999,Bikaner,28.0,73.3,224.0,Western Arid/Semi-Arid,western_arid_semi_arid,29.0,987.3,56,0.69,0.42,0.0,0.69,NORMAL,0.95,NONE,5
+42177099999,Narnaul,28.0,76.083,308.0,Indo-Gangetic Plains,indo_gangetic_plains,26.1,975.6,73,-0.17,-0.56,0.0,0.56,NORMAL,0.95,NONE,5
+43900000630,Kheri Lakhimpur AWS,27.9467,80.7786,147.0,Indo-Gangetic Plains,indo_gangetic_plains,26.3,995.3,89,-0.29,-0.14,0.51,0.51,NORMAL,0.95,NONE,5
+42312099999,Ziro,27.917,94.8,1476.0,Northeast Hills,northeast_hills,20.7,881.7,84,1.92,21.73,-0.34,21.73,SENSOR_FAULT,0.98,HIGH,5
+42270099999,Kheri,27.9,80.8,147.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,996.1,87,-0.52,0.51,0.17,0.52,NORMAL,0.95,NONE,5
+42262099999,Aligarh,27.883,78.067,187.0,Indo-Gangetic Plains,indo_gangetic_plains,25.5,990.0,89,0.3,-0.35,-0.34,0.35,NORMAL,0.95,NONE,5
+42266099999,Shahjahanpur,27.883,79.9,155.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,995.1,90,0.13,0.37,0.34,0.37,NORMAL,0.95,NONE,5
+74925199999,Sadiya,27.85,95.667,130.0,Northeast Hills,northeast_hills,27.5,997.9,64,0.35,0.16,-3.71,3.71,PROBABLE_FAULT,0.76,LOW,5
+43900000628,Kasganj AWS,27.8083,78.6475,177.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,991.7,91,0.33,-0.12,0.34,0.34,NORMAL,0.95,NONE,5
+42249099999,Sikar,27.617,75.133,433.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.5,964.7,69,0.71,1.52,-0.17,1.52,NORMAL,0.95,NONE,5
+43900000622,Hathras AWS,27.5971,78.0519,178.0,Indo-Gangetic Plains,indo_gangetic_plains,25.2,991.5,89,-0.3,0.03,0.0,0.3,NORMAL,0.95,NONE,5
+42273099999,Bahraich,27.567,81.6,124.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,998.4,89,0.1,-0.28,0.34,0.34,NORMAL,0.95,NONE,5
+74924499999,Doom-Dooma,27.567,95.567,130.0,Northeast Hills,northeast_hills,27.0,999.0,84,-0.14,0.9,-0.19,0.9,NORMAL,0.95,NONE,5
+43900000647,Sitapur AWS,27.5667,80.6833,138.0,Indo-Gangetic Plains,indo_gangetic_plains,26.7,996.4,86,-0.1,0.03,-0.17,0.17,NORMAL,0.95,NONE,5
+43900000613,Etah AWS,27.5583,78.6653,170.0,Indo-Gangetic Plains,indo_gangetic_plains,25.0,992.7,92,-0.51,0.17,0.51,0.51,NORMAL,0.95,NONE,5
+43900000702,Alwar Agro-AWS,27.553,76.6346,271.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,982.4,79,-0.35,0.9,0.34,0.9,NORMAL,0.95,NONE,5
+42255099999,Alwar,27.5,76.583,271.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,982.3,79,-0.35,0.83,0.34,0.83,NORMAL,0.95,NONE,5
+42257099999,Mathura,27.5,77.683,174.0,Indo-Gangetic Plains,indo_gangetic_plains,25.2,990.6,87,-0.26,-0.92,-0.34,0.92,NORMAL,0.95,NONE,5
+43900000645,Shrawasti AWS,27.5,82.0333,118.0,Indo-Gangetic Plains,indo_gangetic_plains,27.5,999.9,88,0.14,0.7,-0.17,0.7,NORMAL,0.95,NONE,5
+43900001001,Tinsukia AWS,27.5,95.37,125.0,Northeast Hills,northeast_hills,27.2,998.4,89,0.07,0.1,0.34,0.34,NORMAL,0.95,NONE,5
+42314099999,Dibrugarh,27.484,95.017,110.3,Northeast Hills,northeast_hills,27.6,1000.0,86,0.33,-0.09,-0.51,0.51,NORMAL,0.95,NONE,5
+42282099999,Nautanwa,27.433,83.417,99.0,Indo-Gangetic Plains,indo_gangetic_plains,26.3,1001.5,95,-0.14,0.6,0.51,0.6,NORMAL,0.95,NONE,5
+43900000772,Valmiki Nagar AWS,27.43,83.9,115.0,Indo-Gangetic Plains,indo_gangetic_plains,26.0,999.0,98,-0.19,0.19,0.51,0.51,NORMAL,0.95,NONE,5
+43900000604,Balrampur AWS,27.4298,82.1793,105.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,1000.4,87,-0.19,-0.06,-0.34,0.34,NORMAL,0.95,NONE,5
+42305099999,Bomdila,27.417,92.85,2484.0,Northeast Hills,northeast_hills,17.9,865.9,89,4.82,78.85,0.0,78.85,SENSOR_FAULT,0.98,HIGH,5
+43900000621,Hardoi AWS,27.3944,80.1311,134.0,Indo-Gangetic Plains,indo_gangetic_plains,27.1,995.7,82,0.56,-0.79,-0.84,0.84,NORMAL,0.95,NONE,5
+42271099999,Hardoi,27.383,80.167,142.0,Indo-Gangetic Plains,indo_gangetic_plains,27.1,996.1,82,0.61,0.44,-0.84,0.84,NORMAL,0.95,NONE,5
+42316099999,Digboi,27.383,95.617,143.0,Northeast Hills,northeast_hills,27.0,995.2,93,-0.07,-0.72,1.18,1.18,NORMAL,0.95,NONE,5
+43900000615,Farrukhabad AWS,27.3826,79.5847,141.0,Indo-Gangetic Plains,indo_gangetic_plains,25.5,994.8,91,-0.75,-0.96,0.67,0.96,NORMAL,0.95,NONE,5
+04220999999,Tadong AWS,27.3333,85.6333,1322.0,Indo-Gangetic Plains,indo_gangetic_plains,20.1,904.4,94,0.73,27.36,1.01,27.36,SENSOR_FAULT,0.98,HIGH,5
+42299099999,Gangtok,27.333,88.617,1756.0,Northeast Hills,northeast_hills,16.1,833.2,85,0.1,8.67,0.67,8.67,SENSOR_FAULT,0.98,HIGH,5
+42309099999,Lilabari,27.295,94.098,100.6,Northeast Hills,northeast_hills,28.0,1001.0,73,0.44,-0.21,-2.87,2.87,PROBABLE_FAULT,0.76,LOW,5
+43900000646,Siddharthnagar AWS,27.2833,82.8167,85.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1002.2,92,-0.05,-0.25,0.34,0.34,NORMAL,0.95,NONE,5
+04230999999,North Lakhimpur AWS,27.2333,94.1167,101.0,Northeast Hills,northeast_hills,27.4,1002.0,87,-0.2,0.71,-0.51,0.71,NORMAL,0.95,NONE,5
+42265099999,Mainpuri,27.233,79.05,157.0,Indo-Gangetic Plains,indo_gangetic_plains,25.2,994.6,90,0.1,0.43,-0.34,0.43,NORMAL,0.95,NONE,5
+42258099999,Bharatpur,27.217,77.5,176.0,Indo-Gangetic Plains,indo_gangetic_plains,25.5,991.7,85,0.21,-0.02,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000712,Nagaur AWS,27.2,73.74,302.0,Western Arid/Semi-Arid,western_arid_semi_arid,28.3,977.6,53,0.19,0.22,-1.48,1.48,NORMAL,0.95,NONE,5
+42242099999,Nagaur,27.167,73.667,298.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.7,978.3,52,-0.53,0.38,-1.62,1.62,NORMAL,0.95,NONE,5
+42261099999,Agra,27.167,78.033,169.0,Indo-Gangetic Plains,indo_gangetic_plains,25.3,993.0,90,-0.21,0.32,0.51,0.51,NORMAL,0.95,NONE,5
+43900000616,Firozabad AWS,27.1591,78.3957,164.0,Indo-Gangetic Plains,indo_gangetic_plains,26.5,993.1,81,1.02,-0.31,-1.52,1.52,NORMAL,0.95,NONE,5
+42260099999,Agra,27.156,77.961,167.9,Indo-Gangetic Plains,indo_gangetic_plains,25.7,993.1,89,0.33,0.3,0.34,0.34,NORMAL,0.95,NONE,5
+74925099999,Moran Southwest,27.15,94.9,100.0,Northeast Hills,northeast_hills,26.5,1001.1,92,-0.83,0.03,0.51,0.83,NORMAL,0.95,NONE,5
+43900000633,Maharajganj AWS,27.1464,83.5619,89.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,1001.8,96,-0.11,-0.19,0.84,0.84,NORMAL,0.95,NONE,5
+42237099999,Phalodi,27.133,72.367,234.0,Western Arid/Semi-Arid,western_arid_semi_arid,28.3,985.5,56,-0.37,-0.0,0.0,0.37,NORMAL,0.95,NONE,5
+42274099999,Gonda,27.133,81.967,110.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,999.9,86,0.26,-0.01,-0.34,0.34,NORMAL,0.95,NONE,5
+42296099999,Kalimpong,27.067,88.467,1209.0,Northeast Hills,northeast_hills,19.6,895.8,94,0.05,12.13,1.69,12.13,SENSOR_FAULT,0.98,HIGH,5
+43900000625,Kannauj AWS,27.0543,79.9194,139.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,995.8,87,-0.47,-0.04,0.67,0.67,NORMAL,0.95,NONE,5
+42295099999,Darjeeling,27.05,88.267,2128.0,Northeast Hills,northeast_hills,14.8,801.6,71,1.08,12.23,-1.75,12.23,SENSOR_FAULT,0.98,HIGH,5
+42382099999,Raxaul,26.983,84.85,79.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,1002.6,93,-0.38,0.11,0.17,0.38,NORMAL,0.95,NONE,5
+42311099999,Sibsagar,26.983,94.633,97.0,Northeast Hills,northeast_hills,27.5,1001.2,90,0.01,-0.17,0.51,0.51,NORMAL,0.95,NONE,5
+43900000606,Barabanki AWS,26.9268,81.1834,125.0,Indo-Gangetic Plains,indo_gangetic_plains,26.7,999.1,93,0.17,0.82,0.17,0.82,NORMAL,0.95,NONE,5
+42364099999,Etawah,26.921,79.062,149.0,Indo-Gangetic Plains,indo_gangetic_plains,24.7,994.9,95,-0.52,-0.31,0.67,0.67,NORMAL,0.95,NONE,5
+42328099999,Jaisalmer,26.9,70.917,231.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.8,985.3,67,-1.28,-0.14,0.27,1.28,NORMAL,0.95,NONE,5
+43900000705,Dausa AWS,26.8833,76.3333,333.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,974.2,81,0.56,-0.68,-0.17,0.68,NORMAL,0.95,NONE,5
+42368099999,Lucknow,26.867,80.933,111.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,999.1,89,0.33,-0.45,-0.17,0.45,NORMAL,0.95,NONE,5
+74924799999,Jhanzi West,26.85,94.433,92.0,Northeast Hills,northeast_hills,27.9,1002.0,85,0.32,-0.22,-0.84,0.84,NORMAL,0.95,NONE,5
+42419099999,Gohpur,26.833,93.583,82.0,Northeast Hills,northeast_hills,27.8,1003.6,85,0.18,0.05,-0.84,0.84,NORMAL,0.95,NONE,5
+42348099999,Jaipur,26.824,75.812,385.0,Western Arid/Semi-Arid,delhi,24.6,969.5,82,0.02,0.66,-0.17,0.66,NORMAL,0.95,NONE,5
+42279099999,Basti,26.8,82.733,89.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1002.1,90,-0.12,0.25,0.0,0.25,NORMAL,0.95,NONE,5
+43900000771,West Champaran Bettiah AWS,26.8,84.5,65.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,1003.5,96,-0.42,-0.59,0.51,0.59,NORMAL,0.95,NONE,5
+74924699999,Bansbera Northeast,26.8,92.617,98.0,Northeast Hills,northeast_hills,26.9,1002.4,89,-0.89,0.63,0.0,0.89,NORMAL,0.95,NONE,5
+43900000600,Ayodhya AWS,26.7922,82.1998,93.0,Indo-Gangetic Plains,indo_gangetic_plains,27.6,1001.0,89,0.41,-0.62,-0.17,0.62,NORMAL,0.95,NONE,5
+43900000643,Sant Kabir Nagar AWS,26.7833,83.0333,79.0,Indo-Gangetic Plains,indo_gangetic_plains,26.9,1002.8,90,-0.08,-0.33,0.0,0.33,NORMAL,0.95,NONE,5
+43900000614,Etawah AWS,26.7769,79.0238,145.0,Indo-Gangetic Plains,indo_gangetic_plains,25.0,994.6,94,-0.29,-0.95,0.51,0.95,NORMAL,0.95,NONE,5
+42369099999,Lucknow / Chaudhary Charan Singh Intl,26.761,80.889,125.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,998.6,92,-0.42,0.51,0.34,0.51,NORMAL,0.95,NONE,5
+04237999999,Gorakhpur AWS,26.75,83.3667,77.4,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1003.1,90,0.14,0.07,-0.17,0.17,NORMAL,0.95,NONE,5
+42413099999,Majbat,26.75,92.35,120.0,Northeast Hills,northeast_hills,27.0,1001.3,91,-0.18,1.65,0.34,1.65,NORMAL,0.95,NONE,5
+42374099999,Ayodha,26.748,82.163,100.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1001.1,87,0.73,0.44,-0.51,0.73,NORMAL,0.95,NONE,5
+43900000631,Kushinagar AWS,26.741,83.889,74.0,Indo-Gangetic Plains,indo_gangetic_plains,26.9,1003.3,90,0.23,-0.14,-0.17,0.23,NORMAL,0.95,NONE,5
+42379099999,Gorakhpur,26.74,83.45,78.9,Indo-Gangetic Plains,indo_gangetic_plains,26.6,1003.3,91,-0.23,0.33,0.17,0.33,NORMAL,0.95,NONE,5
+04236499999,Etawah AWS,26.7333,78.9833,151.0,Indo-Gangetic Plains,indo_gangetic_plains,25.3,997.5,91,0.05,1.91,0.0,1.91,NORMAL,0.95,NONE,5
+42423199999,Jorhat,26.732,94.176,94.8,Northeast Hills,northeast_hills,27.5,1002.0,91,-0.01,0.22,0.17,0.22,NORMAL,0.95,NONE,5
+43900000788,Siliguri Agro-AWS,26.72,88.42,122.0,Northeast Hills,northeast_hills,26.0,998.6,73,-0.47,-0.41,-2.16,2.16,NORMAL,0.95,NONE,5
+42416099999,Tezpur/Bindukuri,26.717,92.8,75.0,Northeast Hills,northeast_hills,28.1,1004.2,80,0.5,-0.25,-1.52,1.52,NORMAL,0.95,NONE,5
+74925299999,Dergaon,26.717,93.95,91.0,Northeast Hills,northeast_hills,27.7,1003.0,90,0.15,0.37,0.51,0.51,NORMAL,0.95,NONE,5
+43900000706,Dholpur AWS,26.7,77.9,177.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,992.1,89,0.34,0.05,0.0,0.34,NORMAL,0.95,NONE,5
+42398099999,Bagdogra,26.681,88.329,125.6,Northeast Hills,northeast_hills,26.1,997.7,79,-0.37,-0.8,-0.42,0.8,NORMAL,0.95,NONE,5
+42354099999,Dholpur,26.667,77.833,176.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,988.3,89,0.33,-2.61,0.0,2.61,PROBABLE_FAULT,0.76,LOW,5
+42383099999,Motihari,26.667,84.917,66.0,Indo-Gangetic Plains,indo_gangetic_plains,27.4,1004.7,87,0.51,0.48,-1.01,1.01,NORMAL,0.95,NONE,5
+42397099999,Siliguri,26.667,88.367,123.0,Northeast Hills,northeast_hills,26.6,999.2,84,0.05,0.48,0.42,0.48,NORMAL,0.95,NONE,5
+42409099999,Tangla,26.65,91.917,65.0,Northeast Hills,northeast_hills,26.5,1002.9,90,-1.41,-1.43,0.67,1.43,NORMAL,0.95,NONE,5
+04239899999,Siliguri (42398-0) AWS,26.6333,88.3167,131.0,Northeast Hills,northeast_hills,26.5,998.3,89,0.01,0.52,1.12,1.12,NORMAL,0.95,NONE,5
+42415099999,Tezpur,26.617,92.783,79.0,Northeast Hills,northeast_hills,28.1,1004.1,89,0.53,0.25,0.0,0.53,NORMAL,0.95,NONE,5
+43900000768,Sitamarhi AWS,26.6,85.48,56.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1005.0,92,-0.39,-0.43,0.67,0.67,NORMAL,0.95,NONE,5
+42358099999,Bhind,26.567,78.8,168.0,Indo-Gangetic Plains,indo_gangetic_plains,26.1,995.1,90,0.77,1.31,-0.67,1.31,NORMAL,0.95,NONE,5
+43900000650,Unnao AWS,26.546,80.4879,127.0,Indo-Gangetic Plains,indo_gangetic_plains,26.5,997.6,90,-0.33,0.02,0.17,0.33,NORMAL,0.95,NONE,5
+42399099999,Jalpaiguri,26.533,88.717,83.0,Northeast Hills,northeast_hills,26.8,1001.5,92,-0.01,-1.65,1.08,1.65,NORMAL,0.95,NONE,5
+43900000767,Sheohar AWS,26.52,85.3,63.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1005.4,88,0.48,0.6,-0.51,0.6,NORMAL,0.95,NONE,5
+42420099999,Golaghat,26.517,93.983,95.0,Northeast Hills,northeast_hills,27.4,1001.3,92,-0.23,-0.51,0.84,0.84,NORMAL,0.95,NONE,5
+43900000612,Deoria AWS,26.5024,83.7791,68.0,Indo-Gangetic Plains,indo_gangetic_plains,26.9,1003.6,91,0.02,-0.29,0.0,0.29,NORMAL,0.95,NONE,5
+43900000711,Karauli AWS,26.5,77.02,260.0,Indo-Gangetic Plains,indo_gangetic_plains,24.6,981.7,86,-1.06,-0.11,-0.17,1.06,NORMAL,0.95,NONE,5
+43900000692,Morena AWS,26.5,78.0,177.0,Indo-Gangetic Plains,indo_gangetic_plains,26.0,991.4,89,-0.15,-0.47,-0.17,0.47,NORMAL,0.95,NONE,5
+43900000773,Alipurduar AWS,26.49,89.53,93.0,Northeast Hills,northeast_hills,26.3,1006.3,94,-0.88,3.54,1.52,3.54,PROBABLE_FAULT,0.76,LOW,5
+43900000749,Gopalganj AWS,26.47,84.44,65.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1004.1,94,-0.1,-0.18,0.51,0.51,NORMAL,0.95,NONE,5
+43900000599,Auraiya AWS,26.4674,79.5165,137.0,Indo-Gangetic Plains,indo_gangetic_plains,26.1,996.1,91,0.11,-0.59,0.51,0.59,NORMAL,0.95,NONE,5
+42343099999,Ajmer,26.45,74.617,486.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.0,942.4,69,0.59,-9.82,-1.69,9.82,SENSOR_FAULT,0.98,HIGH,5
+43900000627,Kanpur Nagar AWS,26.4499,80.3319,126.0,Indo-Gangetic Plains,indo_gangetic_plains,28.1,997.4,77,1.34,-0.21,-1.85,1.85,NORMAL,0.95,NONE,5
+43900000596,Ambedkar Nagar AWS,26.4499,82.6837,95.0,Indo-Gangetic Plains,indo_gangetic_plains,27.1,1002.3,90,0.12,0.94,0.0,0.94,NORMAL,0.95,NONE,5
+42366099999,Kanpur,26.433,80.367,125.0,Indo-Gangetic Plains,indo_gangetic_plains,27.1,997.8,87,0.49,-0.02,-0.17,0.49,NORMAL,0.95,NONE,5
+42408099999,Rangia,26.433,91.617,60.0,Northeast Hills,northeast_hills,28.2,1005.6,79,0.43,0.23,-1.85,1.85,NORMAL,0.95,NONE,5
+42367099999,Kanpur Chakeri,26.404,80.41,123.4,Indo-Gangetic Plains,indo_gangetic_plains,26.3,998.3,90,-0.34,0.21,0.34,0.34,NORMAL,0.95,NONE,5
+43900001003,Kokrajhar AWS,26.4,90.27,48.0,Northeast Hills,northeast_hills,26.8,1006.4,86,-1.21,-0.07,0.34,1.21,NORMAL,0.95,NONE,5
+43900000758,Madhubani AWS,26.35,86.07,56.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1005.9,88,0.29,0.09,-0.67,0.67,NORMAL,0.95,NONE,5
+43900001000,Nagaon AWS,26.35,92.68,60.0,Northeast Hills,northeast_hills,27.6,1004.6,91,-0.5,-1.19,0.34,1.19,NORMAL,0.95,NONE,5
+43900000626,Kanpur Dehat AWS,26.34,79.94,133.0,Indo-Gangetic Plains,indo_gangetic_plains,26.0,997.7,88,-0.54,0.76,0.0,0.76,NORMAL,0.95,NONE,5
+42403099999,Cooch Behar,26.333,89.467,43.0,Northeast Hills,northeast_hills,26.9,1007.0,85,-0.77,-0.09,-0.17,0.77,NORMAL,0.95,NONE,5
+43900000999,Barpeta AWS,26.32,91.0,43.0,Northeast Hills,northeast_hills,27.8,1007.1,82,-0.43,0.02,-0.67,0.67,NORMAL,0.95,NONE,5
+04233999999,Jodhpur AWS,26.3,73.0167,221.0,Western Arid/Semi-Arid,western_arid_semi_arid,28.6,979.1,64,0.34,-5.13,-0.07,5.13,SENSOR_FAULT,0.78,HIGH,5
+42395099999,Forbesganj,26.3,87.267,61.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1005.1,90,-0.28,0.52,0.17,0.52,NORMAL,0.95,NONE,5
+42361099999,Gwalior,26.293,78.228,188.1,Indo-Gangetic Plains,delhi,26.1,990.8,90,0.15,0.39,0.17,0.39,NORMAL,0.95,NONE,5
+42426099999,Tuensang,26.267,94.817,1608.0,Northeast Hills,northeast_hills,20.1,887.3,88,2.04,35.57,-0.51,35.57,SENSOR_FAULT,0.98,HIGH,5
+43900000649,Sultanpur AWS,26.2648,82.0727,95.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,1000.8,96,-0.03,-0.6,0.34,0.6,NORMAL,0.95,NONE,5
+42339099999,Jodhpur,26.251,73.049,218.5,Western Arid/Semi-Arid,western_arid_semi_arid,28.9,987.0,65,0.58,0.02,0.07,0.58,NORMAL,0.95,NONE,5
+42372099999,Fursatganj Airport,26.25,81.383,109.7,Indo-Gangetic Plains,indo_gangetic_plains,26.6,999.7,95,0.41,-0.18,0.0,0.41,NORMAL,0.95,NONE,5
+42375099999,Sultanpur,26.25,82.0,97.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,1000.8,98,-0.36,-0.44,0.51,0.51,NORMAL,0.95,NONE,5
+04236199999,Gwalior AWS,26.2333,78.25,207.0,Indo-Gangetic Plains,indo_gangetic_plains,25.7,989.1,94,-0.23,0.74,0.84,0.84,NORMAL,0.95,NONE,5
+43900000639,Raebareli AWS,26.23,81.24,110.0,Indo-Gangetic Plains,indo_gangetic_plains,26.5,999.4,95,0.17,-0.36,0.0,0.36,NORMAL,0.95,NONE,5
+43900000769,Siwan AWS,26.22,84.36,64.0,Indo-Gangetic Plains,indo_gangetic_plains,26.9,1004.5,93,-0.02,0.19,0.0,0.19,NORMAL,0.95,NONE,5
+43900000686,Gwalior AWS,26.2183,78.1828,207.0,Indo-Gangetic Plains,indo_gangetic_plains,25.7,988.0,93,-0.23,-0.39,0.67,0.67,NORMAL,0.95,NONE,5
+42414099999,Chaparmukh,26.2,92.517,66.0,Northeast Hills,northeast_hills,28.6,1004.9,85,0.88,-0.5,-0.67,0.88,NORMAL,0.95,NONE,5
+42407099999,Goalpara,26.183,90.633,38.0,Northeast Hills,northeast_hills,28.3,1004.1,85,0.38,-2.43,0.17,2.43,NORMAL,0.95,NONE,5
+42349099999,Tonk,26.167,75.75,272.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,981.6,83,-0.09,0.17,0.0,0.17,NORMAL,0.95,NONE,5
+42391099999,Darbhanga,26.167,85.9,49.0,Indo-Gangetic Plains,indo_gangetic_plains,26.9,1006.1,97,-0.52,-0.25,1.01,1.01,NORMAL,0.95,NONE,5
+43900000717,Tonk AWS,26.16,75.79,289.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,980.5,83,0.09,0.63,0.0,0.63,NORMAL,0.95,NONE,5
+43900000597,Amethi AWS,26.1554,81.8152,101.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,1001.0,94,0.03,0.36,-0.34,0.36,NORMAL,0.95,NONE,5
+43900000742,Araria AWS,26.15,87.52,47.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,1006.0,89,0.0,-0.2,0.17,0.2,NORMAL,0.95,NONE,5
+42406099999,Dhubri/Rupsi,26.15,89.917,45.0,Northeast Hills,northeast_hills,27.8,1006.9,84,0.77,0.09,-0.34,0.77,NORMAL,0.95,NONE,5
+43900000623,Jalaun AWS,26.1457,79.3364,144.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,995.5,85,0.29,-0.54,-0.84,0.84,NORMAL,0.95,NONE,5
+42393099999,Supaul,26.133,86.583,50.0,Indo-Gangetic Plains,indo_gangetic_plains,27.4,1006.6,92,-0.2,0.28,0.67,0.67,NORMAL,0.95,NONE,5
+42353099999,Supaul,26.133,86.583,49.0,Indo-Gangetic Plains,indo_gangetic_plains,27.4,1006.6,92,-0.21,0.2,0.67,0.67,NORMAL,0.95,NONE,5
+42390099999,Muzaffarpur Aerodrome,26.117,85.317,53.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,1006.0,91,-0.42,0.01,0.34,0.42,NORMAL,0.95,NONE,5
+42387099999,Muzaffarpur,26.117,85.4,53.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1005.7,88,0.26,-0.2,-0.51,0.51,NORMAL,0.95,NONE,5
+42410099999,Guwahati Intl / Lokpriya Gopinath Bordoloi Intl,26.106,91.586,49.4,Northeast Hills,northeast_hills,28.3,1006.3,86,0.03,-0.68,-0.34,0.68,NORMAL,0.95,NONE,5
+43900000755,Kishanganj AWS,26.1,87.95,53.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1006.4,90,-0.18,0.23,0.17,0.23,NORMAL,0.95,NONE,5
+43900000601,Azamgarh AWS,26.0688,83.1859,78.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1002.8,94,-0.18,-0.47,0.34,0.47,NORMAL,0.95,NONE,5
+42423099999,Jorhat,26.067,90.167,880.0,Northeast Hills,northeast_hills,28.3,1008.6,86,5.0,65.85,0.17,65.85,SENSOR_FAULT,0.98,HIGH,5
+42381099999,Azamgarh,26.05,83.217,78.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1003.5,94,-0.18,0.4,0.34,0.4,NORMAL,0.95,NONE,5
+42404099999,Dhubri,26.017,89.983,36.0,Northeast Hills,northeast_hills,28.5,1007.8,84,1.15,-0.02,-0.34,1.15,NORMAL,0.95,NONE,5
+42453099999,Sawai Madhopur,25.983,76.367,264.0,Indo-Gangetic Plains,indo_gangetic_plains,23.9,966.9,87,-0.57,-10.47,0.17,10.47,SENSOR_FAULT,0.98,HIGH,5
+42468099999,Orai,25.983,79.5,141.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,996.5,84,0.27,0.44,-0.67,0.67,NORMAL,0.95,NONE,5
+42469099999,Hamirpur,25.95,80.15,109.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,999.2,88,0.54,-0.44,-0.34,0.54,NORMAL,0.95,NONE,5
+43900000635,Mau AWS,25.9417,83.5611,73.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1003.5,94,-0.24,0.01,0.17,0.24,NORMAL,0.95,NONE,5
+42471099999,Fatehpur,25.933,80.833,114.0,Indo-Gangetic Plains,indo_gangetic_plains,25.8,999.5,95,-0.57,0.39,0.0,0.57,NORMAL,0.95,NONE,5
+43900000757,Madhepura AWS,25.92,86.79,41.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1006.6,87,0.2,-0.64,-0.51,0.64,NORMAL,0.95,NONE,5
+42472099999,Pratapgarh,25.9,81.95,99.0,Indo-Gangetic Plains,indo_gangetic_plains,25.8,1001.9,97,-0.58,0.54,0.17,0.58,NORMAL,0.95,NONE,5
+43900000764,Saharsa AWS,25.88,86.6,44.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1006.9,87,0.02,-0.2,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000765,Samastipur AWS,25.86,85.78,52.0,Indo-Gangetic Plains,indo_gangetic_plains,27.5,1006.3,93,0.16,0.32,0.67,0.67,NORMAL,0.95,NONE,5
+43900001002,Karbi Anglong Diphu AWS,25.84,93.43,186.0,Northeast Hills,northeast_hills,27.1,991.1,94,0.25,-0.39,0.34,0.39,NORMAL,0.95,NONE,5
+42488099999,Chapra,25.783,84.733,58.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,1005.7,93,-0.56,0.09,0.67,0.67,NORMAL,0.95,NONE,5
+43900000762,Purnea AWS,25.7771,87.4753,36.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1007.0,88,0.28,-0.73,-0.17,0.73,NORMAL,0.95,NONE,5
+43900000713,Pali AWS,25.77,73.33,214.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.3,986.9,73,0.24,-0.42,-0.07,0.42,NORMAL,0.95,NONE,5
+42435099999,Barmer,25.75,71.383,194.0,Western Arid/Semi-Arid,western_arid_semi_arid,28.0,983.3,70,0.58,-4.41,0.51,4.41,SENSOR_FAULT,0.737,HIGH,5
+42477099999,Jaunpur,25.75,82.683,80.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1003.5,91,-0.03,0.63,-0.51,0.63,NORMAL,0.95,NONE,5
+42484099999,Ballia,25.75,84.167,64.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1005.4,89,-0.22,0.57,-0.67,0.67,NORMAL,0.95,NONE,5
+42523099999,Lumding,25.75,93.183,149.0,Northeast Hills,northeast_hills,27.0,997.4,97,-0.05,1.57,0.81,1.57,NORMAL,0.95,NONE,5
+42512099999,Shillong Arpt / Umroi Arpt / Barapani,25.7,91.983,891.2,Northeast Hills,northeast_hills,22.6,917.7,88,-0.7,-1.61,-0.34,1.61,NORMAL,0.95,NONE,5
+43900000770,Vaishali Hajipur AWS,25.68,85.22,52.0,Indo-Gangetic Plains,indo_gangetic_plains,28.0,1006.1,89,0.16,-0.12,-0.34,0.34,NORMAL,0.95,NONE,5
+43900001005,Shillong Barapani AWS,25.67,91.89,1496.0,Northeast Hills,northeast_hills,21.6,907.7,90,2.47,5.86,0.34,5.86,SENSOR_FAULT,0.823,HIGH,5
+42456099999,Sheopur,25.667,76.683,235.0,Indo-Gangetic Plains,indo_gangetic_plains,24.0,985.8,94,-0.12,0.77,0.84,0.84,NORMAL,0.95,NONE,5
+42460099999,Datia,25.667,78.467,229.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,984.3,85,0.16,-1.11,-0.17,1.11,NORMAL,0.95,NONE,5
+42527099999,Kohima,25.633,94.167,1406.0,Northeast Hills,northeast_hills,19.7,890.4,92,0.51,9.64,-0.17,9.64,SENSOR_FAULT,0.98,HIGH,5
+43900000787,Uttar Dinajpur Raiganj AWS,25.62,88.12,40.0,Northeast Hills,northeast_hills,27.3,1008.2,89,-0.03,0.66,0.17,0.66,NORMAL,0.95,NONE,5
+04249299999,Patna AWS,25.6,85.1667,57.0,Indo-Gangetic Plains,indo_gangetic_plains,28.4,1005.8,93,0.58,0.2,0.17,0.58,NORMAL,0.95,NONE,5
+42492099999,Jai Prakash Narayan Intl Patna,25.591,85.088,51.8,Indo-Gangetic Plains,indo_gangetic_plains,28.5,1006.3,89,0.64,0.12,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000619,Ghazipur AWS,25.584,83.577,67.0,Indo-Gangetic Plains,indo_gangetic_plains,27.6,1004.2,92,0.63,-0.01,-0.34,0.63,NORMAL,0.95,NONE,5
+42487099999,Arrah,25.567,84.667,58.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1005.3,93,0.02,-0.18,0.17,0.18,NORMAL,0.95,NONE,5
+42516099999,Shillong,25.567,91.883,1598.0,Northeast Hills,northeast_hills,19.5,855.6,88,1.26,0.54,-0.34,1.26,NORMAL,0.95,NONE,5
+43900000748,Buxar AWS,25.56,83.98,56.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,1004.5,90,-0.06,-0.69,-0.34,0.69,NORMAL,0.95,NONE,5
+43900000629,Kaushambi AWS,25.5342,81.3917,98.0,Indo-Gangetic Plains,indo_gangetic_plains,25.6,1000.7,98,-0.42,-0.89,0.34,0.89,NORMAL,0.95,NONE,5
+43900000753,Katihar AWS,25.53,87.58,31.0,Indo-Gangetic Plains,indo_gangetic_plains,27.4,1008.2,87,-0.38,-0.42,-0.34,0.42,NORMAL,0.95,NONE,5
+42511099999,Tura,25.517,90.233,370.0,Northeast Hills,northeast_hills,23.4,946.0,95,-2.31,-15.23,1.69,15.23,SENSOR_FAULT,0.98,HIGH,5
+43900000754,Khagaria AWS,25.5,86.48,36.0,Indo-Gangetic Plains,indo_gangetic_plains,28.1,1008.4,86,0.01,0.37,-0.17,0.37,NORMAL,0.95,NONE,5
+42463099999,Jhansi,25.491,78.558,244.1,Indo-Gangetic Plains,indo_gangetic_plains,26.8,985.4,83,0.24,-0.21,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000605,Banda AWS,25.4764,80.3347,123.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,998.2,95,0.18,-0.82,0.0,0.82,NORMAL,0.95,NONE,5
+42473099999,Banda,25.467,80.367,121.0,Indo-Gangetic Plains,indo_gangetic_plains,25.9,998.0,95,0.12,-0.45,0.0,0.45,NORMAL,0.95,NONE,5
+42450099999,Bundi,25.45,75.633,267.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.1,970.3,93,-0.79,-8.01,1.01,8.01,SENSOR_FAULT,0.953,HIGH,5
+04246399999,Jhansi AWS,25.45,78.6167,262.0,Indo-Gangetic Plains,indo_gangetic_plains,26.4,986.6,86,-0.16,1.13,0.17,1.13,NORMAL,0.95,NONE,5
+42479099999,Lal Bahadur Shastri Varanasi Intl,25.45,82.867,81.1,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1003.0,94,-0.19,0.55,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000624,Jhansi Agro-AWS,25.4484,78.5685,285.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,982.8,83,0.46,0.4,-0.51,0.51,NORMAL,0.95,NONE,5
+42475099999,Allahabad Arpt,25.44,81.734,98.2,Indo-Gangetic Plains,indo_gangetic_plains,26.1,1001.2,96,-0.14,-0.25,-0.17,0.25,NORMAL,0.95,NONE,5
+43900001007,Jowai West Jaintia Hills AWS,25.44,92.2,1380.0,Northeast Hills,northeast_hills,19.3,872.5,96,-0.76,-0.27,1.35,1.35,NORMAL,0.95,NONE,5
+43900000638,Prayagraj AWS,25.4358,81.8463,98.0,Indo-Gangetic Plains,indo_gangetic_plains,26.5,1001.6,94,0.34,0.25,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000698,Shivpuri AWS,25.4333,77.65,468.0,Indo-Gangetic Plains,indo_gangetic_plains,24.4,959.8,93,-0.71,-0.01,1.35,1.35,NORMAL,0.95,NONE,5
+43900000746,Begusarai AWS,25.42,86.13,41.0,Indo-Gangetic Plains,indo_gangetic_plains,27.3,1007.0,86,-0.64,-0.0,-0.34,0.64,NORMAL,0.95,NONE,5
+42482099999,Ghazipur,25.4,83.55,67.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,1005.7,93,0.06,1.01,-0.67,1.01,NORMAL,0.95,NONE,5
+43900000608,Bhadohi AWS,25.3942,82.5709,85.0,Indo-Gangetic Plains,indo_gangetic_plains,27.0,1001.6,94,0.03,-0.63,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000759,Munger AWS,25.37,86.47,43.0,Indo-Gangetic Plains,indo_gangetic_plains,28.2,1006.0,90,0.13,-0.9,0.67,0.9,NORMAL,0.95,NONE,5
+42439099999,Jalore,25.35,72.617,168.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.2,992.9,74,-0.14,-0.22,-0.17,0.22,NORMAL,0.95,NONE,5
+42447099999,Bhilwara,25.35,74.633,425.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.7,965.3,79,0.71,-0.26,-1.52,1.52,NORMAL,0.95,NONE,5
+42459099999,Shivpuri,25.333,77.65,464.0,Indo-Gangetic Plains,indo_gangetic_plains,24.6,963.6,94,0.12,2.26,0.17,2.26,NORMAL,0.95,NONE,5
+04247499999,Allahabad/Ghoorpur AWS,25.3093,81.8081,109.0,Indo-Gangetic Plains,indo_gangetic_plains,26.2,1001.6,98,0.14,1.13,0.34,1.13,NORMAL,0.95,NONE,5
+42483099999,Varanasi,25.3,83.017,90.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,1004.6,98,0.39,2.34,0.0,2.34,NORMAL,0.95,NONE,5
+43900001006,Mawsynram AWS,25.3,91.58,1400.0,Northeast Hills,northeast_hills,18.5,861.5,92,-1.07,-2.05,0.67,2.05,NORMAL,0.95,NONE,5
+43900000634,Mahoba AWS,25.2917,79.8722,214.0,Indo-Gangetic Plains,indo_gangetic_plains,25.1,988.7,95,-0.16,-0.03,0.0,0.16,NORMAL,0.95,NONE,5
+43900000651,Varanasi BHU AWS,25.2677,82.9913,81.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,1002.2,98,0.34,-0.34,0.0,0.34,NORMAL,0.95,NONE,5
+42500099999,Purnea,25.267,87.467,38.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1008.1,88,-0.31,0.5,-0.17,0.5,NORMAL,0.95,NONE,5
+43900000610,Chandauli AWS,25.2612,83.2662,76.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1003.3,98,-0.29,-0.2,0.17,0.29,NORMAL,0.95,NONE,5
+43900000747,Bhagalpur Sabour AWS,25.25,87.0,43.0,Indo-Gangetic Plains,indo_gangetic_plains,28.2,1005.7,89,0.05,-1.14,0.0,1.14,NORMAL,0.95,NONE,5
+42515099999,Cherrapunji,25.25,91.733,1313.0,Northeast Hills,northeast_hills,21.9,883.9,78,1.72,0.45,-2.02,2.02,NORMAL,0.95,NONE,5
+43900000743,Arwal AWS,25.24,84.67,67.0,Indo-Gangetic Plains,indo_gangetic_plains,27.6,1003.6,90,-0.01,-0.57,-0.34,0.57,NORMAL,0.95,NONE,5
+42498099999,Bhagalpur,25.233,86.95,49.0,Indo-Gangetic Plains,indo_gangetic_plains,28.1,1006.7,91,-0.02,0.36,0.34,0.36,NORMAL,0.95,NONE,5
+42499099999,Sabaur,25.233,87.067,37.0,Indo-Gangetic Plains,indo_gangetic_plains,28.2,1008.1,89,0.11,0.34,0.0,0.34,NORMAL,0.95,NONE,5
+42506099999,Balurghat,25.217,88.783,26.0,Northeast Hills,northeast_hills,27.5,1008.4,88,0.09,-0.83,-0.17,0.83,NORMAL,0.95,NONE,5
+43900000751,Jehanabad AWS,25.21,84.98,54.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1004.0,92,-0.02,-1.37,0.17,1.37,NORMAL,0.95,NONE,5
+43900000760,Nalanda Bihar Sharif AWS,25.2,85.52,51.0,Indo-Gangetic Plains,indo_gangetic_plains,27.6,1005.2,88,-0.13,0.03,-0.67,0.67,NORMAL,0.95,NONE,5
+42451099999,Kota-In-Rajasthan,25.183,75.85,256.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.0,983.2,89,0.2,0.27,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000611,Chitrakoot AWS,25.1764,80.8711,142.0,Indo-Gangetic Plains,indo_gangetic_plains,24.9,997.3,96,-0.45,0.91,-0.34,0.91,NORMAL,0.95,NONE,5
+43900000756,Lakhisarai AWS,25.17,86.09,50.0,Indo-Gangetic Plains,indo_gangetic_plains,28.0,1006.5,86,0.08,0.39,-0.34,0.39,NORMAL,0.95,NONE,5
+42522099999,Haflong,25.167,93.017,682.0,Northeast Hills,northeast_hills,23.6,940.8,96,-0.45,5.57,1.16,5.57,SENSOR_FAULT,0.806,HIGH,5
+42452099999,Kota,25.16,75.846,273.1,Western Arid/Semi-Arid,western_arid_semi_arid,24.0,981.3,87,0.29,0.33,-0.84,0.84,NORMAL,0.95,NONE,5
+43900000636,Mirzapur AWS,25.146,82.569,80.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,1001.8,98,-0.36,-0.9,0.67,0.9,NORMAL,0.95,NONE,5
+43900000766,Sheikhpura AWS,25.14,85.86,44.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1004.5,88,0.13,-1.44,0.0,1.44,NORMAL,0.95,NONE,5
+43900000703,Baran AWS,25.1,76.5167,262.0,Indo-Gangetic Plains,indo_gangetic_plains,23.6,981.3,93,-0.19,-0.87,0.17,0.87,NORMAL,0.95,NONE,5
+42441099999,Erinpura /Jawai Dam Site,25.083,73.083,295.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.3,978.4,86,-0.91,-0.47,1.69,1.69,NORMAL,0.95,NONE,5
+43900000715,Rajsamand AWS,25.07,73.88,547.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.6,951.5,87,-0.02,-0.2,0.34,0.34,NORMAL,0.95,NONE,5
+42467099999,Nowgong,25.067,79.45,229.0,Indo-Gangetic Plains,indo_gangetic_plains,25.3,987.0,91,0.25,0.0,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000752,Kaimur Bhabua AWS,25.04,83.61,76.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,1002.3,97,-0.47,-0.67,0.84,0.84,NORMAL,0.95,NONE,5
+42503099999,Malda,25.033,88.133,31.0,Northeast Hills,northeast_hills,27.2,1009.2,89,-0.23,0.61,0.17,0.61,NORMAL,0.95,NONE,5
+43900000779,Malda AWS,25.0,88.14,31.0,Northeast Hills,northeast_hills,27.5,1008.3,88,0.08,-0.43,0.0,0.43,NORMAL,0.95,NONE,5
+42567099999,Khajuraho,24.983,79.917,217.0,Indo-Gangetic Plains,indo_gangetic_plains,25.0,988.4,95,-0.07,0.03,-0.17,0.17,NORMAL,0.95,NONE,5
+43900000763,Rohtas Sasaram AWS,24.95,84.02,101.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,999.5,91,0.19,-0.36,-0.17,0.36,NORMAL,0.95,NONE,5
+43920001007,Madhya Pradesh Bundelkhand Agro Block-01 AWS,24.9428,79.3096,320.5,Indo-Gangetic Plains,indo_gangetic_plains,24.9,985.4,93,0.25,6.11,-0.34,6.11,SENSOR_FAULT,0.839,HIGH,5
+42595099999,Jamui,24.933,86.3,82.0,Indo-Gangetic Plains,indo_gangetic_plains,27.7,1002.6,88,-0.06,0.33,0.0,0.33,NORMAL,0.95,NONE,5
+43900000750,Jamui AWS,24.92,86.22,78.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1002.6,89,0.06,0.01,0.17,0.17,NORMAL,0.95,NONE,5
+42552099999,Chambal/Rawat Bhata,24.917,75.583,351.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.4,974.2,90,0.21,1.36,-0.34,1.36,NORMAL,0.95,NONE,5
+42588099999,Dehri,24.917,84.183,107.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,999.7,92,0.08,0.61,0.17,0.61,NORMAL,0.95,NONE,5
+42620099999,Silchar/Kumbhirgram,24.917,92.983,105.0,Northeast Hills,northeast_hills,27.2,999.0,84,-0.57,-0.35,-1.52,1.52,NORMAL,0.95,NONE,5
+43900000682,Chhatarpur AWS,24.9167,79.5833,305.0,Indo-Gangetic Plains,indo_gangetic_plains,24.7,977.6,93,0.16,-0.36,-0.34,0.36,NORMAL,0.95,NONE,5
+43900000716,Sirohi AWS,24.885,72.8625,321.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.1,976.2,84,-0.02,-0.73,-0.07,0.73,NORMAL,0.95,NONE,5
+42546099999,Chittorgarh,24.883,74.633,404.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.0,968.1,87,-0.26,0.0,0.0,0.26,NORMAL,0.95,NONE,5
+43900000761,Nawada AWS,24.88,85.54,80.0,Indo-Gangetic Plains,indo_gangetic_plains,27.2,1001.7,97,-0.28,-0.03,1.52,1.52,NORMAL,0.95,NONE,5
+43900000745,Banka AWS,24.88,86.92,79.0,Indo-Gangetic Plains,indo_gangetic_plains,27.8,1002.6,89,-0.09,-0.33,0.0,0.33,NORMAL,0.95,NONE,5
+43900000701,Khajuraho AWS,24.8318,79.9199,222.0,Indo-Gangetic Plains,indo_gangetic_plains,25.0,988.7,96,-0.04,0.63,0.17,0.63,NORMAL,0.95,NONE,5
+04261999999,Silchar AWS,24.81,92.8,21.3,Northeast Hills,northeast_hills,29.3,1008.1,77,0.99,-1.14,-3.04,3.04,PROBABLE_FAULT,0.76,LOW,5
+42562099999,Tikamgarh,24.767,78.833,345.0,Indo-Gangetic Plains,indo_gangetic_plains,25.0,974.2,97,0.22,-0.54,0.67,0.67,NORMAL,0.95,NONE,5
+42623099999,Imphal,24.76,93.897,774.2,Northeast Hills,northeast_hills,23.2,929.8,93,-0.51,2.73,0.87,2.73,PROBABLE_FAULT,0.76,LOW,5
+43900000744,Aurangabad Bihar AWS,24.75,84.37,108.0,Indo-Gangetic Plains,indo_gangetic_plains,27.1,999.2,91,-0.08,-0.26,0.0,0.26,NORMAL,0.95,NONE,5
+42619099999,Silchar,24.75,92.8,29.0,Northeast Hills,northeast_hills,29.3,1009.0,77,1.23,0.65,-2.87,2.87,PROBABLE_FAULT,0.76,LOW,5
+42591099999,Gaya,24.744,84.951,115.8,Indo-Gangetic Plains,indo_gangetic_plains,27.3,999.4,91,0.21,1.07,0.0,1.07,NORMAL,0.95,NONE,5
+42570099999,Panna,24.717,80.167,354.0,Indo-Gangetic Plains,indo_gangetic_plains,23.9,968.3,97,-0.2,-3.12,0.17,3.12,PROBABLE_FAULT,0.76,LOW,5
+74924999999,Hailakandi Northwest,24.717,92.533,25.0,Northeast Hills,northeast_hills,28.4,1008.4,95,0.45,-0.27,1.06,1.06,NORMAL,0.95,NONE,5
+43900000693,Panna AWS,24.7167,80.2,433.0,Indo-Gangetic Plains,indo_gangetic_plains,23.9,966.7,97,0.26,2.26,0.17,2.26,NORMAL,0.95,NONE,5
+43900000632,Lalitpur AWS,24.6865,78.412,394.0,Indo-Gangetic Plains,indo_gangetic_plains,24.7,971.9,96,-0.71,1.97,1.69,1.97,NORMAL,0.95,NONE,5
+43900000648,Sonbhadra AWS,24.6853,83.0667,285.0,Indo-Gangetic Plains,indo_gangetic_plains,25.4,976.7,95,-0.03,-1.34,-0.51,1.34,NORMAL,0.95,NONE,5
+42559099999,Guna,24.65,77.317,478.0,Indo-Gangetic Plains,indo_gangetic_plains,22.6,958.7,96,-0.56,0.01,0.51,0.56,NORMAL,0.95,NONE,5
+42542099999,Udaipur / Maharana Pratap,24.618,73.896,513.3,Western Arid/Semi-Arid,western_arid_semi_arid,23.6,955.7,85,0.26,0.18,-0.34,0.34,NORMAL,0.95,NONE,5
+42540099999,Mount Abu,24.6,72.717,1195.0,Western Arid/Semi-Arid,western_arid_semi_arid,20.8,882.2,76,0.89,2.54,-0.75,2.54,NORMAL,0.95,NONE,5
+74923999999,Sherghati Northeast,24.6,84.883,149.0,Indo-Gangetic Plains,indo_gangetic_plains,26.8,996.4,90,-0.23,1.7,-0.17,1.7,NORMAL,0.95,NONE,5
+43900000709,Jhalawar AWS,24.5967,76.165,312.0,Indo-Gangetic Plains,indo_gangetic_plains,23.4,976.3,92,-0.2,-0.33,0.34,0.34,NORMAL,0.95,NONE,5
+42543099999,Udaipur,24.583,73.7,582.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.4,949.0,85,0.21,1.23,-0.34,1.23,NORMAL,0.95,NONE,5
+43900000677,Ashoknagar AWS,24.5756,77.7289,507.0,Indo-Gangetic Plains,indo_gangetic_plains,23.2,956.1,96,-0.65,0.31,0.0,0.65,NORMAL,0.95,NONE,5
+42571099999,Satna,24.567,80.833,317.0,Indo-Gangetic Plains,indo_gangetic_plains,24.3,977.2,100,0.13,0.26,0.51,0.51,NORMAL,0.95,NONE,5
+42555099999,Jhalawar,24.533,76.167,321.0,Indo-Gangetic Plains,indo_gangetic_plains,23.3,976.2,92,-0.23,0.37,0.34,0.37,NORMAL,0.95,NONE,5
+42574099999,Rewa,24.533,81.3,299.0,Indo-Gangetic Plains,indo_gangetic_plains,24.4,978.0,98,-0.1,-0.59,0.0,0.59,NORMAL,0.95,NONE,5
+42547099999,Nimach,24.467,74.9,496.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.5,958.6,88,0.2,0.94,0.0,0.94,NORMAL,0.95,NONE,5
+42577099999,Sidhi,24.417,81.867,272.0,Indo-Gangetic Plains,indo_gangetic_plains,24.7,980.9,98,-0.15,-0.13,0.0,0.15,NORMAL,0.95,NONE,5
+42618099999,Kailashahar,24.317,92.0,30.0,Northeast Hills,northeast_hills,27.6,1008.2,94,-0.59,-0.31,-0.13,0.59,NORMAL,0.95,NONE,5
+42599099999,Dumka,24.267,87.25,149.0,Indo-Gangetic Plains,indo_gangetic_plains,26.5,994.8,97,-0.08,-0.29,0.17,0.29,NORMAL,0.95,NONE,5
+42539099999,Deesa,24.2,72.2,136.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.1,994.9,95,0.22,-0.96,-0.34,0.96,NORMAL,0.95,NONE,5
+43900000699,Singrauli AWS,24.2,82.6667,376.0,Indo-Gangetic Plains,indo_gangetic_plains,24.2,968.2,99,-0.51,0.31,0.17,0.51,NORMAL,0.95,NONE,5
+43900000720,Banaskantha Palanpur AWS,24.1717,72.4344,252.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.5,986.3,97,0.35,3.38,0.34,3.38,PROBABLE_FAULT,0.76,LOW,5
+42603099999,Berhampore,24.133,88.267,19.0,Northeast Hills,northeast_hills,27.8,1009.7,93,0.2,0.53,-0.51,0.53,NORMAL,0.95,NONE,5
+43900000780,Murshidabad Berhampore AWS,24.1,88.25,18.0,Northeast Hills,northeast_hills,27.7,1009.0,94,0.11,-0.5,-0.34,0.5,NORMAL,0.95,NONE,5
+43900000691,Mandsaur AWS,24.0722,75.0689,428.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.5,963.0,90,-0.18,-1.49,0.34,1.49,NORMAL,0.95,NONE,5
+42587099999,Daltonganj,24.05,84.067,221.0,Indo-Gangetic Plains,indo_gangetic_plains,26.6,987.1,92,0.15,0.56,0.17,0.56,NORMAL,0.95,NONE,5
+43900000714,Pratapgarh Raj AWS,24.03,74.78,491.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.3,956.7,88,0.18,-0.93,0.0,0.93,NORMAL,0.95,NONE,5
+42557099999,Rajgarh,24.0,76.717,382.0,Indo-Gangetic Plains,indo_gangetic_plains,23.2,967.5,91,-0.77,-1.12,-0.17,1.12,NORMAL,0.95,NONE,5
+42699099999,Hazaribagh,23.983,85.367,611.0,Central Plateau,central_plateau,23.7,945.2,93,-0.04,0.52,-0.34,0.52,NORMAL,0.95,NONE,5
+43900000775,Birbhum Suri AWS,23.91,87.53,71.0,Central Plateau,central_plateau,27.3,1002.6,96,0.08,-1.42,-0.17,1.42,NORMAL,0.95,NONE,5
+42724099999,Agartala,23.887,91.24,14.0,Northeast Hills,northeast_hills,28.4,1009.3,92,0.51,-1.17,-1.35,1.35,NORMAL,0.95,NONE,5
+43900000735,Patan AWS,23.85,72.12,76.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,1001.4,98,-0.03,-0.4,0.34,0.4,NORMAL,0.95,NONE,5
+42671099999,Sagar,23.85,78.75,551.0,Central Plateau,central_plateau,23.5,954.4,100,-0.14,2.53,0.67,2.53,NORMAL,0.95,NONE,5
+42726099999,Lengpui,23.841,92.62,426.1,Northeast Hills,northeast_hills,24.7,964.3,100,-0.39,1.24,0.67,1.24,NORMAL,0.95,NONE,5
+43900000690,Katni AWS,23.8344,80.3956,304.0,Central Plateau,central_plateau,24.2,969.1,97,-0.16,-6.48,0.0,6.48,SENSOR_FAULT,0.861,HIGH,5
+43900000707,Dungarpur AWS,23.8333,73.7167,279.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.2,975.7,93,0.33,-2.47,-0.84,2.47,NORMAL,0.95,NONE,5
+42651099999,Idar,23.833,73.033,219.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.2,988.1,98,-0.09,1.13,0.51,1.13,NORMAL,0.95,NONE,5
+42652099999,Dungarpur,23.833,73.667,291.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.3,979.1,87,0.48,-0.12,-1.85,1.85,NORMAL,0.95,NONE,5
+42674099999,Damoh,23.833,79.45,371.0,Central Plateau,central_plateau,24.2,970.1,97,-0.59,-0.32,0.0,0.59,NORMAL,0.95,NONE,5
+42703099999,Dhanbad,23.783,86.433,257.0,Central Plateau,central_plateau,26.2,986.4,92,0.75,2.56,-1.01,2.56,NORMAL,0.95,NONE,5
+04272799999,Aijal AWS,23.7333,92.75,951.0,Northeast Hills,northeast_hills,21.7,906.8,100,-0.04,2.23,0.67,2.23,NORMAL,0.95,NONE,5
+42727099999,Aijal,23.733,92.717,1097.0,Northeast Hills,northeast_hills,20.8,893.3,100,0.04,3.82,0.67,3.82,SENSOR_FAULT,0.701,HIGH,5
+74924399999,Pandaveswar Sw,23.717,87.283,87.0,Central Plateau,central_plateau,27.0,1002.8,96,0.29,0.46,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000674,Agar Malwa AWS,23.7144,76.0156,505.0,Central Plateau,central_plateau,23.4,956.3,92,0.07,1.02,-0.17,1.02,NORMAL,0.95,NONE,5
+43900000782,Paschim Bardhaman Asansol AWS,23.68,86.98,97.0,Central Plateau,central_plateau,26.5,997.8,98,-0.24,-2.42,-0.17,2.42,NORMAL,0.95,NONE,5
+43900000789,Shantiniketan AWS,23.68,87.69,56.0,Central Plateau,central_plateau,27.3,1004.5,97,0.21,-0.57,-0.17,0.57,NORMAL,0.95,NONE,5
+42708099999,Shanti Niketan,23.65,87.7,59.0,Central Plateau,central_plateau,27.3,1006.3,97,0.23,1.31,-0.17,1.31,NORMAL,0.95,NONE,5
+74924099999,Malandighi Northwest,23.633,87.35,94.0,Central Plateau,central_plateau,26.8,1002.5,99,-0.13,1.13,0.34,1.13,NORMAL,0.95,NONE,5
+74923899999,Raniganj East,23.617,87.2,86.0,Central Plateau,central_plateau,27.3,1002.7,95,0.54,0.41,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000730,Mehsana AWS,23.6,72.4,81.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,1000.5,95,0.13,-1.02,-0.34,1.02,NORMAL,0.95,NONE,5
+43900000737,Sabarkantha Himatnagar AWS,23.6,72.95,127.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.8,995.5,96,0.04,-0.7,-0.34,0.7,NORMAL,0.95,NONE,5
+42655099999,Banswara,23.55,74.45,220.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.5,986.5,86,-0.28,-0.61,-1.18,1.18,NORMAL,0.95,NONE,5
+42669099999,Vidisha,23.533,77.817,430.0,Central Plateau,central_plateau,23.1,964.8,96,0.16,0.07,0.0,0.16,NORMAL,0.95,NONE,5
+42679099999,Umaria,23.533,80.883,459.0,Central Plateau,central_plateau,23.0,963.3,97,-0.16,1.1,0.0,1.1,NORMAL,0.95,NONE,5
+43900000700,Umaria AWS,23.5244,80.8356,448.0,Central Plateau,central_plateau,23.0,960.9,96,-0.22,-1.08,-0.17,1.08,NORMAL,0.95,NONE,5
+43900000783,Paschim Bardhaman Durgapur AWS,23.52,87.31,65.0,Central Plateau,central_plateau,26.8,1000.0,99,-0.16,-3.51,0.0,3.51,PROBABLE_FAULT,0.76,LOW,5
+42704099999,Panagarh,23.467,87.433,74.0,Central Plateau,central_plateau,26.5,1003.2,99,-0.49,-0.77,0.34,0.77,NORMAL,0.95,NONE,5
+74923499999,Guskhara Southeast,23.467,87.783,41.0,Central Plateau,central_plateau,27.1,1006.5,98,0.33,-0.06,0.0,0.33,NORMAL,0.95,NONE,5
+43900000719,Aravalli Modasa AWS,23.4633,73.3,197.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.3,994.8,99,-0.04,1.15,0.51,1.15,NORMAL,0.95,NONE,5
+42665099999,Shajapur,23.433,76.317,446.0,Central Plateau,central_plateau,23.7,961.4,93,-0.04,-0.16,0.17,0.17,NORMAL,0.95,NONE,5
+42700099999,Ranchi,23.433,85.4,647.0,Central Plateau,central_plateau,22.9,945.9,95,0.1,2.2,0.0,2.2,NORMAL,0.95,NONE,5
+43900000697,Shajapur AWS,23.4267,76.2778,453.0,Central Plateau,central_plateau,23.7,962.1,93,0.04,0.95,0.17,0.95,NORMAL,0.95,NONE,5
+42711099999,Krishnanagar,23.4,88.517,15.0,Northeast Hills,northeast_hills,27.0,1010.1,96,0.34,0.27,-0.17,0.34,NORMAL,0.95,NONE,5
+42706099999,Bankura,23.383,87.083,100.0,Central Plateau,central_plateau,25.9,999.9,100,-0.49,0.24,0.34,0.49,NORMAL,0.95,NONE,5
+42705099999,Purulia,23.333,86.417,255.0,Central Plateau,central_plateau,25.3,985.6,99,-0.02,3.06,0.17,3.06,PROBABLE_FAULT,0.76,LOW,5
+43900000694,Raisen AWS,23.33,77.78,456.0,Central Plateau,central_plateau,22.5,962.2,98,-0.29,0.76,0.34,0.76,NORMAL,0.95,NONE,5
+43900000784,Purulia AWS,23.33,86.36,228.0,Central Plateau,central_plateau,25.5,983.5,95,0.02,-0.95,-0.67,0.95,NORMAL,0.95,NONE,5
+42661099999,Ratlam,23.317,75.05,486.0,Western Arid/Semi-Arid,western_arid_semi_arid,21.6,958.7,96,-1.29,1.05,0.84,1.29,NORMAL,0.95,NONE,5
+42672099999,Raisen,23.317,77.833,440.0,Central Plateau,central_plateau,22.5,962.9,98,-0.38,-0.51,0.34,0.51,NORMAL,0.95,NONE,5
+42701099999,Birsa Munda,23.314,85.322,654.7,Central Plateau,central_plateau,23.0,941.9,95,0.38,1.18,-0.51,1.18,NORMAL,0.95,NONE,5
+42634099999,Bhuj,23.288,69.67,81.7,Western Arid/Semi-Arid,western_arid_semi_arid,25.6,1002.9,92,-0.72,-0.23,0.51,0.72,NORMAL,0.95,NONE,5
+42667099999,Bhopal / Raja Bhoj,23.287,77.337,524.0,Central Plateau,central_plateau,22.3,954.3,96,-0.09,0.2,0.0,0.2,NORMAL,0.95,NONE,5
+43900000696,Shahdol AWS,23.2833,81.35,464.0,Central Plateau,central_plateau,23.0,961.7,98,-0.14,0.03,0.17,0.17,NORMAL,0.95,NONE,5
+42631099999,Naliya,23.25,68.85,21.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.1,1009.2,89,-0.26,-0.87,0.0,0.87,NORMAL,0.95,NONE,5
+04263499999,Bhuj-Rudramata AWS,23.25,69.8,117.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.5,1000.4,91,-0.61,1.14,0.34,1.14,NORMAL,0.95,NONE,5
+43900000727,Kutch Bhuj AWS,23.242,69.6669,110.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,999.9,93,-0.91,0.24,0.67,0.91,NORMAL,0.95,NONE,5
+42654099999,Gandhinagar,23.233,72.717,82.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.7,1001.9,97,-0.29,-0.27,0.17,0.29,NORMAL,0.95,NONE,5
+42709099999,Burdwan,23.233,87.85,30.0,Central Plateau,central_plateau,26.5,1007.9,98,-0.57,0.06,0.0,0.57,NORMAL,0.95,NONE,5
+43900000774,Bankura AWS,23.23,87.07,78.0,Central Plateau,central_plateau,26.6,1001.9,98,0.11,-0.56,-0.17,0.56,NORMAL,0.95,NONE,5
+04270999999,Burdwan AWS,23.2167,87.8833,24.1,Central Plateau,central_plateau,26.5,1008.1,98,-0.6,-0.34,0.0,0.6,NORMAL,0.95,NONE,5
+43900000725,Gandhinagar AWS,23.2156,72.6369,81.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.9,1002.7,98,-0.12,0.46,0.34,0.46,NORMAL,0.95,NONE,5
+43900000695,Sehore AWS,23.2,77.0833,502.0,Central Plateau,central_plateau,22.6,956.5,94,0.13,0.44,-0.34,0.44,NORMAL,0.95,NONE,5
+04267599999,Jabalpur AWS,23.2,79.95,398.0,Central Plateau,central_plateau,24.8,967.6,95,0.51,0.09,-0.34,0.51,NORMAL,0.95,NONE,5
+42662099999,Ujjain,23.183,75.783,489.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.2,956.8,92,-0.26,-0.71,-0.17,0.71,NORMAL,0.95,NONE,5
+42675099999,Jabalpur,23.178,80.052,495.0,Central Plateau,central_plateau,24.3,957.8,97,0.62,0.95,0.17,0.95,NORMAL,0.95,NONE,5
+42693099999,Ambikapur,23.167,83.25,611.0,Central Plateau,central_plateau,23.3,944.1,94,-0.12,1.21,0.0,1.21,NORMAL,0.95,NONE,5
+42638099999,Kandla Aerodrome,23.15,70.117,29.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.8,1008.5,89,0.61,-0.7,-0.34,0.7,NORMAL,0.95,NONE,5
+04263999999,New Kandla AWS,23.15,70.2167,22.5,Western Arid/Semi-Arid,western_arid_semi_arid,27.6,1011.5,87,1.25,1.02,-0.67,1.25,NORMAL,0.95,NONE,5
+43900000729,Mahisagar Lunawada AWS,23.13,73.62,137.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.7,1000.3,98,-0.36,0.47,0.51,0.51,NORMAL,0.95,NONE,5
+43900000676,Anuppur AWS,23.1042,81.6886,505.0,Central Plateau,central_plateau,22.9,957.0,97,0.14,-0.02,-0.17,0.17,NORMAL,0.95,NONE,5
+42647099999,Ahmedabad / Sardar Vallabhbhai Patel Intl,23.077,72.635,57.6,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,1005.2,96,0.12,-0.08,-0.17,0.17,NORMAL,0.95,NONE,5
+42639099999,New Kandla,23.0,70.217,14.0,Western Arid/Semi-Arid,western_arid_semi_arid,27.2,1011.0,89,0.67,-0.22,-0.34,0.67,NORMAL,0.95,NONE,5
+42714099999,Bagati,22.983,88.367,12.0,Northeast Hills,northeast_hills,27.0,1010.6,96,0.15,0.15,0.0,0.15,NORMAL,0.95,NONE,5
+43900000684,Dewas AWS,22.9676,76.0534,535.0,Central Plateau,central_plateau,23.3,951.4,93,0.11,-0.85,0.0,0.85,NORMAL,0.95,NONE,5
+74924299999,Bankadaha West,22.967,87.3,79.0,Central Plateau,central_plateau,26.0,1002.7,100,-0.39,0.21,0.17,0.39,NORMAL,0.95,NONE,5
+42770099999,Narsinghpur,22.95,79.183,356.0,Central Plateau,central_plateau,25.0,972.3,94,0.39,-0.5,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000685,Dindori AWS,22.95,81.0833,640.0,Central Plateau,central_plateau,22.2,938.4,98,0.29,-2.28,0.17,2.28,NORMAL,0.95,NONE,5
+43900000776,Hooghly Chinsurah AWS,22.9,88.4,15.0,Northeast Hills,northeast_hills,26.8,1010.1,97,-0.15,0.05,0.17,0.17,NORMAL,0.95,NONE,5
+42790099999,Jashpurnagar,22.883,84.133,771.0,Central Plateau,central_plateau,22.4,928.0,94,0.12,1.78,-0.17,1.78,NORMAL,0.95,NONE,5
+42751099999,Dohad,22.833,74.267,333.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.1,978.7,95,0.67,3.38,-0.17,3.38,PROBABLE_FAULT,0.76,LOW,5
+43900000731,Morbi AWS,22.82,70.83,54.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.6,1007.0,96,-0.87,0.53,1.18,1.18,NORMAL,0.95,NONE,5
+42729099999,Mandvi,22.817,69.267,9.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.6,1012.1,88,0.1,0.66,-0.17,0.66,NORMAL,0.95,NONE,5
+42799099999,Jamshedpur,22.817,86.183,129.0,Central Plateau,central_plateau,25.8,995.6,99,-0.14,-2.12,0.0,2.12,NORMAL,0.95,NONE,5
+42798099999,Jamshedpur,22.813,86.169,153.9,Central Plateau,central_plateau,25.8,995.9,99,0.14,0.12,0.0,0.14,NORMAL,0.95,NONE,5
+43900000734,Panchmahal Godhra AWS,22.77,73.62,119.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.7,998.5,97,0.03,0.68,1.01,1.01,NORMAL,0.95,NONE,5
+43900000689,Jhabua AWS,22.7694,74.5956,318.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.2,976.1,94,-0.37,-0.5,-0.17,0.5,NORMAL,0.95,NONE,5
+42763099999,Hoshangabad,22.767,77.767,302.0,Central Plateau,central_plateau,24.0,978.7,96,0.22,-0.66,-0.34,0.66,NORMAL,0.95,NONE,5
+42779099999,Pendra Road,22.767,81.9,625.0,Central Plateau,central_plateau,22.7,944.5,99,0.34,2.3,0.34,2.3,NORMAL,0.95,NONE,5
+42808199999,Calcutta/Barracks,22.767,88.367,7.0,Northeast Hills,northeast_hills,26.6,1010.5,96,-0.36,-0.38,0.0,0.38,NORMAL,0.95,NONE,5
+43900000688,Hoshangabad Narmadapuram AWS,22.7519,77.7289,278.0,Central Plateau,central_plateau,24.0,977.9,96,0.09,-3.07,-0.34,3.07,PROBABLE_FAULT,0.76,LOW,5
+42740099999,Surendranagar,22.733,71.6,74.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.3,1002.2,95,-0.13,-1.37,0.0,1.37,NORMAL,0.95,NONE,5
+42754099999,Devi Ahilyabai Holkar,22.722,75.801,563.9,Western Arid/Semi-Arid,western_arid_semi_arid,23.1,949.4,95,0.14,0.72,0.34,0.72,NORMAL,0.95,NONE,5
+43900000738,Surendranagar AWS,22.72,71.63,98.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.3,1004.5,95,0.13,2.65,0.0,2.65,PROBABLE_FAULT,0.76,LOW,5
+43900000781,North 24 Parganas Barasat AWS,22.72,88.48,11.0,Northeast Hills,northeast_hills,26.5,1010.5,98,-0.47,0.09,0.34,0.47,NORMAL,0.95,NONE,5
+43900000728,Kheda Nadiad AWS,22.69,72.86,41.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.3,1007.3,97,0.11,0.16,1.01,1.01,NORMAL,0.95,NONE,5
+42809099999,Netaji Subhash Chandra Bose Intl,22.655,88.447,4.9,Northeast Hills,northeast_hills,27.1,1011.1,96,-0.29,-0.0,0.51,0.51,NORMAL,0.95,NONE,5
+42810099999,Basirhat,22.65,88.867,4.0,Northeast Hills,northeast_hills,26.8,1010.6,98,-0.26,-0.4,0.34,0.4,NORMAL,0.95,NONE,5
+42752099999,Dhar,22.6,75.3,583.0,Western Arid/Semi-Arid,western_arid_semi_arid,22.5,950.2,91,0.28,2.54,-0.51,2.54,NORMAL,0.95,NONE,5
+43900000777,Howrah AWS,22.59,88.31,12.0,Northeast Hills,northeast_hills,27.4,1010.9,93,0.29,0.44,-0.51,0.51,NORMAL,0.95,NONE,5
+42776099999,Mandla,22.583,80.367,443.0,Central Plateau,central_plateau,23.9,963.2,96,0.09,0.4,0.0,0.4,NORMAL,0.95,NONE,5
+42744099999,Vallabh Vidyanagar,22.567,72.933,44.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.0,1007.2,99,-0.14,0.34,1.35,1.35,NORMAL,0.95,NONE,5
+42795099999,Chaibasa,22.55,85.817,226.0,Central Plateau,central_plateau,24.4,987.1,98,-0.79,-0.21,-0.17,0.79,NORMAL,0.95,NONE,5
+04280799999,Kolkata/Alipore AWS,22.5333,88.3333,6.4,Northeast Hills,northeast_hills,27.5,1010.1,93,0.35,-0.55,-0.51,0.55,NORMAL,0.95,NONE,5
+42807099999,Behala,22.505,88.293,2.4,Northeast Hills,northeast_hills,27.5,1011.4,93,0.32,0.0,-0.51,0.51,NORMAL,0.95,NONE,5
+42805099999,Uluberia,22.5,87.95,5.0,Central Plateau,central_plateau,27.2,1010.9,97,-0.21,-0.23,0.67,0.67,NORMAL,0.95,NONE,5
+42730099999,Okha,22.483,69.117,7.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.5,1012.2,89,-0.07,0.57,0.17,0.57,NORMAL,0.95,NONE,5
+43900000741,Okha Coastal AWS,22.47,69.07,5.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.6,1011.6,88,0.05,-0.44,0.0,0.44,NORMAL,0.95,NONE,5
+42767099999,Pachmarhi,22.467,78.433,1075.0,Central Plateau,central_plateau,19.4,897.5,100,-0.33,1.26,0.67,1.26,NORMAL,0.95,NONE,5
+42734099999,Jamnagar,22.45,70.083,14.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.4,1010.6,91,-0.42,-0.55,0.34,0.55,NORMAL,0.95,NONE,5
+74923599999,Chakulia,22.45,86.7,131.0,Central Plateau,central_plateau,25.5,998.5,99,-0.12,1.48,0.0,1.48,NORMAL,0.95,NONE,5
+43900000778,Jhargram AWS,22.45,86.98,81.0,Central Plateau,central_plateau,25.9,1003.0,100,-0.06,0.33,0.17,0.33,NORMAL,0.95,NONE,5
+42803099999,Midnapore,22.417,87.317,45.0,Central Plateau,central_plateau,26.2,1006.8,99,0.06,-0.33,-0.17,0.33,NORMAL,0.95,NONE,5
+42731099999,Dwarka,22.367,69.083,11.0,Western Arid/Semi-Arid,western_arid_semi_arid,26.6,1010.7,88,0.08,-0.56,0.0,0.56,NORMAL,0.95,NONE,5
+43900000687,Harda AWS,22.3397,77.0944,296.0,Central Plateau,central_plateau,24.6,979.1,92,0.47,-0.2,-0.67,0.67,NORMAL,0.95,NONE,5
+42748099999,Baroda Aerodrome,22.333,73.267,37.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,1006.5,91,-0.01,-0.79,-0.84,0.84,NORMAL,0.95,NONE,5
+42802099999,Kalaikunda,22.333,87.217,62.0,Central Plateau,central_plateau,26.2,1004.5,100,0.15,-0.51,0.17,0.51,NORMAL,0.95,NONE,5
+43900000740,Vadodara Airport AWS,22.3308,73.2263,39.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,1007.3,91,0.01,-0.09,-0.84,0.84,NORMAL,0.95,NONE,5
+43900000785,South 24 Parganas Canning AWS,22.31,88.66,4.0,Northeast Hills,northeast_hills,27.3,1010.8,95,0.08,-0.27,-0.17,0.27,NORMAL,0.95,NONE,5
+42737099999,Rajkot,22.309,70.78,134.4,Western Arid/Semi-Arid,western_arid_semi_arid,25.1,997.1,92,0.49,0.48,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000675,Alirajpur AWS,22.3031,74.3542,288.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.7,978.9,96,-0.11,-0.12,0.34,0.34,NORMAL,0.95,NONE,5
+42747099999,Baroda,22.3,73.25,34.0,Western Arid/Semi-Arid,western_arid_semi_arid,25.2,1007.6,91,-0.03,-0.29,-0.84,0.84,NORMAL,0.95,NONE,5
+43900000723,Chhota Udaipur AWS,22.3,74.01,114.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.8,995.0,97,-0.89,-2.87,0.17,2.87,PROBABLE_FAULT,0.76,LOW,5
+74924199999,Kharagpur Southeast,22.3,87.333,41.0,Central Plateau,central_plateau,26.1,1007.9,99,-0.11,0.42,0.0,0.42,NORMAL,0.95,NONE,5
+42753099999,Alirajpur,22.283,74.4,293.0,Western Arid/Semi-Arid,western_arid_semi_arid,23.8,978.5,94,0.11,0.12,-0.17,0.17,NORMAL,0.95,NONE,5
+43900000810,Sundargarh Rourkela AWS,22.25,84.88,219.0,Central Plateau,central_plateau,25.5,988.5,96,-0.45,0.64,0.17,0.64,NORMAL,0.95,NONE,5
+42812099999,Canning,22.25,88.667,4.0,Northeast Hills,northeast_hills,27.2,1011.2,96,-0.08,0.27,0.17,0.27,NORMAL,0.95,NONE,5
+04273199999,Dwarka AWS,22.2416,68.97,11.3,Western Arid/Semi-Arid,western_arid_semi_arid,26.5,1011.5,86,-0.05,0.42,-0.34,0.42,NORMAL,0.95,NONE,5
+42793099999,Rourkela,22.217,84.883,196.0,Central Plateau,central_plateau,25.5,989.7,96,-0.58,-0.84,0.17,0.84,NORMAL,0.95,NONE,5
+42811099999,Diamond Harbour,22.183,88.2,7.0,Northeast Hills,northeast_hills,26.8,1011.0,99,-0.53,0.1,1.01,1.01,NORMAL,0.95,NONE,5
+43900000722,Botad AWS,22.17,71.66,70.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.7,1001.5,93,-1.08,-1.42,0.34,1.42,NORMAL,0.95,NONE,5
+42792099999,Sundargarh,22.117,84.033,240.0,Central Plateau,central_plateau,25.9,985.8,94,0.29,0.7,-0.17,0.7,NORMAL,0.95,NONE,5
+42768099999,Chhindwara,22.1,79.0,685.0,Central Plateau,central_plateau,22.4,939.2,98,-0.11,2.33,0.17,2.33,NORMAL,0.95,NONE,5
+04278299999,Bilaspur (42782-0) AWS,22.1,82.1667,275.0,Central Plateau,central_plateau,24.7,981.1,95,-0.34,0.21,-0.17,0.34,NORMAL,0.95,NONE,5
+42771099999,Seoni,22.083,79.55,619.0,Central Plateau,central_plateau,22.8,943.1,97,-0.14,0.16,0.17,0.17,NORMAL,0.95,NONE,5
+42206099999,Haldia,22.067,88.067,11.0,Northeast Hills,northeast_hills,27.1,1011.1,94,-0.05,0.62,0.34,0.62,NORMAL,0.95,NONE,5
+43900000683,Chhindwara AWS,22.0574,78.9382,675.0,Central Plateau,central_plateau,22.6,937.2,96,0.11,0.23,-0.17,0.23,NORMAL,0.95,NONE,5
+43900000679,Barwani AWS,22.0353,74.9031,178.0,Western Arid/Semi-Arid,western_arid_semi_arid,24.8,991.3,89,0.21,-0.41,-0.84,0.84,NORMAL,0.95,NONE,5
+42783099999,Champa,22.033,82.7,245.0,Central Plateau,central_plateau,25.3,983.3,97,0.11,-0.66,0.17,0.66,NORMAL,0.95,NONE,5
+42715099999,Malanjkhand,22.0,80.7,581.0,Central Plateau,central_plateau,22.9,947.0,96,-0.39,-0.08,0.0,0.39,NORMAL,0.95,NONE,5
+42782099999,Bilaspur,21.988,82.111,274.0,Central Plateau,central_plateau,24.6,980.9,96,-0.43,-0.21,0.0,0.43,NORMAL,0.95,NONE,5
+42894099999,Baripada,21.933,86.767,54.0,Central Plateau,central_plateau,26.2,1005.0,96,0.1,-0.82,-0.51,0.82,NORMAL,0.95,NONE,5
+43900000804,Mayurbhanj Baripada AWS,21.93,86.72,36.0,Central Plateau,central_plateau,26.2,1007.5,96,-0.1,-0.58,-0.51,0.58,NORMAL,0.95,NONE,5
+04288699999,Jharsiguda AWS,21.9167,84.0833,230.0,Central Plateau,central_plateau,26.0,985.0,95,0.32,-0.74,0.0,0.74,NORMAL,0.95,NONE,5
+42886099999,Jharsuguda / Veer Surendra Sai,21.914,84.05,228.9,Central Plateau,central_plateau,26.0,986.4,95,0.31,0.23,0.0,0.31,NORMAL,0.95,NONE,5
+43900000680,Betul AWS,21.9014,77.9028,658.0,Central Plateau,central_plateau,22.5,941.3,97,0.36,1.24,0.17,1.24,NORMAL,0.95,NONE,5
+42884099999,Raigarh,21.883,83.383,220.0,Central Plateau,central_plateau,25.5,987.1,98,-0.45,-0.11,0.51,0.51,NORMAL,0.95,NONE,5
+43900000732,Narmada Rajpipla AWS,21.87,73.5,46.0,Central Plateau,central_plateau,25.3,1006.6,96,0.13,0.45,0.84,0.84,NORMAL,0.95,NONE,5
+42860099999,Betul,21.867,77.933,653.0,Central Plateau,central_plateau,22.1,940.4,99,-0.04,0.37,0.51,0.51,NORMAL,0.95,NONE,5
+43900000799,Jharsuguda AWS,21.85,84.02,218.0,Central Plateau,central_plateau,25.7,987.5,97,-0.29,0.11,0.34,0.34,NORMAL,0.95,NONE,5
+42855099999,Khandwa,21.833,76.367,318.0,Central Plateau,central_plateau,24.8,976.6,87,0.2,0.9,-0.4,0.9,NORMAL,0.95,NONE,5
+42849099999,Khargone,21.817,75.617,251.0,Central Plateau,central_plateau,25.0,982.8,83,-0.16,0.03,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000678,Balaghat AWS,21.8054,80.1847,288.0,Central Plateau,central_plateau,24.8,978.1,94,-0.13,-1.75,-0.34,1.75,NORMAL,0.95,NONE,5
+42900099999,Contai,21.783,87.75,11.0,Central Plateau,central_plateau,26.7,1011.2,92,-0.34,0.78,-0.34,0.78,NORMAL,0.95,NONE,5
+43900000721,Bhavnagar AWS,21.7645,72.1519,24.0,Central Plateau,central_plateau,26.4,1009.1,91,0.29,0.2,-0.34,0.34,NORMAL,0.95,NONE,5
+42080199999,Bhavnagar,21.752,72.185,13.4,Central Plateau,central_plateau,26.4,1010.8,91,0.23,0.49,-0.34,0.49,NORMAL,0.95,NONE,5
+42838099999,Bhaunagar,21.75,72.2,5.0,Central Plateau,central_plateau,26.4,1011.1,91,0.19,0.01,-0.34,0.34,NORMAL,0.95,NONE,5
+42841099999,Broach,21.733,73.0,17.0,Central Plateau,central_plateau,26.1,1009.4,95,0.64,-0.16,0.67,0.67,NORMAL,0.95,NONE,5
+43920001006,Madhya Pradesh Nimar Valley Block-01 AWS,21.7207,75.8157,280.5,Central Plateau,central_plateau,25.0,978.5,83,-0.04,-0.49,0.0,0.49,NORMAL,0.95,NONE,5
+42830099999,Porbandar,21.65,69.667,5.0,Central Plateau,central_plateau,25.8,1012.2,91,-0.16,0.35,0.0,0.35,NORMAL,0.95,NONE,5
+42903099999,Sagar Island,21.65,88.05,3.0,Northeast Hills,northeast_hills,28.0,1011.0,90,0.99,-0.32,-0.67,0.99,NORMAL,0.95,NONE,5
+43900000786,South 24 Parganas Sagar Island AWS,21.65,88.08,3.0,Northeast Hills,northeast_hills,28.0,1011.0,90,0.99,-0.32,-0.67,0.99,NORMAL,0.95,NONE,5
+43900000736,Porbandar Coastal AWS,21.6417,69.6293,7.0,Central Plateau,central_plateau,25.8,1011.4,91,-0.15,-0.38,0.0,0.38,NORMAL,0.95,NONE,5
+43900000802,Kendujhar AWS,21.63,85.58,480.0,Central Plateau,central_plateau,24.0,960.1,99,0.28,0.83,0.51,0.83,NORMAL,0.95,NONE,5
+04289199999,Keongjhargarh AWS,21.63,85.67,463.0,Central Plateau,central_plateau,24.0,961.4,99,0.2,0.55,0.17,0.55,NORMAL,0.95,NONE,5
+42891099999,Keongjhargarh,21.617,85.517,463.0,Central Plateau,central_plateau,22.7,941.1,100,-1.02,-13.69,0.67,13.69,SENSOR_FAULT,0.98,HIGH,5
+42901099999,Digha,21.617,87.5,6.0,Central Plateau,central_plateau,26.6,1010.4,95,-0.45,-0.83,0.51,0.83,NORMAL,0.95,NONE,5
+42834099999,Amreli,21.6,71.217,115.0,Central Plateau,central_plateau,24.0,998.3,96,-0.77,0.02,0.51,0.77,NORMAL,0.95,NONE,5
+43900000794,Deogarh AWS,21.53,84.73,213.0,Central Plateau,central_plateau,25.4,990.8,96,-0.12,2.09,0.0,2.09,NORMAL,0.95,NONE,5
+42871099999,Gondia Arpt/Birsi,21.524,80.288,300.8,Central Plateau,central_plateau,25.7,978.1,96,0.44,-0.31,0.0,0.44,NORMAL,0.95,NONE,5
+43900000726,Junagadh Agro-AWS,21.5222,70.4579,107.0,Central Plateau,central_plateau,24.7,1002.9,95,-0.38,2.31,0.67,2.31,NORMAL,0.95,NONE,5
+42895099999,Balasore,21.517,86.933,20.0,Central Plateau,central_plateau,26.8,1011.2,98,0.25,1.21,0.34,1.21,NORMAL,0.95,NONE,5
+42883099999,Sambalpur,21.467,83.967,148.0,Central Plateau,central_plateau,25.8,994.4,95,-0.3,-0.89,0.0,0.89,NORMAL,0.95,NONE,5
+04287199999,Gondia AWS,21.4667,80.2,313.0,Central Plateau,central_plateau,25.1,977.8,97,-0.17,0.51,0.17,0.51,NORMAL,0.95,NONE,5
+43900000664,Nandurbar AWS,21.37,74.24,210.0,Central Plateau,central_plateau,24.7,988.8,88,0.02,1.01,-1.35,1.35,NORMAL,0.95,NONE,5
+42846099999,Nandurbar,21.333,74.25,206.0,Central Plateau,central_plateau,24.7,984.3,88,-0.02,-1.64,0.0,1.64,NORMAL,0.95,NONE,5
+43900000790,Bargarh AWS,21.33,83.62,171.0,Central Plateau,central_plateau,25.7,992.3,93,0.04,-0.48,-0.67,0.67,NORMAL,0.95,NONE,5
+42832099999,Keshod,21.317,70.317,50.0,Central Plateau,central_plateau,25.7,1006.0,91,0.16,-0.52,0.0,0.52,NORMAL,0.95,NONE,5
+43900000681,Burhanpur AWS,21.3142,76.2289,233.0,Central Plateau,central_plateau,24.7,983.7,90,-0.55,-0.81,1.18,1.18,NORMAL,0.95,NONE,5
+42872099999,Mana,21.233,81.65,313.0,Central Plateau,central_plateau,25.2,977.7,96,0.08,0.14,-0.17,0.17,NORMAL,0.95,NONE,5
+42874099999,Pbo Raipur,21.233,81.65,298.0,Central Plateau,central_plateau,25.2,977.7,96,-0.08,-1.17,-0.17,1.17,NORMAL,0.95,NONE,5
+42840099999,Surat,21.2,72.833,12.0,Central Plateau,central_plateau,26.5,1009.4,93,0.61,-0.4,-0.34,0.61,NORMAL,0.95,NONE,5
+42876099999,Durg,21.183,81.283,293.0,Central Plateau,central_plateau,25.5,979.7,96,0.23,-0.22,-0.17,0.23,NORMAL,0.95,NONE,5
+42875099999,Swami Vivekananda,21.183,81.733,317.6,Central Plateau,central_plateau,24.7,977.7,97,-0.4,0.5,0.17,0.5,NORMAL,0.95,NONE,5
+42737199999,Raipur,21.18,81.739,317.3,Central Plateau,central_plateau,24.7,977.0,97,-0.4,-0.14,0.17,0.4,NORMAL,0.95,NONE,5
+43900000655,Bhandara AWS,21.1714,79.6528,244.0,Central Plateau,central_plateau,25.8,982.1,93,-0.17,-2.05,-0.67,2.05,NORMAL,0.95,NONE,5
+43920001004,Maharashtra Vidarbha Agro Block-01 AWS,21.15,78.68,290.5,Central Plateau,central_plateau,24.9,959.3,91,-0.8,-13.78,0.0,13.78,SENSOR_FAULT,0.98,HIGH,5
+42866099999,Nagpur (Mayo Hospital),21.15,79.117,311.0,Central Plateau,central_plateau,26.0,977.5,97,0.54,0.56,1.01,1.01,NORMAL,0.95,NONE,5
+43900000739,Tapi Vyara AWS,21.12,73.4,82.0,Central Plateau,central_plateau,25.0,1001.0,98,-0.57,-0.44,0.51,0.57,NORMAL,0.95,NONE,5
+42948099999,Rajnandgaon,21.1,81.033,329.0,Central Plateau,central_plateau,25.2,977.3,97,0.17,1.12,0.17,1.12,NORMAL,0.95,NONE,5
+42867099999,Dr Baba Saheb Ambedkar Intl,21.092,79.047,314.9,Central Plateau,central_plateau,25.5,976.9,94,0.14,0.53,0.51,0.53,NORMAL,0.95,NONE,5
+42837099999,Mahuva,21.083,71.783,9.0,Central Plateau,central_plateau,25.6,1010.6,93,-0.65,-0.2,0.34,0.65,NORMAL,0.95,NONE,5
+43900000791,Bhadrak AWS,21.06,86.5,23.0,Central Plateau,central_plateau,26.8,1009.4,96,-0.2,0.09,0.17,0.2,NORMAL,0.95,NONE,5
+42851099999,Jalgaon,21.05,75.567,201.0,Central Plateau,central_plateau,26.0,989.4,81,0.41,1.11,-0.34,1.11,NORMAL,0.95,NONE,5
+43900000660,Jalgaon AWS,21.0077,75.5626,209.0,Central Plateau,central_plateau,25.9,986.1,81,0.14,-0.73,-0.34,0.73,NORMAL,0.95,NONE,5
+43900000733,Navsari AWS,20.95,72.93,9.0,Coastal Plains,coastal_plains,25.8,1010.1,95,0.15,0.23,0.17,0.23,NORMAL,0.95,NONE,5
+42937099999,Amraoti,20.933,77.783,370.0,Central Plateau,central_plateau,26.0,970.3,86,0.53,0.51,0.0,0.53,NORMAL,0.95,NONE,5
+43900000653,Amravati AWS,20.932,77.7523,343.0,Central Plateau,central_plateau,26.0,973.5,86,0.38,0.57,0.0,0.57,NORMAL,0.95,NONE,5
+43900000657,Dhule AWS,20.9042,74.7749,250.0,Central Plateau,central_plateau,25.6,982.4,82,0.16,-0.36,-0.51,0.51,NORMAL,0.95,NONE,5
+42909099999,Veraval,20.9,70.367,8.0,Coastal Plains,coastal_plains,25.8,1011.8,91,0.02,0.35,0.0,0.35,NORMAL,0.95,NONE,5
+43900000798,Jajpur AWS,20.85,86.33,37.0,Coastal Plains,coastal_plains,26.8,1010.1,97,0.08,1.6,0.17,1.6,NORMAL,0.95,NONE,5
+42977099999,Sandheads,20.85,88.25,10.0,Coastal Plains,coastal_plains,29.9,1011.2,76,2.36,0.7,-2.7,2.7,PROBABLE_FAULT,0.76,LOW,5
+43900000792,Boudh AWS,20.84,84.32,110.0,Coastal Plains,coastal_plains,25.7,1001.4,97,-0.21,0.69,-0.17,0.69,NORMAL,0.95,NONE,5
+42969099999,Angul,20.833,85.1,139.0,Coastal Plains,coastal_plains,25.5,996.7,98,0.32,-0.55,0.0,0.55,NORMAL,0.95,NONE,5
+43900000807,Nuapada AWS,20.83,82.52,260.0,Coastal Plains,coastal_plains,24.9,975.0,97,-0.15,-5.97,0.0,5.97,SENSOR_FAULT,0.83,HIGH,5
+43900000809,Subarnapur Sonepur AWS,20.83,83.92,117.0,Coastal Plains,coastal_plains,25.9,1000.3,97,0.11,0.21,-0.34,0.34,NORMAL,0.95,NONE,5
+42973099999,Chandbali,20.783,86.733,6.0,Coastal Plains,coastal_plains,27.5,1011.3,91,0.3,0.04,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000724,Dang Ahwa AWS,20.76,73.68,549.0,Central Plateau,central_plateau,22.5,961.3,97,0.02,5.91,0.34,5.91,SENSOR_FAULT,0.827,HIGH,5
+43900000672,Wardha AWS,20.7453,78.6022,234.0,Central Plateau,central_plateau,25.6,979.4,88,-0.52,-3.02,-0.84,3.02,PROBABLE_FAULT,0.76,LOW,5
+42914099999,Diu Aprt,20.715,70.922,9.1,Coastal Plains,coastal_plains,25.6,1010.6,90,0.0,-0.2,-0.51,0.51,NORMAL,0.95,NONE,5
+42933099999,Akola,20.7,77.033,282.0,Central Plateau,central_plateau,25.5,979.4,83,-0.67,-0.78,-0.51,0.78,NORMAL,0.95,NONE,5
+42963099999,Bolangir,20.7,83.5,190.0,Coastal Plains,coastal_plains,25.3,991.3,99,-0.11,-0.16,0.34,0.34,NORMAL,0.95,NONE,5
+42934099999,Akola,20.699,77.059,304.5,Central Plateau,central_plateau,25.8,977.1,80,-0.29,-0.49,-1.01,1.01,NORMAL,0.95,NONE,5
+43900000795,Dhenkanal AWS,20.67,85.6,80.0,Coastal Plains,coastal_plains,25.5,1005.3,98,-0.3,1.64,0.0,1.64,NORMAL,0.95,NONE,5
+42939099999,Wardha,20.667,78.583,283.0,Central Plateau,central_plateau,25.9,983.0,91,0.16,0.93,-0.34,0.93,NORMAL,0.95,NONE,5
+42915099999,Bulsar,20.617,72.933,15.0,Coastal Plains,coastal_plains,26.2,1011.1,90,0.52,1.39,-0.84,1.39,NORMAL,0.95,NONE,5
+42946099999,Bramhapuri,20.6,79.85,229.0,Central Plateau,central_plateau,26.1,986.7,99,0.04,0.0,0.34,0.34,NORMAL,0.95,NONE,5
+42925099999,Malegaon,20.55,74.533,437.0,Central Plateau,central_plateau,24.2,964.6,85,0.82,0.59,-0.34,0.82,NORMAL,0.95,NONE,5
+42931099999,Buldana,20.533,76.233,650.0,Central Plateau,central_plateau,23.9,945.5,82,0.73,3.93,-0.17,3.93,SENSOR_FAULT,0.708,HIGH,5
+43900000656,Buldhana AWS,20.531,76.1837,630.0,Central Plateau,central_plateau,23.0,940.3,83,-0.18,0.06,0.34,0.34,NORMAL,0.95,NONE,5
+43900000801,Kendrapara AWS,20.5,86.42,13.0,Coastal Plains,coastal_plains,27.1,1010.2,95,-0.3,-0.18,0.45,0.45,NORMAL,0.95,NONE,5
+42966099999,Phulbani,20.483,84.267,489.0,Coastal Plains,coastal_plains,23.1,953.1,99,-0.32,-2.61,0.0,2.61,PROBABLE_FAULT,0.76,LOW,5
+43900000800,Kandhamal Phulbani AWS,20.47,84.23,485.0,Coastal Plains,coastal_plains,24.1,960.4,99,0.6,2.21,0.0,2.21,NORMAL,0.95,NONE,5
+42970099999,Cuttack,20.467,85.933,27.0,Coastal Plains,coastal_plains,26.2,1009.2,97,0.0,0.46,-0.17,0.46,NORMAL,0.95,NONE,5
+43900000793,Cuttack AWS,20.46,85.88,36.0,Coastal Plains,coastal_plains,26.2,1008.4,97,0.05,0.64,-0.17,0.64,NORMAL,0.95,NONE,5
+42916099999,Daman,20.417,72.85,12.0,Coastal Plains,coastal_plains,25.6,1011.9,94,-0.15,1.24,0.17,1.24,NORMAL,0.95,NONE,5
+42943099999,Yeotmal,20.4,78.15,451.0,Central Plateau,central_plateau,25.0,963.0,93,0.16,0.52,0.84,0.84,NORMAL,0.95,NONE,5
+43900000811,Titlagarh Arid AWS,20.3,83.15,215.0,Coastal Plains,coastal_plains,25.2,987.3,94,0.05,-0.72,-0.84,0.84,NORMAL,0.95,NONE,5
+42961099999,Titlagarh,20.3,83.3,211.0,Coastal Plains,coastal_plains,24.6,992.1,99,-0.53,2.81,0.0,2.81,PROBABLE_FAULT,0.76,LOW,5
+42976099999,Paradip (C.W.R.),20.3,86.683,8.0,Coastal Plains,coastal_plains,28.3,1011.0,83,0.98,-0.04,-2.02,2.02,NORMAL,0.95,NONE,5
+43900001004,Silvassa Inland AWS,20.27,73.01,32.0,Coastal Plains,coastal_plains,24.9,1006.7,96,-0.84,-1.59,0.51,1.59,NORMAL,0.95,NONE,5
+42953099999,Kanker,20.267,81.483,402.0,Central Plateau,central_plateau,23.9,967.8,98,-0.61,0.25,0.17,0.61,NORMAL,0.95,NONE,5
+43900000797,Jagatsinghpur Paradip AWS,20.26,86.67,5.0,Coastal Plains,coastal_plains,28.3,1010.7,83,0.97,-0.49,-2.02,2.02,NORMAL,0.95,NONE,5
+04297699999,Paradip (C.W.R.) AWS,20.25,85.65,9.0,Coastal Plains,coastal_plains,25.7,1005.6,99,-0.52,-3.88,0.17,3.88,SENSOR_FAULT,0.705,HIGH,5
+42971099999,Bhubaneshwar / Biju Patnaik Intl,20.244,85.818,42.1,Coastal Plains,coastal_plains,26.1,1006.7,99,0.3,-0.19,0.17,0.3,NORMAL,0.95,NONE,5
+43900000658,Gadchiroli AWS,20.1804,79.9961,217.0,Central Plateau,central_plateau,25.9,988.1,98,-0.23,0.26,0.0,0.26,NORMAL,0.95,NONE,5
+43900000806,Nayagarh AWS,20.13,85.1,114.0,Coastal Plains,coastal_plains,25.2,990.7,99,-0.07,-2.51,0.17,2.51,NORMAL,0.95,NONE,5
+42920099999,Ozar Air Force Station /Nashik Arpt,20.119,73.914,598.0,Central Plateau,central_plateau,22.5,946.7,96,0.24,-0.06,-0.17,0.24,NORMAL,0.95,NONE,5
+42935099999,Washim,20.117,77.117,565.0,Central Plateau,central_plateau,24.3,951.6,86,0.54,2.38,-0.84,2.38,NORMAL,0.95,NONE,5
+43001099999,Dahanu,19.967,72.717,5.0,Coastal Plains,coastal_plains,26.2,1011.7,89,0.47,-0.29,-0.84,0.84,NORMAL,0.95,NONE,5
+42921099999,Nasik City,19.967,73.817,598.0,Central Plateau,central_plateau,22.3,947.3,97,0.07,0.07,0.17,0.17,NORMAL,0.95,NONE,5
+43029099999,Chandrapur,19.967,79.3,193.0,Deccan Plateau,deccan_plateau,26.4,989.4,98,0.06,-1.02,0.0,1.02,NORMAL,0.95,NONE,5
+43019099999,Pusad,19.917,77.583,332.0,Deccan Plateau,deccan_plateau,25.5,975.6,91,0.33,-0.47,-0.34,0.47,NORMAL,0.95,NONE,5
+43042099999,Bhawanipatna,19.917,83.183,261.0,Coastal Plains,coastal_plains,24.8,982.1,99,-0.03,0.12,0.0,0.12,NORMAL,0.95,NONE,5
+43900000812,Daringbadi Hill AWS,19.91,84.13,915.0,Coastal Plains,coastal_plains,21.0,909.0,100,0.56,0.12,0.17,0.56,NORMAL,0.95,NONE,5
+43013099999,Aurangabad,19.883,75.333,579.0,Deccan Plateau,deccan_plateau,24.7,949.5,71,-0.01,0.76,-0.4,0.76,NORMAL,0.95,NONE,5
+43014099999,Aurangabad,19.863,75.398,582.5,Deccan Plateau,deccan_plateau,24.7,948.3,71,0.01,0.21,0.0,0.21,NORMAL,0.95,NONE,5
+04301499999,Aurangabad Chikalthana Aerodrome AWS,19.85,73.4,585.0,Coastal Plains,coastal_plains,22.3,965.4,98,-0.07,8.92,0.34,8.92,SENSOR_FAULT,0.98,HIGH,5
+43900000661,Jalna AWS,19.841,75.8864,508.0,Deccan Plateau,deccan_plateau,24.1,956.4,80,-0.62,0.49,0.17,0.62,NORMAL,0.95,NONE,5
+43012099999,Jalna,19.833,75.8,538.0,Deccan Plateau,deccan_plateau,24.2,952.2,79,-0.37,-0.48,-0.17,0.48,NORMAL,0.95,NONE,5
+43053099999,Puri,19.8,85.817,6.0,Coastal Plains,coastal_plains,25.9,1009.0,98,-0.37,-1.36,-0.17,1.36,NORMAL,0.95,NONE,5
+43022099999,Priyadarshini,19.75,78.033,457.0,Deccan Plateau,deccan_plateau,24.3,966.1,96,-0.33,3.28,0.51,3.28,PROBABLE_FAULT,0.76,LOW,5
+43900000659,Hingoli AWS,19.7167,77.15,457.0,Deccan Plateau,deccan_plateau,24.1,960.3,92,0.01,-0.68,-0.17,0.68,NORMAL,0.95,NONE,5
+43900000666,Palghar AWS,19.6967,72.7699,10.0,Coastal Plains,coastal_plains,25.2,1010.3,93,-0.71,-1.06,-0.34,1.06,NORMAL,0.95,NONE,5
+43025099999,Adilabad,19.65,78.533,269.0,Deccan Plateau,deccan_plateau,26.4,981.0,97,0.53,-0.2,-0.17,0.53,NORMAL,0.95,NONE,5
+43920001005,Maharashtra Marathwada Agro Block-01 AWS,19.4216,76.3673,420.5,Deccan Plateau,deccan_plateau,25.4,964.5,80,0.62,-1.25,0.0,1.25,NORMAL,0.95,NONE,5
+43900000879,Kumuram Bheem Asifabad AWS,19.36,79.28,218.0,Deccan Plateau,deccan_plateau,25.5,987.6,98,-0.62,0.68,0.17,0.68,NORMAL,0.95,NONE,5
+43049099999,Gopalpur,19.267,84.883,17.0,Coastal Plains,coastal_plains,25.3,1008.5,97,-0.59,-0.86,-0.17,0.86,NORMAL,0.95,NONE,5
+43900000667,Parbhani AWS,19.2608,76.7748,407.0,Deccan Plateau,deccan_plateau,23.8,966.2,94,-0.53,0.1,0.17,0.53,NORMAL,0.95,NONE,5
+43900000805,Nabarangpur AWS,19.23,82.55,582.0,Coastal Plains,coastal_plains,23.2,948.7,99,0.41,2.29,0.17,2.29,NORMAL,0.95,NONE,5
+43900000671,Thane AWS,19.2183,72.9781,15.0,Coastal Plains,coastal_plains,25.5,1011.3,99,-0.65,0.02,0.67,0.67,NORMAL,0.95,NONE,5
+43900000808,Rayagada AWS,19.17,83.42,207.0,Coastal Plains,coastal_plains,24.6,987.6,98,-0.46,-0.48,0.17,0.48,NORMAL,0.95,NONE,5
+43005099999,T B I A,19.15,72.0,12.0,Coastal Plains,coastal_plains,28.3,1012.4,81,1.74,0.8,-2.02,2.02,NORMAL,0.95,NONE,5
+04300599999,T.B.I.A AWS,19.15,73.0,14.8,Coastal Plains,coastal_plains,25.8,1011.3,95,-0.4,-0.02,0.0,0.4,NORMAL,0.95,NONE,5
+43900000663,Nanded AWS,19.1383,77.321,362.0,Deccan Plateau,deccan_plateau,24.7,972.2,93,-0.01,0.56,0.0,0.56,NORMAL,0.95,NONE,5
+43017099999,Parbhani,19.133,76.833,422.0,Deccan Plateau,deccan_plateau,24.0,967.1,94,-0.28,1.87,0.17,1.87,NORMAL,0.95,NONE,5
+43002099999,Bombay / Juhu,19.117,72.833,3.0,Coastal Plains,coastal_plains,26.3,1012.3,92,-0.05,-0.3,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000652,Ahmednagar AWS,19.0948,74.748,656.0,Deccan Plateau,deccan_plateau,24.5,940.3,74,0.83,0.39,-2.36,2.36,NORMAL,0.95,NONE,5
+43003099999,Chhatrapati Shivaji Maharaj Intl,19.089,72.868,11.3,Coastal Plains,coastal_plains,26.3,1011.9,92,0.05,0.12,-0.51,0.51,NORMAL,0.95,NONE,5
+43009099999,Ahmadnagar,19.083,74.8,657.0,Deccan Plateau,deccan_plateau,24.2,937.7,74,-0.2,-1.68,0.34,1.68,NORMAL,0.95,NONE,5
+43021099999,Nanded,19.083,77.333,358.0,Deccan Plateau,hyderabad,24.8,969.2,93,0.06,-1.77,-0.17,1.77,NORMAL,0.95,NONE,5
+43041099999,Jagdalpur,19.083,82.033,553.0,Coastal Plains,coastal_plains,23.4,951.3,98,0.01,-0.18,0.34,0.34,NORMAL,0.95,NONE,5
+43011099999,Bir,19.0,75.717,519.0,Deccan Plateau,deccan_plateau,27.0,955.8,64,2.26,0.8,-2.7,2.7,PROBABLE_FAULT,0.76,LOW,5
+43900000654,Beed AWS,18.9891,75.7601,515.0,Deccan Plateau,deccan_plateau,27.1,955.6,65,2.32,0.36,-2.53,2.53,NORMAL,0.95,NONE,5
+43060099999,Matheran,18.983,73.283,695.0,Coastal Plains,coastal_plains,22.8,967.4,98,1.19,23.61,0.51,23.61,SENSOR_FAULT,0.98,HIGH,5
+43057099999,Bombay / Colaba,18.9,72.817,11.0,Coastal Plains,coastal_plains,26.6,1010.7,95,0.65,-0.73,0.0,0.73,NORMAL,0.95,NONE,5
+43900000881,Mancherial AWS,18.87,79.46,153.0,Deccan Plateau,deccan_plateau,26.3,994.3,96,-0.19,-0.22,-0.34,0.34,NORMAL,0.95,NONE,5
+43089099999,Sironcha,18.85,79.967,123.0,Deccan Plateau,deccan_plateau,25.8,998.5,98,-0.59,0.84,0.51,0.84,NORMAL,0.95,NONE,5
+43097099999,Koraput,18.817,82.717,913.0,Coastal Plains,coastal_plains,21.9,915.0,95,1.11,2.58,-0.51,2.58,NORMAL,0.95,NONE,5
+43900000873,Jagtial Agro-AWS,18.8,78.92,264.0,Deccan Plateau,deccan_plateau,25.8,980.0,98,-0.17,-0.83,0.34,0.83,NORMAL,0.95,NONE,5
+43900000864,Parvathipuram Manyam AWS,18.78,83.43,120.0,Coastal Plains,coastal_plains,25.1,997.9,96,-0.2,0.24,0.17,0.24,NORMAL,0.95,NONE,5
+43900000796,Gajapati Paralakhemundi AWS,18.77,84.08,48.0,Coastal Plains,coastal_plains,25.8,1006.1,97,0.14,0.02,0.17,0.17,NORMAL,0.95,NONE,5
+43061099999,Khandala,18.767,73.367,539.0,Coastal Plains,coastal_plains,22.4,950.4,97,-0.31,-0.31,0.17,0.31,NORMAL,0.95,NONE,5
+43086099999,Ramgundam,18.767,79.433,156.0,Deccan Plateau,hyderabad,26.7,991.3,95,0.17,-1.79,-0.34,1.79,NORMAL,0.95,NONE,5
+43900000887,Peddapalli Ramagundam AWS,18.76,79.51,179.0,Deccan Plateau,deccan_plateau,26.9,994.6,97,0.65,1.93,0.17,1.93,NORMAL,0.95,NONE,5
+43081099999,Nizamabad,18.667,78.1,381.0,Deccan Plateau,deccan_plateau,25.6,968.7,95,0.15,1.1,0.0,1.1,NORMAL,0.95,NONE,5
+43058099999,Alibag,18.633,72.867,7.0,Coastal Plains,coastal_plains,25.8,1012.5,96,-0.45,0.41,0.17,0.45,NORMAL,0.95,NONE,5
+43064099999,Pune / Lohogaon Aerodrome,18.583,73.917,589.0,Central Plateau,central_plateau,23.6,947.4,91,0.97,0.63,-0.67,0.97,NORMAL,0.95,NONE,5
+43093099999,Bailadila,18.583,81.233,1144.0,Central Plateau,central_plateau,22.4,927.0,96,2.4,15.94,0.34,15.94,SENSOR_FAULT,0.98,HIGH,5
+43900000668,Pune Pashan AWS,18.5398,73.7929,565.0,Central Plateau,central_plateau,22.6,948.4,95,-0.38,-1.15,0.51,1.15,NORMAL,0.95,NONE,5
+43067099999,Pashan Cti,18.533,73.85,560.0,Central Plateau,central_plateau,23.1,951.0,92,0.39,0.81,-0.51,0.81,NORMAL,0.95,NONE,5
+43063099999,Pune,18.533,73.85,558.0,Central Plateau,central_plateau,23.1,951.0,92,0.38,0.72,-0.51,0.72,NORMAL,0.95,NONE,5
+43062099999,Bhira,18.45,73.4,96.0,Coastal Plains,coastal_plains,22.9,967.8,96,-2.7,-24.48,0.67,24.48,SENSOR_FAULT,0.98,HIGH,5
+43900000878,Karimnagar AWS,18.44,79.13,265.0,Deccan Plateau,deccan_plateau,26.0,980.4,96,-0.14,-0.53,-0.17,0.53,NORMAL,0.95,NONE,5
+43900000875,Jayashankar Bhupalpally AWS,18.43,79.86,172.0,Deccan Plateau,deccan_plateau,25.6,988.7,93,-0.84,-1.0,-0.34,1.0,NORMAL,0.95,NONE,5
+43900000662,Latur AWS,18.4088,76.5604,631.0,Deccan Plateau,deccan_plateau,22.0,942.4,97,-0.71,-0.09,0.51,0.71,NORMAL,0.95,NONE,5
+43900000888,Rajanna Sircilla AWS,18.38,78.83,322.0,Deccan Plateau,deccan_plateau,25.8,975.6,96,-0.02,1.19,0.0,1.19,NORMAL,0.95,NONE,5
+43900000803,Malkangiri AWS,18.35,81.9,195.0,Central Plateau,central_plateau,25.5,990.8,94,-0.19,-0.95,-0.51,0.95,NORMAL,0.95,NONE,5
+43105099999,Kalingapatam,18.333,84.133,6.0,Coastal Plains,coastal_plains,26.5,1011.1,95,0.43,-0.01,0.0,0.43,NORMAL,0.95,NONE,5
+43900000877,Kamareddy AWS,18.32,78.34,495.0,Deccan Plateau,deccan_plateau,24.7,954.1,95,-0.14,-1.12,0.0,1.12,NORMAL,0.95,NONE,5
+43071099999,Jeur,18.2,75.2,521.0,Deccan Plateau,deccan_plateau,26.3,956.0,81,1.54,1.08,-0.94,1.54,NORMAL,0.95,NONE,5
+43900000883,Mulugu AWS,18.19,79.94,178.0,Deccan Plateau,deccan_plateau,25.8,985.9,91,-0.94,-4.08,0.51,4.08,SENSOR_FAULT,0.717,HIGH,5
+43900000665,Dharashiv AWS,18.1856,76.0419,653.0,Deccan Plateau,deccan_plateau,22.7,939.6,96,-1.51,-0.23,2.53,2.53,NORMAL,0.95,NONE,5
+04306999999,Baramati AWS,18.16,74.51,551.0,Deccan Plateau,deccan_plateau,24.0,949.6,89,0.13,-1.63,-0.34,1.63,NORMAL,0.95,NONE,5
+43069099999,Baramati,18.15,74.583,551.0,Deccan Plateau,deccan_plateau,24.2,951.5,88,0.3,-0.35,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000869,Vizianagaram AWS,18.12,83.42,66.0,Coastal Plains,coastal_plains,25.6,1003.8,94,0.13,0.44,-0.17,0.44,NORMAL,0.95,NONE,5
+43900000891,Siddipet AWS,18.1,78.85,475.0,Deccan Plateau,deccan_plateau,25.0,958.3,97,0.14,0.15,0.34,0.34,NORMAL,0.95,NONE,5
+43900000854,Alluri Sitharama Raju Paderu AWS,18.08,82.67,910.0,Coastal Plains,coastal_plains,20.6,911.5,97,0.41,3.45,0.51,3.45,PROBABLE_FAULT,0.76,LOW,5
+43076099999,Udgir,18.067,77.117,639.0,Deccan Plateau,deccan_plateau,24.8,950.6,84,-0.1,6.51,-0.34,6.51,SENSOR_FAULT,0.863,HIGH,5
+43083099999,Medak,18.05,78.267,472.0,Deccan Plateau,deccan_plateau,25.3,959.6,88,-0.07,0.79,-0.84,0.84,NORMAL,0.95,NONE,5
+43087099999,Hanamkonda,18.017,79.567,269.0,Deccan Plateau,deccan_plateau,26.7,982.0,85,0.32,0.86,-1.01,1.01,NORMAL,0.95,NONE,5
+43900000872,Hanumakonda Warangal AWS,17.97,79.59,270.0,Deccan Plateau,deccan_plateau,26.7,981.2,85,0.32,0.53,-1.01,1.01,NORMAL,0.95,NONE,5
+43111099999,Mahabaleshwar,17.933,73.667,1382.0,Central Plateau,central_plateau,18.2,874.1,100,0.77,3.83,0.84,3.83,SENSOR_FAULT,0.702,HIGH,5
+43125099999,Bidar,17.917,77.533,663.0,Deccan Plateau,deccan_plateau,25.3,937.4,88,0.38,-0.27,0.67,0.67,NORMAL,0.95,NONE,5
+43109099999,Harnai,17.817,73.1,20.0,Coastal Plains,coastal_plains,25.4,1009.0,94,-0.46,-0.31,-0.34,0.46,NORMAL,0.95,NONE,5
+43900000874,Jangaon AWS,17.72,79.16,382.0,Deccan Plateau,deccan_plateau,25.9,969.3,91,-0.06,0.26,0.67,0.67,NORMAL,0.95,NONE,5
+43149099999,Vishakhapatnam Ctlz,17.717,83.217,4.6,Coastal Plains,coastal_plains,25.5,1010.2,95,-0.83,-0.25,0.17,0.83,NORMAL,0.95,NONE,5
+43150099999,Cwc Vishakhapatnam/Waltair,17.7,83.3,66.0,Coastal Plains,coastal_plains,26.2,1009.2,94,0.51,4.27,-0.17,4.27,SENSOR_FAULT,0.728,HIGH,5
+43900000855,Anakapalli AWS,17.69,83.0,26.0,Coastal Plains,coastal_plains,25.7,1007.4,95,-0.56,-0.6,0.0,0.6,NORMAL,0.95,NONE,5
+43900000669,Satara AWS,17.6805,73.9936,742.0,Central Plateau,central_plateau,22.2,932.5,96,-0.13,1.53,0.51,1.53,NORMAL,0.95,NONE,5
+43900000868,Visakhapatnam Dolphin Nose AWS,17.68,83.22,66.0,Coastal Plains,coastal_plains,26.1,997.3,93,0.42,-3.76,-0.34,3.76,PROBABLE_FAULT,0.76,LOW,5
+43136099999,Bhadrachalam,17.667,80.883,54.0,Central Plateau,central_plateau,28.1,1004.8,87,0.32,0.5,-0.34,0.5,NORMAL,0.95,NONE,5
+04311799999,Sholapur AWS,17.6667,75.9,479.0,Deccan Plateau,deccan_plateau,25.5,959.4,83,-0.71,0.38,0.34,0.71,NORMAL,0.95,NONE,5
+43900000882,Medchal Malkajgiri AWS,17.63,78.48,577.0,Deccan Plateau,deccan_plateau,24.7,946.4,93,-0.6,-0.06,1.01,1.01,NORMAL,0.95,NONE,5
+43117099999,Solapur,17.628,75.935,482.8,Deccan Plateau,deccan_plateau,25.7,958.4,81,-0.5,-0.21,0.0,0.5,NORMAL,0.95,NONE,5
+43900000890,Sangareddy AWS,17.62,78.08,501.0,Deccan Plateau,deccan_plateau,25.9,953.8,87,-0.26,-1.88,-0.13,1.88,NORMAL,0.95,NONE,5
+43900000880,Mahabubabad AWS,17.6,80.0,180.0,Deccan Plateau,deccan_plateau,26.9,989.2,88,-0.32,-0.53,0.51,0.53,NORMAL,0.95,NONE,5
+43130099999,Hakimpet,17.55,78.517,613.0,Deccan Plateau,deccan_plateau,25.5,944.7,88,0.45,1.5,0.17,1.5,NORMAL,0.95,NONE,5
+43900000871,Bhadradri Kothagudem AWS,17.55,80.62,89.0,Central Plateau,central_plateau,27.4,998.3,89,-0.4,-1.09,0.34,1.09,NORMAL,0.95,NONE,5
+43113099999,Satara,17.517,74.05,612.0,Deccan Plateau,deccan_plateau,23.0,941.9,93,-0.17,-1.47,0.0,1.47,NORMAL,0.95,NONE,5
+43900000895,Yadadri Bhuvanagiri AWS,17.51,78.88,430.0,Deccan Plateau,deccan_plateau,25.8,962.2,87,-0.3,-1.08,-0.17,1.08,NORMAL,0.95,NONE,5
+43128099999,Begumpet Airport / Hyderabad Intl,17.452,78.461,531.0,Deccan Plateau,hyderabad,26.9,953.2,80,1.01,0.79,-1.35,1.35,NORMAL,0.95,NONE,5
+43121099999,Gulbarga,17.35,76.85,458.0,Deccan Plateau,deccan_plateau,27.6,959.5,65,1.47,-1.28,-3.37,3.37,PROBABLE_FAULT,0.76,LOW,5
+43147099999,Tuni,17.35,82.55,35.0,Coastal Plains,coastal_plains,26.6,1008.1,95,0.26,1.2,0.0,1.2,NORMAL,0.95,NONE,5
+43900000893,Vikarabad AWS,17.33,77.9,638.0,Deccan Plateau,deccan_plateau,25.9,941.2,80,0.47,0.02,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000889,Ranga Reddy Hayathnagar AWS,17.32,78.59,515.0,Deccan Plateau,deccan_plateau,25.6,953.5,88,-0.31,-0.62,0.17,0.62,NORMAL,0.95,NONE,5
+43137099999,Khammam,17.25,80.15,112.0,Central Plateau,central_plateau,28.0,996.2,83,0.23,-1.15,-0.67,1.15,NORMAL,0.95,NONE,5
+43128599999,Hyderabad Intl Airport / Rajiv Gandhi Intl,17.233,78.417,617.0,Deccan Plateau,hyderabad,25.3,945.6,83,-0.15,1.4,-0.67,1.4,NORMAL,0.95,NONE,5
+43900000892,Suryapet AWS,17.14,79.62,181.0,Deccan Plateau,deccan_plateau,28.1,990.5,78,-0.26,0.45,0.0,0.45,NORMAL,0.95,NONE,5
+43900000885,Nalgonda AWS,17.06,79.27,230.0,Deccan Plateau,deccan_plateau,28.5,984.1,77,0.36,-0.45,-0.17,0.45,NORMAL,0.95,NONE,5
+43133099999,Nalgonda,17.0,79.25,227.0,Deccan Plateau,deccan_plateau,28.5,986.3,78,0.34,1.11,0.0,1.11,NORMAL,0.95,NONE,5
+43900000859,East Godavari Rajahmundry AWS,17.0,81.78,14.0,Central Plateau,central_plateau,27.6,1007.1,94,0.29,-0.8,0.34,0.8,NORMAL,0.95,NONE,5
+43110099999,Ratnagiri,16.983,73.333,67.0,Coastal Plains,coastal_plains,25.7,1003.4,91,-0.4,-0.67,-0.34,0.67,NORMAL,0.95,NONE,5
+43189099999,Kakinada,16.95,82.233,8.0,Coastal Plains,coastal_plains,28.5,1009.5,85,1.07,0.41,-1.69,1.69,NORMAL,0.95,NONE,5
+43158099999,Sangli,16.85,74.6,549.0,Deccan Plateau,deccan_plateau,24.1,950.0,86,0.9,-0.95,-1.18,1.18,NORMAL,0.95,NONE,5
+43184099999,Nidadavole,16.833,81.583,13.0,Central Plateau,central_plateau,27.2,1008.3,96,-0.12,-0.07,0.67,0.67,NORMAL,0.95,NONE,5
+43161099999,Bijapur,16.817,75.717,594.0,Deccan Plateau,deccan_plateau,25.6,945.6,79,-0.05,-0.16,0.0,0.16,NORMAL,0.95,NONE,5
+43182099999,Nandigama,16.783,80.283,51.0,Central Plateau,central_plateau,28.7,1005.3,81,0.1,0.64,-0.17,0.64,NORMAL,0.95,NONE,5
+43900000853,Yadgir AWS,16.77,77.14,389.0,Deccan Plateau,deccan_plateau,24.1,969.3,94,-0.43,0.47,1.01,1.01,NORMAL,0.95,NONE,5
+43168099999,Mahabubnagar,16.75,78.0,505.0,Deccan Plateau,deccan_plateau,26.3,955.3,80,0.35,-0.17,0.0,0.35,NORMAL,0.95,NONE,5
+43900000886,Narayanpet AWS,16.73,77.5,431.0,Deccan Plateau,deccan_plateau,24.1,964.5,85,-0.2,0.53,-1.01,1.01,NORMAL,0.95,NONE,5
+43900000860,Eluru AWS,16.71,81.1,22.0,Central Plateau,central_plateau,27.5,1007.9,90,-0.61,0.45,-0.17,0.61,NORMAL,0.95,NONE,5
+04315799999,Kolhapur AWS,16.7,74.2333,570.0,Deccan Plateau,deccan_plateau,22.9,951.7,93,-0.21,1.59,0.0,1.59,NORMAL,0.95,NONE,5
+43160099999,Bagalkote,16.7,75.75,524.0,Deccan Plateau,deccan_plateau,26.4,947.4,71,0.29,-4.27,-1.35,4.27,SENSOR_FAULT,0.728,HIGH,5
+04316099999,Bagalkote AWS,16.7,75.9,542.0,Deccan Plateau,deccan_plateau,26.0,947.9,79,0.05,-2.56,0.0,2.56,NORMAL,0.95,NONE,5
+43157099999,Kolhapur,16.665,74.289,608.4,Deccan Plateau,deccan_plateau,22.9,945.7,93,0.36,-0.31,-0.84,0.84,NORMAL,0.95,NONE,5
+43900000862,Konaseema Amalapuram AWS,16.58,82.0,3.0,Central Plateau,central_plateau,27.0,1009.6,98,-0.34,0.07,1.01,1.01,NORMAL,0.95,NONE,5
+43177099999,Rentachintala,16.55,79.55,106.0,Deccan Plateau,deccan_plateau,28.9,998.9,78,0.01,0.17,0.17,0.17,NORMAL,0.95,NONE,5
+43900000870,West Godavari Bhimavaram AWS,16.54,81.52,7.0,Central Plateau,central_plateau,27.3,1009.9,92,-0.07,0.59,0.0,0.59,NORMAL,0.95,NONE,5
+04317799999,Jangamaheswara Puram AWS,16.531,79.6424,103.6,Deccan Plateau,deccan_plateau,28.9,996.8,77,-0.01,-1.61,-0.17,1.61,NORMAL,0.95,NONE,5
+43181099999,Vijayawada,16.53,80.797,25.0,Central Plateau,hyderabad,28.2,1007.5,89,-0.47,0.03,1.18,1.18,NORMAL,0.95,NONE,5
+43180099999,Vijayawada,16.517,80.617,20.0,Central Plateau,central_plateau,28.9,1006.8,80,0.43,-0.88,-1.52,1.52,NORMAL,0.95,NONE,5
+43900000884,Nagarkurnool AWS,16.48,78.32,458.0,Deccan Plateau,deccan_plateau,26.1,960.9,77,-0.43,0.73,-0.51,0.73,NORMAL,0.95,NONE,5
+43187099999,Narsapur,16.433,81.7,4.0,Central Plateau,central_plateau,27.4,1009.2,92,0.07,-0.12,-0.34,0.34,NORMAL,0.95,NONE,5
+43153099999,Devgarh,16.383,73.35,36.0,Coastal Plains,coastal_plains,26.6,1012.4,88,0.67,0.96,-0.51,0.96,NORMAL,0.95,NONE,5
+43900000894,Wanaparthy AWS,16.36,78.06,357.0,Deccan Plateau,deccan_plateau,27.9,965.5,72,0.96,-4.51,-1.35,4.51,SENSOR_FAULT,0.742,HIGH,5
+230009399999,2300093_013 AWS,16.328,87.975,1.0,Coastal Plains,coastal_plains,30.0,1010.0,69,0.0,0.0,0.0,0.0,NORMAL,0.95,NONE,0
+43900000861,Guntur Lam Farm AWS,16.3,80.45,33.0,Central Plateau,central_plateau,28.7,1006.5,82,-0.1,-0.01,0.34,0.34,NORMAL,0.95,NONE,5
+04316999999,Raichur AWS,16.25,77.3333,390.0,Deccan Plateau,deccan_plateau,24.6,969.9,91,0.2,0.98,0.45,0.98,NORMAL,0.95,NONE,5
+43900000876,Jogulamba Gadwal AWS,16.23,77.8,325.0,Deccan Plateau,deccan_plateau,26.8,975.1,80,-0.56,0.23,0.0,0.56,NORMAL,0.95,NONE,5
+43900000863,Palnadu Narasaraopet AWS,16.23,80.05,76.0,Central Plateau,central_plateau,29.0,1001.4,77,0.13,0.01,-0.34,0.34,NORMAL,0.95,NONE,5
+43169099999,Raichur,16.2,77.35,400.0,Deccan Plateau,deccan_plateau,23.8,965.5,94,-0.62,-1.71,1.01,1.71,NORMAL,0.95,NONE,5
+43185099999,Machilipatnam/Franchpet,16.2,81.15,3.0,Central Plateau,central_plateau,28.5,1009.5,91,0.74,-0.43,0.17,0.74,NORMAL,0.95,NONE,5
+43900000839,Bagalkot AWS,16.18,75.7,533.0,Deccan Plateau,deccan_plateau,26.5,952.8,77,0.42,0.12,-0.27,0.42,NORMAL,0.95,NONE,5
+43900000670,Sindhudurg AWS,16.1167,73.7,48.0,Central Plateau,central_plateau,24.9,1009.7,98,-1.37,-0.26,1.69,1.69,NORMAL,0.95,NONE,5
+43900000673,Malvan AWS,16.06,73.47,6.0,Coastal Plains,coastal_plains,26.0,1011.7,91,-0.67,-1.46,0.51,1.46,NORMAL,0.95,NONE,5
+43220099999,Bapatla,15.9,80.467,6.0,Central Plateau,central_plateau,29.3,1008.8,79,0.05,-0.63,-0.17,0.63,NORMAL,0.95,NONE,5
+43193099999,Vengurla,15.867,73.633,16.0,Central Plateau,central_plateau,25.6,1003.8,91,-0.81,-2.16,0.0,2.16,NORMAL,0.95,NONE,5
+43198099999,Belgaum,15.859,74.618,758.0,Deccan Plateau,deccan_plateau,21.5,929.9,98,-0.24,0.64,0.51,0.64,NORMAL,0.95,NONE,5
+43197099999,Belgaum,15.85,74.533,753.0,Deccan Plateau,deccan_plateau,21.2,932.2,99,-0.52,1.64,0.67,1.64,NORMAL,0.95,NONE,5
+43197199999,Belgaum Airport / Belagavi,15.85,74.617,747.0,Deccan Plateau,deccan_plateau,21.5,928.6,98,-0.3,-1.39,0.51,1.39,NORMAL,0.95,NONE,5
+43213099999,Kurnool,15.8,78.067,281.0,Deccan Plateau,hyderabad,28.0,979.8,70,0.63,0.33,-0.84,0.84,NORMAL,0.95,NONE,5
+04322199999,Ongole AWS,15.5633,80.0833,22.2,Central Plateau,central_plateau,29.6,1008.8,79,0.39,0.96,-0.17,0.96,NORMAL,0.95,NONE,5
+43900000865,Prakasam Ongole AWS,15.5,80.05,10.0,Central Plateau,central_plateau,29.1,1007.6,83,-0.15,-1.12,0.67,1.12,NORMAL,0.95,NONE,5
+43221099999,Ongole,15.5,80.083,12.0,Central Plateau,central_plateau,29.2,1009.1,80,-0.05,0.34,0.17,0.34,NORMAL,0.95,NONE,5
+43192099999,Goa/Panjim,15.483,73.817,58.4,Central Plateau,central_plateau,27.0,1011.7,87,1.13,1.68,-0.67,1.68,NORMAL,0.95,NONE,5
+43200099999,Dharwad,15.483,74.983,678.0,Deccan Plateau,deccan_plateau,22.3,936.5,95,0.24,-0.58,-0.51,0.58,NORMAL,0.95,NONE,5
+43212099999,Nandyal,15.467,78.483,212.0,Deccan Plateau,deccan_plateau,27.8,986.0,88,0.09,-1.24,1.48,1.48,NORMAL,0.95,NONE,5
+43196099999,Mormugao,15.417,73.783,62.0,Central Plateau,central_plateau,27.1,1012.5,87,1.23,2.15,-0.67,2.15,NORMAL,0.95,NONE,5
+43201099999,Gadag,15.417,75.633,650.0,Deccan Plateau,deccan_plateau,24.2,940.6,84,0.93,-0.04,-1.35,1.35,NORMAL,0.95,NONE,5
+43194099999,Goa Intl,15.381,73.831,56.1,Central Plateau,central_plateau,26.3,1007.5,91,-0.22,-0.19,0.34,0.34,NORMAL,0.95,NONE,5
+43201199999,Hubli / Hubballi,15.35,75.083,661.3,Deccan Plateau,deccan_plateau,22.7,939.4,93,0.25,0.03,-0.34,0.34,NORMAL,0.95,NONE,5
+43228099999,Koppal,15.35,76.15,532.0,Deccan Plateau,deccan_plateau,24.0,954.5,90,-0.82,-0.49,0.84,0.84,NORMAL,0.95,NONE,5
+43205099999,Bellary,15.15,76.85,449.0,Deccan Plateau,deccan_plateau,25.6,959.3,83,0.62,-1.31,-0.51,1.31,NORMAL,0.95,NONE,5
+43900000840,Ballari AWS,15.14,76.92,495.0,Deccan Plateau,deccan_plateau,25.5,961.7,85,0.79,1.87,-0.17,1.87,NORMAL,0.95,NONE,5
+230045199999,2300451_013 AWS,14.925,68.968,100.0,Coastal Plains,coastal_plains,28.5,1013.4,76,0.0,0.0,0.0,0.0,NORMAL,0.95,NONE,0
+43243099999,Kavali,14.9,79.983,17.0,Deccan Plateau,deccan_plateau,27.8,1008.0,90,-1.15,-0.04,1.69,1.69,NORMAL,0.95,NONE,5
+43225099999,Karwar,14.783,74.133,4.0,Deccan Plateau,deccan_plateau,26.9,1007.9,89,0.22,-0.87,-0.34,0.87,NORMAL,0.95,NONE,5
+43227099999,Haveri,14.783,75.4,573.0,Deccan Plateau,deccan_plateau,23.6,951.7,92,0.27,1.67,-0.17,1.67,NORMAL,0.95,NONE,5
+43900000856,Ananthapuramu Agro-AWS,14.68,77.6,351.0,Deccan Plateau,deccan_plateau,25.5,973.5,86,0.5,0.17,-0.84,0.84,NORMAL,0.95,NONE,5
+43237099999,Pbo Anantapur,14.583,77.633,364.0,Deccan Plateau,deccan_plateau,24.6,971.3,91,-0.69,-0.16,0.84,0.84,NORMAL,0.95,NONE,5
+43230099999,Davangere,14.5,75.917,620.0,Deccan Plateau,deccan_plateau,24.4,950.9,85,0.93,1.43,-1.18,1.43,NORMAL,0.95,NONE,5
+43241099999,Cuddapah,14.483,78.833,130.0,Deccan Plateau,deccan_plateau,25.7,996.6,96,-0.54,-2.2,0.51,2.2,NORMAL,0.95,NONE,5
+43245099999,Nellore,14.45,79.983,20.0,Deccan Plateau,chennai,27.4,1007.7,97,-0.2,-0.17,0.94,0.94,NORMAL,0.95,NONE,5
+43226099999,Honavar,14.283,74.45,9.0,Deccan Plateau,deccan_plateau,25.5,1010.8,99,-1.02,-1.18,1.18,1.18,NORMAL,0.95,NONE,5
+43233099999,Chitradurga,14.233,76.433,733.0,Deccan Plateau,bengaluru,23.7,935.8,86,1.39,0.52,-1.35,1.39,NORMAL,0.95,NONE,5
+43900000844,Chitradurga AWS,14.23,76.4,732.0,Deccan Plateau,deccan_plateau,23.2,933.7,89,0.96,-0.02,-0.84,0.96,NORMAL,0.95,NONE,5
+43900000866,Sri Sathya Sai Puttaparthi AWS,14.16,77.81,475.0,Deccan Plateau,deccan_plateau,24.1,961.3,91,0.19,0.5,-0.34,0.5,NORMAL,0.95,NONE,5
+43229099999,Shirali,14.067,74.533,45.0,Deccan Plateau,deccan_plateau,25.6,1002.2,97,-0.74,-1.65,0.4,1.65,NORMAL,0.95,NONE,5
+43900000857,Annamayya Rayachoti AWS,14.06,78.75,380.0,Deccan Plateau,deccan_plateau,25.0,972.9,93,0.68,3.13,-0.34,3.13,PROBABLE_FAULT,0.76,LOW,5
+230045999999,2300459_016 AWS,14.016,87.005,100.0,Coastal Plains,coastal_plains,28.2,1009.8,81,0.0,0.0,0.0,0.0,NORMAL,0.95,NONE,0
+04325899999,Shivamogga AWS,13.9333,75.6333,572.0,Deccan Plateau,deccan_plateau,23.1,948.5,96,-0.14,-1.14,0.0,1.14,NORMAL,0.95,NONE,5
+43900000850,Shivamogga AWS,13.93,75.57,569.0,Deccan Plateau,deccan_plateau,23.1,949.0,94,-0.02,-0.64,-0.67,0.67,NORMAL,0.95,NONE,5
+43258099999,Shivamogga,13.858,75.62,630.6,Deccan Plateau,deccan_plateau,22.7,945.1,96,-0.02,-0.25,-0.34,0.34,NORMAL,0.95,NONE,5
+43264099999,Chikkanahalli,13.667,77.917,672.0,Deccan Plateau,deccan_plateau,22.3,917.3,93,-0.23,-11.57,0.0,11.57,SENSOR_FAULT,0.98,HIGH,5
+43275099999,Tirupathi,13.667,79.583,105.0,Deccan Plateau,chennai,26.2,1001.3,95,0.96,1.6,-0.17,1.6,NORMAL,0.95,NONE,5
+43900000867,Tirupati Airport AWS,13.63,79.54,107.0,Deccan Plateau,deccan_plateau,25.3,1000.2,95,0.22,1.02,-0.17,1.02,NORMAL,0.95,NONE,5
+43271099999,Arogyavaram,13.533,78.5,701.0,Deccan Plateau,deccan_plateau,22.3,935.7,93,-0.15,-0.23,0.0,0.23,NORMAL,0.95,NONE,5
+43257099999,Agumbe Emo,13.5,75.083,659.0,Deccan Plateau,deccan_plateau,21.8,940.3,99,-1.02,-0.1,2.19,2.19,NORMAL,0.95,NONE,5
+43900000842,Chikkaballapur AWS,13.43,77.73,915.0,Deccan Plateau,deccan_plateau,20.9,913.9,95,0.0,0.08,0.17,0.17,NORMAL,0.95,NONE,5
+43259099999,Balehonur,13.367,75.45,907.0,Deccan Plateau,deccan_plateau,21.4,932.4,98,0.42,5.78,0.0,5.78,SENSOR_FAULT,0.819,HIGH,5
+43900000852,Udupi Manipal AWS,13.35,74.78,88.0,Deccan Plateau,deccan_plateau,26.2,1008.0,91,-0.48,1.47,0.84,1.47,NORMAL,0.95,NONE,5
+43900000851,Tumakuru AWS,13.34,77.1,822.0,Deccan Plateau,deccan_plateau,21.2,924.0,95,-0.26,-0.59,-0.17,0.59,NORMAL,0.95,NONE,5
+43900000843,Chikkamagaluru AWS,13.32,75.77,1090.0,Deccan Plateau,deccan_plateau,19.9,902.8,98,0.14,2.56,0.34,2.56,NORMAL,0.95,NONE,5
+43260099999,Chickmagalur,13.25,75.75,1057.0,Deccan Plateau,deccan_plateau,19.8,900.5,99,-0.53,-0.62,0.51,0.62,NORMAL,0.95,NONE,5
+43900000838,Ennore Port AWS,13.24,80.33,6.0,Central Plateau,central_plateau,25.7,1011.4,96,0.33,0.26,-0.17,0.33,NORMAL,0.95,NONE,5
+43900000858,Chittoor AWS,13.22,79.1,315.0,Deccan Plateau,deccan_plateau,24.2,978.5,95,0.43,1.77,-0.34,1.77,NORMAL,0.95,NONE,5
+42705699999,Bangaluru Intl Airport / Kempegowda Intl,13.2,77.7,915.0,Deccan Plateau,bengaluru,20.9,914.8,94,-0.12,0.72,-0.17,0.72,NORMAL,0.95,NONE,5
+43272099999,Chintamani,13.2,78.067,857.0,Deccan Plateau,deccan_plateau,21.7,921.5,93,0.28,0.88,-0.17,0.88,NORMAL,0.95,NONE,5
+43277099999,Tiruttani,13.15,79.533,87.0,Deccan Plateau,deccan_plateau,24.9,1000.1,97,0.02,-0.52,0.17,0.52,NORMAL,0.95,NONE,5
+43900000846,Kolar AWS,13.14,78.13,822.0,Deccan Plateau,deccan_plateau,21.6,922.0,93,-0.08,-1.98,-0.17,1.98,NORMAL,0.95,NONE,5
+43900000833,Tiruvallur AWS,13.14,79.91,38.0,Deccan Plateau,deccan_plateau,25.2,1006.9,96,-0.02,-0.45,-0.17,0.45,NORMAL,0.95,NONE,5
+43900000841,Bengaluru Urban GKVK AWS,13.08,77.58,920.0,Deccan Plateau,deccan_plateau,20.5,910.9,99,-0.43,-1.66,0.84,1.66,NORMAL,0.95,NONE,5
+43278099999,Numgambakkam,13.067,80.2,7.0,Central Plateau,chennai,25.3,1010.9,98,-0.09,-0.26,0.34,0.34,NORMAL,0.95,NONE,5
+43900000845,Hassan AWS,13.01,76.1,957.0,Deccan Plateau,deccan_plateau,21.3,910.7,95,0.45,-0.74,-0.51,0.74,NORMAL,0.95,NONE,5
+43279099999,Chennai Intl,12.994,80.181,15.8,Central Plateau,chennai,25.4,1010.6,97,0.13,0.51,0.17,0.51,NORMAL,0.95,NONE,5
+43263099999,Hassan,12.967,76.333,955.0,Deccan Plateau,deccan_plateau,21.5,917.2,93,0.61,2.07,-1.01,2.07,NORMAL,0.95,NONE,5
+43295099999,Bangalore,12.967,77.583,921.0,Deccan Plateau,bengaluru,21.0,914.1,97,0.11,0.64,0.51,0.64,NORMAL,0.95,NONE,5
+43284099999,Mangalore,12.961,74.89,102.7,Deccan Plateau,bengaluru,26.8,1001.5,86,0.39,-1.66,0.0,1.66,NORMAL,0.95,NONE,5
+43285099999,Mangalore/Panambur,12.95,74.833,31.0,Deccan Plateau,deccan_plateau,26.8,1012.5,86,-0.29,0.02,0.0,0.29,NORMAL,0.95,NONE,5
+43296099999,Bangalore/Hindustan Airport,12.95,77.633,888.0,Deccan Plateau,deccan_plateau,21.4,916.1,94,0.27,-1.04,-0.34,1.04,NORMAL,0.95,NONE,5
+43302599999,Bangalore / Hal Airport Bengaluru,12.95,77.668,887.6,Deccan Plateau,bengaluru,21.4,916.7,94,0.26,-0.44,-0.34,0.44,NORMAL,0.95,NONE,5
+43299099999,Kolar Gold Fields,12.95,78.3,882.0,Deccan Plateau,deccan_plateau,21.3,923.2,94,0.08,5.22,0.17,5.22,SENSOR_FAULT,0.785,HIGH,5
+43900000826,Ranipet AWS,12.93,79.33,160.0,Deccan Plateau,deccan_plateau,24.7,992.2,98,0.25,-0.12,0.34,0.34,NORMAL,0.95,NONE,5
+43303099999,Vellore,12.917,79.15,214.0,Deccan Plateau,deccan_plateau,23.2,966.2,100,-0.97,-13.26,0.51,13.26,SENSOR_FAULT,0.98,HIGH,5
+43309099999,Maya Bandar,12.917,92.917,28.0,Island Territories,island_territories,25.4,1009.0,99,0.08,-0.49,0.17,0.49,NORMAL,0.95,NONE,2
+04328499999,Mangalore/Bajpe AWS,12.9167,74.8833,106.0,Deccan Plateau,deccan_plateau,27.2,1004.6,84,0.75,0.31,-0.34,0.75,NORMAL,0.95,NONE,5
+43283099999,Mangalore,12.867,74.85,22.0,Deccan Plateau,deccan_plateau,27.2,1009.3,84,0.29,-2.72,-0.34,2.72,PROBABLE_FAULT,0.76,LOW,5
+43900000818,Kanchipuram AWS,12.83,79.7,83.0,Deccan Plateau,deccan_plateau,24.7,1002.8,96,-0.19,0.85,-0.17,0.85,NORMAL,0.95,NONE,5
+43900000849,Ramanagara AWS,12.72,77.28,747.0,Deccan Plateau,deccan_plateau,22.0,938.0,96,-0.11,4.29,-0.17,4.29,SENSOR_FAULT,0.729,HIGH,5
+43900000814,Chengalpattu AWS,12.69,79.98,36.0,Deccan Plateau,deccan_plateau,24.8,1007.2,97,-0.26,-0.66,0.17,0.66,NORMAL,0.95,NONE,5
+43308099999,Mahabalipuram,12.617,80.2,9.0,Central Plateau,central_plateau,24.9,1011.9,96,-0.33,0.84,-0.17,0.84,NORMAL,0.95,NONE,5
+43900000847,Mandya V C Farm AWS,12.52,76.9,678.0,Deccan Plateau,deccan_plateau,22.0,939.3,99,-1.5,-1.34,1.69,1.69,NORMAL,0.95,NONE,5
+43900000820,Krishnagiri AWS,12.52,78.21,492.0,Deccan Plateau,deccan_plateau,23.6,958.6,93,-0.51,-0.03,0.17,0.51,NORMAL,0.95,NONE,5
+43289099999,Mandya,12.5,76.833,695.0,Deccan Plateau,deccan_plateau,22.5,935.9,99,-0.98,-1.81,1.69,1.81,NORMAL,0.95,NONE,5
+43302099999,Tiruppattur,12.483,78.567,385.0,Deccan Plateau,deccan_plateau,24.9,970.3,92,0.31,-0.07,-0.17,0.31,NORMAL,0.95,NONE,5
+43287099999,Madikeri,12.417,75.733,1153.0,Deccan Plateau,deccan_plateau,19.2,888.5,99,0.57,2.87,0.84,2.87,PROBABLE_FAULT,0.76,LOW,5
+43310099999,Long Island,12.417,92.933,25.0,Island Territories,island_territories,25.2,1008.4,99,-0.21,-0.16,0.51,0.51,NORMAL,0.95,NONE,5
+43291099999,Mysore,12.3,76.7,767.0,Deccan Plateau,deccan_plateau,23.2,929.0,89,0.98,-1.48,-1.18,1.48,NORMAL,0.95,NONE,5
+43900000848,Mysuru Airport AWS,12.23,76.65,763.0,Deccan Plateau,deccan_plateau,23.3,934.1,87,0.61,1.91,-2.02,2.02,NORMAL,0.95,NONE,5
+43900000834,Tiruvannamalai AWS,12.23,79.07,171.0,Deccan Plateau,deccan_plateau,25.4,990.9,98,0.26,-0.04,0.51,0.51,NORMAL,0.95,NONE,5
+43900000900,Kasaragod Pilicode AWS,12.21,75.16,15.0,Deccan Plateau,deccan_plateau,25.9,1013.3,93,-0.59,-0.17,-0.13,0.59,NORMAL,0.95,NONE,5
+43301099999,Dharmapuri,12.133,78.033,396.0,Deccan Plateau,deccan_plateau,24.9,959.0,92,-0.2,-7.12,0.34,7.12,SENSOR_FAULT,0.899,HIGH,5
+43900000815,Dharmapuri AWS,12.13,78.16,468.0,Deccan Plateau,deccan_plateau,25.0,961.7,89,0.48,0.3,-0.51,0.51,NORMAL,0.95,NONE,5
+43331099999,M.O. Pondicherry,11.967,79.817,38.0,Coastal Plains,chennai,25.5,1008.1,95,-0.19,0.77,0.17,0.77,NORMAL,0.95,NONE,5
+43900000836,Viluppuram AWS,11.94,79.49,42.0,Coastal Plains,coastal_plains,25.7,1006.3,95,-0.09,-0.48,0.17,0.48,NORMAL,0.95,NONE,5
+43322099999,Chamarajnagar,11.933,76.933,760.0,Coastal Plains,coastal_plains,23.5,935.1,85,0.21,0.78,-2.19,2.19,NORMAL,0.95,NONE,5
+43900000899,Kannur Airport AWS,11.92,75.55,96.0,Coastal Plains,coastal_plains,25.1,1003.8,98,-0.25,-0.07,0.0,0.25,NORMAL,0.95,NONE,5
+43328099999,Pondicherry,11.917,79.833,6.0,Coastal Plains,coastal_plains,25.7,1011.7,94,-0.2,0.62,-0.17,0.62,NORMAL,0.95,NONE,5
+43315099999,Cannur,11.833,75.333,18.0,Coastal Plains,coastal_plains,25.9,1013.3,94,0.02,0.08,-0.67,0.67,NORMAL,0.95,NONE,5
+43329099999,Cuddalore,11.767,79.767,12.0,Coastal Plains,chennai,26.0,1010.6,94,0.09,0.48,0.0,0.48,NORMAL,0.95,NONE,5
+43340099999,Yercaud,11.75,78.167,1463.0,Coastal Plains,coastal_plains,25.3,970.5,88,5.73,26.19,-0.17,26.19,SENSOR_FAULT,0.98,HIGH,5
+43326099999,Kallakkurichchi,11.733,78.967,127.0,Coastal Plains,coastal_plains,27.1,998.0,89,-0.29,1.21,2.36,2.36,NORMAL,0.95,NONE,5
+43333099999,Port Blair,11.667,92.717,79.0,Island Territories,island_territories,25.1,1008.8,97,0.03,4.61,0.17,4.61,SENSOR_FAULT,0.749,HIGH,5
+43325099999,Salem,11.65,78.167,278.0,Coastal Plains,coastal_plains,25.9,980.6,90,-0.28,-0.14,0.34,0.34,NORMAL,0.95,NONE,5
+43900000906,Wayanad Ambalavayal AWS,11.62,76.21,974.0,Coastal Plains,coastal_plains,21.2,912.9,99,2.27,5.64,0.17,5.64,SENSOR_FAULT,0.811,HIGH,5
+43207099999,Parangipettai,11.5,79.767,3.0,Coastal Plains,coastal_plains,27.3,1010.9,92,1.14,-0.53,-0.34,1.14,NORMAL,0.95,NONE,5
+43338099999,Erode,11.483,77.767,172.0,Coastal Plains,coastal_plains,26.9,983.3,81,0.21,-4.3,-1.18,4.3,SENSOR_FAULT,0.73,HIGH,5
+43900000823,Nilgiris Ooty Hill AWS,11.41,76.7,2240.0,Coastal Plains,coastal_plains,13.9,786.3,98,2.02,5.85,0.17,5.85,SENSOR_FAULT,0.823,HIGH,5
+43317099999,Udhagamandalam,11.4,76.733,2249.0,Coastal Plains,coastal_plains,12.1,763.4,98,0.56,-7.06,0.17,7.06,SENSOR_FAULT,0.896,HIGH,5
+43318099999,Coonoor,11.35,76.8,1747.0,Coastal Plains,coastal_plains,15.3,821.6,94,0.5,-0.39,-0.51,0.51,NORMAL,0.95,NONE,5
+43900000817,Erode AWS,11.34,77.72,183.0,Coastal Plains,coastal_plains,26.3,992.3,83,-0.45,0.18,0.17,0.45,NORMAL,0.95,NONE,5
+43316099999,Nilambur,11.283,76.233,31.0,Coastal Plains,coastal_plains,25.8,1010.4,97,0.98,-1.44,-0.34,1.44,NORMAL,0.95,NONE,5
+43314099999,Kozhikode,11.25,75.783,5.0,Coastal Plains,coastal_plains,24.9,1011.9,98,0.13,-2.33,0.17,2.33,NORMAL,0.95,NONE,5
+43900000824,Perambalur AWS,11.23,78.88,143.0,Coastal Plains,coastal_plains,28.1,998.0,75,0.22,1.83,0.51,1.83,NORMAL,0.95,NONE,5
+43900000822,Namakkal AWS,11.22,78.17,218.0,Coastal Plains,coastal_plains,28.0,989.8,74,1.18,0.19,-1.21,1.21,NORMAL,0.95,NONE,5
+43324099999,Ariyalur,11.167,79.0,747.0,Coastal Plains,coastal_plains,28.5,1001.3,71,3.86,50.8,-0.17,50.8,SENSOR_FAULT,0.98,HIGH,5
+43900000813,Ariyalur AWS,11.14,79.08,76.0,Coastal Plains,coastal_plains,28.5,1002.1,71,0.19,-0.91,-0.17,0.91,NORMAL,0.95,NONE,5
+42705599999,Calicut,11.137,75.955,104.2,Coastal Plains,coastal_plains,24.1,1003.8,99,-0.05,0.9,0.34,0.9,NORMAL,0.95,NONE,5
+43320099999,M.O. Karipur Airport,11.133,75.95,100.0,Coastal Plains,coastal_plains,24.1,1004.0,99,-0.08,0.77,0.34,0.77,NORMAL,0.95,NONE,5
+43900000903,Malappuram Manjeri AWS,11.12,76.12,68.0,Coastal Plains,coastal_plains,24.4,1008.5,97,0.05,1.06,-0.17,1.06,NORMAL,0.95,NONE,5
+43311099999,M.O. Amini,11.117,72.733,3.0,Island Territories,island_territories,28.7,1013.5,77,0.25,-0.15,-0.34,0.34,NORMAL,0.95,NONE,5
+43900000832,Tiruppur AWS,11.11,77.34,295.0,Coastal Plains,coastal_plains,24.8,977.3,89,0.05,-0.66,-0.84,0.84,NORMAL,0.95,NONE,5
+43900000821,Mayiladuthurai AWS,11.1,79.65,14.0,Coastal Plains,coastal_plains,28.6,1009.0,83,-0.4,-0.33,1.18,1.18,NORMAL,0.95,NONE,5
+43321099999,Coimbatore,11.031,77.044,403.6,Coastal Plains,bengaluru,23.3,968.6,96,-0.62,1.22,-0.17,1.22,NORMAL,0.95,NONE,5
+43319099999,Coimbatore,11.0,76.967,409.0,Coastal Plains,coastal_plains,23.4,966.2,97,-0.5,0.38,0.17,0.5,NORMAL,0.95,NONE,5
+43342099999,K. Paramathy,10.95,78.083,181.0,Coastal Plains,coastal_plains,27.6,998.4,73,0.13,2.6,-0.9,2.6,PROBABLE_FAULT,0.76,LOW,5
+43346099999,Karaikal,10.917,79.833,7.0,Coastal Plains,coastal_plains,29.4,1010.1,76,0.24,-0.04,-0.17,0.24,NORMAL,0.95,NONE,5
+43266099999,M.O. Agathi Airport,10.85,72.467,3.0,Island Territories,island_territories,28.4,1013.6,79,-0.19,-0.08,0.0,0.19,NORMAL,0.95,NONE,5
+43312099999,Agatti,10.85,72.467,4.0,Island Territories,island_territories,28.4,1013.6,79,-0.19,0.08,0.0,0.19,NORMAL,0.95,NONE,5
+43334099999,Androth,10.8,73.983,5.0,Island Territories,island_territories,29.7,1013.0,72,1.1,-0.32,-1.18,1.18,NORMAL,0.95,NONE,5
+43330099999,Thanjavur,10.783,79.133,68.0,Coastal Plains,coastal_plains,27.9,1004.4,78,-0.55,0.37,1.01,1.01,NORMAL,0.95,NONE,5
+43900000908,Ponnani Coastal AWS,10.77,75.92,5.0,Coastal Plains,coastal_plains,24.7,1012.7,97,-0.09,-2.11,-0.34,2.11,NORMAL,0.95,NONE,5
+43900000835,Tiruvarur AWS,10.77,79.64,10.0,Coastal Plains,coastal_plains,29.1,1009.8,76,-0.24,0.04,-0.17,0.24,NORMAL,0.95,NONE,5
+43335099999,Palakkad,10.767,76.65,97.0,Coastal Plains,coastal_plains,24.0,1002.8,99,-1.09,-1.35,0.34,1.35,NORMAL,0.95,NONE,5
+43343099999,Tiruchirapalli Town,10.767,78.717,88.0,Coastal Plains,coastal_plains,28.2,1001.8,72,0.27,-0.15,-0.84,0.84,NORMAL,0.95,NONE,5
+43347099999,Nagappattinam,10.767,79.85,9.0,Coastal Plains,coastal_plains,29.4,1010.4,77,0.25,0.36,0.17,0.36,NORMAL,0.95,NONE,5
+43344099999,Tiruchirappalli,10.765,78.71,87.8,Coastal Plains,coastal_plains,28.2,1001.5,72,0.27,-0.37,-0.84,0.84,NORMAL,0.95,NONE,5
+43364099999,Hut Bay,10.583,92.55,5.0,Island Territories,island_territories,25.0,1007.6,96,-0.46,-1.2,0.0,1.2,NORMAL,0.95,NONE,5
+230009599999,2300095_010 AWS,10.556,94.042,1.0,Island Territories,island_territories,27.3,1010.4,84,1.92,-0.33,-2.02,2.02,NORMAL,0.95,NONE,5
+43337099999,Kavaratti Heliport,10.542,72.616,9.1,Island Territories,island_territories,28.2,1013.5,80,-0.33,0.43,0.17,0.43,NORMAL,0.95,NONE,5
+43900000905,Thrissur Vellanikkara AWS,10.54,76.28,41.0,Coastal Plains,coastal_plains,24.6,1011.5,99,0.11,1.59,0.34,1.59,NORMAL,0.95,NONE,5
+2300095_999999,2300095_009 AWS,10.532,94.102,100.0,Island Territories,island_territories,26.8,1010.5,86,2.04,3.72,-1.69,3.72,PROBABLE_FAULT,0.76,LOW,5
+43357099999,Thrissur,10.517,76.217,39.0,Coastal Plains,coastal_plains,25.2,1012.0,96,0.61,1.77,-0.34,1.77,NORMAL,0.95,NONE,5
+43345099999,Kudimiamalai,10.4,78.667,123.0,Coastal Plains,coastal_plains,27.2,998.8,81,-0.38,0.8,0.54,0.8,NORMAL,0.95,NONE,5
+43900000825,Pudukkottai AWS,10.38,78.82,100.0,Coastal Plains,coastal_plains,27.8,1000.1,77,0.09,-0.33,-0.17,0.33,NORMAL,0.95,NONE,5
+43900000816,Dindigul AWS,10.37,77.98,265.0,Coastal Plains,coastal_plains,26.9,980.3,87,0.6,-0.57,0.27,0.6,NORMAL,0.95,NONE,5
+43349099999,Vedaranniyam,10.367,79.85,4.0,Coastal Plains,coastal_plains,29.5,1010.1,77,0.3,-0.28,0.17,0.3,NORMAL,0.95,NONE,5
+43348099999,Atiramapattinam,10.333,79.383,6.0,Coastal Plains,coastal_plains,28.8,1010.9,75,-0.27,0.09,-0.34,0.34,NORMAL,0.95,NONE,5
+230045499999,2300454_012 AWS,10.308,72.608,100.0,Island Territories,island_territories,28.0,1013.7,82,0.19,7.89,0.51,7.89,SENSOR_FAULT,0.946,HIGH,5
+43341099999,Valparai,10.283,77.0,1041.0,Coastal Plains,coastal_plains,20.7,902.8,97,0.45,0.43,-0.34,0.45,NORMAL,0.95,NONE,5
+43339099999,Kodaikanal,10.233,77.467,2343.0,Coastal Plains,coastal_plains,11.7,779.0,100,-0.45,1.19,0.51,1.19,NORMAL,0.95,NONE,5
+43336099999,Cochin Int. Airport Nedumbassery,10.15,76.4,7.7,Coastal Plains,coastal_plains,24.3,1012.9,98,-0.9,-0.11,0.34,0.9,NORMAL,0.95,NONE,5
+43900000897,Idukki Munnar Hill AWS,10.09,77.06,1530.0,Coastal Plains,coastal_plains,17.4,857.1,99,0.35,1.09,0.0,1.09,NORMAL,0.95,NONE,5
+43327099999,Karaikudi,10.067,78.8,92.0,Coastal Plains,coastal_plains,27.6,1002.3,78,-0.21,0.84,0.17,0.84,NORMAL,0.95,NONE,5
+43900000829,Theni AWS,10.01,77.48,290.0,Coastal Plains,coastal_plains,25.8,978.5,80,0.29,-1.1,-3.2,3.2,PROBABLE_FAULT,0.76,LOW,5
+43356099999,Periakulam,10.0,77.133,300.0,Coastal Plains,coastal_plains,19.3,894.8,99,-5.14,-12.94,0.0,12.94,SENSOR_FAULT,0.98,HIGH,5
+43351099999,Fort Cochin,9.967,76.233,3.0,Coastal Plains,coastal_plains,25.4,1013.7,94,0.5,0.18,-0.67,0.67,NORMAL,0.95,NONE,5
+43353099999,Cochin,9.946,76.272,2.4,Coastal Plains,coastal_plains,25.5,1013.5,94,0.58,-0.02,-0.67,0.67,NORMAL,0.95,NONE,5
+43359099999,Madurai,9.917,78.117,133.0,Coastal Plains,coastal_plains,27.2,995.5,85,-0.08,-0.84,0.0,0.84,NORMAL,0.95,NONE,5
+43900000827,Sivaganga AWS,9.85,78.48,102.0,Coastal Plains,coastal_plains,27.5,1000.1,83,0.08,-0.21,-0.34,0.34,NORMAL,0.95,NONE,5
+43360099999,Madurai,9.835,78.093,139.9,Coastal Plains,coastal_plains,27.0,996.5,85,-0.21,0.6,0.0,0.6,NORMAL,0.95,NONE,5
+43361099999,Tondi,9.733,79.033,5.0,Coastal Plains,coastal_plains,28.9,1011.1,73,0.41,-0.21,-0.67,0.67,NORMAL,0.95,NONE,5
+43900000902,Kottayam Kumarakom AWS,9.59,76.52,8.0,Coastal Plains,coastal_plains,24.4,1011.6,98,-0.32,-0.98,0.0,0.98,NORMAL,0.95,NONE,5
+43900000837,Virudhunagar AWS,9.58,77.96,117.0,Coastal Plains,coastal_plains,27.4,999.9,83,0.21,0.85,-0.34,0.85,NORMAL,0.95,NONE,5
+43900000898,Idukki Peermade AWS,9.57,76.99,915.0,Coastal Plains,coastal_plains,19.1,900.5,100,0.5,-0.86,0.17,0.86,NORMAL,0.95,NONE,5
+43352099999,Alapuzha,9.55,76.417,4.0,Coastal Plains,coastal_plains,24.8,1013.8,99,-0.42,0.33,0.51,0.51,NORMAL,0.95,NONE,5
+43358099999,Kovilangulam,9.55,78.083,103.0,Coastal Plains,coastal_plains,27.2,1000.3,86,-0.16,-0.06,0.51,0.51,NORMAL,0.95,NONE,5
+43355099999,Kottayam,9.533,76.6,78.0,Coastal Plains,coastal_plains,24.0,1011.8,99,-0.27,5.23,0.17,5.23,SENSOR_FAULT,0.786,HIGH,5
+43900000896,Alappuzha Coastal AWS,9.5,76.33,4.0,Coastal Plains,coastal_plains,25.3,1012.9,96,0.42,-0.46,-0.34,0.46,NORMAL,0.95,NONE,5
+43363099999,Pamban,9.283,79.217,11.0,Coastal Plains,coastal_plains,29.7,1010.3,73,1.33,-0.43,-0.67,1.33,NORMAL,0.95,NONE,5
+43900000904,Pathanamthitta Konni AWS,9.27,76.79,31.0,Coastal Plains,coastal_plains,23.9,1010.3,98,-0.35,0.11,0.0,0.35,NORMAL,0.95,NONE,5
+43367099999,Car Nicobar,9.167,92.833,10.0,Island Territories,island_territories,24.7,1011.5,96,-0.23,0.86,0.17,0.86,NORMAL,0.95,NONE,5
+43368099999,Car Nicobar(In-Afb),9.15,92.817,14.0,Island Territories,island_territories,24.7,1008.5,96,-0.2,-0.1,0.17,0.2,NORMAL,0.95,NONE,5
+43354099999,Punalur,9.0,76.917,34.0,Coastal Plains,coastal_plains,24.3,994.2,97,-0.5,-10.5,0.0,10.5,SENSOR_FAULT,0.98,HIGH,5
+43900000828,Tenkasi AWS,8.96,77.3,143.0,Coastal Plains,coastal_plains,25.2,995.4,86,0.37,-0.6,-1.69,1.69,NORMAL,0.95,NONE,5
+43900000901,Kollam Coastal AWS,8.89,76.6,12.0,Coastal Plains,coastal_plains,25.3,1012.4,96,0.29,0.06,-0.17,0.29,NORMAL,0.95,NONE,5
+04337999999,Tuticorin New Port AWS,8.8,78.15,3.7,Coastal Plains,coastal_plains,28.6,1010.8,68,0.42,-0.9,-0.84,0.9,NORMAL,0.95,NONE,5
+43900000830,Thoothukudi Tuticorin AWS,8.76,78.13,8.0,Coastal Plains,coastal_plains,28.7,1011.2,69,0.52,-0.28,-0.67,0.67,NORMAL,0.95,NONE,5
+43379099999,Tuticorin New Port,8.75,78.183,2.0,Coastal Plains,coastal_plains,28.7,1011.4,69,0.49,-0.63,-0.67,0.67,NORMAL,0.95,NONE,5
+43376099999,Palayankottai,8.733,77.75,51.0,Coastal Plains,coastal_plains,27.8,1007.2,73,-0.42,0.77,0.67,0.77,NORMAL,0.95,NONE,5
+43900000907,Varkala Coastal AWS,8.73,76.71,18.0,Coastal Plains,coastal_plains,25.0,1008.8,97,0.06,-1.94,0.17,1.94,NORMAL,0.95,NONE,5
+43900000831,Tirunelveli Palayamkottai AWS,8.73,77.7,47.0,Coastal Plains,coastal_plains,27.7,1007.7,73,-0.52,0.79,0.67,0.79,NORMAL,0.95,NONE,5
+43373099999,Trivandrum Met.Obs./Thumba,8.533,76.867,7.0,Coastal Plains,coastal_plains,25.0,1013.7,98,-0.06,0.19,0.34,0.34,NORMAL,0.95,NONE,5
+43371099999,Thiruvananthapuram,8.483,76.95,64.0,Coastal Plains,coastal_plains,25.0,1012.3,96,0.31,1.51,-0.17,1.51,NORMAL,0.95,NONE,5
+43372099999,Thiruvananthapuram Intl,8.482,76.92,4.6,Coastal Plains,coastal_plains,25.0,1013.2,96,-0.29,-0.19,0.0,0.29,NORMAL,0.95,NONE,5
+43369099999,Minicoy,8.3,73.15,2.0,Island Territories,island_territories,28.8,1014.0,76,-0.08,-7.78,0.0,7.78,SENSOR_FAULT,0.939,HIGH,3
+04336999999,Minicoy AWS,8.2813,73.0581,1.8,Island Territories,island_territories,28.9,1013.2,76,0.08,-8.33,0.0,8.33,SENSOR_FAULT,0.972,HIGH,3
+43900000819,Kanyakumari Nagercoil AWS,8.18,77.41,40.0,Coastal Plains,coastal_plains,25.0,1007.0,91,-0.61,-1.34,0.19,1.34,NORMAL,0.95,NONE,5
+43374099999,Kovalam,8.083,77.25,35.0,Coastal Plains,coastal_plains,27.1,1013.2,89,1.74,0.71,-1.18,1.74,NORMAL,0.95,NONE,5
+43377099999,Kanniyakumari,8.083,77.5,37.0,Coastal Plains,coastal_plains,26.0,1012.8,86,-0.91,1.71,-0.29,1.71,NORMAL,0.95,NONE,5
+230045399999,2300453_012 AWS,8.074,73.283,100.0,Island Territories,island_territories,29.1,1014.0,74,0.75,8.18,-0.34,8.18,SENSOR_FAULT,0.963,HIGH,2
+43382099999,Nancowry,7.983,93.533,26.0,Island Territories,island_territories,24.1,999.1,95,-0.42,-4.85,-0.17,4.85,SENSOR_FAULT,0.763,HIGH,3
+43385099999,Kondul,7.217,93.733,8.0,Island Territories,island_territories,24.7,1013.2,98,-0.01,1.06,0.34,1.06,NORMAL,0.95,NONE,3
+230046099999,2300460_014 AWS,6.565,88.377,100.0,Coastal Plains,coastal_plains,27.3,1012.8,85,0.0,0.0,0.0,0.0,NORMAL,0.95,NONE,0

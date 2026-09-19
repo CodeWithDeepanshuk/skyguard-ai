@@ -79,7 +79,7 @@ function readLocalLatestJson(): { readings: Map<string, any>; rawList: any[] } {
   if (fs.existsSync(file)) {
     try {
       const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
-      const readings = Array.isArray(parsed.readings) ? parsed.readings : [];
+      const readings = Array.isArray(parsed.stations) ? parsed.stations : Array.isArray(parsed.readings) ? parsed.readings : [];
       for (const r of readings) {
         if (r.station_id) {
           rawList.push(r);
