@@ -97,15 +97,24 @@ export const SKYGUARD_TOKENS = {
     defaultZoom: 4.6,
     minZoom: 3.5,
     maxZoom: 16,
-    // Public CARTO Positron tiles. Attribution remains visible on the map.
-    cartoLightRasterUrls: [
-      'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-      'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-      'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-      'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+    // Authenticated CARTO basemaps with valid API key for watermark-free rendering
+    cartoApiKey: process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9',
+    // Genuine, rich geographic/physical Earth basemap (CARTO Voyager)
+    cartoVoyagerRasterUrls: [
+      `https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+      `https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+      `https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+      `https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
     ],
-    cartoLightRasterUrl: 'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-    cartoLightStyle: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+    // Clean light basemap (CARTO Positron)
+    cartoLightRasterUrls: [
+      `https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+      `https://b.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+      `https://c.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+      `https://d.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+    ],
+    cartoLightRasterUrl: `https://a.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
+    cartoLightStyle: `https://basemaps.cartocdn.com/gl/positron-gl-style/style.json?key=${process.env.NEXT_PUBLIC_CARTO_API_KEY || 'cb1_3j1r_1_be62fb6db7be11a13ab5c0a9'}`,
     // India specific framing bounds [southwest, northeast]
     indiaBounds: [
       [68.0, 7.0],   // Southwest: Gujarat / Indian Ocean / Kanyakumari

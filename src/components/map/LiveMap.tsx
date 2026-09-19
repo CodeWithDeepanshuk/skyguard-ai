@@ -145,11 +145,13 @@ export default function LiveMap({ stations, selectedStation, onSelectStation, ac
           style: {
             version: 8,
             sources: {
+              voyager: { type: 'raster', tiles: SKYGUARD_TOKENS.map.cartoVoyagerRasterUrls, tileSize: 256, attribution: '&copy; OpenStreetMap contributors &copy; CARTO' },
               positron: { type: 'raster', tiles: SKYGUARD_TOKENS.map.cartoLightRasterUrls, tileSize: 256, attribution: '&copy; OpenStreetMap contributors &copy; CARTO' },
               terrain: { type: 'raster', tiles: ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png', 'https://b.tile.opentopomap.org/{z}/{x}/{y}.png', 'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'], tileSize: 256, attribution: 'Map data &copy; OpenStreetMap contributors, SRTM | map style &copy; OpenTopoMap' },
             },
             layers: [
-              { id: 'positron', type: 'raster', source: 'positron', minzoom: 0, maxzoom: 19 },
+              { id: 'voyager', type: 'raster', source: 'voyager', minzoom: 0, maxzoom: 19 },
+              { id: 'positron', type: 'raster', source: 'positron', minzoom: 0, maxzoom: 19, layout: { visibility: 'none' } },
               { id: 'terrain', type: 'raster', source: 'terrain', minzoom: 0, maxzoom: 17, layout: { visibility: 'none' } },
             ],
           },
@@ -169,7 +171,7 @@ export default function LiveMap({ stations, selectedStation, onSelectStation, ac
           map.fitBounds(SKYGUARD_TOKENS.map.indiaBounds, { padding: 38, duration: 0 });
           map.addSource('neighbour-lines', { type: 'geojson', data: neighbourGeojsonRef.current });
           map.addLayer({ id: 'neighbour-lines', type: 'line', source: 'neighbour-lines', paint: { 'line-color': '#1769AA', 'line-width': 2, 'line-dasharray': [2, 2], 'line-opacity': 0.7 } });
-          map.addSource('stations', { type: 'geojson', data: geojsonRef.current, cluster: true, clusterMaxZoom: 7, clusterRadius: 38 });
+          map.addSource('stations', { type: 'geojson', data: geojsonRef.current, cluster: true, clusterMaxZoom: 6, clusterRadius: 30 });
           map.addLayer({ id: 'clusters', type: 'circle', source: 'stations', filter: ['has', 'point_count'], paint: { 'circle-color': ['step', ['get', 'point_count'], '#A7E3F4', 20, '#65CDE7', 80, '#1769AA'], 'circle-radius': ['step', ['get', 'point_count'], 17, 20, 22, 80, 28], 'circle-stroke-width': 3, 'circle-stroke-color': 'rgba(255,255,255,.92)' } });
           map.addLayer({ id: 'cluster-count', type: 'symbol', source: 'stations', filter: ['has', 'point_count'], layout: { 'text-field': '{point_count_abbreviated}', 'text-size': 11, 'text-font': ['Open Sans Bold'] }, paint: { 'text-color': '#102A43' } });
           map.addLayer({ id: 'fault-glow', type: 'circle', source: 'stations', filter: ['all', ['!', ['has', 'point_count']], ['in', ['get', 'quality_state'], ['literal', ['PROBABLE_FAULT', 'CRITICAL', 'MULTI_SENSOR_ANOMALY']]]], paint: { 'circle-radius': ['interpolate', ['linear'], ['zoom'], 4, 9, 10, 22], 'circle-color': 'rgba(220,76,76,.18)', 'circle-stroke-color': '#DC4C4C', 'circle-stroke-width': 1.2 } });
@@ -218,7 +220,7 @@ export default function LiveMap({ stations, selectedStation, onSelectStation, ac
   useEffect(() => {
     if (!loaded) return;
     mapRef.current?.setLayoutProperty('terrain', 'visibility', showTerrain ? 'visible' : 'none');
-    mapRef.current?.setLayoutProperty('positron', 'visibility', showTerrain ? 'none' : 'visible');
+    mapRef.current?.setLayoutProperty('voyager', 'visibility', showTerrain ? 'none' : 'visible');
   }, [loaded, showTerrain]);
   useEffect(() => {
     const map = mapRef.current;
