@@ -16,8 +16,15 @@ import logging
 from pathlib import Path
 import time
 from typing import Any, Dict, List, Optional
+import urllib.error
+import urllib.parse
+import urllib.request
 import pandas as pd
-import requests
+
+try:
+    import requests
+except ImportError:  # pragma: no cover
+    requests = None
 
 from skyguard.providers.base import (
     HumidityObservationType,
@@ -48,11 +55,14 @@ class OpenMeteoIngestionService:
         self.batch_size = max(10, min(batch_size, 50))
         self.request_timeout = request_timeout
         self.store = store or ObservationStore(root=ROOT)
-        self.session = requests.Session()
-        self.session.headers.update({
-            "User-Agent": "SkyGuard-AI-SIH26073-Academic-Collector/1.0",
-            "Accept": "application/json",
-        })
+        if requests is not None:
+            self.session = requests.Session()
+            self.session.headers.update({
+                "User-Agent": "SkyGuard-AI-SIH26073-Academic-Collector/1.0",
+                "Accept": "application/json",
+            })
+        else:
+            self.session = None
         self._stations: List[Dict[str, Any]] = []
         self._load_catalog()
 
@@ -94,19 +104,38 @@ class OpenMeteoIngestionService:
         
         for attempt in range(4):
             try:
-                resp = self.session.get(OPEN_METEO_URL, params=params, timeout=self.request_timeout)
-                if resp.status_code == 429:
-                    wait_time = 4.0 * (attempt + 1)
-                    logger.warning("Open-Meteo 429 Rate Limit encountered; backing off for %.1f s", wait_time)
-                    time.sleep(wait_time)
-                    continue
-                resp.raise_for_status()
-                data = resp.json()
+                if self.session is not None:
+                    resp = self.session.get(OPEN_METEO_URL, params=params, timeout=self.request_timeout)
+                    if resp.status_code == 429:
+                        wait_time = 4.0 * (attempt + 1)
+                        logger.warning("Open-Meteo 429 Rate Limit encountered; backing off for %.1f s", wait_time)
+                        time.sleep(wait_time)
+                        continue
+                    resp.raise_for_status()
+                    data = resp.json()
+                else:
+                    query = urllib.parse.urlencode(params)
+                    req = urllib.request.Request(
+                        f"{OPEN_METEO_URL}?{query}",
+                        headers={
+                            "User-Agent": "SkyGuard-AI-SIH26073-Academic-Collector/1.0",
+                            "Accept": "application/json",
+                        },
+                    )
+                    with urllib.request.urlopen(req, timeout=self.request_timeout) as resp:
+                        data = json.loads(resp.read().decode("utf-8"))
+
                 if isinstance(data, dict):
                     return [data]
                 elif isinstance(data, list):
                     return data
             except Exception as e:
+                code = getattr(e, "code", None)
+                if code == 429:
+                    wait_time = 4.0 * (attempt + 1)
+                    logger.warning("Open-Meteo 429 Rate Limit encountered; backing off for %.1f s", wait_time)
+                    time.sleep(wait_time)
+                    continue
                 logger.warning("Batch fetch attempt %d failed: %s", attempt + 1, e)
                 if attempt < 3:
                     time.sleep(2.0 * (attempt + 1))
