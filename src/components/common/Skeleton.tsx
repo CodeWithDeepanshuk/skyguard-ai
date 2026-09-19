@@ -17,7 +17,7 @@ export function MapSkeleton() {
       <div className="relative z-10 flex flex-col items-center text-center">
         <div className="w-12 h-12 rounded-full border-3 border-blue-600/30 border-t-blue-600 animate-spin mb-4" />
         <p className="text-sm font-bold text-slate-800">Initializing National Geospatial Canvas...</p>
-        <p className="text-xs text-slate-500 font-mono mt-1">CARTO Positron · 543 Station Vertices</p>
+        <p className="text-xs text-slate-500 font-mono mt-1">CARTO Positron · 1,008 Station Vertices</p>
       </div>
     </div>
   );

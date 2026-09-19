@@ -53,7 +53,7 @@ export function CommandPalette({ isOpen, onClose, stations = [], onSelectStation
 
   const quickLinks = [
     { name: 'National Command Centre', href: '/', icon: RadioTower, desc: 'Live India AWS map and active intelligence' },
-    { name: 'AWS Network Table & Map', href: '/stations', icon: RadioTower, desc: 'Browse all 543 catalog stations' },
+    { name: 'AWS Network Table & Map', href: '/stations', icon: RadioTower, desc: 'Browse all 1,008 catalog stations' },
     { name: 'Incident Command & Persistence', href: '/incidents', icon: Activity, desc: 'Investigate confirmed anomaly episodes' },
     { name: 'Scientific Analytics & Ablation', href: '/analytics', icon: BarChart3, desc: 'Precision, recall, holdouts & ablation ladder' },
     { name: '25-Gate Operational Matrix', href: '/validation', icon: ShieldCheck, desc: '100% passing operational gatekeeper' },
@@ -179,7 +179,7 @@ export function CommandPalette({ isOpen, onClose, stations = [], onSelectStation
         {/* Footer info */}
         <div className="px-4 py-2 bg-slate-50 border-t border-slate-200 text-[10px] font-mono text-slate-500 flex items-center justify-between">
           <span>SkyGuard AI Master Command Palette</span>
-          <span>543 Indian AWS Stations Indexed</span>
+          <span>1,008 Indian AWS Stations Indexed</span>
         </div>
       </div>
     </div>
