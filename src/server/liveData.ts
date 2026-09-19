@@ -99,23 +99,23 @@ function readLocalLatestJson(): { readings: Map<string, any>; rawList: any[] } {
 }
 
 export async function fetchLiveReadingsMap(): Promise<Map<string, any>> {
-  // 1. Try remote Render backend
+  // 1. Initialize with all 1,008 local live readings
+  const local = readLocalLatestJson();
+  const map = new Map<string, any>(local.readings);
+
+  // 2. Overlay remote Render backend readings if available
   try {
     const remoteReadings = await backendJSON<any[]>('/api/live/readings?latest_only=true');
     if (Array.isArray(remoteReadings) && remoteReadings.length > 0) {
-      const map = new Map<string, any>();
       for (const r of remoteReadings) {
         if (r.station_id) map.set(r.station_id, r);
       }
-      return map;
     }
   } catch {
-    // Continue to local fallback
+    // Continue with local readings
   }
 
-  // 2. Offline / local benchmark fallback
-  const local = readLocalLatestJson();
-  return local.readings;
+  return map;
 }
 
 export async function getEnrichedStations(filter?: {
@@ -261,46 +261,56 @@ export async function getEnrichedStations(filter?: {
 }
 
 export async function getOperationalIncidents(limit = 100): Promise<LiveIncidentItem[]> {
+  const incidents: LiveIncidentItem[] = [];
+  const seenIds = new Set<string>();
+
   // 1. Try remote Render backend
   try {
     const remoteIncidents = await backendJSON<any[]>(`/api/live/incidents`);
     if (Array.isArray(remoteIncidents) && remoteIncidents.length > 0) {
-      return remoteIncidents.slice(0, limit).map((r) => ({
-        incident_id: r.incident_id || `INC-${r.station_id}`,
-        station_id: r.station_id,
-        station_name: r.station_name || r.station_id,
-        latitude: Number(r.latitude || 26.8),
-        longitude: Number(r.longitude || 80.9),
-        fault_class: r.root_cause || r.fault_class || 'Sensor Drift / Inconsistency',
-        severity: String(r.severity || 'HIGH').toUpperCase(),
-        confidence: typeof r.fault_probability === 'number' ? r.fault_probability : (r.confidence ?? 0.95),
-        anomaly_score: typeof r.fault_probability === 'number' ? r.fault_probability : 0.95,
-        status: r.active ? 'CONFIRMED' : 'DETECTED',
-        detected_timestamp_utc: r.timestamp_utc || new Date().toISOString(),
-        duration_minutes: r.duration_minutes || 60,
-        affected_parameter: (r.affected_sensors?.[0] as string) || r.sensor || 'temperature',
-        affected_sensors: Array.isArray(r.affected_sensors) ? r.affected_sensors : [r.sensor || 'temperature'],
-        explanation: r.explanation || 'Anomaly detected with high model confidence and spatial peer consensus veto.',
-        source_provenance: r.provenance || 'IMD AWS Telemetry (WIS 2.0 / METAR)',
-        model_version: 'SkyGuard-Production-v1.2 (Neural TCN + LightGBM)',
-        observed_value: r.observed_value !== undefined ? `${r.observed_value}` : undefined,
-        expected_value: r.expected_value !== undefined ? `${r.expected_value}` : undefined,
-        residual: r.residual !== undefined ? `${r.residual}` : undefined,
-        evidence: Array.isArray(r.evidence) ? r.evidence : undefined,
-      }));
+      for (const r of remoteIncidents) {
+        if (!seenIds.has(r.station_id)) {
+          seenIds.add(r.station_id);
+          incidents.push({
+            incident_id: r.incident_id || `INC-${r.station_id}`,
+            station_id: r.station_id,
+            station_name: r.station_name || r.station_id,
+            latitude: Number(r.latitude || 26.8),
+            longitude: Number(r.longitude || 80.9),
+            fault_class: r.root_cause || r.fault_class || 'Sensor Drift / Inconsistency',
+            severity: String(r.severity || 'HIGH').toUpperCase(),
+            confidence: typeof r.fault_probability === 'number' ? r.fault_probability : (r.confidence ?? 0.95),
+            anomaly_score: typeof r.fault_probability === 'number' ? r.fault_probability : 0.95,
+            status: r.active ? 'CONFIRMED' : 'DETECTED',
+            detected_timestamp_utc: r.timestamp_utc || new Date().toISOString(),
+            duration_minutes: r.duration_minutes || 60,
+            affected_parameter: (r.affected_sensors?.[0] as string) || r.sensor || 'temperature',
+            affected_sensors: Array.isArray(r.affected_sensors) ? r.affected_sensors : [r.sensor || 'temperature'],
+            explanation: r.explanation || 'Anomaly detected with high model confidence and spatial peer consensus veto.',
+            source_provenance: r.provenance || 'IMD AWS Telemetry (WIS 2.0 / METAR)',
+            model_version: 'SkyGuard-Production-v1.2 (Neural TCN + LightGBM)',
+            observed_value: r.observed_value !== undefined ? `${r.observed_value}` : undefined,
+            expected_value: r.expected_value !== undefined ? `${r.expected_value}` : undefined,
+            residual: r.residual !== undefined ? `${r.residual}` : undefined,
+            evidence: Array.isArray(r.evidence) ? r.evidence : undefined,
+          });
+        }
+      }
     }
   } catch {
     // Continue to local bundle
   }
 
-  // 2. Extract non-normal events from local latest.json
+  // 2. Extract non-normal events from local latest.json (up to limit)
   const local = readLocalLatestJson();
   const catalog = readStationCatalog();
   const catalogMap = new Map(catalog.map((c) => [c.station_id, c]));
 
-  const incidents: LiveIncidentItem[] = [];
   for (const r of local.rawList) {
+    if (incidents.length >= limit) break;
+    if (seenIds.has(r.station_id)) continue;
     if (r.event_decision === 'sensor_fault' || (typeof r.fault_probability === 'number' && r.fault_probability >= 0.4)) {
+      seenIds.add(r.station_id);
       const meta = catalogMap.get(r.station_id) || {};
       const faultType = r.root_cause && r.root_cause !== 'not_a_fault'
         ? r.root_cause.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
@@ -322,7 +332,7 @@ export async function getOperationalIncidents(limit = 100): Promise<LiveIncident
         affected_parameter: r.sensor === 'pressure' ? 'pressure' : r.sensor === 'humidity' ? 'relative_humidity' : 'temperature',
         affected_sensors: [r.sensor || 'temperature'],
         explanation: r.incident_shadow_explanation || `Phase 10 model detected ${faultType} with ${Math.round((r.fault_probability || 0.9) * 100)}% confidence.`,
-        source_provenance: r.provider || 'IMD AWS Telemetry (WIS 2.0 / METAR)',
+        source_provenance: r.provider || 'OPEN_METEO_LIVE',
         model_version: 'SkyGuard-Production-v1.2 (Neural TCN + LightGBM)',
         observed_value: r.temperature_c !== undefined ? `${r.temperature_c}°C` : `${r.temperature || 30.0}°C`,
         expected_value: r.expected_value !== undefined ? `${r.expected_value}°C` : `${r.reference_value || 25.0}°C`,
@@ -331,7 +341,6 @@ export async function getOperationalIncidents(limit = 100): Promise<LiveIncident
           { sensor: r.sensor || 'temperature', signal: 'spatial_peer_residual', score: Math.round((r.fault_probability || 0.9) * 100) / 10 },
         ],
       });
-      if (incidents.length >= limit) break;
     }
   }
 
