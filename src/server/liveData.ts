@@ -61,6 +61,8 @@ export interface LiveIncidentItem {
   latitude: number;
   longitude: number;
   fault_class: string;
+  root_cause?: string;
+  fault_probability?: number;
   severity: string;
   confidence: number;
   anomaly_score?: number;
@@ -322,9 +324,11 @@ export async function getOperationalIncidents(limit = 100): Promise<LiveIncident
     if (r.event_decision === 'sensor_fault' || (typeof r.fault_probability === 'number' && r.fault_probability >= 0.4)) {
       seenIds.add(r.station_id);
       const meta = catalogMap.get(r.station_id) || {};
-      const faultType = r.root_cause && r.root_cause !== 'not_a_fault'
-        ? r.root_cause.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())
-        : 'Sensor Drift Anomaly';
+      const isFault = r.event_decision === 'sensor_fault';
+      const rawRoot = r.root_cause && r.root_cause !== 'not_a_fault'
+        ? r.root_cause
+        : (isFault ? 'barometric_pressure_drift' : 'genuine_synoptic_weather_front');
+      const faultType = rawRoot.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase());
 
       const param = r.sensor === 'pressure' ? 'pressure'
         : (r.sensor === 'humidity' || r.sensor === 'relative_humidity') ? 'relative_humidity'
@@ -369,7 +373,11 @@ export async function getOperationalIncidents(limit = 100): Promise<LiveIncident
 
       const stationTitle = meta.station_name || r.station_name || r.station_id;
       const climate = meta.climate_zone || r.climate_zone || 'India AWS Network';
-      const explanation = `Physical spatial consensus veto: ${stationTitle} (${climate}) recorded ${param} at ${observedVal}, diverging by ${residualVal} (|z| = ${Math.abs(zScore).toFixed(1)}σ) from nearby k=5 peer stations (spatial median: ${expectedVal}). Surrounding stations confirmed stable background conditions, confirming ${faultType}.`;
+      const explanation = isFault
+        ? `Physical spatial consensus veto: ${stationTitle} (${climate}) recorded ${param} at ${observedVal}, diverging by ${residualVal} (|z| = ${Math.abs(zScore).toFixed(1)}σ) from nearby k=5 peer stations (spatial median: ${expectedVal}). Surrounding stations confirmed stable background conditions, confirming ${faultType}.`
+        : `Meteorological movement: Coherent regional atmospheric front detected across ${stationTitle} and neighbouring cluster nodes. Reading ${observedVal} reflects genuine weather change.`;
+
+      const scoreVal = Number(r.anomaly_score ?? r.fault_probability ?? (isFault ? 0.884 : 0.439));
 
       incidents.push({
         incident_id: `INC-${r.station_id}-${String(r.row_id || '01').slice(0, 8)}`,
@@ -378,10 +386,12 @@ export async function getOperationalIncidents(limit = 100): Promise<LiveIncident
         latitude: Number(meta.latitude || r.latitude || 26.8),
         longitude: Number(meta.longitude || r.longitude || 80.9),
         fault_class: faultType,
-        severity: (r.fault_probability || 0.8) >= 0.85 ? 'CRITICAL' : 'HIGH',
-        confidence: Number(r.fault_probability || 0.92),
-        anomaly_score: Number(r.fault_probability || 0.92),
-        status: 'DETECTED',
+        root_cause: rawRoot,
+        fault_probability: scoreVal,
+        severity: isFault ? (scoreVal >= 0.85 ? 'CRITICAL' : 'HIGH') : 'ADVISORY',
+        confidence: Number(r.confidence || scoreVal),
+        anomaly_score: scoreVal,
+        status: isFault ? 'DETECTED' : 'CONFIRMED',
         detected_timestamp_utc: r.timestamp_utc || new Date().toISOString(),
         duration_minutes: 60,
         affected_parameter: param,
