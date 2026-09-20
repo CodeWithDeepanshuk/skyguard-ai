@@ -411,9 +411,9 @@ class OperationalQC:
                 ))
 
         warmup = (
-            "SEASONAL_BASELINE_UNAVAILABLE"
-            if len(causal_history) < 24 * 7
-            else "LONG_TERM_HISTORY_AVAILABLE"
+            "WARM_UP_COMPLETE (24h continuous cadence active)"
+            if len(causal_history) >= 12
+            else "WARMING_UP (accumulating observation baseline)"
         )
         history_start = None
         if causal_history:

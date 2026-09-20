@@ -133,7 +133,16 @@ export function SensorTrendChart({ data, stationName }: SensorTrendChartProps) {
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
             <XAxis
               dataKey="timestamp_utc"
-              tickFormatter={(v) => v.slice(11, 16)}
+              tickFormatter={(v) => {
+                if (!v) return '';
+                try {
+                  const d = new Date(v);
+                  if (isNaN(d.getTime())) return String(v).slice(11, 16);
+                  return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: false });
+                } catch {
+                  return String(v).slice(11, 16);
+                }
+              }}
               stroke="#94a3b8"
               tick={{ fontSize: 10, fontFamily: 'monospace', fill: '#64748b' }}
             />
@@ -145,7 +154,7 @@ export function SensorTrendChart({ data, stationName }: SensorTrendChartProps) {
             <Tooltip content={<CustomTooltip />} />
 
             {/* Traces */}
-            {hasNeighbourTrace && <Line
+            <Line
               type="monotone"
               dataKey={paramConfig.observedKey}
               name="Target Station (Observed)"
@@ -153,43 +162,57 @@ export function SensorTrendChart({ data, stationName }: SensorTrendChartProps) {
               strokeWidth={2.5}
               dot={{ r: 2.5, fill: paramConfig.strokeObserved }}
               activeDot={{ r: 5 }}
-            />}
-            {hasReferenceTrace && <Line
-              type="monotone"
-              dataKey={paramConfig.neighbourKey}
-              name="Neighbour Median Consensus"
-              stroke={paramConfig.strokeNeighbour}
-              strokeWidth={2}
-              strokeDasharray="4 2"
-              dot={false}
-            />}
-            <Line
-              type="monotone"
-              dataKey={paramConfig.modelKey}
-              name="Reference Weather Field"
-              stroke={paramConfig.strokeModel}
-              strokeWidth={1.5}
-              strokeDasharray="2 2"
-              dot={false}
+              connectNulls={false}
+              isAnimationActive={false}
             />
+            {hasNeighbourTrace && (
+              <Line
+                type="monotone"
+                dataKey={paramConfig.neighbourKey}
+                name="Neighbour Median Consensus"
+                stroke={paramConfig.strokeNeighbour}
+                strokeWidth={2}
+                strokeDasharray="4 2"
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+            )}
+            {hasReferenceTrace && (
+              <Line
+                type="monotone"
+                dataKey={paramConfig.modelKey}
+                name="Reference Weather Field"
+                stroke={paramConfig.strokeModel}
+                strokeWidth={1.5}
+                strokeDasharray="2 2"
+                dot={false}
+                connectNulls={false}
+                isAnimationActive={false}
+              />
+            )}
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       {/* Legend Strip */}
       <div className="flex flex-wrap items-center justify-center gap-4 mt-3 pt-2 border-t border-slate-100 text-[10px] font-mono">
-        {hasNeighbourTrace && <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-amber-600" />
-          <span className="text-slate-700">Target Station</span>
-        </div>}
-        {hasReferenceTrace && <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-blue-600 border-t border-dashed" />
-          <span className="text-slate-700">Neighbour Consensus</span>
-        </div>}
         <div className="flex items-center gap-1.5">
-          <span className="w-3 h-0.5 bg-violet-600 border-t border-dotted" />
-          <span className="text-slate-500">Context Reanalysis</span>
+          <span className="w-3 h-0.5" style={{ backgroundColor: paramConfig.strokeObserved }} />
+          <span className="text-slate-700 font-semibold">Target Station (Observed)</span>
         </div>
+        {hasNeighbourTrace && (
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-0.5" style={{ backgroundColor: paramConfig.strokeNeighbour, borderTop: '1px dashed' }} />
+            <span className="text-slate-700">Neighbour Consensus</span>
+          </div>
+        )}
+        {hasReferenceTrace && (
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-0.5" style={{ backgroundColor: paramConfig.strokeModel, borderTop: '1px dotted' }} />
+            <span className="text-slate-500">Physics Baseline</span>
+          </div>
+        )}
       </div>
     </div>
   );

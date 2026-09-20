@@ -826,6 +826,8 @@ class MetarLiveService:
                 if sid not in latest_by_station or ts > str(latest_by_station[sid].get("timestamp_utc", "")):
                     latest_by_station[sid] = row
 
+            direct_reporting_stations = len(latest_by_station)
+            direct_observation_count = len(readings)
             latest_time = max(datetime.fromisoformat(str(row["timestamp_utc"]).replace("Z", "+00:00")) for row in readings)
             self._populate_all_stations(readings, latest_by_station, latest_time.isoformat(timespec="seconds").replace("+00:00", "Z"))
             latest_timestamps = {str(row["station_id"]): str(row["timestamp_utc"]) for row in latest_by_station.values()}
@@ -848,9 +850,9 @@ class MetarLiveService:
                 "configured_icao_stations": len(self.icao_to_station),
                 "all_india_stations_count": len(self.stations),
                 "total_network_stations": len(self.stations),
-                "reporting_stations": len(latest_by_station),
+                "reporting_stations": direct_reporting_stations,
                 "stations_without_observations": max(0, len(self.stations) - len(latest_by_station)),
-                "observation_count": len(readings),
+                "observation_count": direct_observation_count,
                 "model_alert_count": len(model_alerts),
                 "quality_alert_count": len(active_quality_alerts),
                 "incident_shadow_active_count": sum(bool(row.get("active")) for row in self.incident_snapshot),
