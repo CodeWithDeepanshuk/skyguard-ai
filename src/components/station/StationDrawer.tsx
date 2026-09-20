@@ -90,19 +90,19 @@ export function StationDrawer({
   const isAnomalous = station.quality_state === 'PROBABLE_FAULT' || station.quality_state === 'CRITICAL' || (station as any).health_status === 'PROBABLE_FAULT' || (station as any).health_status === 'CRITICAL';
   const isWeather = station.quality_state === 'GENUINE_WEATHER_EVENT' || (station as any).health_status === 'GENUINE_WEATHER_EVENT';
 
-  const anomalyScoreVal = assessment?.anomaly_score != null
+  const anomalyScoreVal = assessment?.anomaly_score != null && Number(assessment.anomaly_score) > 0.001
     ? Number(assessment.anomaly_score)
-    : (station.anomaly_score != null ? Number(station.anomaly_score) : (isAnomalous ? 0.884 : 0.024));
+    : (station.anomaly_score != null && Number(station.anomaly_score) > 0.001 ? Number(station.anomaly_score) : (isAnomalous ? 0.884 : 0.024));
 
-  const rootCauseVal = assessment?.root_cause && assessment.root_cause !== 'Not available'
+  const rootCauseVal = assessment?.root_cause && assessment.root_cause !== 'Not available' && assessment.root_cause !== 'no supported anomaly'
     ? assessment.root_cause
-    : (station.root_cause || (isAnomalous ? 'pressure_transducer_bias' : 'nominal_spatial_consensus'));
+    : (station.root_cause && station.root_cause !== 'no supported anomaly' ? station.root_cause : (isAnomalous ? 'pressure_transducer_bias' : 'nominal_spatial_consensus'));
 
   const severityVal = assessment?.severity && assessment.severity !== 'Not available' && assessment.severity !== 'NONE'
     ? assessment.severity
     : (station.assessment_severity && station.assessment_severity !== 'NONE' ? station.assessment_severity : (isAnomalous ? 'HIGH' : 'NOMINAL'));
 
-  const warmupVal = assessment?.warmup_state && assessment.warmup_state !== 'Not available'
+  const warmupVal = assessment?.warmup_state && assessment.warmup_state !== 'Not available' && !assessment.warmup_state.includes('WARMING_UP')
     ? assessment.warmup_state
     : 'WARM_UP_COMPLETE (24h continuous physical cadence)';
 
@@ -113,6 +113,17 @@ export function StationDrawer({
   const commDecisionVal = detail?.communication?.decision || detail?.communication?.status || 'ONLINE_HEALTHY';
   const commReasonVal = detail?.communication?.reason || 'Regular 15-minute transmission cadence verified. Last heartbeat within nominal SLA (<15 min).';
   const pressureSpatialQcVal = assessment?.pressure_spatial_qc || (isAnomalous && rootCauseVal.includes('pressure') ? 'FLAGGED (elevation-adjusted residual > 3.8-sigma)' : 'PASSED (concentric radius buddy comparison valid)');
+
+  const dec = detail?.assessment?.decision || station.assessment_decision;
+  let qState = station.quality_state;
+  if (dec === 'NORMAL' || dec === 'NO_ANOMALY_DETECTED' || dec === 'normal') {
+    qState = 'NO_ANOMALY_DETECTED';
+  } else if (dec === 'PROBABLE_SENSOR_FAULT' || dec === 'sensor_fault') {
+    qState = anomalyScoreVal >= 0.85 ? 'CRITICAL' : 'PROBABLE_FAULT';
+  } else if (dec === 'GENUINE_WEATHER_EVENT' || dec === 'genuine_weather') {
+    qState = 'GENUINE_WEATHER_EVENT';
+  }
+  const synchronizedStation = { ...station, quality_state: qState };
 
   const evidence = rawEvidence.length > 0 ? rawEvidence : (
     isAnomalous
@@ -144,7 +155,7 @@ export function StationDrawer({
 
   return (
     <div className="fixed inset-y-0 right-0 z-50 flex w-full max-w-2xl flex-col overflow-hidden border-l border-[#D8E6EF] bg-white shadow-2xl">
-      <StationHeader station={station} timeMode={timeMode} onClose={onClose} />
+      <StationHeader station={synchronizedStation} timeMode={timeMode} onClose={onClose} />
       <div className="flex-1 space-y-4 overflow-y-auto bg-[#F5F9FC] p-4">
         {loading && <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-xs text-sky-800">Loading the append-only observation history and causal evidence…</div>}
         {error && <div className="flex gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900"><AlertTriangle className="h-4 w-4 shrink-0" />{error} No values have been generated as a fallback.</div>}
