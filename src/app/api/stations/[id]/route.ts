@@ -115,11 +115,13 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     ? 'ADVISORY'
     : 'NOMINAL';
 
-  const anomalyScore = isAnomalous
-    ? (typeof station.anomaly_score === 'number' ? station.anomaly_score : 0.884)
+  const anomalyScore = typeof station.anomaly_score === 'number'
+    ? station.anomaly_score
+    : isAnomalous
+    ? 0.884
     : isWeather
     ? 0.420
-    : (typeof station.anomaly_score === 'number' && station.anomaly_score < 0.1 ? station.anomaly_score : 0.024);
+    : 0.032;
 
   // Build 24-point hourly history ending at latest observation timestamp
   const nowMs = Date.now();

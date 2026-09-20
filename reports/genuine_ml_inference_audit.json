@@ -1,0 +1,25 @@
+{
+  "timestamp_utc": "2026-09-20T05:12:00Z",
+  "elapsed_seconds": 2.03,
+  "total_stations": 1008,
+  "decisions_distribution": {
+    "GENUINE_WEATHER_EVENT": 7,
+    "NORMAL": 926,
+    "PROBABLE_FAULT": 26,
+    "SENSOR_FAULT": 49
+  },
+  "root_cause_distribution": {
+    "genuine_synoptic_weather_front": 7,
+    "nominal_spatial_consensus": 926,
+    "spatial_lapse_rate_discrepancy": 26,
+    "barometric_pressure_drift": 39,
+    "temperature_spike_deviation": 10
+  },
+  "score_statistics": {
+    "min_evidence_score": 0.0316,
+    "max_evidence_score": 0.9921,
+    "mean_evidence_score": 0.2394,
+    "median_evidence_score": 0.1311,
+    "std_evidence_score": 0.2168
+  }
+}

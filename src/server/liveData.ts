@@ -36,6 +36,18 @@ export interface EnrichedStation {
   anomaly_score: number | null;
   score_label: string | null;
   root_cause: string | null;
+  root_cause_explanation?: string | null;
+  neural_score?: number | null;
+  tree_score?: number | null;
+  spatial_score?: number | null;
+  expected_temperature_c?: number | null;
+  expected_pressure_hpa?: number | null;
+  expected_humidity_pct?: number | null;
+  residual_temperature_c?: number | null;
+  residual_pressure_hpa?: number | null;
+  residual_humidity_pct?: number | null;
+  max_z?: number | null;
+  neighbor_count?: number | null;
   neighbor_support?: Record<string, unknown> | null;
   communication?: Record<string, unknown> | null;
   health_status: string;
@@ -214,6 +226,18 @@ export async function getEnrichedStations(filter?: {
         anomaly_score: faultProb,
         score_label: 'ML Evidence Score',
         root_cause: rootCauseVal,
+        root_cause_explanation: reading.root_cause_explanation || null,
+        neural_score: typeof reading.neural_reconstruction_score === 'number' ? reading.neural_reconstruction_score : null,
+        tree_score: typeof reading.tree_anomaly_score === 'number' ? reading.tree_anomaly_score : null,
+        spatial_score: typeof reading.spatial_consensus_score === 'number' ? reading.spatial_consensus_score : null,
+        expected_temperature_c: typeof reading.expected_temperature_c === 'number' ? reading.expected_temperature_c : null,
+        expected_pressure_hpa: typeof reading.expected_pressure_hpa === 'number' ? reading.expected_pressure_hpa : null,
+        expected_humidity_pct: typeof reading.expected_humidity_pct === 'number' ? reading.expected_humidity_pct : null,
+        residual_temperature_c: typeof reading.residual_temperature_c === 'number' ? reading.residual_temperature_c : null,
+        residual_pressure_hpa: typeof reading.residual_pressure_hpa === 'number' ? reading.residual_pressure_hpa : null,
+        residual_humidity_pct: typeof reading.residual_humidity_pct === 'number' ? reading.residual_humidity_pct : null,
+        max_z: typeof reading.max_z === 'number' ? reading.max_z : null,
+        neighbor_count: reading.neighbor_station_count || 5,
         neighbor_support: { neighbor_count: reading.neighbor_station_count || 5 },
         communication: {
           decision: 'ONLINE_HEALTHY',
