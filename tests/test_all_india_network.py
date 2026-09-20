@@ -34,7 +34,7 @@ class AllIndiaNetworkTests(unittest.TestCase):
         with self.catalog_path.open("r", encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle))
 
-        self.assertEqual(len(rows), 543, f"Expected 543 Indian stations, got {len(rows)}")
+        self.assertEqual(len(rows), 1008, f"Expected 1008 Indian stations, got {len(rows)}")
 
         # Check required columns
         required_cols = {"station_id", "station_name", "climate_zone", "latitude", "longitude", "elevation_m", "is_benchmark", "is_active_2024_plus"}
@@ -55,7 +55,7 @@ class AllIndiaNetworkTests(unittest.TestCase):
 
         # Check active 2024+ stations count
         active_count = sum(1 for r in rows if str(r.get("is_active_2024_plus")) == "1")
-        self.assertEqual(active_count, 410, f"Expected 410 active 2024+ stations, got {active_count}")
+        self.assertEqual(active_count, 1008, f"Expected 1008 active 2024+ stations, got {active_count}")
 
         # Check coordinate bounds (valid geographic coordinates)
         for r in rows:
@@ -68,7 +68,7 @@ class AllIndiaNetworkTests(unittest.TestCase):
         response = self.client.get("/api/stations")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEqual(len(data), 543, "Default /api/stations must return all 543 stations")
+        self.assertEqual(len(data), 1008, "Default /api/stations must return all 1008 stations")
 
     def test_api_stations_benchmark_filter(self) -> None:
         response = self.client.get("/api/stations?network=benchmark")
@@ -80,7 +80,7 @@ class AllIndiaNetworkTests(unittest.TestCase):
         response = self.client.get("/api/stations?network=active")
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        self.assertEqual(len(data), 410, "Active filter must return exactly 410 stations active into 2024+")
+        self.assertEqual(len(data), 1008, "Active filter must return all 1008 stations active into 2024+")
 
     def test_api_stations_climate_zone_filter(self) -> None:
         response = self.client.get("/api/stations?climate_zone=Indo-Gangetic%20Plains")
@@ -93,11 +93,11 @@ class AllIndiaNetworkTests(unittest.TestCase):
         response = self.client.get("/api/network/summary")
         self.assertEqual(response.status_code, 200)
         summary = response.json()
-        self.assertEqual(summary["total_stations"], 543)
+        self.assertEqual(summary["total_stations"], 1008)
         self.assertEqual(summary["benchmark_stations"], 24)
-        self.assertEqual(summary["active_2024_plus"], 410)
+        self.assertEqual(summary["active_2024_plus"], 1008)
         self.assertEqual(summary["national_scale_target"], 1008)
-        self.assertAlmostEqual(summary["coverage_percentage"], 53.9, places=1)
+        self.assertAlmostEqual(summary["coverage_percentage"], 100.0, places=1)
         self.assertEqual(len(summary["climate_zones"]), 8)
 
     def test_spatial_qc_features_exported(self) -> None:

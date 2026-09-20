@@ -525,6 +525,7 @@ def create_v1_router(
             },
         }
 
+    @router.get("/network/summary")
     @router.get("/network/operational-summary")
     def operational_network_summary() -> Dict[str, Any]:
         store = require_store()

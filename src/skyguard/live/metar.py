@@ -829,7 +829,8 @@ class MetarLiveService:
             direct_reporting_stations = len(latest_by_station)
             direct_observation_count = len(readings)
             latest_time = max(datetime.fromisoformat(str(row["timestamp_utc"]).replace("Z", "+00:00")) for row in readings)
-            self._populate_all_stations(readings, latest_by_station, latest_time.isoformat(timespec="seconds").replace("+00:00", "Z"))
+            if getattr(self, "enable_spatial_objective_analysis", False):
+                self._populate_all_stations(readings, latest_by_station, latest_time.isoformat(timespec="seconds").replace("+00:00", "Z"))
             latest_timestamps = {str(row["station_id"]): str(row["timestamp_utc"]) for row in latest_by_station.values()}
             active_quality_alerts = [
                 qa for qa in quality_alerts
@@ -921,56 +922,7 @@ class MetarLiveService:
     def readings(self, limit: int = 500, station_id: str | None = None, latest_only: bool = False) -> list[dict[str, object]]:
         rows = list(self.payload.get("latest" if latest_only else "readings", []))
         if station_id:
-            matched = [row for row in rows if str(row.get("station_id")) == station_id]
-            if not matched and station_id in self.stations:
-                stn = self.stations[station_id]
-                lat = optional_float(stn.get("latitude"))
-                lon = optional_float(stn.get("longitude"))
-                if lat is not None and lon is not None:
-                    try:
-                        from skyguard.providers.reference_weather import ReferenceWeatherProvider
-                        ref_prov = ReferenceWeatherProvider()
-                        ref_prov.register_station_coordinates(station_id, lat, lon)
-                        recs = ref_prov.fetch_history(station_id, lat=lat, lon=lon, hours=24)
-                        for r in recs:
-                            t_val = r.temperature_c
-                            p_val = r.pressure_hpa
-                            h_val = r.relative_humidity_pct
-                            matched.append({
-                                "row_id": f"ref_{station_id}_{r.timestamp_utc[:16]}",
-                                "station_id": station_id,
-                                "station_name": stn.get("station_name", station_id),
-                                "icao": stn.get("icao", ""),
-                                "timestamp_utc": r.timestamp_utc,
-                                "emitted_timestamp_utc": r.timestamp_utc,
-                                "split": "live",
-                                "cluster": stn.get("cluster", "all_india"),
-                                "evaluation_role": stn.get("evaluation_role", "all_india_network"),
-                                "temperature_c": t_val if t_val is not None else "",
-                                "pressure_hpa": p_val if p_val is not None else "",
-                                "relative_humidity_pct": h_val if h_val is not None else "",
-                                "temperature": t_val,
-                                "pressure": p_val,
-                                "humidity": h_val,
-                                "stream_action": "emit",
-                                "available_to_detector": "1",
-                                "pressure_source": "NWP_SURFACE_ANALYSIS",
-                                "pressure_type": "STATION_PRESSURE",
-                                "source_quality": "VALIDATED",
-                                "observation_origin": "open_meteo_reference",
-                                "provider": "Open-Meteo",
-                                "canonical_station_id": station_id,
-                                "fault_probability": 0.008,
-                                "weather_probability": 0.001,
-                                "event_decision": "normal",
-                                "event_confidence": 0.992,
-                                "root_cause": "not_a_fault",
-                                "root_cause_confidence": 0.85,
-                                "neighbor_station_count": 5,
-                            })
-                    except Exception:
-                        pass
-            rows = matched
+            rows = [row for row in rows if str(row.get("station_id")) == station_id]
         return sorted(rows, key=lambda row: str(row.get("timestamp_utc", "")), reverse=True)[:limit]
 
     def alerts(self, limit: int = 200, include_quality: bool = True) -> list[dict[str, object]]:

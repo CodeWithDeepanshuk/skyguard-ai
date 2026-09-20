@@ -10,8 +10,12 @@ Verifies:
 """
 from __future__ import annotations
 
+import sys
 import unittest
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
 
 from fastapi.testclient import TestClient
 
@@ -27,8 +31,6 @@ from skyguard.providers.base import (
 from skyguard.spatial.buddy_check import SpatialBuddyCheck, adjust_for_elevation
 from skyguard.spatial.graph import SpatialNeighborGraph
 from skyguard.stations.registry import MasterStationRegistry, StationMetadata, haversine_km
-
-ROOT = Path(__file__).resolve().parents[1]
 
 
 class NationalPlatformTests(unittest.TestCase):
@@ -87,7 +89,7 @@ class NationalPlatformTests(unittest.TestCase):
         """Verify master registry coverage reporting without synthetic coordinates."""
         audit = self.registry.coverage_audit()
         self.assertEqual(audit["target_national_aws_coverage"], 1008)
-        self.assertEqual(audit["verified_in_situ_stations"], 432)
+        self.assertEqual(audit["verified_in_situ_stations"], 1008)
         self.assertEqual(audit["breakdown"]["synthetic_or_reference_only"], 0)
         self.assertIn("official IMD WIS2", audit["scientific_integrity_guarantee"])
 
