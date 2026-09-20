@@ -151,6 +151,11 @@ def create_v1_router(
                 target_time = parse_time(target.get("observation_timestamp_utc"))
                 if target_time is None:
                     continue
+                try:
+                    t_lat = float(target["latitude"])
+                    t_lon = float(target["longitude"])
+                except (KeyError, TypeError, ValueError):
+                    continue
                 peers: list[tuple[float, dict[str, Any]]] = []
                 for candidate_id, candidate in latest.items():
                     if candidate_id == station_id:
@@ -159,12 +164,13 @@ def create_v1_router(
                     if candidate_time is None or abs((target_time - candidate_time).total_seconds()) > 90 * 60:
                         continue
                     try:
-                        distance = haversine_km(
-                            float(target["latitude"]), float(target["longitude"]),
-                            float(candidate["latitude"]), float(candidate["longitude"]),
-                        )
+                        c_lat = float(candidate["latitude"])
+                        c_lon = float(candidate["longitude"])
                     except (KeyError, TypeError, ValueError):
                         continue
+                    if abs(t_lat - c_lat) > 3.5 or abs(t_lon - c_lon) > 4.5:
+                        continue
+                    distance = haversine_km(t_lat, t_lon, c_lat, c_lon)
                     if distance > 350.0:
                         continue
                     peer = dict(candidate)
@@ -222,6 +228,11 @@ def create_v1_router(
         target_time = parse_time(target.get("observation_timestamp_utc"))
         if target_time is None:
             return []
+        try:
+            t_lat = float(target["latitude"])
+            t_lon = float(target["longitude"])
+        except (KeyError, TypeError, ValueError):
+            return []
         ranked: list[tuple[float, dict[str, Any]]] = []
         for candidate in store.latest_observations(limit=2500):
             candidate_id = str(candidate.get("canonical_station_id") or "")
@@ -231,12 +242,13 @@ def create_v1_router(
             if candidate_time is None or abs((target_time - candidate_time).total_seconds()) > tolerance_minutes * 60:
                 continue
             try:
-                distance = haversine_km(
-                    float(target["latitude"]), float(target["longitude"]),
-                    float(candidate["latitude"]), float(candidate["longitude"]),
-                )
+                c_lat = float(candidate["latitude"])
+                c_lon = float(candidate["longitude"])
             except (KeyError, TypeError, ValueError):
                 continue
+            if abs(t_lat - c_lat) > 3.5 or abs(t_lon - c_lon) > 4.5:
+                continue
+            distance = haversine_km(t_lat, t_lon, c_lat, c_lon)
             if distance > 350.0:
                 continue
             ranked.append((distance, candidate))
@@ -621,18 +633,17 @@ def create_v1_router(
                 "communication": operational_qc.assess_communication(station_id, []),
                 "message": "No physical observation for this station exists in the operational store.",
             }
-        snapshot = build_operational_snapshot()
-        neighbors = snapshot["neighbors"].get(station_id) or aligned_neighbors(latest)
-        cached_assessment = snapshot["assessments"].get(station_id)
-        assessment = cached_assessment or operational_qc.analyze(latest, history, neighbors).to_dict()
+        neighbors = aligned_neighbors(latest)
+        assessment = operational_qc.analyze(latest, history, neighbors).to_dict()
         communication_history = store.history(station_id, hours=max(hours, 48), limit=10000)
+        communication = operational_qc.assess_communication(station_id, communication_history)
         return {
             "metadata": metadata,
             "latest": latest,
             "history": history,
             "neighbors": neighbors,
             "assessment": assessment,
-            "communication": snapshot["communications"].get(station_id) or operational_qc.assess_communication(station_id, communication_history),
+            "communication": communication,
             "history_is_causal": True,
             "source_observation_immutable": True,
         }

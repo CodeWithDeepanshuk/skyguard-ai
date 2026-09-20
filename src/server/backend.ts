@@ -10,7 +10,7 @@ export interface LiveBackendStatus {
 }
 
 const LEGACY_BACKEND_HOSTS = new Set(['skyguard-ai.onrender.com']);
-const DEFAULT_TIMEOUT_MS = 55_000;
+const DEFAULT_TIMEOUT_MS = 6_000;
 
 function normalizedBackend(value: string): URL {
   const base = new URL(value);
@@ -51,7 +51,7 @@ export function backendCandidates(): URL[] {
 function backendTimeoutMs(): number {
   const value = Number(process.env.SKYGUARD_API_TIMEOUT_MS || DEFAULT_TIMEOUT_MS);
   if (!Number.isFinite(value)) return DEFAULT_TIMEOUT_MS;
-  return Math.max(5_000, Math.min(55_000, Math.trunc(value)));
+  return Math.max(2_000, Math.min(8_000, Math.trunc(value)));
 }
 
 async function fetchBackendJSON<T>(base: URL, endpoint: string, init: RequestInit): Promise<T> {

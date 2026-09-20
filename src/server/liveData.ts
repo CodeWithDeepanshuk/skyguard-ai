@@ -186,8 +186,9 @@ export async function getEnrichedStations(filter?: {
       const activeSlotIso = new Date(activeSlotMs).toISOString();
       const dynamicAgeMins = Math.max(1, Math.min(14, Math.round((nowMs - activeSlotMs) / 60000)));
 
-      const isPastCycle = reading.timestamp_utc ? (nowMs - new Date(reading.timestamp_utc).getTime()) > 3600 * 1000 * 4 : false;
-      const observationTimeUtc = (reading.timestamp_utc && !isPastCycle)
+      const parsedReadingMs = reading.timestamp_utc ? new Date(reading.timestamp_utc).getTime() : NaN;
+      const isFutureOrStale = !Number.isFinite(parsedReadingMs) || parsedReadingMs > nowMs || (nowMs - parsedReadingMs) > 3600 * 1000 * 4;
+      const observationTimeUtc = !isFutureOrStale
         ? reading.timestamp_utc
         : activeSlotIso;
 

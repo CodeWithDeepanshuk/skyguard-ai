@@ -127,7 +127,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   const nowMs = Date.now();
   const fifteenMinMs = 15 * 60 * 1000;
   const currentSlotMs = Math.floor(nowMs / fifteenMinMs) * fifteenMinMs;
-  const baseTimestamp = station.latest_observation_utc ? new Date(station.latest_observation_utc).getTime() : currentSlotMs;
+  const parsedBase = station.latest_observation_utc ? new Date(station.latest_observation_utc).getTime() : NaN;
+  const baseTimestamp = Number.isFinite(parsedBase) && parsedBase <= nowMs ? parsedBase : currentSlotMs;
 
   const baseTemp = station.temperature_c ?? 24.0;
   const basePress = station.pressure_hpa ?? 1005.0;
@@ -225,7 +226,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       canonical_station_id: station.station_id,
       station_id: station.station_id,
       station_name: station.station_name,
-      observation_timestamp_utc: station.latest_observation_utc,
+      observation_timestamp_utc: new Date(baseTimestamp).toISOString(),
       temperature_c: station.temperature_c,
       pressure_hpa: station.pressure_hpa,
       relative_humidity_pct: station.relative_humidity_pct,
