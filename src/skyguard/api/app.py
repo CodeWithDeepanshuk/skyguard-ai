@@ -290,8 +290,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     def live_contract_ready(status: dict[str, object]) -> bool:
         return (
-            status.get("presentation_contract") == LIVE_PRESENTATION_CONTRACT
-            and status.get("simulation_active") is False
+            (
+                status.get("presentation_contract") == LIVE_PRESENTATION_CONTRACT
+                or status.get("provider") == "India Meteorological Department AWS Portal"
+            )
+            and status.get("simulation_active") is not True
             and int(status.get("observation_count") or 0) > 0
         )
 
