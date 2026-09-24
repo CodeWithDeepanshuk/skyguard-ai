@@ -16,15 +16,15 @@ export async function GET() {
 
   // Check local latest.json cache
   const cachePath = path.join(process.cwd(), 'data', 'live', 'latest.json');
-  let localStationsCount = 1008;
-  let latestTimeUtc = new Date().toISOString();
+  let localStationsCount = 0;
+  let latestTimeUtc: string | null = null;
   if (fs.existsSync(cachePath)) {
     try {
       const parsed = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
       const stations = Array.isArray(parsed.stations) ? parsed.stations : Array.isArray(parsed.readings) ? parsed.readings : [];
       if (stations.length > 0) {
         localStationsCount = stations.length;
-        latestTimeUtc = parsed.collected_at_utc || stations[0].timestamp_utc || latestTimeUtc;
+        latestTimeUtc = parsed.collected_at_utc || stations[0].timestamp_utc || null;
       }
     } catch {
       // Ignore
@@ -37,14 +37,14 @@ export async function GET() {
   if (!hasOpenMeteo) {
     providers.unshift({
       provider: 'OPEN_METEO_LIVE',
-      access: 'active_live_weather_api (Option A)',
+      access: 'reference/model API (not physical AWS telemetry)',
       freshness: {
         latest_observation_utc: latestTimeUtc,
         latest_ingestion_utc: latestTimeUtc,
         observation_records: localStationsCount,
         stations_seen: localStationsCount,
-        observation_age_minutes: 5.0,
-        freshness: 'FRESH',
+        observation_age_minutes: latestTimeUtc ? Math.max(0, Math.round((Date.now() - new Date(latestTimeUtc).getTime()) / 60000)) : null,
+        freshness: latestTimeUtc && (Date.now() - new Date(latestTimeUtc).getTime()) <= 90 * 60 * 1000 ? 'FRESH' : 'STALE',
       },
     });
   } else {
@@ -56,8 +56,8 @@ export async function GET() {
         latest_ingestion_utc: latestTimeUtc,
         observation_records: localStationsCount,
         stations_seen: localStationsCount,
-        observation_age_minutes: 5.0,
-        freshness: 'FRESH',
+        observation_age_minutes: latestTimeUtc ? Math.max(0, Math.round((Date.now() - new Date(latestTimeUtc).getTime()) / 60000)) : null,
+        freshness: latestTimeUtc && (Date.now() - new Date(latestTimeUtc).getTime()) <= 90 * 60 * 1000 ? 'FRESH' : 'STALE',
       };
     }
   }

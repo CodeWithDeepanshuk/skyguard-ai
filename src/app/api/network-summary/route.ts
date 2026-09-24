@@ -11,10 +11,16 @@ export async function GET() {
       getOperationalIncidents(100),
     ]);
 
-    const reportingCount = stations.filter((s) => s.temperature_c !== null).length;
-    const freshCount = stations.filter((s) => s.health_status === 'NO_ANOMALY_DETECTED').length;
-    const faultCount = stations.filter((s) => s.health_status === 'PROBABLE_FAULT' || s.health_status === 'CRITICAL').length;
+    const genuine = stations.filter((s) => s.latest_provider === 'METAR' || s.latest_provider === 'IMD_AWS');
+    const reportingCount = genuine.filter((s) => s.temperature_c !== null && s.observation_status === 'FRESH').length;
+    const freshCount = genuine.filter((s) => s.health_status === 'NO_ANOMALY_DETECTED').length;
+    const faultCount = genuine.filter((s) => s.health_status === 'PROBABLE_FAULT' || s.health_status === 'CRITICAL').length;
     const weatherCount = stations.filter((s) => s.health_status === 'GENUINE_WEATHER_EVENT').length;
+    const actualTimes = genuine
+      .map((s) => s.latest_observation_utc ? new Date(s.latest_observation_utc).getTime() : NaN)
+      .filter((t) => Number.isFinite(t));
+    const latestMs = actualTimes.length ? Math.max(...actualTimes) : NaN;
+    const latestObservation = Number.isFinite(latestMs) ? new Date(latestMs).toISOString() : null;
 
     const summary = {
       catalog_stations: stations.length,
@@ -29,14 +35,14 @@ export async function GET() {
       genuine_weather_stations: weatherCount,
       active_incidents: incidents.length,
       observation_records: reportingCount,
-      latest_observation_utc: stations[0]?.latest_observation_utc || new Date().toISOString(),
-      latest_observation_age_minutes: 15.0,
+      latest_observation_utc: latestObservation,
+      latest_observation_age_minutes: Number.isFinite(latestMs) ? Math.max(0, Math.round((Date.now() - latestMs) / 60000)) : null,
       reporting_window_hours: 24,
       freshness_threshold_minutes: 90,
       reporting_by_source: {
-        OPEN_METEO_LIVE: stations.filter((s) => s.latest_provider?.includes('OPEN_METEO') || s.latest_provider === 'OPEN_METEO_LIVE').length,
-        METAR: stations.filter((s) => s.latest_provider === 'METAR').length,
-        IMD_AWS_CONSENSUS: stations.filter((s) => !s.latest_provider?.includes('OPEN_METEO') && s.latest_provider !== 'METAR' && s.temperature_c !== null).length,
+        OPEN_METEO_LIVE_REFERENCE: stations.filter((s) => s.latest_provider === 'OPEN_METEO_LIVE').length,
+        METAR: stations.filter((s) => s.latest_provider === 'METAR' && s.temperature_c !== null && s.observation_status === 'FRESH').length,
+        IMD_AWS: stations.filter((s) => s.latest_provider === 'IMD_AWS' && s.temperature_c !== null && s.observation_status === 'FRESH').length,
       },
       storage: {
         backend: 'sqlite',
@@ -44,8 +50,9 @@ export async function GET() {
         status: 'operational_live_sync',
       },
       catalog_basis: 'All-India 1,008 AWS Station Network Catalog (IMD / WIS 2.0 / Agro-AWS)',
-      catalog_is_live_aws_coverage: true,
-      reporting_count_definition: 'Distinct catalog-mapped stations with verified observations',
+      reference_only_stations: stations.filter((s) => s.latest_provider === 'OPEN_METEO_LIVE').length,
+      catalog_is_live_aws_coverage: false,
+      reporting_count_definition: 'Distinct catalog-mapped stations with fresh METAR or IMD_AWS observations; Open-Meteo is reference data only',
       generated_at_utc: new Date().toISOString(),
     };
 

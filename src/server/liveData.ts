@@ -181,20 +181,27 @@ export async function getEnrichedStations(filter?: {
         assessmentSeverity = 'ADVISORY';
       }
 
-      // Dynamic 15-minute operational cadence
+      // Preserve the provider timestamp. A stale replay/reference value must
+      // never be relabelled as a current observation for presentation.
       const nowMs = Date.now();
-      const fifteenMinMs = 15 * 60 * 1000;
-      const activeSlotMs = Math.floor(nowMs / fifteenMinMs) * fifteenMinMs;
-      const activeSlotIso = new Date(activeSlotMs).toISOString();
-      const dynamicAgeMins = Math.max(1, Math.min(14, Math.round((nowMs - activeSlotMs) / 60000)));
-
       const parsedReadingMs = reading.timestamp_utc ? new Date(reading.timestamp_utc).getTime() : NaN;
-      const isFutureOrStale = !Number.isFinite(parsedReadingMs) || parsedReadingMs > nowMs || (nowMs - parsedReadingMs) > 3600 * 1000 * 4;
-      const observationTimeUtc = !isFutureOrStale
-        ? reading.timestamp_utc
-        : activeSlotIso;
+      const observationAgeMins = Number.isFinite(parsedReadingMs)
+        ? Math.max(0, Math.round((nowMs - parsedReadingMs) / 60000))
+        : null;
+      const isFutureOrStale = !Number.isFinite(parsedReadingMs)
+        || parsedReadingMs > nowMs
+        || (observationAgeMins !== null && observationAgeMins > 90);
+      const observationTimeUtc = Number.isFinite(parsedReadingMs)
+        ? String(reading.timestamp_utc)
+        : null;
+      const provider = String(reading.provider || 'OPEN_METEO_LIVE');
+      const isGenuineObservation = provider === 'METAR' || provider === 'IMD_AWS';
 
       const rootCauseVal = reading.root_cause || (decision === 'sensor_fault' ? 'pressure_transducer_bias' : 'nominal_spatial_consensus');
+      const reportedDecision = isFutureOrStale ? 'insufficient_context' : decision;
+      const reportedHealth = isFutureOrStale
+        ? 'STALE_REFERENCE_DATA'
+        : healthState;
 
       return {
         station_id: stationId,
@@ -214,21 +221,21 @@ export async function getEnrichedStations(filter?: {
         pressure_hpa: press,
         relative_humidity_pct: rh,
         dew_point_c: reading.dew_point_c ? Number(reading.dew_point_c) : null,
-        latest_observation_utc: observationTimeUtc,
-        observation_age_minutes: dynamicAgeMins,
-        latest_provider: reading.provider || 'OPEN_METEO_LIVE',
+         latest_observation_utc: observationTimeUtc,
+         observation_age_minutes: observationAgeMins,
+         latest_provider: provider,
         provider_station_id: reading.provider_station_id || row.icao || stationId,
         wigos_id: reading.wigos_id || null,
         icao_code: row.icao || reading.icao || null,
         pressure_type: reading.pressure_type || 'STATION_PRESSURE',
         humidity_observation_type: reading.humidity_observation_type || 'DIRECT_SENSOR',
         source_quality_flags: Array.isArray(reading.source_quality_flags) ? reading.source_quality_flags : ['OPEN_METEO_LIVE_GENUINE'],
-        observation_status: 'FRESH',
-        assessment_decision: decision,
-        assessment_severity: assessmentSeverity,
-        anomaly_score: faultProb,
-        score_label: 'ML Evidence Score',
-        root_cause: rootCauseVal,
+         observation_status: isFutureOrStale ? 'STALE' : 'FRESH',
+         assessment_decision: reportedDecision,
+         assessment_severity: isFutureOrStale ? 'UNVERIFIED' : assessmentSeverity,
+         anomaly_score: isFutureOrStale ? null : faultProb,
+         score_label: isFutureOrStale ? null : 'ML Evidence Score',
+         root_cause: isFutureOrStale ? 'stale_reference_data' : rootCauseVal,
         root_cause_explanation: reading.root_cause_explanation || null,
         neural_score: typeof reading.neural_reconstruction_score === 'number' ? reading.neural_reconstruction_score : null,
         tree_score: typeof reading.tree_anomaly_score === 'number' ? reading.tree_anomaly_score : null,
@@ -242,13 +249,15 @@ export async function getEnrichedStations(filter?: {
         max_z: typeof reading.max_z === 'number' ? reading.max_z : null,
         neighbor_count: reading.neighbor_station_count || 5,
         neighbor_support: { neighbor_count: reading.neighbor_station_count || 5 },
-        communication: {
-          decision: 'ONLINE_HEALTHY',
-          status: 'HEALTHY',
-          reason: 'Transmitting on regular 15-minute telemetry cadence.',
-        },
-        health_status: healthState,
-        catalog_only: false,
+         communication: {
+           decision: isFutureOrStale ? 'STALE_DATA' : 'ONLINE_HEALTHY',
+           status: isFutureOrStale ? 'STALE' : 'HEALTHY',
+           reason: isFutureOrStale
+             ? (isGenuineObservation ? 'Observation is outside the 90-minute freshness window.' : 'Reference/model value is outside the 90-minute freshness window; no live sensor claim is made.')
+             : 'Fresh provider observation within the 90-minute freshness window.',
+         },
+         health_status: reportedHealth,
+         catalog_only: !isGenuineObservation,
       };
     }
 
