@@ -116,10 +116,11 @@ class MetarLiveService:
                 str(row.get("observation_origin", ""))
                 for row in cached.get("readings", [])
             }
+            allowed_origins = {"aviationweather_metar", "official_imd_portal", "IMD_AWS", "imd_official_aws_portal"}
             if (
                 cached.get("presentation_contract") != LIVE_PRESENTATION_CONTRACT
                 or cached.get("simulation_active")
-                or not origins.issubset({"aviationweather_metar"})
+                or not origins.issubset(allowed_origins)
             ):
                 # The previous cache mixed generated station traces into observations
                 # and into neighbour features. Neither its readings nor scores are
