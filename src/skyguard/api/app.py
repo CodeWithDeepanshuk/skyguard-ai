@@ -245,10 +245,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 for r in readings:
                     try:
                         sid = str(r.get("station_id") or r.get("canonical_station_id"))
-                        prov = str(r.get("provider") or "OPEN_METEO_LIVE")
-                        record = ObservationRecord(
-                            provider=prov,
-                            source_type=SourceType.OBSERVED.value,
+                         prov = str(r.get("provider") or "OPEN_METEO_LIVE")
+                         is_reference = prov in {"OPEN_METEO_LIVE", "OPEN_METEO_REFERENCE"}
+                         record = ObservationRecord(
+                             provider=prov,
+                             source_type=SourceType.REFERENCE_MODEL.value if is_reference else SourceType.OBSERVED.value,
                             station_id=sid,
                             timestamp_utc=str(r.get("timestamp_utc") or now_utc),
                             latitude=float(r.get("latitude") or 20.0),
@@ -268,11 +269,12 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                             state=str(r.get("climate_zone") or r.get("state") or ""),
                             district=str(r.get("cluster") or r.get("district") or ""),
                             ingestion_timestamp_utc=now_utc,
-                            source_quality_flags=("OPEN_METEO_LIVE_GENUINE",),
+                             source_quality_flags=("REFERENCE_REPLAY_ONLY",) if is_reference else ("PROVIDER_OBSERVATION",),
                             raw_payload_json=json.dumps(r),
                             raw_source_hash=hashlib.sha256(f"{prov}:{sid}:{now_utc}".encode()).hexdigest(),
                             source_url="https://api.open-meteo.com/v1/forecast",
-                            is_direct_observation=True,
+                             is_direct_observation=not is_reference,
+                             is_model_field=is_reference,
                         )
                         records.append(record)
                     except Exception:
@@ -400,9 +402,15 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             "operational_storage": operational_storage,
             "continuous_history_ready": bool(operational_storage.get("durable")),
             "imd_aws_credentials_configured": bool(
-                (os.getenv("IMD_API_AUTH_HEADER") and os.getenv("IMD_API_AUTH_VALUE"))
-                or os.getenv("IMD_API_KEY") or os.getenv("IMD_API_TOKEN")
+                os.getenv("IMD_API_KEY")
+                and (
+                    os.getenv("IMD_API_JWT_TOKEN")
+                    or os.getenv("IMD_API_TOKEN")
+                    or (os.getenv("IMD_API_EMAIL") and os.getenv("IMD_API_PASSWORD"))
+                )
             ),
+            "imd_normalization_enabled": os.getenv("IMD_NORMALIZATION_ENABLED", "").strip().lower()
+            in {"1", "true", "yes"},
             "deployment": {
                 "provider": "render" if os.getenv("RENDER") else "local",
                 "service": os.getenv("RENDER_SERVICE_NAME", "skyguard-ai-local"),

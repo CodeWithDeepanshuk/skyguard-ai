@@ -726,7 +726,7 @@ def create_v1_router(
         observed = {str(row.get("provider")): row for row in freshness}
         providers = []
         for provider, access in (
-            ("OPEN_METEO_LIVE", "active_live_weather_api"),
+            ("OPEN_METEO_LIVE", "reference/model API (not physical AWS telemetry)"),
             ("IMD_AWS", "configured" if manager.imd_api.configured else "credentials_not_configured"),
             ("IMD_WIS2", "public_official_fallback"),
             ("METAR", "airport_observation_fallback"),
@@ -745,12 +745,14 @@ def create_v1_router(
     @router.get("/provenance")
     def data_provenance() -> Dict[str, Any]:
         return {
-            "priority": ["OPEN_METEO_LIVE", "IMD_AWS", "IMD_WIS2", "METAR", "REFERENCE_MODEL"],
+            "priority": ["IMD_AWS", "IMD_WIS2", "METAR", "OPEN_METEO_LIVE", "REFERENCE_MODEL"],
             "sources": {
                 "OPEN_METEO_LIVE": {
-                    "role": "active physical weather observation stream (Option A - 1,008 AWS)",
+                    "role": "REFERENCE/REPLAY numerical weather-model context; not a physical AWS observation",
                     "configured": True,
                     "endpoint": "https://api.open-meteo.com/v1/forecast",
+                    "eligible_as_station_ground_truth": False,
+                    "presentation_label": "REFERENCE/REPLAY",
                 },
                 "IMD_AWS": {
                     "role": "primary physical AWS/ARG observations",
@@ -778,6 +780,44 @@ def create_v1_router(
                 "uncalibrated_scores_labelled_as_probability": False,
             },
             "storage": require_store().durability,
+        }
+
+    @router.get("/source/status")
+    def source_status() -> Dict[str, Any]:
+        """Expose current operational data source mode and IMD authorization status."""
+        mode = os.getenv("SKYGUARD_DATA_SOURCE_MODE", "FIXTURE_REPLAY").upper()
+        imd_configured = bool(manager.imd_api.configured)
+        if mode == "LIVE_IMD_AWS":
+            effective_mode = "LIVE_IMD_AWS" if imd_configured else "LIVE_IMD_AWS_UNAVAILABLE"
+        else:
+            effective_mode = "IMD_FIXTURE_REPLAY"
+
+        return {
+            "configured_mode": mode,
+            "effective_source": effective_mode,
+            "is_authorized_live_source": effective_mode == "LIVE_IMD_AWS",
+            "is_fixture_replay": effective_mode == "IMD_FIXTURE_REPLAY",
+            "provider_name": "IMD_AWS" if effective_mode == "LIVE_IMD_AWS" else "IMD_FIXTURE_REPLAY",
+            "pressure_semantics": "MEAN_SEA_LEVEL_PRESSURE (MSLP)",
+            "meteorological_inputs": ["temperature_c", "pressure_hpa", "relative_humidity_pct"],
+            "live_credentials_status": "CONFIGURED" if imd_configured else "LIVE_DISABLED_NO_SUBSTITUTION",
+            "endpoint": manager.imd_api.endpoint,
+            "audit": "Reference models and synthetic fixtures are never substituted for unavailable IMD data.",
+        }
+
+    @router.get("/evaluation/summary")
+    def evaluation_summary() -> Dict[str, Any]:
+        """Return the latest scientific benchmark evaluation metrics."""
+        summary_path = root / "data" / "evaluation" / "benchmark_summary.json"
+        if summary_path.exists():
+            try:
+                import json
+                return json.loads(summary_path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                return {"status": "ERROR_READING_REPORT", "error": str(exc)}
+        return {
+            "status": "BENCHMARK_PENDING",
+            "message": "Run tools/run_imd_pipeline.py --mode evaluate to generate held-out benchmark metrics.",
         }
 
     @router.post("/ingestion/run")
