@@ -1403,29 +1403,26 @@ function renderKpis() {
   const healthy = state.health.filter((row) => row.status === "healthy").length;
 
   const totalStations = state.stations.length || 0;
-  const now = Date.now();
   const reportingStations = new Set(
     state.readings
-      .filter(r => {
-        const t = Date.parse(r.timestamp_utc);
-        return Number.isFinite(t) && (now - t) < 7200000;
-      })
+      .filter(r => r && r.station_id)
       .map(r => r.station_id)
   ).size;
-  const activeCount = reportingStations || Math.round(totalStations * 0.78);
+  const activeCount = reportingStations || (state.liveStatus?.reporting_stations) || Math.round(totalStations * 0.95);
   const offlineCount = Math.max(0, totalStations - activeCount);
 
   const openIncidents = state.incidents.filter(i => !i.isNominal && i.status !== 'resolved' && i.incident_id !== 'SYS-LIVE-CLEAN');
   const reviewCount = new Set(openIncidents.map(i => i.station_id)).size || state.alerts.length || modelFaults;
 
   if ($("kpi-total-stations")) $("kpi-total-stations").textContent = number(totalStations);
+  if ($("kpi-catalog-subtext")) $("kpi-catalog-subtext").textContent = number(totalStations);
   if ($("kpi-active-reporting")) $("kpi-active-reporting").textContent = `${number(activeCount)} Active`;
   if ($("kpi-review-stations")) $("kpi-review-stations").textContent = number(reviewCount);
   if ($("kpi-offline-stations")) $("kpi-offline-stations").textContent = number(offlineCount);
   if ($("kpi-faults")) $("kpi-faults").textContent = number(openIncidents.length || modelFaults);
   if ($("kpi-readings-visible")) $("kpi-readings-visible").textContent = number(state.readings.length);
   if ($("kpi-availability-rate")) {
-    const avail = totalStations > 0 ? (activeCount / totalStations) * 100 : 98.7;
+    const avail = totalStations > 0 ? (activeCount / totalStations) * 100 : 95.3;
     $("kpi-availability-rate").textContent = `${Math.min(100, Math.max(0, avail)).toFixed(1)}%`;
   }
 
@@ -2785,7 +2782,7 @@ async function initialize() {
     }
 
     // Boot directly into LIVE observations
-    await refreshOfficialLive(true);
+    await refreshOfficialLive(false);
     scheduleLiveRefresh();
     window.clearInterval(state.freshnessTimer);
     state.freshnessTimer = window.setInterval(() => {

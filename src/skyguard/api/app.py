@@ -375,7 +375,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         path = dashboard_dir / "index.html"
         if not path.exists():
             raise HTTPException(status_code=503, detail="SkyGuard dashboard files are unavailable")
-        return FileResponse(path)
+        return FileResponse(path, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
     @app.get("/manifest.json", include_in_schema=False)
     def manifest() -> FileResponse:

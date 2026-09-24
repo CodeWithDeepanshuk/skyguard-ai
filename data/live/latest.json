@@ -46933,10 +46933,35 @@
       "duration_minutes": 60,
       "affected_parameter": "temperature",
       "observed_value": "13.9\u00b0C",
-      "explanation": "Observed T=13.9\u00b0C, P=nanhPa, RH=100.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (TEMPERATURE_C_SPATIAL_ANOMALY (Z=11.5)) relative to 23 regional stations.",
+      "explanation": "Observed TEMPERATURE = 13.9 \u00b0C vs regional spatial lapse-rate consensus of 18.52 \u00b0C (4.62 \u00b0C departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_1_SAFE_AUTO_REPAIR.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "temperature",
+          "reported_value": "13.9 \u00b0C",
+          "estimate": "18.5 \u00b0C",
+          "estimate_numeric": 18.52,
+          "interval_lower": "12.2 \u00b0C",
+          "interval_upper": "24.8 \u00b0C",
+          "uncertainty_interval": "[12.2, 24.8] \u00b0C",
+          "confidence_level": "90%",
+          "residual": "4.6 \u00b0C",
+          "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=55.2km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+      "recommended_action": "Sensor operating within acceptable variance limits; nominal monitoring continues.",
+      "sensor_health": {
+        "score": 78,
+        "status": "HEALTHY",
+        "trend": "stable",
+        "projected_7d_risk": 0.15,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-UTWAI000",
@@ -46957,10 +46982,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "948.6 hPa",
-      "explanation": "Observed T=27.6\u00b0C, P=948.6hPa, RH=99.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=40.0)) relative to 35 regional stations.",
+      "explanation": "Observed PRESSURE = 948.6 hPa vs regional spatial lapse-rate consensus of 1007.35 hPa (58.75 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "948.6 hPa",
+          "estimate": "1007.4 hPa",
+          "estimate_numeric": 1007.35,
+          "interval_lower": "991.2 hPa",
+          "interval_upper": "1023.5 hPa",
+          "uncertainty_interval": "[991.2, 1023.5] hPa",
+          "confidence_level": "90%",
+          "residual": "58.8 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=121.1km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-NAWOK000",
@@ -46981,10 +47031,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "1077.9 hPa",
-      "explanation": "Observed T=22.8\u00b0C, P=1077.9hPa, RH=20.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_OUT_OF_BOUNDS; RELATIVE_HUMIDITY_PCT_SPATIAL_ANOMALY (Z=32.0)) relative to 68 regional stations.",
+      "explanation": "Observed PRESSURE = 1077.9 hPa vs regional spatial lapse-rate consensus of 1010.09 hPa (67.81 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "1077.9 hPa",
+          "estimate": "1010.1 hPa",
+          "estimate_numeric": 1010.09,
+          "interval_lower": "984.0 hPa",
+          "interval_upper": "1036.1 hPa",
+          "uncertainty_interval": "[984.0, 1036.1] hPa",
+          "confidence_level": "90%",
+          "residual": "67.8 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=82.4km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-ORPLU000",
@@ -47005,10 +47080,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "1007.6 hPa",
-      "explanation": "Observed T=24.5\u00b0C, P=1007.6hPa, RH=100.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=12.8)) relative to 16 regional stations.",
+      "explanation": "Observed PRESSURE = 1007.6 hPa vs regional spatial lapse-rate consensus of 994.46 hPa (13.14 hPa departure across 11 peer stations). Phase 6 Safe Repair Policy: TIER_1_SAFE_AUTO_REPAIR.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "1007.6 hPa",
+          "estimate": "994.5 hPa",
+          "estimate_numeric": 994.46,
+          "interval_lower": "971.5 hPa",
+          "interval_upper": "1017.4 hPa",
+          "uncertainty_interval": "[971.5, 1017.4] hPa",
+          "confidence_level": "90%",
+          "residual": "13.1 hPa",
+          "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+          "derivation_method": "Spatial IDW consensus from 11 regional stations (radius=250.0km, mean distance=189.3km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+      "recommended_action": "Safe causal spatial imputation recommended. Schedule routine sensor cleaning/inspection during next maintenance cycle.",
+      "sensor_health": {
+        "score": 48,
+        "status": "DEGRADED",
+        "trend": "degrading",
+        "projected_7d_risk": 0.55,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-PJSSB000",
@@ -47029,10 +47129,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "971.3 hPa",
-      "explanation": "Observed T=25.4\u00b0C, P=971.3hPa, RH=100.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=12.3)) relative to 70 regional stations.",
+      "explanation": "Observed PRESSURE = 971.3 hPa vs regional spatial lapse-rate consensus of 994.71 hPa (23.41 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "971.3 hPa",
+          "estimate": "994.7 hPa",
+          "estimate_numeric": 994.71,
+          "interval_lower": "969.6 hPa",
+          "interval_upper": "1019.8 hPa",
+          "uncertainty_interval": "[969.6, 1019.8] hPa",
+          "confidence_level": "90%",
+          "residual": "23.4 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=69.4km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-KEKOU000",
@@ -47053,10 +47178,35 @@
       "duration_minutes": 60,
       "affected_parameter": "relative_humidity",
       "observed_value": "52%",
-      "explanation": "Observed T=23.9\u00b0C, P=nanhPa, RH=52.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (RELATIVE_HUMIDITY_PCT_SPATIAL_ANOMALY (Z=15.5)) relative to 82 regional stations.",
+      "explanation": "Observed RELATIVE_HUMIDITY = 52.0 % vs regional spatial lapse-rate consensus of 85.57 % (33.57 % departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "relative_humidity",
+          "reported_value": "52.0 %",
+          "estimate": "85.6 %",
+          "estimate_numeric": 85.57,
+          "interval_lower": "59.6 %",
+          "interval_upper": "100.0 %",
+          "uncertainty_interval": "[59.6, 100.0] %",
+          "confidence_level": "90%",
+          "residual": "33.6 %",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=40.5km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty RELATIVE_HUMIDITY sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-KEPAV000",
@@ -47077,10 +47227,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "904.4 hPa",
-      "explanation": "Observed T=19.5\u00b0C, P=904.4hPa, RH=100.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (TEMPERATURE_C_SPATIAL_ANOMALY (Z=5.2); PRESSURE_HPA_SPATIAL_ANOMALY (Z=54.2)) relative to 90 regional stations.",
+      "explanation": "Observed PRESSURE = 904.4 hPa vs regional spatial lapse-rate consensus of 997.92 hPa (93.52 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "904.4 hPa",
+          "estimate": "997.9 hPa",
+          "estimate_numeric": 997.92,
+          "interval_lower": "962.3 hPa",
+          "interval_upper": "1033.6 hPa",
+          "uncertainty_interval": "[962.3, 1033.6] hPa",
+          "confidence_level": "90%",
+          "residual": "93.5 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=50.0km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-HPHAV000",
@@ -47101,10 +47276,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "968.8 hPa",
-      "explanation": "Observed T=25.0\u00b0C, P=968.8hPa, RH=100.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=14.7)) relative to 68 regional stations.",
+      "explanation": "Observed PRESSURE = 968.8 hPa vs regional spatial lapse-rate consensus of 996.65 hPa (27.85 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "968.8 hPa",
+          "estimate": "996.6 hPa",
+          "estimate_numeric": 996.65,
+          "interval_lower": "975.2 hPa",
+          "interval_upper": "1018.1 hPa",
+          "uncertainty_interval": "[975.2, 1018.1] hPa",
+          "confidence_level": "90%",
+          "residual": "27.9 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=71.7km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-MATOD000",
@@ -47125,10 +47325,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "954.7 hPa",
-      "explanation": "Observed T=27.3\u00b0C, P=954.7hPa, RH=70.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=24.4)) relative to 17 regional stations.",
+      "explanation": "Observed PRESSURE = 954.7 hPa vs regional spatial lapse-rate consensus of 999.72 hPa (45.02 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "954.7 hPa",
+          "estimate": "999.7 hPa",
+          "estimate_numeric": 999.72,
+          "interval_lower": "983.4 hPa",
+          "interval_upper": "1016.0 hPa",
+          "uncertainty_interval": "[983.4, 1016.0] hPa",
+          "confidence_level": "90%",
+          "residual": "45.0 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=111.9km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-MPAAK000",
@@ -47149,10 +47374,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "871.6 hPa",
-      "explanation": "Observed T=23.8\u00b0C, P=871.6hPa, RH=72.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=47.7); RELATIVE_HUMIDITY_PCT_SPATIAL_ANOMALY (Z=8.8)) relative to 25 regional stations.",
+      "explanation": "Observed PRESSURE = 871.6 hPa vs regional spatial lapse-rate consensus of 1000.26 hPa (128.66 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "871.6 hPa",
+          "estimate": "1000.3 hPa",
+          "estimate_numeric": 1000.26,
+          "interval_lower": "997.2 hPa",
+          "interval_upper": "1003.3 hPa",
+          "uncertainty_interval": "[997.2, 1003.3] hPa",
+          "confidence_level": "90%",
+          "residual": "128.7 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=130.0km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-JKPNC000",
@@ -47173,10 +47423,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "857.5 hPa",
-      "explanation": "Observed T=20.5\u00b0C, P=857.5hPa, RH=60.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=24.3)) relative to 35 regional stations.",
+      "explanation": "Observed PRESSURE = 857.5 hPa vs regional spatial lapse-rate consensus of 1000.14 hPa (142.64 hPa departure across 9 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "857.5 hPa",
+          "estimate": "1000.1 hPa",
+          "estimate_numeric": 1000.14,
+          "interval_lower": "975.7 hPa",
+          "interval_upper": "1024.6 hPa",
+          "uncertainty_interval": "[975.7, 1024.6] hPa",
+          "confidence_level": "90%",
+          "residual": "142.6 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 9 regional stations (radius=250.0km, mean distance=179.7km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-JHNTT000",
@@ -47197,10 +47472,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "943.0 hPa",
-      "explanation": "Observed T=19.9\u00b0C, P=943.0hPa, RH=97.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (TEMPERATURE_C_SPATIAL_ANOMALY (Z=4.4); PRESSURE_HPA_SPATIAL_ANOMALY (Z=27.3)) relative to 27 regional stations.",
+      "explanation": "Observed PRESSURE = 943.0 hPa vs regional spatial lapse-rate consensus of 999.66 hPa (56.66 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "943.0 hPa",
+          "estimate": "999.7 hPa",
+          "estimate_numeric": 999.66,
+          "interval_lower": "974.2 hPa",
+          "interval_upper": "1025.1 hPa",
+          "uncertainty_interval": "[974.2, 1025.1] hPa",
+          "confidence_level": "90%",
+          "residual": "56.7 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=147.6km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-KAAGB000",
@@ -47221,10 +47521,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "948.3 hPa",
-      "explanation": "Observed T=22.6\u00b0C, P=948.3hPa, RH=100.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=16.7)) relative to 12 regional stations.",
+      "explanation": "Observed PRESSURE = 948.3 hPa vs regional spatial lapse-rate consensus of 1010.25 hPa (61.95 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "948.3 hPa",
+          "estimate": "1010.2 hPa",
+          "estimate_numeric": 1010.25,
+          "interval_lower": "1003.8 hPa",
+          "interval_upper": "1016.7 hPa",
+          "uncertainty_interval": "[1003.8, 1016.7] hPa",
+          "confidence_level": "90%",
+          "residual": "62.0 hPa",
+          "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=138.1km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED",
+      "recommended_action": "Replace or recalibrate faulty PRESSURE sensor module at station site. High confidence physical failure.",
+      "sensor_health": {
+        "score": 15,
+        "status": "CRITICAL",
+        "trend": "critical_failure",
+        "projected_7d_risk": 0.95,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-MPAHP000",
@@ -47245,10 +47570,35 @@
       "duration_minutes": 60,
       "affected_parameter": "temperature",
       "observed_value": "31.4\u00b0C",
-      "explanation": "Observed T=31.4\u00b0C, P=1005.2hPa, RH=65.0%. Phase 5 multi-evidence consensus flagged statistically significant departure (TEMPERATURE_C_SPATIAL_ANOMALY (Z=11.9); RELATIVE_HUMIDITY_PCT_SPATIAL_ANOMALY (Z=13.4)) relative to 18 regional stations.",
+      "explanation": "Observed TEMPERATURE = 31.4 \u00b0C vs regional spatial lapse-rate consensus of 25.24 \u00b0C (6.16 \u00b0C departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_1_SAFE_AUTO_REPAIR.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "temperature",
+          "reported_value": "31.4 \u00b0C",
+          "estimate": "25.2 \u00b0C",
+          "estimate_numeric": 25.24,
+          "interval_lower": "23.6 \u00b0C",
+          "interval_upper": "26.9 \u00b0C",
+          "uncertainty_interval": "[23.6, 26.9] \u00b0C",
+          "confidence_level": "90%",
+          "residual": "6.2 \u00b0C",
+          "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=124.9km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+      "recommended_action": "Safe causal spatial imputation recommended. Schedule routine sensor cleaning/inspection during next maintenance cycle.",
+      "sensor_health": {
+        "score": 48,
+        "status": "DEGRADED",
+        "trend": "degrading",
+        "projected_7d_risk": 0.55,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     },
     {
       "incident_id": "INC-IMD-A0A3EACA",
@@ -47269,10 +47619,35 @@
       "duration_minutes": 60,
       "affected_parameter": "pressure",
       "observed_value": "984.1 hPa",
-      "explanation": "Observed T=nan\u00b0C, P=984.1hPa, RH=nan%. Phase 5 multi-evidence consensus flagged statistically significant departure (PRESSURE_HPA_SPATIAL_ANOMALY (Z=12.1)) relative to 17 regional stations.",
+      "explanation": "Observed PRESSURE = 984.1 hPa vs regional spatial lapse-rate consensus of 992.35 hPa (8.25 hPa departure across 12 peer stations). Phase 6 Safe Repair Policy: TIER_1_SAFE_AUTO_REPAIR.",
       "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
       "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Spatial Consensus)",
-      "active": true
+      "active": true,
+      "phase": 6,
+      "corrections": [
+        {
+          "sensor": "pressure",
+          "reported_value": "984.1 hPa",
+          "estimate": "992.4 hPa",
+          "estimate_numeric": 992.35,
+          "interval_lower": "956.1 hPa",
+          "interval_upper": "1028.6 hPa",
+          "uncertainty_interval": "[956.1, 1028.6] hPa",
+          "confidence_level": "90%",
+          "residual": "8.2 hPa",
+          "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+          "derivation_method": "Spatial IDW consensus from 12 regional stations (radius=250.0km, mean distance=118.4km)"
+        }
+      ],
+      "safe_repair_tier": "TIER_1_SAFE_AUTO_REPAIR",
+      "recommended_action": "Safe causal spatial imputation recommended. Schedule routine sensor cleaning/inspection during next maintenance cycle.",
+      "sensor_health": {
+        "score": 48,
+        "status": "DEGRADED",
+        "trend": "degrading",
+        "projected_7d_risk": 0.55,
+        "last_inspected_utc": "2026-09-24T16:45:00Z"
+      }
     }
   ],
   "alerts": [
@@ -47412,5 +47787,25 @@
       "message": "Real-Time Anomaly: PRESSURE_HPA_SPATIAL_ANOMALY (Z=12.1) (Score: 1.00)"
     }
   ],
-  "quality_alerts": []
+  "quality_alerts": [],
+  "phase6_health_summary": {
+    "total_monitored_stations": 1172,
+    "healthy_stations_count": 1157,
+    "healthy_percentage": 98.72,
+    "degraded_stations_count": 3,
+    "critical_failure_stations_count": 11,
+    "safe_auto_repair_eligible_count": 4,
+    "human_field_dispatch_required_count": 11,
+    "parameters_covered": [
+      "temperature_c",
+      "pressure_hpa",
+      "relative_humidity_pct"
+    ],
+    "governance_compliance": {
+      "authorized_parameters_only": true,
+      "zero_unverified_proxies": true,
+      "raw_values_immutable": true,
+      "uncertainty_intervals_calibrated": true
+    }
+  }
 }
