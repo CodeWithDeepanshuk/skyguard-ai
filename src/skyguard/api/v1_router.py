@@ -11,7 +11,9 @@ from __future__ import annotations
 
 import csv
 import hashlib
+import json
 import logging
+import math
 import os
 import threading
 import time
@@ -23,7 +25,12 @@ from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Header, HTTPException, Query
 
 from skyguard.detection.multi_evidence import MultiEvidenceAnomalyDetector
-from skyguard.providers.base import ObservationRecord, SourceType
+from skyguard.providers.base import (
+    HumidityObservationType,
+    ObservationRecord,
+    PressureType,
+    SourceType,
+)
 from skyguard.providers.manager import WeatherProviderManager
 from skyguard.ingestion import IngestionService
 from skyguard.ingestion.identity import StationIdentityResolver
@@ -344,8 +351,9 @@ def create_v1_router(
         pair = manager.fetch_history_triplet(station.station_id, hours=hours)
         observed_recs = pair["observed"]
         reference_recs = pair["reference_model"]
-        if not observed_recs and reference_recs:
-            observed_recs = reference_recs
+        # Scientific provenance guarantee: never silently substitute reference model for in-situ observations
+        if not observed_recs:
+            observed_recs = []
 
         # 2. Fetch nearest neighbours to calculate spatial consensus history
         neighbors = graph.get_neighbors(station.station_id, k=5)
@@ -834,5 +842,179 @@ def create_v1_router(
         service = IngestionService(require_store(), root=root)
         requested = [item.strip() for item in providers.split(",") if item.strip()]
         return service.run_once(requested)
+
+    @router.post("/ingestion/imd")
+    def ingest_imd_payload(
+        payload: Dict[str, Any],
+        authorization: Optional[str] = Header(None),
+        x_ingestion_token: Optional[str] = Header(None),
+    ) -> Dict[str, Any]:
+        """Authenticated webhook endpoint receiving live official IMD observations from the Oracle Cloud Gateway."""
+        expected = os.getenv("SKYGUARD_INGESTION_TOKEN", "").strip()
+        if not expected:
+            raise HTTPException(status_code=503, detail="SKYGUARD_INGESTION_TOKEN is not configured on server")
+        supplied = (x_ingestion_token or authorization or "").removeprefix("Bearer ").strip()
+        if supplied != expected:
+            raise HTTPException(status_code=401, detail="Invalid ingestion token")
+
+        store = require_store()
+        raw_receipt = payload.get("receipt") or {}
+        raw_payload_str = str(payload.get("raw_payload_json") or payload.get("raw_payload") or "")
+        records_in = payload.get("records") or []
+
+        # If records not pre-normalized, extract from raw IMD list/dict
+        if not records_in:
+            raw_data = payload.get("raw_data") or payload.get("raw_records")
+            if isinstance(raw_data, (list, dict)):
+                from tools.fetch_official_imd_aws import normalize_aws_records
+                records_in = normalize_aws_records(raw_data)
+
+        run_id = store.begin_run(
+            "IMD_AWS",
+            {
+                "gateway_provenance": "ORACLE_CLOUD_GATEWAY",
+                "receipt_sha256": raw_receipt.get("payload_sha256"),
+                "records_received": len(records_in),
+            },
+        )
+
+        accepted: List[ObservationRecord] = []
+        dead_letters = 0
+
+        for item in records_in:
+            if not isinstance(item, dict):
+                dead_letters += 1
+                continue
+            sid = str(item.get("station_id") or item.get("ID") or item.get("CALL_SIGN") or "").strip()
+            if not sid:
+                dead_letters += 1
+                continue
+
+            official = registry.get_station(sid)
+            lat = item.get("latitude")
+            lon = item.get("longitude")
+
+            # Backfill verified coordinates from master registry if omitted in IMD observation
+            if lat is None or lon is None:
+                if official:
+                    lat = official.latitude
+                    lon = official.longitude
+                else:
+                    dead_letters += 1
+                    store.record_dead_letter("IMD_AWS", f"Station {sid} missing coordinates and not in master registry", item)
+                    continue
+
+            try:
+                lat_f = float(lat)
+                lon_f = float(lon)
+            except (TypeError, ValueError):
+                dead_letters += 1
+                store.record_dead_letter("IMD_AWS", f"Station {sid} has invalid coordinates ({lat}, {lon})", item)
+                continue
+
+            if not (5.0 <= lat_f <= 40.0 and 65.0 <= lon_f <= 100.0):
+                dead_letters += 1
+                store.record_dead_letter("IMD_AWS", f"Station {sid} coordinates ({lat_f}, {lon_f}) outside India domain", item)
+                continue
+
+            def _clean_num(val: Any) -> Optional[float]:
+                try:
+                    f = float(val)
+                    return f if math.isfinite(f) else None
+                except (TypeError, ValueError):
+                    return None
+
+            temp_c = _clean_num(item.get("temperature_c") or item.get("CURR_TEMP") or item.get("TEMP"))
+            press_hpa = _clean_num(item.get("pressure_hpa") or item.get("MSLP") or item.get("SLP") or item.get("PRESSURE"))
+            rh_pct = _clean_num(item.get("relative_humidity_pct") or item.get("RH") or item.get("HUMIDITY"))
+
+            # Must have at least one of the 3 allowed parameters
+            if temp_c is None and press_hpa is None and rh_pct is None:
+                dead_letters += 1
+                store.record_dead_letter("IMD_AWS", f"Station {sid} contains none of the 3 allowed meteorological parameters", item)
+                continue
+
+            ts_utc = str(item.get("timestamp_utc") or datetime.now(timezone.utc).isoformat())
+
+            rec = ObservationRecord(
+                provider="IMD_AWS",
+                source_type=SourceType.OBSERVED.value,
+                station_id=sid,
+                canonical_station_id=sid,
+                station_name=str(item.get("station_name") or (official.station_name if official else sid)).strip(),
+                state=str(item.get("state") or (official.state if official else "")).strip(),
+                district=str(item.get("district") or (official.district if official else "")).strip(),
+                latitude=lat_f,
+                longitude=lon_f,
+                elevation_m=float(official.elevation_m) if official and official.elevation_m is not None else None,
+                timestamp_utc=ts_utc,
+                temperature_c=temp_c,
+                pressure_hpa=press_hpa,
+                pressure_type=PressureType.MEAN_SEA_LEVEL_PRESSURE.value if press_hpa is not None else PressureType.UNKNOWN.value,
+                relative_humidity_pct=rh_pct,
+                humidity_observation_type=HumidityObservationType.DIRECT.value if rh_pct is not None else HumidityObservationType.UNAVAILABLE.value,
+                is_direct_observation=True,
+                is_interpolated=False,
+                is_model_field=False,
+                raw_source_hash=str(raw_receipt.get("payload_sha256") or ""),
+                source_url=str(raw_receipt.get("source_url") or "https://api.imd.gov.in/api/v1/aws_data"),
+            )
+
+            try:
+                resolved = identity.resolve(rec)
+                IngestionService._validate(resolved)
+                accepted.append(resolved)
+            except Exception as exc:
+                dead_letters += 1
+                store.record_dead_letter("IMD_AWS", str(exc), item)
+
+        receipt_store = store.append(accepted)
+        watermark = max((r.timestamp_utc for r in accepted), default="")
+        if watermark:
+            store.set_watermark("IMD_AWS", watermark, {"fetched": len(records_in), "accepted": len(accepted)})
+
+        store.finish_run(
+            run_id,
+            status="SUCCESS",
+            fetched_count=len(records_in),
+            inserted_count=receipt_store["inserted"],
+            duplicate_count=receipt_store["duplicates"],
+            dead_letter_count=dead_letters,
+            metadata={
+                "watermark_utc": watermark,
+                "payload_sha256": raw_receipt.get("payload_sha256"),
+                "gateway_provenance": "ORACLE_CLOUD_GATEWAY",
+            },
+        )
+
+        # Archive raw receipt and payload to data/raw/imd_aws/ if filesystem allows
+        try:
+            raw_dir = root / "data" / "raw" / "imd_aws"
+            raw_dir.mkdir(parents=True, exist_ok=True)
+            ts_str = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            if raw_receipt:
+                (raw_dir / f"gateway_aws_data_{ts_str}.receipt.json").write_text(
+                    json.dumps(raw_receipt, indent=2), encoding="utf-8"
+                )
+            if raw_payload_str:
+                (raw_dir / f"gateway_aws_data_{ts_str}.json").write_text(
+                    raw_payload_str, encoding="utf-8"
+                )
+        except Exception as exc:
+            logger.warning("Filesystem write skipped for raw payload: %s", exc)
+
+        return {
+            "status": "SUCCESS",
+            "provider": "IMD_AWS",
+            "gateway_provenance": "ORACLE_CLOUD_GATEWAY",
+            "received": len(records_in),
+            "accepted": len(accepted),
+            "inserted": receipt_store["inserted"],
+            "duplicates": receipt_store["duplicates"],
+            "dead_letters": dead_letters,
+            "raw_payloads": receipt_store.get("raw_payloads", 0),
+            "watermark_utc": watermark,
+            "payload_sha256": raw_receipt.get("payload_sha256"),
+        }
 
     return router

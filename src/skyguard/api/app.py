@@ -118,29 +118,23 @@ def dashboard_summary(root: Path) -> dict[str, object]:
         fault = conf.get("fault", {})
         promoted_eval = {
             "binary_fault_detection": {
-                "precision": fault.get("precision", 0.728),
-                "recall": fault.get("recall", 0.493),
-                "f1": fault.get("f1", 0.588),
-                "false_alarms_per_station_day": fault.get("false_alerts_per_station_day", 0.0048),
+                "precision": fault.get("precision"),
+                "recall": fault.get("recall"),
+                "f1": fault.get("f1"),
+                "false_alarms_per_station_day": fault.get("false_alerts_per_station_day"),
                 "median_latency_minutes": fault.get("median_latency_minutes", 0.0),
-                "tp": 12520,
-                "rows": promoted_data.get("data", {}).get("india_rows", 578450),
+                "tp": fault.get("tp"),
+                "rows": promoted_data.get("data", {}).get("india_rows"),
             },
             "event_decision": {
-                "accuracy": 0.984,
-                "weather_false_positive_rate": conf.get("weather_to_fault_rate", 0.0045),
-                "genuine_weather_f1": conf.get("weather_f1", 0.88),
-                "per_class": {
-                    "genuine_weather": {
-                        "precision": 0.9955,
-                        "recall": 0.88,
-                        "f1": conf.get("weather_f1", 0.88),
-                    }
-                },
+                "accuracy": conf.get("accuracy"),
+                "weather_false_positive_rate": conf.get("weather_to_fault_rate"),
+                "genuine_weather_f1": conf.get("weather_f1"),
+                "per_class": conf.get("per_class", {}),
             },
             "model_architecture": promoted_data.get("model_architecture", {}),
-            "passed_gates": promoted_data.get("passed_gates", 25),
-            "total_gates": promoted_data.get("total_gates", 25),
+            "passed_gates": promoted_data.get("passed_gates"),
+            "total_gates": promoted_data.get("total_gates"),
             "promoted": True,
         }
         classification_payload["promoted_production"] = promoted_eval
@@ -245,11 +239,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 for r in readings:
                     try:
                         sid = str(r.get("station_id") or r.get("canonical_station_id"))
-                         prov = str(r.get("provider") or "OPEN_METEO_LIVE")
-                         is_reference = prov in {"OPEN_METEO_LIVE", "OPEN_METEO_REFERENCE"}
-                         record = ObservationRecord(
-                             provider=prov,
-                             source_type=SourceType.REFERENCE_MODEL.value if is_reference else SourceType.OBSERVED.value,
+                        prov = str(r.get("provider") or "OPEN_METEO_LIVE")
+                        is_reference = prov in {"OPEN_METEO_LIVE", "OPEN_METEO_REFERENCE"}
+                        record = ObservationRecord(
+                            provider=prov,
+                            source_type=SourceType.REFERENCE_MODEL.value if is_reference else SourceType.OBSERVED.value,
                             station_id=sid,
                             timestamp_utc=str(r.get("timestamp_utc") or now_utc),
                             latitude=float(r.get("latitude") or 20.0),
@@ -269,12 +263,12 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                             state=str(r.get("climate_zone") or r.get("state") or ""),
                             district=str(r.get("cluster") or r.get("district") or ""),
                             ingestion_timestamp_utc=now_utc,
-                             source_quality_flags=("REFERENCE_REPLAY_ONLY",) if is_reference else ("PROVIDER_OBSERVATION",),
+                            source_quality_flags=("REFERENCE_REPLAY_ONLY",) if is_reference else ("PROVIDER_OBSERVATION",),
                             raw_payload_json=json.dumps(r),
                             raw_source_hash=hashlib.sha256(f"{prov}:{sid}:{now_utc}".encode()).hexdigest(),
                             source_url="https://api.open-meteo.com/v1/forecast",
-                             is_direct_observation=not is_reference,
-                             is_model_field=is_reference,
+                            is_direct_observation=not is_reference,
+                            is_model_field=is_reference,
                         )
                         records.append(record)
                     except Exception:
@@ -348,7 +342,10 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     async def protect_public_state(request, call_next):
         # Public visitors may read or request a throttled source refresh. They
         # must not inject faults/reset a shared stream for everyone else.
-        protected_ingestion = request.url.path == "/api/v1/ingestion/run"
+        protected_ingestion = request.url.path in (
+            "/api/v1/ingestion/run",
+            "/api/v1/ingestion/imd",
+        )
         if (
             public_mode and request.method not in ("GET", "HEAD", "OPTIONS")
             and request.url.path != "/api/live/refresh" and not protected_ingestion
