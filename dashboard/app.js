@@ -1839,8 +1839,9 @@ function renderDataset() {
 function scheduleLiveRefresh() {
   window.clearInterval(state.liveTimer);
   state.liveTimer = null;
-  if ($('auto-refresh')?.checked && state.mode === 'live') {
-    state.liveTimer = window.setInterval(() => refreshOfficialLive(true), 300000);
+  // Official IMD AWS 15-minute telemetry update cadence (900,000 ms)
+  if (state.mode === 'live') {
+    state.liveTimer = window.setInterval(() => refreshOfficialLive(false), 900000);
   }
 }
 

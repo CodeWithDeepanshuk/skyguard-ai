@@ -293,27 +293,27 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     refresh_lock = threading.Lock()
     last_refresh_attempt = [0.0]
 
-    def start_hourly_background_refresh() -> None:
+    def start_15min_background_refresh() -> None:
         def _refresh_loop() -> None:
-            time.sleep(60)
+            time.sleep(30)
             while True:
                 try:
-                    logger.info("Triggering scheduled hourly live telemetry refresh...")
+                    logger.info("Triggering scheduled 15-minute live telemetry refresh...")
                     if refresh_lock.acquire(blocking=False):
                         try:
                             last_refresh_attempt[0] = time.monotonic()
                             live.refresh(24)
-                            logger.info("Hourly live telemetry refresh completed successfully.")
+                            logger.info("15-minute live telemetry refresh completed successfully.")
                         finally:
                             refresh_lock.release()
                 except Exception as err:
-                    logger.warning("Scheduled hourly refresh failed: %s", err)
-                time.sleep(3600)
+                    logger.warning("Scheduled 15-minute refresh failed: %s", err)
+                time.sleep(900)  # 15 minutes
 
-        t = threading.Thread(target=_refresh_loop, daemon=True, name="skyguard_hourly_live_refresh")
+        t = threading.Thread(target=_refresh_loop, daemon=True, name="skyguard_15min_live_refresh")
         t.start()
 
-    start_hourly_background_refresh()
+    start_15min_background_refresh()
 
     def live_contract_ready(status: dict[str, object]) -> bool:
         return (

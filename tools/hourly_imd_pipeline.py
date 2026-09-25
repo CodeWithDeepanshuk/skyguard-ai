@@ -243,10 +243,10 @@ def run_pipeline_cycle(render_url: str = "", token: str = "") -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="SkyGuard AI Automated Hourly IMD Telemetry Pipeline")
+    parser = argparse.ArgumentParser(description="SkyGuard AI Automated 15-Minute IMD Telemetry Pipeline")
     parser.add_argument("--once", action="store_true", help="Run a single pipeline cycle and exit")
-    parser.add_argument("--loop", action="store_true", help="Run continuously on an hourly schedule")
-    parser.add_argument("--interval", type=int, default=3600, help="Interval in seconds between runs (default: 3600)")
+    parser.add_argument("--loop", action="store_true", help="Run continuously on an automated 15-minute schedule")
+    parser.add_argument("--interval", type=int, default=900, help="Interval in seconds between runs (default: 900 for 15-min cadence)")
     parser.add_argument("--forward-to-render", type=str, default="", help="Render backend URL (e.g. https://skyguard-ai-wbm9.onrender.com)")
     parser.add_argument("--token", type=str, default="", help="SKYGUARD_INGESTION_TOKEN")
 
@@ -259,7 +259,7 @@ def main() -> None:
         run_pipeline_cycle(render_url=render_url, token=token)
         return
 
-    logger.info("Starting automated hourly pipeline daemon (interval: %d seconds)...", args.interval)
+    logger.info("Starting automated 15-minute pipeline daemon (interval: %d seconds)...", args.interval)
     while True:
         try:
             run_pipeline_cycle(render_url=render_url, token=token)
