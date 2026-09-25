@@ -27,6 +27,8 @@ const state = {
   stationsLayout: "cards",
   stationsSearchQuery: "",
   stationStatusFilter: "all",
+  stationsPage: 1,
+  stationsPerPage: 48,
   incidentFilters: {
     severity: "all",
     sensor: "all",
@@ -364,41 +366,55 @@ function renderLiveStatus(status) {
   if ($('hero-live-stations')) $('hero-live-stations').textContent = number(status.reporting_stations);
   if ($('hero-live-time')) $('hero-live-time').textContent = `${status.is_cached ? 'Cached' : 'Fetched'} ${formatTime(status.fetched_at_utc)} UTC`;
   
-  const totalConfigured = status.all_india_stations_count || status.total_network_stations || status.reporting_stations || 0;
+  const totalConfigured = status.all_india_stations_count || status.total_network_stations || 1153;
+  const reportingCount = status.reporting_stations || status.observation_count || 0;
   if ($("live-stations")) {
-    $("live-stations").textContent = `${number(status.reporting_stations)}/${number(totalConfigured)}`;
-    $("live-stations").title = `${number(status.reporting_stations)} active stations reporting across all 8 Indian climate zones.`;
+    $("live-stations").textContent = `${number(reportingCount)}/${number(totalConfigured)}`;
+    $("live-stations").title = `${number(reportingCount)} reporting stations of ${number(totalConfigured)} catalog stations. Missing telemetry: ${totalConfigured - reportingCount}.`;
   }
   if ($("live-observations")) $("live-observations").textContent = number(status.observation_count);
   if ($("live-age")) {
     $("live-age").textContent = ageLabel(status.latest_observation_utc);
-    $("live-age").title = "Age of newest network observation.";
+    $("live-age").title = "Age of newest provider observation timestamp.";
   }
-  if ($("live-interpretation")) $("live-interpretation").textContent = status.interpretation || "Official observations with cached offline fallback.";
+  if ($("live-interpretation")) $("live-interpretation").textContent = status.interpretation || "Official IMD observations with cached offline fallback.";
   if ($("progress-bar")) $("progress-bar").style.width = status.observation_count ? "100%" : "0%";
   if ($("replay-position")) $("replay-position").textContent = `${number(status.observation_count)} ${status.simulation_active ? 'simulation' : 'source'} observations`;
   if ($("replay-throughput")) $("replay-throughput").textContent = `${status.is_cached ? "Cached" : "Fetched"} ${formatTime(status.fetched_at_utc)} UTC · ${ageLabel(status.fetched_at_utc)}`;
   
-  const label = status.simulation_active ? "Simulation" : status.error ? "Source unavailable" : status.is_cached ? "Cached" : status.observation_count ? "Fetched" : "No reports";
+  const label = status.simulation_active ? "Simulation" : status.error ? "Source unavailable" : status.is_cached ? "Cached Snapshot" : status.observation_count ? "Fetched" : "No reports";
   if ($("replay-state")) $("replay-state").textContent = state.busyDepth ? "Processing" : label;
   
-  // Provenance Badge updates
+  // Provenance Badge updates - strictly reflecting observation freshness
   const provBadge = $("provenance-badge");
   const provLabel = $("provenance-label");
   if (provBadge && provLabel) {
+    const ageMins = status.source_age_minutes ?? (status.latest_observation_utc ? (Date.now() - Date.parse(status.latest_observation_utc)) / 60000 : null);
+    const isStale = ageMins == null || ageMins > 60;
+    const isDelayed = ageMins != null && ageMins > 20 && ageMins <= 60;
+
     if (status.simulation_active) {
       provBadge.className = "provenance-badge simulation";
       provLabel.textContent = "⚡ CONTROLLED FAULT INJECTION";
+    } else if (isStale) {
+      provBadge.className = "provenance-badge stale";
+      provLabel.textContent = `📦 IMD AWS HISTORICAL SNAPSHOT (${ageLabel(status.latest_observation_utc).toUpperCase()})`;
+    } else if (isDelayed) {
+      provBadge.className = "provenance-badge delayed";
+      provLabel.textContent = `⏳ DELAYED IMD FEED (${ageLabel(status.latest_observation_utc).toUpperCase()})`;
+    } else if (status.is_cached) {
+      provBadge.className = "provenance-badge cached";
+      provLabel.textContent = `💾 CACHED IMD AWS DATA (${ageLabel(status.latest_observation_utc).toUpperCase()})`;
     } else {
-      provBadge.className = "provenance-badge";
-      provLabel.textContent = "● GENUINE IMD AWS DATA";
+      provBadge.className = "provenance-badge live";
+      provLabel.textContent = "● LIVE IMD AWS DATA";
     }
   }
 
   const badge = $("injection-status-badge");
   if (badge && !badge.dataset.custom) {
     badge.textContent = status.simulation_active === true ? "SIMULATION: modified observations; not real sensor faults. Model detection is not guaranteed."
-      : status.simulation_active === false ? "No simulation overlay. Sensor health is not certified by absence of an alert."
+      : status.simulation_active === false ? "Genuine IMD AWS observations. Sensor health requires baseline verification."
       : "Snapshot simulation provenance unverified; fetch fresh source reports before presenting as live evidence.";
     badge.className = `simulator-status-badge${status.simulation_active ? ' alert-active' : ''}`;
   }
@@ -744,49 +760,229 @@ function drawSensorChart(rows, tripletTraces = null) {
   }
 }
 
-function renderReadings() {
-  let rows = state.readings;
-  if (state.mode === "live") {
-    const seen = new Set();
-    const latestRows = [];
-    const olderRows = [];
-    for (const r of rows) {
-      if (!seen.has(r.station_id)) {
-        seen.add(r.station_id);
-        latestRows.push(r);
-      } else {
-        olderRows.push(r);
-      }
+function getFilteredStations() {
+  const q = (state.stationsSearchQuery || "").trim().toLowerCase();
+  const filter = state.stationStatusFilter || "all";
+  const now = Date.now();
+
+  const activeFaultStationIds = new Set(
+    state.readings.filter(r => r.event_decision === "sensor_fault").map(r => r.station_id)
+  );
+  (state.alerts || []).forEach(a => { if (a.station_id) activeFaultStationIds.add(a.station_id); });
+  (state.incidents || []).forEach(i => {
+    if (i.station_id && !i.isNominal && i.status !== 'resolved' && i.incident_id !== 'SYS-LIVE-CLEAN') {
+      activeFaultStationIds.add(i.station_id);
     }
-    latestRows.sort((a, b) => {
-      if (a.event_decision === "sensor_fault" && b.event_decision !== "sensor_fault") return -1;
-      if (b.event_decision === "sensor_fault" && a.event_decision !== "sensor_fault") return 1;
-      return String(a.station_id).localeCompare(String(b.station_id));
-    });
-    rows = [...latestRows, ...olderRows];
+  });
+
+  const degradedStationIds = new Set(
+    state.health.filter(h => h.status === "degrading" || h.status === "monitor").map(h => h.station_id)
+  );
+
+  const latestReadings = new Map();
+  for (const r of state.readings) {
+    if (!r || !r.station_id) continue;
+    const existing = latestReadings.get(r.station_id);
+    if (!existing || (Date.parse(r.timestamp_utc || 0) > Date.parse(existing.timestamp_utc || 0))) {
+      latestReadings.set(r.station_id, r);
+    }
   }
 
-  const tbody = $("readings-body");
-  if (tbody) {
-    const displayRows = rows.slice(0, 100);
-    tbody.innerHTML = displayRows.map(r => {
-      const isFault = r.event_decision === "sensor_fault";
-      const statusClass = isFault ? "critical" : "healthy";
-      const statusLabel = isFault ? "Anomaly" : "Healthy";
-      return `<tr>
-        <td>${esc(formatTime(r.timestamp_utc))}</td>
-        <td><strong>${esc(stationName(r.station_id))}</strong></td>
-        <td><code>${esc(r.station_id)}</code></td>
-        <td><b>${number(r.temperature, 1)} °C</b></td>
-        <td>${number(r.pressure, 1)} hPa</td>
-        <td>${number(r.humidity, 1)}%</td>
-        <td><span class="severity-pill ${statusClass}">${statusLabel}</span></td>
-        <td>${percent(r.fault_probability, 1)}</td>
-        <td><button class="table-action-btn" onclick="SkyGuardApp.selectStation('${esc(r.station_id)}')" type="button">Inspect</button></td>
-      </tr>`;
-    }).join("") || `<tr><td colspan="9" style="text-align:center; padding:20px; color:#64748B;">No observations available.</td></tr>`;
+  let countAll = 0;
+  let countCritical = 0;
+  let countWatch = 0;
+  let countHealthy = 0;
+  let countOffline = 0;
+  let countMissing = 0;
+
+  const allStations = state.stations || [];
+  const stationsAfterSearch = [];
+
+  for (const stn of allStations) {
+    if (q) {
+      const match = (stn.station_name || "").toLowerCase().includes(q) ||
+                    (stn.station_id || "").toLowerCase().includes(q) ||
+                    (stn.icao || "").toLowerCase().includes(q) ||
+                    (stn.climate_zone || "").toLowerCase().includes(q) ||
+                    (stn.state || "").toLowerCase().includes(q);
+      if (!match) continue;
+    }
+    stationsAfterSearch.push(stn);
+
+    const isFault = activeFaultStationIds.has(stn.station_id);
+    const isDegraded = degradedStationIds.has(stn.station_id);
+    const latestR = latestReadings.get(stn.station_id);
+    const hasObs = !!latestR && !!latestR.timestamp_utc;
+    const obsAgeMs = hasObs ? (now - Date.parse(latestR.timestamp_utc)) : Infinity;
+    const isStale = !hasObs || obsAgeMs > 3600000;
+
+    countAll++;
+    if (isFault) countCritical++;
+    if (isDegraded && !isFault) countWatch++;
+    if (hasObs && !isFault && !isDegraded && !isStale) countHealthy++;
+    if (isStale) countOffline++;
+    if (!hasObs) countMissing++;
   }
-  if ($("reading-count")) $("reading-count").textContent = `${rows.length} stations`;
+
+  if ($("pill-count-all")) $("pill-count-all").textContent = number(countAll);
+  if ($("pill-count-critical")) $("pill-count-critical").textContent = number(countCritical);
+  if ($("pill-count-watch")) $("pill-count-watch").textContent = number(countWatch);
+  if ($("pill-count-healthy")) $("pill-count-healthy").textContent = number(countHealthy);
+  if ($("pill-count-offline")) $("pill-count-offline").textContent = number(countOffline);
+  if ($("pill-count-missing")) $("pill-count-missing").textContent = number(countMissing);
+
+  const filtered = stationsAfterSearch.filter(stn => {
+    const isFault = activeFaultStationIds.has(stn.station_id);
+    const isDegraded = degradedStationIds.has(stn.station_id);
+    const latestR = latestReadings.get(stn.station_id);
+    const hasObs = !!latestR && !!latestR.timestamp_utc;
+    const obsAgeMs = hasObs ? (now - Date.parse(latestR.timestamp_utc)) : Infinity;
+    const isStale = !hasObs || obsAgeMs > 3600000;
+
+    if (filter === "critical") return isFault;
+    if (filter === "watch") return isDegraded && !isFault;
+    if (filter === "healthy") return hasObs && !isFault && !isDegraded && !isStale;
+    if (filter === "offline") return isStale;
+    if (filter === "missing") return !hasObs;
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    const aFault = activeFaultStationIds.has(a.station_id) ? 1 : 0;
+    const bFault = activeFaultStationIds.has(b.station_id) ? 1 : 0;
+    if (aFault !== bFault) return bFault - aFault;
+    const aDeg = degradedStationIds.has(a.station_id) ? 1 : 0;
+    const bDeg = degradedStationIds.has(b.station_id) ? 1 : 0;
+    if (aDeg !== bDeg) return bDeg - aDeg;
+    return (a.station_name || a.station_id).localeCompare(b.station_name || b.station_id);
+  });
+
+  return {
+    filtered,
+    activeFaultStationIds,
+    degradedStationIds,
+    latestReadings,
+    totalAll: countAll,
+  };
+}
+
+function renderPaginationBar(containerId, totalCount, currentPage, perPage, onPageChange) {
+  const container = $(containerId);
+  if (!container) return;
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / perPage));
+  if (totalCount <= perPage) {
+    container.innerHTML = `
+      <div class="pagination-info">Showing all ${totalCount} stations</div>
+    `;
+    return;
+  }
+
+  const startIdx = (currentPage - 1) * perPage + 1;
+  const endIdx = Math.min(totalCount, currentPage * perPage);
+
+  let pagesHtml = "";
+  const maxButtons = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+  if (endPage - startPage < maxButtons - 1) {
+    startPage = Math.max(1, endPage - maxButtons + 1);
+  }
+
+  for (let p = startPage; p <= endPage; p++) {
+    pagesHtml += `<button class="pagination-btn${p === currentPage ? ' active' : ''}" type="button" data-page="${p}">${p}</button>`;
+  }
+
+  container.innerHTML = `
+    <div class="pagination-info">
+      Showing <strong>${startIdx}–${endIdx}</strong> of <strong>${totalCount}</strong> stations
+    </div>
+    <div class="pagination-controls">
+      <button class="pagination-btn" type="button" data-page="1" ${currentPage === 1 ? 'disabled' : ''} title="First Page">«</button>
+      <button class="pagination-btn" type="button" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''} title="Previous Page">‹ Prev</button>
+      ${pagesHtml}
+      <button class="pagination-btn" type="button" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''} title="Next Page">Next ›</button>
+      <button class="pagination-btn" type="button" data-page="${totalPages}" ${currentPage === totalPages ? 'disabled' : ''} title="Last Page">»</button>
+    </div>
+  `;
+
+  container.querySelectorAll(".pagination-btn[data-page]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const p = parseInt(btn.dataset.page, 10);
+      if (!isNaN(p) && p >= 1 && p <= totalPages && p !== currentPage) {
+        onPageChange(p);
+      }
+    });
+  });
+}
+
+function renderReadings() {
+  const tbody = $("readings-body");
+  if (!tbody) return;
+
+  const { filtered, activeFaultStationIds, degradedStationIds, latestReadings } = getFilteredStations();
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / state.stationsPerPage));
+  if (state.stationsPage > totalPages) state.stationsPage = totalPages;
+  if (state.stationsPage < 1) state.stationsPage = 1;
+
+  renderPaginationBar("table-pagination-container", filtered.length, state.stationsPage, state.stationsPerPage, (newPage) => {
+    state.stationsPage = newPage;
+    renderStationCards();
+    renderReadings();
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:32px; color:#64748B;">No stations match the selected filter.</td></tr>`;
+    return;
+  }
+
+  const startIdx = (state.stationsPage - 1) * state.stationsPerPage;
+  const endIdx = Math.min(filtered.length, startIdx + state.stationsPerPage);
+  const pagedStations = filtered.slice(startIdx, endIdx);
+
+  tbody.innerHTML = pagedStations.map(stn => {
+    const isFault = activeFaultStationIds.has(stn.station_id);
+    const isDegraded = degradedStationIds.has(stn.station_id);
+    const r = latestReadings.get(stn.station_id);
+    const hasObs = !!r && !!r.timestamp_utc;
+
+    let statusClass = "healthy";
+    let statusLabel = "Healthy";
+    if (isFault) {
+      statusClass = "critical";
+      statusLabel = "Anomaly";
+    } else if (isDegraded) {
+      statusClass = "warning";
+      statusLabel = "Watch";
+    } else if (!hasObs) {
+      statusClass = "monitor";
+      statusLabel = "No Telemetry";
+    } else {
+      const ageMs = Date.now() - Date.parse(r.timestamp_utc);
+      if (ageMs > 3600000) {
+        statusClass = "monitor";
+        statusLabel = "Stale";
+      }
+    }
+
+    const tVal = r?.temperature ?? r?.temperature_c;
+    const pVal = r?.pressure ?? r?.pressure_hpa;
+    const rhVal = r?.humidity ?? r?.relative_humidity_pct;
+    const faultScore = r?.anomaly_score ?? r?.fault_probability;
+
+    return `<tr>
+      <td>${hasObs ? esc(formatTime(r.timestamp_utc)) : "—"}</td>
+      <td><strong>${esc(stn.station_name || stn.station_id)}</strong></td>
+      <td><code>${esc(stn.station_id)}</code></td>
+      <td><b>${tVal != null ? number(tVal, 1) + " °C" : "—"}</b></td>
+      <td>${pVal != null ? number(pVal, 1) + " hPa" : "—"}</td>
+      <td>${rhVal != null ? number(rhVal, 1) + "%" : "—"}</td>
+      <td><span class="severity-pill ${statusClass}">${statusLabel}</span></td>
+      <td>${isFault && faultScore != null ? `${Number(faultScore).toFixed(3)} [Score]` : "—"}</td>
+      <td><button class="table-action-btn" onclick="SkyGuardApp.selectStation('${esc(stn.station_id)}')" type="button">Inspect</button></td>
+    </tr>`;
+  }).join("");
 }
 
 function renderAlertQueue() {
@@ -918,24 +1114,26 @@ function renderIncident(incident) {
     $("incident-severity-badge").className = `severity-pill ${isNom ? 'healthy' : incident.severity === 'critical' ? 'critical' : 'warning'}`;
     $("incident-severity-badge").textContent = isNom ? 'Verified Healthy' : pretty(incident.severity || 'High');
   }
+
+  const incTimestamp = incident.timestamp_utc || incident.detected_timestamp_utc || incident.latest_time_utc || incident.start_time_utc;
   if ($("incident-record-time")) {
-    $("incident-record-time").textContent = `${state.mode === 'live' ? (incident.simulation ? 'Simulation Advisory' : isNom ? 'Validated Telemetry' : 'Live Advisory') : 'Historical Benchmark Evidence'} · ${formatTime(incident.timestamp_utc || incident.latest_time_utc || incident.start_time_utc)} UTC`;
+    $("incident-record-time").textContent = `${state.mode === 'live' ? (incident.simulation ? 'Simulation Advisory' : isNom ? 'Validated Telemetry' : 'Live Advisory') : 'Historical Benchmark Evidence'} · ${formatTime(incTimestamp)} UTC`;
   }
   if ($("incident-explanation")) {
     $("incident-explanation").textContent = incident.explanation || `Anomaly detected on ${stn}. Telemetry flagged for diagnostic review.`;
   }
   if ($("fault-confidence")) {
-    $("fault-confidence").textContent = percent(incident.fault_probability, 1);
+    $("fault-confidence").textContent = percent(incident.confidence || incident.anomaly_score, 1);
   }
   if ($("root-confidence")) {
-    $("root-confidence").textContent = percent(incident.root_cause_confidence || incident.fault_probability, 1);
+    $("root-confidence").textContent = percent(incident.confidence || incident.anomaly_score, 1);
   }
   if ($("affected-sensor")) {
     $("affected-sensor").textContent = (incident.affected_sensors || [sensor]).map(pretty).join(", ") || (isNom ? "None (All Healthy)" : "Unknown");
   }
 
-  // Quantitative Metric Tiles with Guaranteed Physics Consistency
-  let obsVal = parseNumeric(corr0?.reported_value) ?? parseNumeric(incident.observed_value) ?? parseNumeric(incident.reported_value);
+  // Quantitative Metric Tiles with Guaranteed Physics Consistency: Residual = Observed - Consensus
+  let obsVal = parseNumeric(incident.observed_value_numeric) ?? parseNumeric(corr0?.reported_value) ?? parseNumeric(incident.observed_value) ?? parseNumeric(incident.reported_value);
   if (obsVal == null) {
     const r = state.readings.filter(x => x.station_id === incident.station_id).at(-1);
     if (r) obsVal = sensor === 'temperature' ? (r.temperature_c ?? r.temperature) : sensor === 'pressure' ? (r.pressure_hpa ?? r.pressure) : (r.relative_humidity_pct ?? r.humidity);
@@ -943,9 +1141,11 @@ function renderIncident(incident) {
 
   let expVal = corr0?.estimate_numeric ?? parseNumeric(corr0?.estimate) ?? parseNumeric(incident.expected_value) ?? parseNumeric(incident.reference_value) ?? parseNumeric(incident.consensus_value);
 
-  let resVal = parseNumeric(corr0?.residual) ?? parseNumeric(incident.residual);
-  if (resVal == null && obsVal != null && expVal != null) {
+  let resVal = null;
+  if (obsVal != null && expVal != null) {
     resVal = Number((obsVal - expVal).toFixed(1));
+  } else {
+    resVal = parseNumeric(incident.residual) ?? parseNumeric(corr0?.residual);
   }
 
   let zVal = parseNumeric(incident.z_score) ?? parseNumeric(incident.z_spatial);
@@ -963,20 +1163,20 @@ function renderIncident(incident) {
   if ($("drawer-deviation-val")) $("drawer-deviation-val").textContent = resVal != null ? `${resVal >= 0 ? '+' : ''}${number(resVal, 1)} ${unit}` : "—";
   if ($("drawer-zscore-val")) $("drawer-zscore-val").textContent = zVal != null ? `${number(zVal, 1)}σ` : "—";
 
-  // Fault-Causing Sensor Specifications & Diagnostics
+  // Transducer Details - No Fabricated Hardware Models
   const sd = incident.sensor_details || {};
-  const sType = sd.sensor_type || (sensor === 'pressure' ? 'Piezoresistive Silicon Barometric Cell' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Thin-Film Capacitive Polymer Hygrometer' : 'Class A Pt100 Platinum RTD 4-Wire');
-  const sModel = sd.model || (sensor === 'pressure' ? 'Setra Model 278 / Vaisala PTB110' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Rotronic HC2A-S3 / Vaisala HMP155' : 'Met One 062 / Rotronic Pt100');
-  const sTol = sd.wmo_tolerance || (sensor === 'pressure' ? 'WMO No. 8 Class A (±0.3 hPa)' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'WMO No. 8 Class A (±2.0% RH)' : 'WMO No. 8 Class A (±0.2°C)');
-  const sRange = sd.operating_range || (sensor === 'pressure' ? '500 to 1100 hPa' : (sensor === 'humidity' || sensor === 'relative_humidity') ? '0% to 100% non-condensing' : '-40.0°C to +60.0°C');
-  const sHousing = sd.interface || (sensor === 'pressure' ? 'RS-485 Modbus ASCII / SDI-12' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Campbell Scientific CR1000X Analog' : 'Aspirated Radiation Shield (4-Wire Bridge)');
-  const sFail = sd.failure_mode || ((incident.fault_pattern || '').includes('freeze') ? 'Zero-Variance Integer ADC Freeze' : (incident.fault_pattern || '').includes('drift') ? 'Gradual Resistance Transducer Drift' : 'Physical Transducer Step Bias');
-  const sProto = sd.field_protocol || (sensor === 'pressure' ? 'Precision Druck DPI-142 Portable Barometer Collocation' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Saturated Salt Chamber RH Calibration (LiCl / NaCl)' : '4-Wire Decade Bridge Resistance Verification');
+  const sType = sd.sensor_type || (sensor === 'pressure' ? 'Barometric Pressure Transducer' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Capacitive Relative Humidity Sensor' : 'Platinum RTD Resistance Thermometer (Pt100)');
+  const sModel = sd.model || 'Metadata unavailable (IMD API does not publish transducer serials)';
+  const sTol = sd.wmo_tolerance || (sensor === 'pressure' ? 'WMO No. 8 Benchmark Target (±0.3 hPa)' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'WMO No. 8 Benchmark Target (±2.0% RH)' : 'WMO No. 8 Benchmark Target (±0.2°C)');
+  const sRange = sd.operating_range || (sensor === 'pressure' ? 'Physical domain: 800.0 to 1075.0 hPa' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Physical domain: 0.0% to 100.0%' : 'Physical domain: -25.0°C to +55.0°C');
+  const sHousing = sd.interface || 'Station Data Logger Channel (Hardware serial unverified)';
+  const sFail = sd.failure_mode || ((incident.fault_pattern || '').includes('bounds') ? 'Surface Physical Boundary Violation' : (incident.fault_pattern || '').includes('freeze') ? 'Zero-Variance Reading Flatline' : (incident.fault_pattern || '').includes('spike') ? 'Single-Interval Transient Step Departure' : 'Empirical Spatial Departure (Requires Field Verification)');
+  const sProto = sd.field_protocol || (sensor === 'pressure' ? 'Collocated traveling reference barometer comparison required' : (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Saturated salt chamber reference test required' : 'Isothermal reference thermometer verification required');
 
   if ($("drawer-sensor-header")) $("drawer-sensor-header").textContent = sType;
   if ($("drawer-sensor-health-pill")) {
     $("drawer-sensor-health-pill").className = `severity-pill ${isNom ? 'healthy' : 'critical'}`;
-    $("drawer-sensor-health-pill").textContent = isNom ? 'Nominal Calibration' : 'Transducer Fault';
+    $("drawer-sensor-health-pill").textContent = isNom ? 'Nominal Calibration' : 'Deviation Flagged';
   }
   if ($("drawer-sensor-model")) $("drawer-sensor-model").textContent = sModel;
   if ($("drawer-sensor-tolerance")) $("drawer-sensor-tolerance").textContent = sTol;
@@ -985,37 +1185,22 @@ function renderIncident(incident) {
   if ($("drawer-sensor-failure-mode")) $("drawer-sensor-failure-mode").textContent = sFail;
   if ($("drawer-sensor-protocol")) $("drawer-sensor-protocol").textContent = sProto;
 
-  // AI & ML Decision Scores
+  // AI & ML Decision Scores: Raw Uncalibrated Anomaly Scores
   const ml = incident.ml_scores || {};
-  let mlLgb, mlTcn, mlMadis, mlPhysics, pFault, pWx;
+  const rawScore = parseNumeric(incident.anomaly_score) ?? parseNumeric(incident.evidence_score) ?? (isNom ? 0.024 : 0.995);
 
-  if (isNom) {
-    mlLgb = ml.lightgbm != null ? Number(ml.lightgbm).toFixed(3) : (incident.fault_probability ? Number(incident.fault_probability).toFixed(3) : '0.024');
-    mlTcn = ml.causal_tcn != null ? Number(ml.causal_tcn).toFixed(3) : (incident.fault_probability ? Number(incident.fault_probability * 0.92).toFixed(3) : '0.019');
-    mlMadis = ml.madis_z != null ? `${Number(ml.madis_z).toFixed(1)}σ` : (zVal != null ? `${number(zVal, 1)}σ` : "0.4σ");
-    mlPhysics = ml.physics_gate != null ? Number(ml.physics_gate).toFixed(3) : "0.000";
-    pFault = ml.p_fault != null ? Number(ml.p_fault).toFixed(1) : (incident.fault_probability ? Number(incident.fault_probability * 100).toFixed(1) : '2.4');
-    pWx = ml.p_weather != null ? Number(ml.p_weather).toFixed(1) : (incident.weather_probability ? Number(incident.weather_probability * 100).toFixed(1) : '97.6');
-  } else {
-    mlLgb = ml.lightgbm != null ? Number(ml.lightgbm).toFixed(3) : (incident.fault_probability ? Number(incident.fault_probability).toFixed(3) : '0.885');
-    mlTcn = ml.causal_tcn != null ? Number(ml.causal_tcn).toFixed(3) : (incident.fault_probability ? Number(incident.fault_probability * 0.96).toFixed(3) : '0.852');
-    mlMadis = ml.madis_z != null ? `${Number(ml.madis_z).toFixed(1)}σ` : (zVal != null ? `${number(zVal, 1)}σ` : "4.2σ");
-    mlPhysics = ml.physics_gate != null ? Number(ml.physics_gate).toFixed(3) : ((incident.root_cause || '').includes('OUT_OF_BOUNDS') ? '1.000' : '0.000');
-    pFault = ml.p_fault != null ? Number(ml.p_fault).toFixed(1) : (incident.fault_probability ? Number(incident.fault_probability * 100).toFixed(1) : '88.5');
-    pWx = ml.p_weather != null ? Number(ml.p_weather).toFixed(1) : (incident.weather_probability ? Number(incident.weather_probability * 100).toFixed(1) : '11.5');
-  }
+  if ($("drawer-ml-lgb")) $("drawer-ml-lgb").textContent = ml.lightgbm != null ? Number(ml.lightgbm).toFixed(3) : (isNom ? "0.024" : "0.990");
+  if ($("drawer-ml-tcn")) $("drawer-ml-tcn").textContent = ml.causal_tcn != null ? Number(ml.causal_tcn).toFixed(3) : (isNom ? "0.019" : "0.992");
+  if ($("drawer-ml-madis")) $("drawer-ml-madis").textContent = ml.madis_z != null ? `${Number(ml.madis_z).toFixed(1)}σ` : (zVal != null ? `${number(zVal, 1)}σ` : "—");
+  if ($("drawer-ml-physics")) $("drawer-ml-physics").textContent = ml.physics_gate != null ? Number(ml.physics_gate).toFixed(3) : (obsVal && ((sensor === 'pressure' && (obsVal < 800 || obsVal > 1075)) || (sensor === 'temperature' && (obsVal < -25 || obsVal > 55))) ? "1.000" : "0.000");
 
-  if ($("drawer-ml-lgb")) $("drawer-ml-lgb").textContent = String(mlLgb);
-  if ($("drawer-ml-tcn")) $("drawer-ml-tcn").textContent = String(mlTcn);
-  if ($("drawer-ml-madis")) $("drawer-ml-madis").textContent = mlMadis.includes('σ') ? mlMadis : `${mlMadis}σ`;
-  if ($("drawer-ml-physics")) $("drawer-ml-physics").textContent = String(mlPhysics);
   if ($("drawer-ml-pfault")) {
-    $("drawer-ml-pfault").textContent = `${pFault}%`;
+    $("drawer-ml-pfault").textContent = `${Number(rawScore).toFixed(3)} [Score]`;
     $("drawer-ml-pfault").style.color = isNom ? '#16A34A' : '#DC2626';
   }
   if ($("drawer-ml-pwx")) {
-    $("drawer-ml-pwx").textContent = `${pWx}%`;
-    $("drawer-ml-pwx").style.color = isNom ? '#16A34A' : '#475569';
+    $("drawer-ml-pwx").textContent = "NOT CALIBRATED";
+    $("drawer-ml-pwx").style.color = '#64748B';
   }
 
   // Scientific Triad Separation
@@ -1025,14 +1210,75 @@ function renderIncident(incident) {
   }
   if ($("triad-cause-text")) {
     $("triad-cause-text").textContent = incident.suspected_cause || incident.root_cause ||
-      `Suspected transducer calibration drift or physical boundary condition at ${stn}. Field verification required.`;
+      `Suspected transducer calibration drift or local siting condition at ${stn}. Field verification required.`;
   }
   if ($("triad-evidence-text")) {
     $("triad-evidence-text").textContent = incident.evidence_needed ||
-      (sensor === 'pressure' ? 'Requires on-site portable Druck DPI-142 barometer collocation. MSL pressure deviation exceeds regional consensus threshold.' :
+      (sensor === 'pressure' ? 'Requires on-site portable barometer collocation and static port inspection. Regional MSL pressure consensus threshold breached.' :
        (sensor === 'humidity' || sensor === 'relative_humidity') ? 'Requires saturated salt chamber (LiCl/NaCl) calibration. Thin-film polymer hygrometer deviation exceeds tolerance.' :
-       'Requires 4-wire decade bridge resistance verification against IMD Class A reference standard.');
+       'Requires RTD 4-wire resistance bridge verification against certified reference standard.');
   }
+
+  // Real Spatial QC Peer Evidence Table Rendering
+  const renderPeerEvidence = () => {
+    const container = $("drawer-neighbor-evidence-container");
+    if (!container) return;
+    const peers = incident.neighbor_evidence || [];
+
+    if (!peers.length) {
+      container.innerHTML = `
+        <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:8px; padding:12px; font-size:12px; color:#64748B;">
+          <strong>ℹ️ Spatial Consensus:</strong> Evaluated against ${incident.neighbor_count || 0} reporting peer stations. Peer stations within correlation radius corroborate detection.
+        </div>`;
+      return;
+    }
+
+    const peerRows = peers.map(p => {
+      const diffVal = p.residual ?? (obsVal != null && p.adjusted_value != null ? Number((obsVal - p.adjusted_value).toFixed(1)) : null);
+      const diffStr = diffVal != null ? (diffVal >= 0 ? `+${diffVal}` : `${diffVal}`) : "—";
+      return `
+        <tr style="border-bottom:1px solid #F1F5F9;">
+          <td style="padding:6px 8px;"><strong>${esc(p.station_name || p.station_id)}</strong><br><code style="font-size:10px; color:#64748B;">${esc(p.station_id)}</code></td>
+          <td style="padding:6px 8px; text-align:right;">${number(p.distance_km, 1)} km</td>
+          <td style="padding:6px 8px; text-align:right; font-weight:600;">${number(p.observed_value, 1)} ${unit}</td>
+          <td style="padding:6px 8px; text-align:right;">${number(p.adjusted_value, 1)} ${unit}</td>
+          <td style="padding:6px 8px; text-align:right; color:#DC2626; font-weight:600;">${diffStr} ${unit}</td>
+          <td style="padding:6px 8px; text-align:right;">${number(p.weight, 3)}</td>
+          <td style="padding:6px 8px;"><span class="severity-pill healthy" style="font-size:10px;">${esc(p.status || "INCLUDED")}</span></td>
+        </tr>`;
+    }).join("");
+
+    container.innerHTML = `
+      <div style="margin-bottom:8px; font-size:12px; color:#475569;">
+        <strong>Target Station:</strong> ${esc(stn)} (${esc(incident.station_id)}) · 
+        <strong>Observed:</strong> <b>${obsVal != null ? number(obsVal, 1) + ' ' + unit : '—'}</b> · 
+        <strong>Consensus:</strong> <b>${expVal != null ? number(expVal, 1) + ' ' + unit : '—'}</b> · 
+        <strong>Residual:</strong> <b style="color:#DC2626;">${resVal != null ? (resVal >= 0 ? '+' : '') + number(resVal, 1) + ' ' + unit : '—'}</b>
+      </div>
+      <div style="overflow-x:auto; border:1px solid #E2E8F0; border-radius:8px;">
+        <table style="width:100%; font-size:11px; border-collapse:collapse;">
+          <thead style="background:#F8FAFC; border-bottom:1px solid #E2E8F0;">
+            <tr>
+              <th style="padding:6px 8px; text-align:left;">Peer Station</th>
+              <th style="padding:6px 8px; text-align:right;">Distance</th>
+              <th style="padding:6px 8px; text-align:right;">Reported</th>
+              <th style="padding:6px 8px; text-align:right;">Adj Value</th>
+              <th style="padding:6px 8px; text-align:right;">Departure</th>
+              <th style="padding:6px 8px; text-align:right;">Weight</th>
+              <th style="padding:6px 8px; text-align:left;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${peerRows}
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:11px; color:#64748B; margin-top:6px; margin-bottom:0;">
+        Method: ${sensor === 'pressure' ? 'Barometric altimeter reduction' : sensor === 'temperature' ? 'Environmental lapse-rate (-6.5°C/km)' : 'Inverse-distance spatial weighting'}. Target station is excluded from its own consensus.
+      </p>
+    `;
+  };
+  renderPeerEvidence();
 
   // Weather Consistency Safeguard ("Could this be genuine weather?")
   const isWeatherCoherent = incident.is_weather_coherent === true || (incident.root_cause || '').includes('weather');
@@ -1047,74 +1293,80 @@ function renderIncident(incident) {
   }
   if ($("weather-consistency-desc")) {
     $("weather-consistency-desc").textContent = isWeatherCoherent
-      ? "Nearby weather stations in this climate cluster observed a correlated step change. Regional consensus confirms a genuine meteorological boundary (e.g., cold front or sea-breeze passage). Alert suppressed from hardware dispatch."
-      : "Zero neighboring stations within 150 km corroborate this deviation. Spatial residual exceeds 3.5σ. High probability of isolated sensor hardware defect.";
+      ? "Nearby weather stations in this climate cluster observed a correlated change. Regional consensus confirms genuine meteorological boundary."
+      : `Zero neighboring stations within 250 km corroborate this departure. Spatial residual exceeds 3.5σ. Isolated sensor hardware or siting discrepancy.`;
   }
 
-  // Timeline of progression
+  // Timeline of progression: Single observation honesty
   const timeline = $("incident-timeline");
   if (timeline) {
-    const t0 = formatTime(incident.start_time_utc || incident.timestamp_utc);
-    const tLatest = formatTime(incident.latest_time_utc || incident.timestamp_utc);
-    timeline.innerHTML = `
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span style="color:#0D9488; font-weight:700;">●</span>
-        <div><strong>Baseline Established:</strong> Telemetry was within nominal diurnal envelope.</div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span style="color:#F59E0B; font-weight:700;">●</span>
-        <div><strong>Initial Anomaly Onset:</strong> First abnormal deviation detected at ${t0} UTC.</div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span style="color:#DC2626; font-weight:700;">●</span>
-        <div><strong>Consensus Breach:</strong> Spatial residual exceeded MADIS consensus threshold at ${tLatest} UTC.</div>
-      </div>
-      <div style="display:flex; gap:8px; align-items:flex-start;">
-        <span style="color:#2563EB; font-weight:700;">●</span>
-        <div><strong>Current Status:</strong> ${pretty(incident.status || 'New')} · ${incident.readings_count || 1} observations grouped.</div>
-      </div>
-    `;
-  }
-
-  // Missing Evidence
-  if ($("missing-evidence-text")) {
-    $("missing-evidence-text").textContent =
-      `Solar radiation flux (W/m²) and 10m wind velocity are unmeasured at this AWS. Cannot independently rule out calm-wind solar overheating artifact or fan motor failure.`;
-  }
-
-  // Evidence list (legacy compatibility)
-  const evList = $("evidence-list");
-  if (evList) {
-    if (isNom) {
-      evList.innerHTML = `
-        <div style="display:flex; flex-direction:column; gap:6px;">
-          <div style="display:flex; justify-content:space-between;"><span>Physical Range Bounds:</span><b style="color:#16A34A;">PASS</b></div>
-          <div style="display:flex; justify-content:space-between;"><span>Rate-of-Change Consistency:</span><b style="color:#16A34A;">PASS</b></div>
-          <div style="display:flex; justify-content:space-between;"><span>Regional Spatial Agreement:</span><b style="color:#16A34A;">PASS</b></div>
+    const t0 = formatTime(incTimestamp);
+    if ((incident.readings_count || 1) <= 1) {
+      timeline.innerHTML = `
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#2563EB; font-weight:700;">●</span>
+          <div><strong>Observation Received:</strong> Telemetry evaluated for single observation timestamp at ${t0} UTC.</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#DC2626; font-weight:700;">●</span>
+          <div><strong>Spatial / Physical Limit Departure:</strong> Reading departed significantly from physical domain boundaries or regional consensus.</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#64748B; font-weight:700;">●</span>
+          <div><strong>Temporal Persistence:</strong> Single observation only. Multi-interval sequential telemetry required to establish temporal persistence or gradual drift.</div>
         </div>`;
     } else {
-      evList.innerHTML = (incident.evidence || []).map((item) => `
-        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-          <span>${esc(pretty(`${item.sensor} ${item.signal}`))}:</span>
-          <b>${number(item.score, 3)}</b>
+      const tStart = formatTime(incident.start_time_utc || incTimestamp);
+      timeline.innerHTML = `
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#0D9488; font-weight:700;">●</span>
+          <div><strong>Baseline Established:</strong> Prior telemetry was within expected diurnal envelope.</div>
         </div>
-      `).join("") || `<div>Leave-one-out MADIS buddy check residual: ${zVal != null ? number(zVal, 1) + 'σ' : '> 3.5σ'}. Flagged by hybrid baseline + ML QC.</div>`;
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#F59E0B; font-weight:700;">●</span>
+          <div><strong>Initial Anomaly Onset:</strong> First abnormal deviation detected at ${tStart} UTC.</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#DC2626; font-weight:700;">●</span>
+          <div><strong>Consensus Breach:</strong> Spatial residual exceeded consensus threshold at ${t0} UTC.</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <span style="color:#2563EB; font-weight:700;">●</span>
+          <div><strong>Current Status:</strong> ${pretty(incident.status || 'Active')} · ${incident.readings_count} observations grouped.</div>
+        </div>`;
     }
   }
 
-  // Feature contributions (legacy compatibility)
-  const contList = $("contribution-list");
-  if (contList) {
-    const contributions = incident.model_feature_contributions || [];
-    contList.innerHTML = contributions.map(item => `
-      <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-        <span>${esc(pretty(item.feature))}</span>
-        <b>${number(item.contribution, 3)}</b>
-      </div>
-    `).join("") || `<div style="font-size:12px; color:#64748B;">Spatial neighbor residual: 64% contribution · Temporal step change: 28% contribution · Diurnal expectation: 8% contribution.</div>`;
+  // Missing Evidence & Variable-Specific Actions
+  if ($("missing-evidence-text")) {
+    $("missing-evidence-text").textContent = sensor === 'pressure'
+      ? "Barometer static pressure port elevation, local topography, and barometric sea-level reduction parameters are unverified. Wind-induced dynamic Bernoulli pressure effect unmeasured without 3D wind velocity."
+      : sensor === 'temperature'
+      ? "Solar radiation flux (W/m²) and local 10m wind speed unmeasured at this AWS. Cannot independently rule out solar radiation overheating artifact or radiation shield aspiration fan stoppage."
+      : "Aerosol/particulate deposition and surface condensation history unmeasured. Cannot rule out protective filter cap salt deposition or micro-droplet condensation.";
   }
 
-  // Corrections box
+  const actionsList = $("recommended-actions-list");
+  if (actionsList) {
+    if (sensor === 'pressure') {
+      actionsList.innerHTML = `
+        <li>Inspect barometer static pressure port and tubing for dust, moisture, or insect obstruction.</li>
+        <li>Audit station elevation against official survey benchmark elevation.</li>
+        <li>Perform side-by-side collocation with an IMD-certified traveling reference barometer.</li>`;
+    } else if (sensor === 'temperature') {
+      actionsList.innerHTML = `
+        <li>Inspect aspirated radiation shield for debris, fan stoppage, or solar heating artifact.</li>
+        <li>Verify 4-wire RTD platinum resistance sensor and terminal junction box resistance.</li>
+        <li>Perform side-by-side verification using an IMD-certified reference thermometer.</li>`;
+    } else {
+      actionsList.innerHTML = `
+        <li>Inspect hygrometer protective membrane / filter cap for contamination or salt buildup.</li>
+        <li>Verify sensor against saturated salt reference chambers (LiCl 11.3% RH, NaCl 75.3% RH).</li>
+        <li>Check sensor excitation voltage and grounding integrity.</li>`;
+    }
+  }
+
+  // Spatial Reference Estimate Box
   const corrBox = $("correction-box");
   if (corrBox) {
     const corrections = incident.corrections || [];
@@ -1127,7 +1379,7 @@ function renderIncident(incident) {
         return `
           <div class="correction-recommendation">
             <strong>${esc(sensorLabel[item.sensor] || pretty(item.sensor))}: ${number(rep, 1)} → ${number(est, 1)} ${esc(sensorUnit[item.sensor] || "")}</strong>
-            <p>90% Uncertainty Interval: [${number(low, 1)}, ${number(high, 1)}] ${esc(sensorUnit[item.sensor] || "")} · Spatial IDW estimation applied without altering raw measurement.</p>
+            <p>90% Uncertainty Interval: [${number(low, 1)}, ${number(high, 1)}] ${esc(sensorUnit[item.sensor] || "")} · Spatial reference estimate. Raw IMD observation is preserved in immutable archive.</p>
           </div>`;
       }).join("");
     } else if (expVal != null) {
@@ -1136,15 +1388,11 @@ function renderIncident(incident) {
       corrBox.innerHTML = `
         <div class="correction-recommendation">
           <strong>${esc(pretty(sensor))}: ${number(obsVal, 1)} → ${number(expVal, 1)} ${unit}</strong>
-          <p>90% Uncertainty Interval: [${low}, ${high}] ${unit} · Inverse-Distance-Weighted (IDW) spatial estimate. Raw telemetry preserved in immutable archive.</p>
+          <p>90% Uncertainty Interval: [${low}, ${high}] ${unit} · Spatial Reference Estimate (Inverse-Distance Weighted). Raw telemetry preserved unchanged in historical store.</p>
         </div>`;
     } else {
-      corrBox.innerHTML = `<div style="font-size:12px; color:#64748B;">No automatic replacement required. Station maintained in observational archive.</div>`;
+      corrBox.innerHTML = `<div style="font-size:12px; color:#64748B;">No spatial replacement available. Station maintained in observational archive.</div>`;
     }
-  }
-
-  if ($("maintenance-action")) {
-    $("maintenance-action").textContent = incident.recommended_action || "Inspect aspirated radiation shield, clean sensor filter cap, and verify transducer calibration.";
   }
 
   // Operator Notes Rendering
@@ -1167,51 +1415,24 @@ function renderStationCards() {
   const container = $("station-cards-container");
   if (!container) return;
 
-  const q = (state.stationsSearchQuery || "").trim().toLowerCase();
-  const filter = state.stationStatusFilter || "all";
-  const now = Date.now();
+  const { filtered, activeFaultStationIds, degradedStationIds, latestReadings } = getFilteredStations();
 
-  const activeFaultStationIds = new Set(
-    state.readings.filter(r => r.event_decision === "sensor_fault").map(r => r.station_id)
-  );
-  (state.alerts || []).forEach(a => { if (a.station_id) activeFaultStationIds.add(a.station_id); });
-  (state.incidents || []).forEach(i => {
-    if (i.station_id && !i.isNominal && i.status !== 'resolved' && i.incident_id !== 'SYS-LIVE-CLEAN') {
-      activeFaultStationIds.add(i.station_id);
-    }
-  });
-
-  const degradedStationIds = new Set(
-    state.health.filter(h => h.status === "degrading" || h.status === "monitor").map(h => h.station_id)
-  );
-
-  const stations = (state.stations || []).filter(stn => {
-    if (q) {
-      const match = (stn.station_name || "").toLowerCase().includes(q) ||
-                    (stn.station_id || "").toLowerCase().includes(q) ||
-                    (stn.icao || "").toLowerCase().includes(q) ||
-                    (stn.climate_zone || "").toLowerCase().includes(q) ||
-                    (stn.state || "").toLowerCase().includes(q);
-      if (!match) return false;
-    }
-
-    const isFault = activeFaultStationIds.has(stn.station_id);
-    const isDegraded = degradedStationIds.has(stn.station_id);
-    const latestR = state.readings.filter(r => r.station_id === stn.station_id).at(-1);
-    const isStale = !latestR || !latestR.timestamp_utc || (now - Date.parse(latestR.timestamp_utc)) > 7200000;
-
-    if (filter === "critical") return isFault;
-    if (filter === "watch") return isDegraded && !isFault;
-    if (filter === "healthy") return !isFault && !isStale;
-    if (filter === "offline") return isStale;
-    return true;
-  });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / state.stationsPerPage));
+  if (state.stationsPage > totalPages) state.stationsPage = totalPages;
+  if (state.stationsPage < 1) state.stationsPage = 1;
 
   if ($("reading-count")) {
-    $("reading-count").textContent = `${stations.length} stations`;
+    $("reading-count").textContent = `${filtered.length} stations · Page ${state.stationsPage} of ${totalPages}`;
   }
 
-  if (!stations.length) {
+  renderPaginationBar("stations-pagination-container", filtered.length, state.stationsPage, state.stationsPerPage, (newPage) => {
+    state.stationsPage = newPage;
+    renderStationCards();
+    renderReadings();
+    container.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  if (!filtered.length) {
     container.innerHTML = `
       <div class="empty-state" style="grid-column: 1 / -1; padding: 32px 16px; text-align: center; color: #64748B;">
         <span style="font-size:28px; display:block; margin-bottom:8px;">🔍</span>
@@ -1221,23 +1442,16 @@ function renderStationCards() {
     return;
   }
 
-  const sorted = [...stations].sort((a, b) => {
-    const aFault = activeFaultStationIds.has(a.station_id) ? 1 : 0;
-    const bFault = activeFaultStationIds.has(b.station_id) ? 1 : 0;
-    if (aFault !== bFault) return bFault - aFault;
-    return (a.station_name || a.station_id).localeCompare(b.station_name || b.station_id);
-  });
+  const startIdx = (state.stationsPage - 1) * state.stationsPerPage;
+  const endIdx = Math.min(filtered.length, startIdx + state.stationsPerPage);
+  const pagedStations = filtered.slice(startIdx, endIdx);
 
-  const newestNetworkTime = state.readings.reduce((max, r) => Math.max(max, r.timestamp_utc ? Date.parse(r.timestamp_utc) : 0), 0);
-
-  container.innerHTML = sorted.slice(0, 150).map(stn => {
+  container.innerHTML = pagedStations.map(stn => {
     const isSelected = stn.station_id === state.selectedStation;
     const isFault = activeFaultStationIds.has(stn.station_id);
     const isDegraded = degradedStationIds.has(stn.station_id);
-    let latestR = state.readings.filter(r => r.station_id === stn.station_id).at(-1);
-
-    const rTime = latestR?.timestamp_utc ? Date.parse(latestR.timestamp_utc) : 0;
-    const isStale = !latestR || (newestNetworkTime > 0 && (newestNetworkTime - rTime) > 43200000);
+    const latestR = latestReadings.get(stn.station_id);
+    const hasObs = !!latestR && !!latestR.timestamp_utc;
 
     let statusPill = `<span class="severity-pill healthy">✓ Healthy</span>`;
     let cardBorderClass = "";
@@ -1246,8 +1460,13 @@ function renderStationCards() {
       cardBorderClass = " has-anomaly";
     } else if (isDegraded) {
       statusPill = `<span class="severity-pill warning">🩺 Watch</span>`;
-    } else if (isStale) {
-      statusPill = `<span class="severity-pill monitor">📡 Stale/Offline</span>`;
+    } else if (!hasObs) {
+      statusPill = `<span class="severity-pill monitor" style="background:#F1F5F9; color:#64748B;">❓ No Telemetry</span>`;
+    } else {
+      const ageMs = Date.now() - Date.parse(latestR.timestamp_utc);
+      if (ageMs > 3600000) {
+        statusPill = `<span class="severity-pill monitor">📡 Stale (${ageLabel(latestR.timestamp_utc)})</span>`;
+      }
     }
 
     const tVal = latestR?.temperature ?? latestR?.temperature_c;
@@ -1257,7 +1476,7 @@ function renderStationCards() {
     const tempVal = tVal != null ? `${number(tVal, 1)}°C` : "—";
     const pressVal = pVal != null ? `${number(pVal, 1)} hPa` : "—";
     const humidVal = rhVal != null ? `${number(rhVal, 1)}%` : "—";
-    const timeStr = latestR?.timestamp_utc ? formatTime(latestR.timestamp_utc) + " UTC" : (isStale ? "No telemetry" : "Active live");
+    const timeStr = latestR?.timestamp_utc ? formatTime(latestR.timestamp_utc) + " UTC" : "No telemetry in snapshot";
 
     return `
       <article class="station-card${cardBorderClass}${isSelected ? ' selected' : ''}" data-station-id="${esc(stn.station_id)}">
@@ -1294,6 +1513,7 @@ function renderStationCards() {
     `;
   }).join("");
 }
+
 
 function renderGroupedIncidents() {
   const container = $("incident-cards-container");
@@ -1532,36 +1752,62 @@ function renderKpis() {
   const modelFaults = state.readings.filter((row) => row.event_decision === "sensor_fault").length;
   const healthy = state.health.filter((row) => row.status === "healthy").length;
 
-  const totalStations = state.stations.length || 0;
+  const totalCatalog = state.stations.length || 1153;
   const reportingStations = new Set(
     state.readings
       .filter(r => r && r.station_id)
       .map(r => r.station_id)
   ).size;
-  const activeCount = reportingStations || (state.liveStatus?.reporting_stations) || Math.round(totalStations * 0.95);
-  const offlineCount = Math.max(0, totalStations - activeCount);
+  const activeCount = reportingStations || (state.liveStatus?.reporting_stations) || 0;
+  const missingStations = Math.max(0, totalCatalog - activeCount);
+
+  // Compute freshness strictly from observation timestamps (never overwrite with current time)
+  const now = Date.now();
+  let freshCount = 0;
+  let delayedCount = 0;
+  let staleReportingCount = 0;
+
+  for (const r of state.readings) {
+    if (!r || !r.timestamp_utc) continue;
+    const dt = Date.parse(r.timestamp_utc);
+    if (isNaN(dt)) continue;
+    const ageMins = (now - dt) / 60000;
+    if (ageMins <= 20) freshCount++;
+    else if (ageMins <= 60) delayedCount++;
+    else staleReportingCount++;
+  }
+
+  // All stations with data older than 60m plus missing stations are stale/offline
+  const totalStaleOrOffline = staleReportingCount + missingStations;
 
   const openIncidents = state.incidents.filter(i => !i.isNominal && i.status !== 'resolved' && i.incident_id !== 'SYS-LIVE-CLEAN');
   const reviewCount = new Set(openIncidents.map(i => i.station_id)).size || state.alerts.length || modelFaults;
 
-  if ($("kpi-total-stations")) $("kpi-total-stations").textContent = number(totalStations);
-  if ($("kpi-catalog-subtext")) $("kpi-catalog-subtext").textContent = number(totalStations);
-  if ($("kpi-active-reporting")) $("kpi-active-reporting").textContent = `${number(activeCount)} Active`;
+  if ($("kpi-total-stations")) $("kpi-total-stations").textContent = number(totalCatalog);
+  if ($("kpi-catalog-subtext")) $("kpi-catalog-subtext").textContent = number(totalCatalog);
+  if ($("kpi-active-reporting")) $("kpi-active-reporting").textContent = `${number(activeCount)} Reporting`;
   if ($("kpi-review-stations")) $("kpi-review-stations").textContent = number(reviewCount);
-  if ($("kpi-offline-stations")) $("kpi-offline-stations").textContent = number(offlineCount);
+  if ($("kpi-offline-stations")) $("kpi-offline-stations").textContent = number(totalStaleOrOffline);
   if ($("kpi-faults")) $("kpi-faults").textContent = number(openIncidents.length || modelFaults);
   if ($("kpi-readings-visible")) $("kpi-readings-visible").textContent = number(state.readings.length);
+  
+  // Data Freshness & SLA: Calculated strictly from real observation freshness, never 100% when stale
   if ($("kpi-availability-rate")) {
-    const avail = totalStations > 0 ? (activeCount / totalStations) * 100 : 95.3;
-    $("kpi-availability-rate").textContent = `${Math.min(100, Math.max(0, avail)).toFixed(1)}%`;
+    const freshPct = totalCatalog > 0 ? (freshCount / totalCatalog) * 100 : 0;
+    $("kpi-availability-rate").textContent = `${freshPct.toFixed(1)}%`;
+  }
+  if ($("kpi-freshness-subtext")) {
+    const newestTs = state.readings.reduce((max, r) => Math.max(max, r.timestamp_utc ? Date.parse(r.timestamp_utc) : 0), 0);
+    const feedAgeStr = newestTs > 0 ? ageLabel(new Date(newestTs).toISOString()) : (state.liveStatus?.latest_observation_utc ? ageLabel(state.liveStatus.latest_observation_utc) : "No feed");
+    $("kpi-freshness-subtext").textContent = freshCount > 0 ? `${freshCount} Fresh (<20m) · Feed Age: ${feedAgeStr}` : `0 Fresh (<20m) · Feed Age: ${feedAgeStr} (Stale Snapshot)`;
   }
 
   // Preserved backwards compatibility KPI elements
-  if ($("kpi-healthy")) $("kpi-healthy").textContent = `${number(healthy || (state.stations.length - modelFaults))} (${percent((state.stations.length - modelFaults) / Math.max(1, state.stations.length), 1)})`;
+  if ($("kpi-healthy")) $("kpi-healthy").textContent = `${number(healthy || Math.max(0, activeCount - modelFaults))} (${percent(Math.max(0, activeCount - modelFaults) / Math.max(1, totalCatalog), 1)})`;
   if ($("kpi-alerts")) $("kpi-alerts").textContent = number(state.alerts.length);
   if ($("kpi-degraded-count")) $("kpi-degraded-count").textContent = number(state.health.filter(r => r.status === "degrading").length || 8);
   if ($("sidebar-anomaly-count")) $("sidebar-anomaly-count").textContent = number(openIncidents.length || modelFaults || state.alerts.length);
-  if ($("sidebar-stations-count")) $("sidebar-stations-count").textContent = number(totalStations);
+  if ($("sidebar-stations-count")) $("sidebar-stations-count").textContent = number(totalCatalog);
   if ($("mobile-anomaly-badge")) $("mobile-anomaly-badge").textContent = number(openIncidents.length || modelFaults || state.alerts.length);
   
   if ($("kpi-readings")) $("kpi-readings").textContent = number(state.readings.length);

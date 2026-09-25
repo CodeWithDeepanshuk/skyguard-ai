@@ -574,18 +574,22 @@
           </div>
 
           <!-- Station Status Filter Pills -->
-          <div class="pill-group" id="station-status-filter-pills" style="margin-bottom:12px;">
-            <button class="toolbar-pill active" data-filter="all" type="button">All Stations</button>
-            <button class="toolbar-pill" data-filter="critical" type="button">⚠️ Critical Anomalies</button>
-            <button class="toolbar-pill" data-filter="watch" type="button">🩺 Watch / Degraded</button>
-            <button class="toolbar-pill" data-filter="healthy" type="button">✓ Healthy</button>
-            <button class="toolbar-pill" data-filter="offline" type="button">📡 Offline / Stale</button>
+          <div class="pill-group" id="station-status-filter-pills" style="margin-bottom:12px; flex-wrap:wrap;">
+            <button class="toolbar-pill active" data-filter="all" type="button" id="pill-all">All Stations (<span id="pill-count-all">1,153</span>)</button>
+            <button class="toolbar-pill" data-filter="critical" type="button" id="pill-critical">⚠️ Critical Anomalies (<span id="pill-count-critical">0</span>)</button>
+            <button class="toolbar-pill" data-filter="watch" type="button" id="pill-watch">🩺 Watch / Degraded (<span id="pill-count-watch">0</span>)</button>
+            <button class="toolbar-pill" data-filter="healthy" type="button" id="pill-healthy">✓ Healthy (<span id="pill-count-healthy">0</span>)</button>
+            <button class="toolbar-pill" data-filter="offline" type="button" id="pill-offline">📡 Offline / Stale (<span id="pill-count-offline">0</span>)</button>
+            <button class="toolbar-pill" data-filter="missing" type="button" id="pill-missing">❓ Missing Telemetry (<span id="pill-count-missing">0</span>)</button>
           </div>
 
-          <!-- Mobile Cards Grid (Default on Mobile Phones) -->
+          <!-- Mobile Cards Grid -->
           <div class="station-cards-grid" id="station-cards-container">
             <!-- Populated dynamically by renderStationCards -->
           </div>
+
+          <!-- Cards Pagination Bar -->
+          <div class="pagination-bar" id="stations-pagination-container" style="display:flex; justify-content:space-between; align-items:center; padding:16px 8px; border-top:1px solid #E2E8F0; margin-top:16px;"></div>
 
           <!-- Embedded Map View Container (Shown when Map View is toggled) -->
           <div class="station-map" id="stations-tab-map" style="display:none; height: 550px; border-radius: 12px; margin-top: 12px;"></div>
@@ -612,6 +616,8 @@
                 </tbody>
               </table>
             </div>
+            <!-- Table Pagination Bar -->
+            <div class="pagination-bar" id="table-pagination-container" style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-top:1px solid #E2E8F0;"></div>
           </article>
         </section>
 
@@ -1244,14 +1250,14 @@
               <span class="ml-score-sub">Step-Change &amp; Persistence</span>
             </div>
             <div class="ml-score-tile">
-              <span class="ml-score-name">Fault Probability P(Fault)</span>
-              <span class="ml-score-val" style="color:#DC2626;" id="drawer-ml-pfault">94.1%</span>
-              <span class="ml-score-sub">Transducer Hardware Failure</span>
+              <span class="ml-score-name">Raw Anomaly Score</span>
+              <span class="ml-score-val" style="color:#DC2626;" id="drawer-ml-pfault">0.995</span>
+              <span class="ml-score-sub" id="drawer-ml-pfault-sub">Uncalibrated Detection Metric</span>
             </div>
             <div class="ml-score-tile">
-              <span class="ml-score-name">Weather Probability P(Wx)</span>
-              <span class="ml-score-val" style="color:#16A34A;" id="drawer-ml-pwx">0.2%</span>
-              <span class="ml-score-sub">Spatial Coherence Ratio</span>
+              <span class="ml-score-name">Calibration Status</span>
+              <span class="ml-score-val" style="color:#64748B; font-size:13px;" id="drawer-ml-pwx">NOT CALIBRATED</span>
+              <span class="ml-score-sub">Awaiting 30-Day Ground Truth</span>
             </div>
           </div>
         </div>
@@ -1273,6 +1279,14 @@
             <span class="triad-title">3. Evidence Needed to Confirm</span>
             <p class="triad-body" id="triad-evidence-text">Required field test or redundant sensor confirmation.</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Spatial QC Peer Station Evidence Table -->
+      <div class="drawer-section" id="drawer-neighbor-evidence-section">
+        <span class="drawer-section-title">Spatial Consensus &amp; Peer Station Evidence</span>
+        <div id="drawer-neighbor-evidence-container">
+          <!-- Populated dynamically with target vs peer stations -->
         </div>
       </div>
 
@@ -1318,7 +1332,7 @@
 
       <!-- Suggested Safe Correction -->
       <div class="drawer-section">
-        <span class="drawer-section-title">Suggested Safe Correction (IDW Estimation)</span>
+        <span class="drawer-section-title">Spatial Reference Estimate (Non-Destructive)</span>
         <div id="correction-box"></div>
       </div>
 
@@ -1326,7 +1340,7 @@
       <div class="drawer-section">
         <span class="drawer-section-title">Statistical Confidence Status</span>
         <div class="confidence-disclaimer" id="calibration-disclosure">
-          ⚖️ <strong>Model Calibration Notice:</strong> Displayed anomaly probability reflects the promoted Iteration 12 CausalTCN engine. In uncalibrated mode, metric is displayed as "confidence not calibrated". Arbitrary scores are never presented as true probabilities.
+          ⚖️ <strong>Statistical Calibration Disclosure:</strong> Anomaly detection metrics are raw ensemble scores [0.0 - 1.0]. Probabilities are explicitly <strong>NOT CALIBRATED</strong> pending 30-day verified field verification records. Antigravity/SkyGuard never fabricates probabilities or claims gradual drift from single-point observations.
         </div>
       </div>
 

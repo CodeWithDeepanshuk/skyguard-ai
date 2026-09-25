@@ -321,15 +321,18 @@ def main() -> None:
             continue
 
         exp_val = f_res.expected_values.get(param_key)
-        residual = f_res.residuals.get(param_key)
+        residual = round(obs_num - exp_val, 2) if exp_val is not None else f_res.residuals.get(param_key)
 
         ml_scores_inc = {
             "lightgbm": round(f_res.tree_score, 3),
             "causal_tcn": round(f_res.neural_score, 3),
             "madis_z": round(z_spatial, 1),
             "physics_gate": 1.000 if "OUT_OF_BOUNDS" in diag.upper() or (param == "pressure" and p_val and (p_val < 800 or p_val > 1075)) else 0.000,
-            "p_fault": round(score * 100.0, 1),
-            "p_weather": round(max(0.1, (1.0 - score) * 100.0), 1),
+            "anomaly_score": score,
+            "is_calibrated": False,
+            "calibration_status": "NOT_CALIBRATED",
+            "p_fault": None,
+            "p_weather": None,
         }
 
         matched_cat = matching_obs.get("_cat_match")
@@ -341,7 +344,19 @@ def main() -> None:
             if not inc_ts.endswith("Z"):
                 inc_ts += "Z"
         else:
-            inc_ts = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+            inc_ts = "2026-09-25T10:00:00Z"
+
+        if param == "pressure":
+            method_name = "barometric altimeter reduction"
+        elif param == "temperature":
+            method_name = "environmental lapse-rate adjustment"
+        else:
+            method_name = "inverse-distance spatial weighting"
+
+        if f_res.neighbor_count >= 2:
+            explanation_text = f"{f_res.root_cause_explanation} Evaluated with {method_name} against {f_res.neighbor_count} peer stations within spatial correlation radius."
+        else:
+            explanation_text = f"{f_res.root_cause_explanation} Insufficient peer stations within spatial correlation radius (max 250km) to establish spatial consensus ({f_res.neighbor_count} reporting). Spatial evidence unverified."
 
         incidents.append({
             "incident_id": f"INC-IMD-{sid}",
@@ -356,13 +371,17 @@ def main() -> None:
             "fault_class": diag.split(";")[0].strip(),
             "root_cause": diag,
             "fault_pattern": diag.split(";")[0].strip(),
-            "fault_probability": score,
-            "weather_probability": round(max(0.001, 1.0 - score), 4),
+            "fault_probability": None,
+            "is_calibrated": False,
+            "weather_probability": None,
             "severity": sev,
             "confidence": round(f_res.confidence, 2),
             "anomaly_score": score,
             "status": "active",
             "detected_timestamp_utc": inc_ts,
+            "timestamp_utc": inc_ts,
+            "latest_time_utc": inc_ts,
+            "start_time_utc": inc_ts,
             "duration_minutes": 60,
             "affected_parameter": param,
             "sensor": param,
@@ -372,11 +391,13 @@ def main() -> None:
             "expected_value": exp_val,
             "residual": residual,
             "z_spatial": z_spatial,
-            "explanation": f"{f_res.root_cause_explanation} Evaluated with elevation lapse-rate adjustment against {f_res.neighbor_count} peer stations.",
+            "explanation": explanation_text,
             "ml_scores": ml_scores_inc,
             "source_provenance": "OFFICIAL_IMD_AWS_PORTAL",
             "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Deep Ensemble)",
             "active": True,
+            "neighbor_evidence": f_res.neighbor_evidence,
+            "neighbor_count": f_res.neighbor_count,
         })
 
         alerts.append({
@@ -397,9 +418,6 @@ def main() -> None:
         })
 
     # 7. Assemble complete latest.json
-    reporting_count = len(readings)
-    offline_count = 0
-
     now_utc = datetime.now(timezone.utc)
     now_utc_str = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
     fetched_at = obs_payload.get("retrieved_at_utc") or now_utc_str
@@ -415,12 +433,36 @@ def main() -> None:
         latest_dt = datetime.fromisoformat(latest_obs_utc.replace("Z", "+00:00"))
         source_age_min = round(max(0.0, (now_utc - latest_dt).total_seconds() / 60.0), 2)
     except Exception:
-        source_age_min = 15.0
+        source_age_min = 360.0
+
+    total_catalog = len(catalog) if catalog else len(readings)
+    stations_with_telemetry = sum(1 for r in readings if r.get("temperature_c") is not None or r.get("pressure_hpa") is not None or r.get("relative_humidity_pct") is not None)
+    stations_missing_telemetry = max(0, total_catalog - stations_with_telemetry)
+
+    fresh_count = 0
+    delayed_count = 0
+    stale_count = 0
+    for r in readings:
+        ts_str = r.get("timestamp_utc", "")
+        if ts_str:
+            try:
+                r_dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+                age_m = (now_utc - r_dt).total_seconds() / 60.0
+                if age_m <= 20.0:
+                    fresh_count += 1
+                elif age_m <= 60.0:
+                    delayed_count += 1
+                else:
+                    stale_count += 1
+            except Exception:
+                stale_count += 1
+        else:
+            stale_count += 1
 
     latest_payload = {
-        "status": "live",
+        "status": "cached" if source_age_min > 20.0 else "live",
         "mode": "live",
-        "is_cached": True,
+        "is_cached": source_age_min > 20.0,
         "error": None,
         "provider": "India Meteorological Department AWS Portal",
         "product": "Official IMD AWS Network Telemetry (SIH Problem Statement 26073)",
@@ -430,11 +472,15 @@ def main() -> None:
         "source_age_minutes": source_age_min,
         "requested_hours": 24,
         "configured_icao_stations": 0,
-        "all_india_stations_count": reporting_count,
-        "total_network_stations": reporting_count,
-        "reporting_stations": reporting_count,
-        "stations_without_observations": offline_count,
-        "observation_count": reporting_count,
+        "all_india_stations_count": total_catalog,
+        "total_network_stations": total_catalog,
+        "reporting_stations": stations_with_telemetry,
+        "stations_without_observations": stations_missing_telemetry,
+        "observation_count": stations_with_telemetry,
+        "fresh_stations_count": fresh_count,
+        "delayed_stations_count": delayed_count,
+        "stale_stations_count": stale_count,
+        "missing_data_stations_count": stations_missing_telemetry,
         "model_alert_count": len(incidents),
         "quality_alert_count": len(fault_candidates),
         "incident_shadow_active_count": len(incidents),
@@ -445,7 +491,7 @@ def main() -> None:
         "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Deep Ensemble)",
         "detector_inputs": ["temperature", "pressure", "relative_humidity"],
         "dew_point_used_by_detector": False,
-        "interpretation": "100% Genuine Official IMD AWS Telemetry with Terrain Lapse-Compensated Multi-Evidence Deep Ensemble.",
+        "interpretation": "Genuine Official IMD AWS Telemetry with Terrain Lapse-Compensated Multi-Evidence Deep Ensemble.",
         "readings": readings,
         "incidents": incidents,
         "alerts": alerts,
@@ -465,11 +511,14 @@ def main() -> None:
     print("  LIVE WEBSITE CUTOVER SUMMARY")
     print("=" * 75)
     print(f"  Total Catalog Stations : {total_catalog}")
-    print(f"  Live Reporting IMD     : {reporting_count} (100% Authentic IMD Observations)")
-    print(f"  AI Anomaly Incidents   : {len(incidents)} (Top Confirmed Physical Deviations)")
+    print(f"  Live Reporting IMD     : {stations_with_telemetry} (Authentic IMD Observations)")
+    print(f"  Stale Stations (>60m)  : {stale_count}")
+    print(f"  Delayed Stations (20-60m): {delayed_count}")
+    print(f"  Fresh Stations (<=20m) : {fresh_count}")
+    print(f"  AI Anomaly Incidents   : {len(incidents)} (Confirmed Deviations)")
     print(f"  Top Incidents Sample   :")
     for inc in incidents[:5]:
-        print(f"    - {inc['station_name']} ({inc['station_id']}): {inc['root_cause']} [{inc['severity']}] (P(Fault)={inc['fault_probability']})")
+        print(f"    - {inc['station_name']} ({inc['station_id']}): {inc['root_cause']} [{inc['severity']}] (Score={inc['anomaly_score']})")
     print("=" * 75)
 
 

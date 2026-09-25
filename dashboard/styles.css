@@ -3271,3 +3271,81 @@ circle.tapped-highlight {
   }
 }
 
+/* Pagination Bar & Controls */
+.pagination-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--bg-surface, #FFFFFF);
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  font-size: 13px;
+  color: var(--text-secondary, #64748B);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 11px;
+  min-width: 32px;
+  height: 32px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid #CBD5E1;
+  background: #FFFFFF;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pagination-btn:hover:not(:disabled) {
+  background: #F8FAFC;
+  border-color: #94A3B8;
+  color: #0F172A;
+}
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #E2E8F0;
+}
+.pagination-btn.active {
+  background: var(--primary, #0D9488);
+  border-color: var(--primary, #0D9488);
+  color: #FFFFFF;
+  font-weight: 600;
+}
+.pagination-info {
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748B;
+}
+
+/* Provenance badge variants */
+.provenance-badge.stale {
+  background-color: #F1F5F9;
+  color: #475569;
+  border-color: #CBD5E1;
+}
+.provenance-badge.delayed {
+  background-color: #FEF3C7;
+  color: #D97706;
+  border-color: #FCD34D;
+}
+.provenance-badge.cached {
+  background-color: #EFF6FF;
+  color: #2563EB;
+  border-color: #BFDBFE;
+}
+.provenance-badge.live {
+  background-color: #ECFDF5;
+  color: #059669;
+  border-color: #A7F3D0;
+}

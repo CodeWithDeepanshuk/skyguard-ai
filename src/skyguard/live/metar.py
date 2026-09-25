@@ -957,6 +957,55 @@ class MetarLiveService:
         result["status_as_of_utc"] = now.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
         result["source_age_scope"] = "newest_network_observation_not_all_stations"
         result["source_clock_issue"] = any(value is not None and value < 0 for value in (result["source_age_minutes"], result["fetch_age_minutes"]))
+
+        # Compute accurate freshness and station counts dynamically from observation timestamps
+        readings = self.payload.get("latest") or self.payload.get("readings") or []
+        station_times: dict[str, datetime] = {}
+        for r in readings:
+            sid = str(r.get("station_id") or "")
+            ts = r.get("timestamp_utc")
+            has_telemetry = (
+                r.get("temperature_c") is not None
+                or r.get("temperature") is not None
+                or r.get("pressure_hpa") is not None
+                or r.get("pressure") is not None
+                or r.get("relative_humidity_pct") is not None
+                or r.get("humidity") is not None
+            )
+            if sid and ts and has_telemetry:
+                try:
+                    dt = datetime.fromisoformat(str(ts).replace("Z", "+00:00"))
+                    if sid not in station_times or dt > station_times[sid]:
+                        station_times[sid] = dt
+                except Exception:
+                    pass
+
+        total_catalog = int(self.payload.get("all_india_stations_count") or result.get("all_india_stations_count") or result.get("total_network_stations") or 1153)
+        reporting_count = len(station_times)
+        missing_count = max(0, total_catalog - reporting_count)
+
+        fresh_count = 0
+        delayed_count = 0
+        stale_reporting_count = 0
+        for sid, dt in station_times.items():
+            age_m = (now - dt).total_seconds() / 60.0
+            if age_m <= 20:
+                fresh_count += 1
+            elif age_m <= 60:
+                delayed_count += 1
+            else:
+                stale_reporting_count += 1
+
+        result["total_network_stations"] = total_catalog
+        result["all_india_stations_count"] = total_catalog
+        result["reporting_stations"] = reporting_count
+        result["stations_without_observations"] = missing_count
+        result["missing_data_stations_count"] = missing_count
+        result["fresh_stations_count"] = fresh_count
+        result["delayed_stations_count"] = delayed_count
+        result["stale_stations_count"] = stale_reporting_count + missing_count
+        result["stale_reporting_stations_count"] = stale_reporting_count
+
         return result
 
     def readings(self, limit: int = 500, station_id: str | None = None, latest_only: bool = False) -> list[dict[str, object]]:

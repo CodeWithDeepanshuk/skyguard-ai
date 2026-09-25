@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -193,6 +193,7 @@ class EnsembleResult:
     z_scores: Dict[str, float]
     neighbor_count: int
     confidence: float
+    neighbor_evidence: List[Dict[str, Any]] = field(default_factory=list)
 
 
 class DeepEnsembleDetector:
@@ -250,9 +251,9 @@ class DeepEnsembleDetector:
         # --------------------------------------------------------------------
         # Stream 1: Spatial Buddy Consensus with Elevation Lapse Correction
         # --------------------------------------------------------------------
-        valid_neighbors_t = []
-        valid_neighbors_p = []
-        valid_neighbors_rh = []
+        valid_neighbors_t: List[Dict[str, Any]] = []
+        valid_neighbors_p: List[Dict[str, Any]] = []
+        valid_neighbors_rh: List[Dict[str, Any]] = []
         target_lat = float(target_station.get("latitude") or 20.0)
         target_lon = float(target_station.get("longitude") or 78.0)
 
@@ -266,56 +267,103 @@ class DeepEnsembleDetector:
             if dist > 300.0:
                 continue
             elev_n = float(n.get("elevation_m") or 150.0)
+            s_name = str(n.get("station_name") or nid)
+            ts_n = str(n.get("timestamp_utc") or "")
 
             n_t = n.get("temperature_c") if n.get("temperature_c") is not None else n.get("temperature")
             if n_t is not None and str(n_t).strip() != "" and not (isinstance(n_t, float) and math.isnan(float(n_t))):
                 adj_t = adjust_temperature_for_elevation(float(n_t), elev_n, elev_target)
-                valid_neighbors_t.append((dist, adj_t))
+                valid_neighbors_t.append({
+                    "station_id": nid,
+                    "station_name": s_name,
+                    "distance_km": round(dist, 1),
+                    "observed_value": round(float(n_t), 1),
+                    "adjusted_value": round(adj_t, 1),
+                    "timestamp_utc": ts_n,
+                    "adjustment_method": "Environmental Lapse Rate (-6.5°C/km)",
+                    "parameter": "temperature",
+                })
 
             n_p = n.get("pressure_hpa") if n.get("pressure_hpa") is not None else n.get("pressure")
             if n_p is not None and str(n_p).strip() != "" and not (isinstance(n_p, float) and math.isnan(float(n_p))):
                 adj_p = adjust_pressure_for_elevation(float(n_p), elev_n, elev_target)
-                valid_neighbors_p.append((dist, adj_p))
+                valid_neighbors_p.append({
+                    "station_id": nid,
+                    "station_name": s_name,
+                    "distance_km": round(dist, 1),
+                    "observed_value": round(float(n_p), 1),
+                    "adjusted_value": round(adj_p, 1),
+                    "timestamp_utc": ts_n,
+                    "adjustment_method": "Barometric Altimeter Reduction",
+                    "parameter": "pressure",
+                })
 
             n_rh = n.get("relative_humidity_pct") if n.get("relative_humidity_pct") is not None else n.get("humidity")
             if n_rh is not None and str(n_rh).strip() != "" and not (isinstance(n_rh, float) and math.isnan(float(n_rh))):
-                valid_neighbors_rh.append((dist, float(n_rh)))
+                valid_neighbors_rh.append({
+                    "station_id": nid,
+                    "station_name": s_name,
+                    "distance_km": round(dist, 1),
+                    "observed_value": round(float(n_rh), 1),
+                    "adjusted_value": round(float(n_rh), 1),
+                    "timestamp_utc": ts_n,
+                    "adjustment_method": "Inverse Distance Weighting",
+                    "parameter": "relative_humidity",
+                })
 
         # Calculate inverse-distance weighted consensus for each reported channel
-        if has_t and len(valid_neighbors_t) >= 2:
-            valid_neighbors_t.sort(key=lambda x: x[0])
-            weights = np.array([1.0 / (max(x[0], 5.0) ** 1.5) for x in valid_neighbors_t[:12]], dtype=float)
+        top_peers_t: List[Dict[str, Any]] = []
+        if has_t and len(valid_neighbors_t) >= 1:
+            valid_neighbors_t.sort(key=lambda x: x["distance_km"])
+            top_peers_t = valid_neighbors_t[:12]
+            weights = np.array([1.0 / (max(x["distance_km"], 5.0) ** 1.5) for x in top_peers_t], dtype=float)
             w_norm = weights / np.sum(weights)
-            exp_t = float(np.sum(w_norm * [x[1] for x in valid_neighbors_t[:12]]))
-            mad_t = max(float(np.median(np.abs([x[1] - exp_t for x in valid_neighbors_t[:12]]))), 0.6)
+            exp_t = float(np.sum(w_norm * [x["adjusted_value"] for x in top_peers_t]))
+            mad_t = max(float(np.median(np.abs([x["adjusted_value"] - exp_t for x in top_peers_t]))), 0.6)
             res_t = t_target - exp_t
             z_t = res_t / (1.4826 * mad_t)
+            for idx, p_item in enumerate(top_peers_t):
+                p_item["weight"] = round(float(w_norm[idx]), 3)
+                p_item["residual"] = round(t_target - p_item["adjusted_value"], 1)
+                p_item["status"] = "INCLUDED"
         else:
             exp_t = t_target
             res_t = 0.0
             z_t = 0.0
 
-        if has_p and len(valid_neighbors_p) >= 2:
-            valid_neighbors_p.sort(key=lambda x: x[0])
-            weights = np.array([1.0 / (max(x[0], 5.0) ** 1.5) for x in valid_neighbors_p[:12]], dtype=float)
+        top_peers_p: List[Dict[str, Any]] = []
+        if has_p and len(valid_neighbors_p) >= 1:
+            valid_neighbors_p.sort(key=lambda x: x["distance_km"])
+            top_peers_p = valid_neighbors_p[:12]
+            weights = np.array([1.0 / (max(x["distance_km"], 5.0) ** 1.5) for x in top_peers_p], dtype=float)
             w_norm = weights / np.sum(weights)
-            exp_p = float(np.sum(w_norm * [x[1] for x in valid_neighbors_p[:12]]))
-            mad_p = max(float(np.median(np.abs([x[1] - exp_p for x in valid_neighbors_p[:12]]))), 0.8)
+            exp_p = float(np.sum(w_norm * [x["adjusted_value"] for x in top_peers_p]))
+            mad_p = max(float(np.median(np.abs([x["adjusted_value"] - exp_p for x in top_peers_p]))), 0.8)
             res_p = p_target - exp_p
             z_p = res_p / (1.4826 * mad_p)
+            for idx, p_item in enumerate(top_peers_p):
+                p_item["weight"] = round(float(w_norm[idx]), 3)
+                p_item["residual"] = round(p_target - p_item["adjusted_value"], 1)
+                p_item["status"] = "INCLUDED"
         else:
             exp_p = p_target
             res_p = 0.0
             z_p = 0.0
 
-        if has_rh and len(valid_neighbors_rh) >= 2:
-            valid_neighbors_rh.sort(key=lambda x: x[0])
-            weights = np.array([1.0 / (max(x[0], 5.0) ** 1.5) for x in valid_neighbors_rh[:12]], dtype=float)
+        top_peers_rh: List[Dict[str, Any]] = []
+        if has_rh and len(valid_neighbors_rh) >= 1:
+            valid_neighbors_rh.sort(key=lambda x: x["distance_km"])
+            top_peers_rh = valid_neighbors_rh[:12]
+            weights = np.array([1.0 / (max(x["distance_km"], 5.0) ** 1.5) for x in top_peers_rh], dtype=float)
             w_norm = weights / np.sum(weights)
-            exp_rh = float(np.sum(w_norm * [x[1] for x in valid_neighbors_rh[:12]]))
-            mad_rh = max(float(np.median(np.abs([x[1] - exp_rh for x in valid_neighbors_rh[:12]]))), 3.0)
+            exp_rh = float(np.sum(w_norm * [x["adjusted_value"] for x in top_peers_rh]))
+            mad_rh = max(float(np.median(np.abs([x["adjusted_value"] - exp_rh for x in top_peers_rh]))), 3.0)
             res_rh = rh_target - exp_rh
             z_rh = res_rh / (1.4826 * mad_rh)
+            for idx, p_item in enumerate(top_peers_rh):
+                p_item["weight"] = round(float(w_norm[idx]), 3)
+                p_item["residual"] = round(rh_target - p_item["adjusted_value"], 1)
+                p_item["status"] = "INCLUDED"
         else:
             exp_rh = rh_target
             res_rh = 0.0
@@ -446,6 +494,15 @@ class DeepEnsembleDetector:
             explanation = f"Sensors match elevation-adjusted regional spatial consensus within {max_abs_z:.2f} robust MAD scales."
             confidence = round(1.0 - evidence_score, 4)
 
+        if "pressure" in root_cause.lower():
+            neighbor_evidence = top_peers_p or valid_neighbors_p[:12]
+        elif "temperature" in root_cause.lower():
+            neighbor_evidence = top_peers_t or valid_neighbors_t[:12]
+        elif "humidity" in root_cause.lower():
+            neighbor_evidence = top_peers_rh or valid_neighbors_rh[:12]
+        else:
+            neighbor_evidence = top_peers_p or top_peers_t or top_peers_rh or valid_neighbors_p[:12] or valid_neighbors_t[:12] or []
+
         neighbor_count = max(len(valid_neighbors_t), len(valid_neighbors_p), len(valid_neighbors_rh))
         return EnsembleResult(
             station_id=sid,
@@ -463,4 +520,5 @@ class DeepEnsembleDetector:
             z_scores={"temperature_z": round(z_t, 2), "pressure_z": round(z_p, 2), "humidity_z": round(z_rh, 2), "max_z": round(max_abs_z, 2)},
             neighbor_count=neighbor_count,
             confidence=round(confidence, 4),
+            neighbor_evidence=neighbor_evidence,
         )

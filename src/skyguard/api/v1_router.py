@@ -853,7 +853,7 @@ def create_v1_router(
         """Authenticated webhook endpoint receiving live official IMD observations from the Oracle Cloud Gateway."""
         expected = os.getenv("SKYGUARD_INGESTION_TOKEN", "").strip()
         if not expected:
-            raise HTTPException(status_code=503, detail="SKYGUARD_INGESTION_TOKEN is not configured on server")
+            raise HTTPException(status_code=503, detail="SKYGUARD_INGESTION_TOKEN is not configured on the receiver.")
         supplied = (x_ingestion_token or authorization or "").removeprefix("Bearer ").strip()
         if supplied != expected:
             raise HTTPException(status_code=401, detail="Invalid ingestion token")
@@ -935,7 +935,12 @@ def create_v1_router(
                 store.record_dead_letter("IMD_AWS", f"Station {sid} contains none of the 3 allowed meteorological parameters", item)
                 continue
 
-            ts_utc = str(item.get("timestamp_utc") or datetime.now(timezone.utc).isoformat())
+            ts_raw = item.get("timestamp_utc") or item.get("DATE_TIME") or item.get("TIME")
+            if not ts_raw:
+                dead_letters += 1
+                store.record_dead_letter("IMD_AWS", f"Station {sid} missing provider timestamp; will not fabricate current time", item)
+                continue
+            ts_utc = str(ts_raw)
 
             rec = ObservationRecord(
                 provider="IMD_AWS",
@@ -1057,7 +1062,20 @@ def create_v1_router(
                 except Exception:
                     source_age_m = 0.0
 
-                live_payload = {
+                existing_dict = {str(r.get("station_id") or ""): r for r in live_obj.payload.get("readings", [])}
+                for r in new_readings:
+                    existing_dict[str(r.get("station_id") or "")] = r
+                merged_readings = list(existing_dict.values())
+
+                total_catalog = int(live_obj.payload.get("total_network_stations") or 1153)
+                reporting_stations = sum(
+                    1 for r in merged_readings
+                    if any(r.get(k) is not None for k in ("temperature_c", "pressure_hpa", "relative_humidity_pct"))
+                )
+                missing_stations = max(0, total_catalog - reporting_stations)
+
+                live_payload = dict(live_obj.payload)
+                live_payload.update({
                     "status": "live",
                     "mode": "live",
                     "is_cached": False,
@@ -1068,29 +1086,13 @@ def create_v1_router(
                     "fetched_at_utc": now_utc_str,
                     "latest_observation_utc": latest_obs_str,
                     "source_age_minutes": source_age_m,
-                    "requested_hours": 24,
-                    "configured_icao_stations": 0,
-                    "all_india_stations_count": len(new_readings),
-                    "total_network_stations": len(new_readings),
-                    "reporting_stations": len(new_readings),
-                    "stations_without_observations": 0,
-                    "observation_count": len(new_readings),
-                    "model_alert_count": 0,
-                    "quality_alert_count": 0,
-                    "incident_shadow_active_count": 0,
-                    "incident_policy_mode": "shadow_evidence_only_unvalidated",
-                    "presentation_contract": "observed_metar_only_v2",
-                    "simulation_active": False,
-                    "simulation_station_ids": [],
-                    "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Deep Ensemble)",
-                    "detector_inputs": ["temperature", "pressure", "relative_humidity"],
-                    "dew_point_used_by_detector": False,
-                    "interpretation": "100% Genuine Official IMD AWS Telemetry with Terrain Lapse-Compensated Multi-Evidence Deep Ensemble.",
-                    "readings": new_readings,
-                    "incidents": [],
-                    "alerts": [],
-                    "quality_alerts": [],
-                }
+                    "all_india_stations_count": total_catalog,
+                    "total_network_stations": total_catalog,
+                    "reporting_stations": reporting_stations,
+                    "stations_without_observations": missing_stations,
+                    "observation_count": len(merged_readings),
+                    "readings": merged_readings,
+                })
                 live_obj.payload = live_payload
                 if hasattr(live_obj, "cache_path") and live_obj.cache_path:
                     try:
