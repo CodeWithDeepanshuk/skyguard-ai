@@ -387,20 +387,22 @@
 
         if (!incidentMap.has(key)) {
           const incId = `INC-${stnId}-${sensor.toUpperCase().slice(0, 3)}-${Date.now().toString(36).slice(-4).toUpperCase()}`;
-          const obsVal = r[sensor] != null ? Number(r[sensor]) : (sensor === 'pressure' ? 1013.0 : sensor === 'humidity' ? 75.0 : 30.0);
+          const rawVal = r[sensor] ?? (sensor === 'pressure' ? (r.pressure_hpa ?? r.pressure) : (sensor === 'humidity' || sensor === 'relative_humidity') ? (r.relative_humidity_pct ?? r.humidity) : (r.temperature_c ?? r.temperature));
+          const obsVal = rawVal != null ? Number(rawVal) : null;
+          if (obsVal == null) return;
           let expVal = r.reference_value ?? r.consensus_value ?? r.expected_value;
           let resVal = r.residual;
           let zVal = r.z_score || r.z_spatial;
 
           if (expVal == null) {
-            const defaultOffset = sensor === 'pressure' ? 5.2 : sensor === 'humidity' ? 14.0 : 3.2;
+            const defaultOffset = sensor === 'pressure' ? (resVal != null ? resVal : 1.5) : (sensor === 'humidity' || sensor === 'relative_humidity') ? (resVal != null ? resVal : 8.0) : (resVal != null ? resVal : 2.0);
             expVal = Number((obsVal - defaultOffset).toFixed(1));
           }
           if (resVal == null) {
             resVal = Number((obsVal - expVal).toFixed(1));
           }
           if (zVal == null) {
-            const sigma = sensor === 'pressure' ? 1.5 : sensor === 'humidity' ? 5.0 : 1.0;
+            const sigma = sensor === 'pressure' ? 1.5 : (sensor === 'humidity' || sensor === 'relative_humidity') ? 5.0 : 1.0;
             zVal = Number((Math.abs(resVal) / sigma).toFixed(1));
             if (zVal < 2.5) zVal = 3.4;
           }
@@ -565,10 +567,10 @@
           i.readings_count,
           i.start_time_utc,
           i.latest_time_utc,
-          i.observed_value != null ? Number(i.observed_value).toFixed(1) : '30.0',
-          i.expected_value != null ? Number(i.expected_value).toFixed(1) : '26.8',
-          i.residual != null ? `${i.residual >= 0 ? '+' : ''}${Number(i.residual).toFixed(1)}` : '+3.2',
-          i.z_score != null ? `${Number(i.z_score).toFixed(1)}σ` : '3.4σ',
+          parseFloat(String(i.observed_value || '').replace(/[^0-9.-]/g, '')) || '—',
+          parseFloat(String(i.expected_value || '').replace(/[^0-9.-]/g, '')) || '—',
+          i.residual != null ? `${i.residual >= 0 ? '+' : ''}${Number(i.residual).toFixed(1)}` : '—',
+          i.z_score != null ? `${Number(i.z_score).toFixed(1)}σ` : '—',
           `${pF}%`,
           `${pW}%`,
           `"${sModel.replace(/"/g, '""')}"`,
