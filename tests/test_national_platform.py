@@ -3,7 +3,7 @@
 Verifies:
 1. Strict scientific provenance between direct observations and numerical reference models
 2. IMD WIS 2.0 and METAR provider normalization
-3. Master Station Registry deduplication and coverage auditing (X / 1008)
+3. Master Station Registry deduplication and coverage auditing (X / 1153)
 4. NOAA MADIS-grade spatial buddy check with MAD scale and elevation lapse adjustment
 5. Three-independent-evidence anomaly detection and Event Consistency Gate
 6. FastAPI v1 endpoints (stations, 3-trace history, QC diagnostics, network status)
@@ -88,8 +88,8 @@ class NationalPlatformTests(unittest.TestCase):
     def test_master_station_registry_and_coverage(self):
         """Verify master registry coverage reporting without synthetic coordinates."""
         audit = self.registry.coverage_audit()
-        self.assertEqual(audit["target_national_aws_coverage"], 1008)
-        self.assertEqual(audit["verified_in_situ_stations"], 1008)
+        self.assertEqual(audit["target_national_aws_coverage"], 1153)
+        self.assertEqual(audit["verified_in_situ_stations"], 1153)
         self.assertEqual(audit["breakdown"]["synthetic_or_reference_only"], 0)
         self.assertIn("official IMD WIS2", audit["scientific_integrity_guarantee"])
 
@@ -215,7 +215,7 @@ class NationalPlatformTests(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         data = resp.json()
         self.assertIn("coverage_audit", data)
-        self.assertEqual(data["coverage_audit"]["target_national_aws_coverage"], 1008)
+        self.assertEqual(data["coverage_audit"]["target_national_aws_coverage"], 1153)
         self.assertGreaterEqual(len(data["stations"]), 1)
 
     def test_api_v1_station_history_triplet(self):

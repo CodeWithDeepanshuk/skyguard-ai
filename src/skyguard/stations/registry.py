@@ -4,7 +4,7 @@ Counts only station metadata downloaded from the official IMD WIS2 stations
 collection. The older NOAA/ISD catalog is not authoritative IMD AWS metadata.
 
 SCIENTIFIC GOVERNANCE:
-- Reports exact coverage ratio against the national 1008 AWS benchmark.
+- Reports exact coverage ratio against the national 1153 IMD AWS live network.
 - Never fabricates or duplicates station coordinates.
 - Spatial deduplication threshold of 2.0 km ensures co-located sensors are cleanly merged.
 """
@@ -18,7 +18,7 @@ from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[3]
 MASTER_CSV_PATH = ROOT / "data" / "stations" / "imd_aws_master.csv"
-TARGET_NATIONAL_AWS_COUNT = 1008
+TARGET_NATIONAL_AWS_COUNT = 1153
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

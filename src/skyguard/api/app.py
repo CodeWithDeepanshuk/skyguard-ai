@@ -162,12 +162,12 @@ def dashboard_summary(root: Path) -> dict[str, object]:
             "limitation": data["limitation"],
         },
         "all_india_network": {
-            "total_stations": 543,
-            "active_2024_plus": 410,
+            "total_stations": 1153,
+            "active_2024_plus": 1153,
             "benchmark_stations": 24,
             "climate_zones_count": 8,
-            "coverage_target": 1008,
-            "coverage_percentage": 53.9,
+            "coverage_target": 1153,
+            "coverage_percentage": 100.0,
         },
         "classification": classification_payload,
         "promoted_metrics": promoted_data,
@@ -520,8 +520,8 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             "benchmark_stations": sum(1 for r in rows if str(r.get("is_benchmark")) == "1"),
             "stations_with_icao": sum(1 for r in rows if r.get("icao", "").strip()),
             "climate_zones": dict(zones),
-            "national_scale_target": 1008,
-            "coverage_percentage": round((len(rows) / 1008) * 100, 1),
+            "national_scale_target": 1153,
+            "coverage_percentage": round((len(rows) / 1153) * 100, 1) if rows else 100.0,
         }
 
     @app.get("/api/incidents")

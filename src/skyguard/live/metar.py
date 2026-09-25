@@ -89,12 +89,16 @@ class MetarLiveService:
         self.payload: dict[str, object] = self._load_cache()
 
     def _load_stations(self) -> dict[str, dict[str, str]]:
+        stations: dict[str, dict[str, str]] = {}
+        stations_csv = self.root / "config" / "stations.csv"
+        if stations_csv.exists():
+            with stations_csv.open("r", encoding="utf-8", newline="") as handle:
+                stations.update({row["station_id"]: row for row in csv.DictReader(handle)})
         catalog = self.root / "config" / "all_india_aws_network.csv"
         if catalog.exists():
             with catalog.open("r", encoding="utf-8", newline="") as handle:
-                return {row["station_id"]: row for row in csv.DictReader(handle)}
-        with (self.root / "config" / "stations.csv").open("r", encoding="utf-8", newline="") as handle:
-            return {row["station_id"]: row for row in csv.DictReader(handle)}
+                stations.update({row["station_id"]: row for row in csv.DictReader(handle)})
+        return stations
 
     def _load_expected_intervals(self) -> dict[str, float]:
         report = json.loads((self.root / "reports" / "qc_baseline.json").read_text(encoding="utf-8"))

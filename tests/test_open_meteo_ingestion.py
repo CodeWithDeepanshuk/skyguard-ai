@@ -14,7 +14,7 @@ from skyguard.ingestion.open_meteo import OpenMeteoIngestionService
 class TestOpenMeteoIngestion(unittest.TestCase):
     def test_catalog_loaded(self):
         svc = OpenMeteoIngestionService()
-        self.assertEqual(svc.station_count, 1008)
+        self.assertEqual(svc.station_count, 1153)
 
     @patch("requests.Session.get")
     def test_fetch_live_batch_success(self, mock_get):
