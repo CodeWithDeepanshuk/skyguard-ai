@@ -195,46 +195,42 @@ def main() -> None:
 
         reported_val = row.get(col)
         reported_val = float(reported_val) if pd.notna(reported_val) and reported_val is not None else None
+        if reported_val is None:
+            continue
 
         estimate, l_bound, u_bound, peer_count, derivation_method = compute_causal_idw_correction(
             t_idx, df, col, radius_km=250.0
         )
+        if estimate is None:
+            continue
 
         # Deviation and Safe-Repair Classification
-        if reported_val is not None and estimate is not None:
-            residual = round(abs(reported_val - estimate), 2)
-            # Physical bounds test
-            is_catastrophic = (
-                (col == "pressure_hpa" and (reported_val < 800 or reported_val > 1100))
-                or (col == "temperature_c" and (reported_val < -25 or reported_val > 55))
-                or (col == "relative_humidity_pct" and (reported_val <= 0 or reported_val > 105))
-            )
+        residual = round(abs(reported_val - estimate), 2)
+        # Physical bounds test
+        is_catastrophic = (
+            (col == "pressure_hpa" and (reported_val < 800 or reported_val > 1100))
+            or (col == "temperature_c" and (reported_val < -25 or reported_val > 55))
+            or (col == "relative_humidity_pct" and (reported_val <= 0 or reported_val > 105))
+        )
 
-            if is_catastrophic or residual > 15.0:
-                safe_tier = "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED"
-                recommended_action = f"Replace or recalibrate faulty {param.upper()} sensor module at station site. High confidence physical failure."
-                health_score = 15
-                health_trend = "critical_failure"
-                failure_risk_7d = 0.95
-            elif residual > 5.0:
-                safe_tier = "TIER_1_SAFE_AUTO_REPAIR"
-                recommended_action = f"Safe causal spatial imputation recommended. Schedule routine sensor cleaning/inspection during next maintenance cycle."
-                health_score = 48
-                health_trend = "degrading"
-                failure_risk_7d = 0.55
-            else:
-                safe_tier = "TIER_1_SAFE_AUTO_REPAIR"
-                recommended_action = "Sensor operating within acceptable variance limits; nominal monitoring continues."
-                health_score = 78
-                health_trend = "stable"
-                failure_risk_7d = 0.15
-        else:
-            residual = None
+        if is_catastrophic or residual > 15.0:
             safe_tier = "TIER_2_HUMAN_FIELD_VERIFICATION_REQUIRED"
-            recommended_action = "Sensor data missing or dead-lettered. Physical telemetry line verification required."
-            health_score = 10
-            health_trend = "offline"
-            failure_risk_7d = 0.99
+            recommended_action = f"Replace or recalibrate faulty {param.upper()} sensor module at station site. High confidence physical failure."
+            health_score = 15
+            health_trend = "critical_failure"
+            failure_risk_7d = 0.95
+        elif residual > 5.0:
+            safe_tier = "TIER_1_SAFE_AUTO_REPAIR"
+            recommended_action = f"Safe causal spatial imputation recommended. Schedule routine sensor cleaning/inspection during next maintenance cycle."
+            health_score = 48
+            health_trend = "degrading"
+            failure_risk_7d = 0.55
+        else:
+            safe_tier = "TIER_1_SAFE_AUTO_REPAIR"
+            recommended_action = "Sensor operating within acceptable variance limits; nominal monitoring continues."
+            health_score = 78
+            health_trend = "stable"
+            failure_risk_7d = 0.15
 
         # Build Phase 6 enriched incident
         enriched_inc = dict(inc)

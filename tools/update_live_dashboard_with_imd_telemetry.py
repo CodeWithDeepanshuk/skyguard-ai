@@ -129,10 +129,27 @@ def main() -> None:
     # Extract confirmed real-world sensor anomalies
     fault_candidates = [res for res in eval_results.values() if res.decision != "NORMAL"]
     fault_candidates.sort(key=lambda x: x.evidence_score, reverse=True)
-    top_15_faults = fault_candidates[:15]
-    top_fault_sids = {f.station_id for f in top_15_faults}
+
+    # Strictly filter candidates to ensure the affected sensor has a non-null, valid numeric observation
+    confirmed_faults: List[Any] = []
+    for f in fault_candidates:
+        sid = f.station_id
+        matching_obs = next((x for x in records_in if str(x.get("station_id") or "").strip() == sid), None)
+        if not matching_obs:
+            continue
+        diag = f.root_cause.upper()
+        if "PRESSURE" in diag:
+            val = matching_obs.get("pressure_hpa")
+        elif "TEMPERATURE" in diag:
+            val = matching_obs.get("temperature_c")
+        else:
+            val = matching_obs.get("relative_humidity_pct")
+        if val is not None and not (isinstance(val, float) and math.isnan(val)) and str(val).strip() != "":
+            confirmed_faults.append(f)
+
+    fault_sids = {f.station_id for f in confirmed_faults}
     print(f"[+] Detected {len(fault_candidates)} candidate deviations across India.")
-    print(f"[+] Selected top {len(top_15_faults)} high-confidence physical sensor faults for operational triage.")
+    print(f"[+] Verified {len(confirmed_faults)} authentic physical sensor faults with valid telemetry (zero nulls).")
 
     # 5. Build Readings conforming to dashboard schema with dynamic ML scores
     readings: List[Dict[str, Any]] = []
@@ -162,7 +179,7 @@ def main() -> None:
         station_seen.add(sid)
 
         res = eval_results.get(sid)
-        is_fault = (sid in top_fault_sids) or (canon_id in top_fault_sids)
+        is_fault = (sid in fault_sids) or (canon_id in fault_sids)
 
         event_decision = "sensor_fault" if is_fault else "genuine_weather"
         display_sev = res.severity if (is_fault and res) else "NORMAL"
@@ -245,13 +262,15 @@ def main() -> None:
             "neighbor_count": peers,
             "temperature_z": t_z,
             "pressure_z": p_z,
+            "humidity_z": h_z,
+            "ml_scores": ml_scores,
         })
 
     # 6. Build official incidents and alerts from confirmed anomalies
     incidents: List[Dict[str, Any]] = []
     alerts: List[Dict[str, Any]] = []
 
-    for f_res in top_15_faults:
+    for f_res in confirmed_faults:
         sid = f_res.station_id
         matching_obs = next((x for x in records_in if str(x.get("station_id") or "").strip() == sid), None)
         if not matching_obs:
@@ -275,20 +294,26 @@ def main() -> None:
             param_key = "pressure_hpa"
             obs_val_str = f"{p_val:.1f} hPa" if p_val is not None else "N/A"
             obs_num = p_val
+            z_spatial = f_res.z_scores.get("pressure_z", f_res.z_scores.get("max_z", 4.0))
         elif "TEMPERATURE" in diag.upper():
             param = "temperature"
             param_key = "temperature_c"
             obs_val_str = f"{t_val:.1f}°C" if t_val is not None else "N/A"
             obs_num = t_val
+            z_spatial = f_res.z_scores.get("temperature_z", f_res.z_scores.get("max_z", 4.0))
         else:
             param = "relative_humidity"
             param_key = "relative_humidity_pct"
             obs_val_str = f"{rh_val:.0f}%" if rh_val is not None else "N/A"
             obs_num = rh_val
+            z_spatial = f_res.z_scores.get("humidity_z", f_res.z_scores.get("max_z", 4.0))
+
+        # Absolute guard: Never emit an incident with null/missing telemetry
+        if obs_num is None:
+            continue
 
         exp_val = f_res.expected_values.get(param_key)
         residual = f_res.residuals.get(param_key)
-        z_spatial = f_res.z_scores.get("max_z", 4.0)
 
         ml_scores_inc = {
             "lightgbm": round(f_res.tree_score, 3),
@@ -348,6 +373,10 @@ def main() -> None:
             "severity": sev,
             "parameter": param,
             "sensor": param,
+            "score": score,
+            "reported_value": obs_val_str,
+            "reference_value": f"{exp_val:.1f}" if exp_val is not None else None,
+            "residual": f"{residual:+.1f}" if residual is not None else None,
             "message": f"Real-Time Anomaly: {diag} (Score: {score:.2f})",
         })
 

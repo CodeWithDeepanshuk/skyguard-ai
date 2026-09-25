@@ -233,71 +233,101 @@ class DeepEnsembleDetector:
         """Execute full deep ensemble inference for a single station observation."""
         sid = str(target_station.get("station_id") or "")
         name = str(target_station.get("station_name") or sid)
-        t_target = float(target_station.get("temperature_c") or target_station.get("temperature") or 25.0)
-        p_target = float(target_station.get("pressure_hpa") or target_station.get("pressure") or 1010.0)
-        rh_target = float(target_station.get("relative_humidity_pct") or target_station.get("humidity") or 60.0)
-        elev_target = float(target_station.get("elevation_m") or 100.0)
+
+        t_raw = target_station.get("temperature_c") if target_station.get("temperature_c") is not None else target_station.get("temperature")
+        p_raw = target_station.get("pressure_hpa") if target_station.get("pressure_hpa") is not None else target_station.get("pressure")
+        rh_raw = target_station.get("relative_humidity_pct") if target_station.get("relative_humidity_pct") is not None else target_station.get("humidity")
+
+        has_t = t_raw is not None and str(t_raw).strip() != "" and not (isinstance(t_raw, float) and math.isnan(t_raw))
+        has_p = p_raw is not None and str(p_raw).strip() != "" and not (isinstance(p_raw, float) and math.isnan(p_raw))
+        has_rh = rh_raw is not None and str(rh_raw).strip() != "" and not (isinstance(rh_raw, float) and math.isnan(rh_raw))
+
+        t_target = float(t_raw) if has_t else 25.0
+        p_target = float(p_raw) if has_p else 1008.0
+        rh_target = float(rh_raw) if has_rh else 60.0
+        elev_target = float(target_station.get("elevation_m") or 150.0)
 
         # --------------------------------------------------------------------
         # Stream 1: Spatial Buddy Consensus with Elevation Lapse Correction
         # --------------------------------------------------------------------
-        valid_neighbors = []
+        valid_neighbors_t = []
+        valid_neighbors_p = []
+        valid_neighbors_rh = []
+        target_lat = float(target_station.get("latitude") or 20.0)
+        target_lon = float(target_station.get("longitude") or 78.0)
+
         for n in neighbor_stations:
             nid = str(n.get("station_id") or "")
             if nid == sid:
                 continue
-            n_t = n.get("temperature_c") or n.get("temperature")
-            n_p = n.get("pressure_hpa") or n.get("pressure")
-            n_rh = n.get("relative_humidity_pct") or n.get("humidity")
-            if n_t is not None and n_p is not None and n_rh is not None:
-                dist = haversine_distance_km(
-                    float(target_station.get("latitude") or 20.0),
-                    float(target_station.get("longitude") or 78.0),
-                    float(n.get("latitude") or 20.0),
-                    float(n.get("longitude") or 78.0),
-                )
-                if dist <= 300.0:
-                    elev_n = float(n.get("elevation_m") or 100.0)
-                    adj_t = adjust_temperature_for_elevation(float(n_t), elev_n, elev_target)
-                    adj_p = adjust_pressure_for_elevation(float(n_p), elev_n, elev_target)
-                    valid_neighbors.append({
-                        "station_id": nid,
-                        "dist_km": max(1.0, dist),
-                        "temp_adj": adj_t,
-                        "press_adj": adj_p,
-                        "rh": float(n_rh),
-                    })
+            n_lat = float(n.get("latitude") or 20.0)
+            n_lon = float(n.get("longitude") or 78.0)
+            dist = haversine_distance_km(target_lat, target_lon, n_lat, n_lon)
+            if dist > 300.0:
+                continue
+            elev_n = float(n.get("elevation_m") or 150.0)
 
-        # Calculate inverse-distance weighted consensus
-        if len(valid_neighbors) >= 2:
-            weights = np.array([1.0 / (item["dist_km"] ** 1.5) for item in valid_neighbors], dtype=float)
-            norm_weights = weights / np.sum(weights)
-            
-            exp_t = float(np.sum(norm_weights * [item["temp_adj"] for item in valid_neighbors]))
-            exp_p = float(np.sum(norm_weights * [item["press_adj"] for item in valid_neighbors]))
-            exp_rh = float(np.sum(norm_weights * [item["rh"] for item in valid_neighbors]))
-            
-            # Robust MAD scales across peers
-            t_mad = max(float(np.median(np.abs([item["temp_adj"] - exp_t for item in valid_neighbors]))), 0.6)
-            p_mad = max(float(np.median(np.abs([item["press_adj"] - exp_p for item in valid_neighbors]))), 0.8)
-            rh_mad = max(float(np.median(np.abs([item["rh"] - exp_rh for item in valid_neighbors]))), 3.0)
+            n_t = n.get("temperature_c") if n.get("temperature_c") is not None else n.get("temperature")
+            if n_t is not None and str(n_t).strip() != "" and not (isinstance(n_t, float) and math.isnan(float(n_t))):
+                adj_t = adjust_temperature_for_elevation(float(n_t), elev_n, elev_target)
+                valid_neighbors_t.append((dist, adj_t))
+
+            n_p = n.get("pressure_hpa") if n.get("pressure_hpa") is not None else n.get("pressure")
+            if n_p is not None and str(n_p).strip() != "" and not (isinstance(n_p, float) and math.isnan(float(n_p))):
+                adj_p = adjust_pressure_for_elevation(float(n_p), elev_n, elev_target)
+                valid_neighbors_p.append((dist, adj_p))
+
+            n_rh = n.get("relative_humidity_pct") if n.get("relative_humidity_pct") is not None else n.get("humidity")
+            if n_rh is not None and str(n_rh).strip() != "" and not (isinstance(n_rh, float) and math.isnan(float(n_rh))):
+                valid_neighbors_rh.append((dist, float(n_rh)))
+
+        # Calculate inverse-distance weighted consensus for each reported channel
+        if has_t and len(valid_neighbors_t) >= 2:
+            valid_neighbors_t.sort(key=lambda x: x[0])
+            weights = np.array([1.0 / (max(x[0], 5.0) ** 1.5) for x in valid_neighbors_t[:12]], dtype=float)
+            w_norm = weights / np.sum(weights)
+            exp_t = float(np.sum(w_norm * [x[1] for x in valid_neighbors_t[:12]]))
+            mad_t = max(float(np.median(np.abs([x[1] - exp_t for x in valid_neighbors_t[:12]]))), 0.6)
+            res_t = t_target - exp_t
+            z_t = res_t / (1.4826 * mad_t)
         else:
             exp_t = t_target
+            res_t = 0.0
+            z_t = 0.0
+
+        if has_p and len(valid_neighbors_p) >= 2:
+            valid_neighbors_p.sort(key=lambda x: x[0])
+            weights = np.array([1.0 / (max(x[0], 5.0) ** 1.5) for x in valid_neighbors_p[:12]], dtype=float)
+            w_norm = weights / np.sum(weights)
+            exp_p = float(np.sum(w_norm * [x[1] for x in valid_neighbors_p[:12]]))
+            mad_p = max(float(np.median(np.abs([x[1] - exp_p for x in valid_neighbors_p[:12]]))), 0.8)
+            res_p = p_target - exp_p
+            z_p = res_p / (1.4826 * mad_p)
+        else:
             exp_p = p_target
+            res_p = 0.0
+            z_p = 0.0
+
+        if has_rh and len(valid_neighbors_rh) >= 2:
+            valid_neighbors_rh.sort(key=lambda x: x[0])
+            weights = np.array([1.0 / (max(x[0], 5.0) ** 1.5) for x in valid_neighbors_rh[:12]], dtype=float)
+            w_norm = weights / np.sum(weights)
+            exp_rh = float(np.sum(w_norm * [x[1] for x in valid_neighbors_rh[:12]]))
+            mad_rh = max(float(np.median(np.abs([x[1] - exp_rh for x in valid_neighbors_rh[:12]]))), 3.0)
+            res_rh = rh_target - exp_rh
+            z_rh = res_rh / (1.4826 * mad_rh)
+        else:
             exp_rh = rh_target
-            t_mad, p_mad, rh_mad = 1.0, 1.5, 5.0
+            res_rh = 0.0
+            z_rh = 0.0
 
-        res_t = t_target - exp_t
-        res_p = p_target - exp_p
-        res_rh = rh_target - exp_rh
+        # Spatial Anomaly Score: evaluate only across ACTIVE, REPORTED sensors
+        active_z = []
+        if has_t: active_z.append(abs(z_t))
+        if has_p: active_z.append(abs(z_p))
+        if has_rh: active_z.append(abs(z_rh))
+        max_abs_z = max(active_z) if active_z else 0.0
 
-        z_t = res_t / (1.4826 * t_mad)
-        z_p = res_p / (1.4826 * p_mad)
-        z_rh = res_rh / (1.4826 * rh_mad)
-
-        # Spatial Anomaly Score: smooth Sigmoid saturation on max z-score
-        max_abs_z = max(abs(z_t), abs(z_p), abs(z_rh))
-        # For nominal max_abs_z < 2.0, spatial_score is between 0.015 and 0.065
         spatial_score = float(1.0 / (1.0 + math.exp(-2.2 * (max_abs_z - 3.2))))
         spatial_score = max(0.012, min(0.995, spatial_score))
 
@@ -332,7 +362,6 @@ class DeepEnsembleDetector:
             _, recon_res, _ = self.neural_engine(tensor_in)
             res_norm = float(torch.norm(recon_res[0]).item())
 
-        # High neural reconstruction residual corresponds to sequence anomaly
         spatial_coupling = max_abs_z / 3.0
         effective_loss = max(0.0, res_norm - 1.5) + 0.6 * spatial_coupling
         neural_score = float(1.0 / (1.0 + math.exp(-2.5 * (effective_loss - 1.8))))
@@ -351,8 +380,8 @@ class DeepEnsembleDetector:
             drift_cusum = abs(float(np.sum([temps[k] - mean_temp for k in range(len(temps))]))) / max(1.0, float(np.std(temps)))
 
         tree_metric = max(
-            abs(z_t) / 3.5,
-            abs(z_p) / 3.5,
+            abs(z_t) / 3.5 if has_t else 0.0,
+            abs(z_p) / 3.5 if has_p else 0.0,
             freeze_count / 6.0 if freeze_count >= 5 else 0.0,
             drift_cusum / 8.0 if drift_cusum >= 2.5 else 0.0,
         )
@@ -361,25 +390,48 @@ class DeepEnsembleDetector:
         # --------------------------------------------------------------------
         # Stream 4: Multi-Evidence Ensemble Fusion
         # --------------------------------------------------------------------
-        # Dynamically weighted consensus: 40% Neural + 35% Tree + 25% Spatial
         evidence_score = round(0.40 * neural_score + 0.35 * tree_score + 0.25 * spatial_score, 4)
         evidence_score = max(0.0120, min(0.9980, evidence_score))
 
         # --------------------------------------------------------------------
         # Stream 5: Explainable Physical Diagnostic Root Cause
         # --------------------------------------------------------------------
-        is_synoptic_front = (
-            len(valid_neighbors) >= 3 and 
-            sum(1 for n in valid_neighbors if abs(n["temp_adj"] - exp_t) > 2.0) >= 2 and
-            abs(res_t) > 2.0 and (res_t < 0 and res_rh > 0)
-        )
-
-        if is_synoptic_front and max_abs_z <= 3.8:
-            decision = "GENUINE_WEATHER_EVENT"
-            severity = "ADVISORY"
-            root_cause = "genuine_synoptic_weather_front"
-            explanation = f"Regional barometric depression and temperature drop observed across {len(valid_neighbors)} neighbouring AWS nodes."
-            confidence = 0.932
+        # Only evaluate parameters that were ACTUALLY OBSERVED
+        if has_p and (p_target < 800.0 or p_target > 1075.0):
+            decision = "SENSOR_FAULT"
+            severity = "CRITICAL"
+            root_cause = "pressure_physical_bounds_violation"
+            explanation = f"Observed barometric pressure {p_target:.1f} hPa exceeds surface atmospheric physical boundaries [800 - 1075 hPa]."
+            evidence_score = 0.9950
+            confidence = 0.99
+        elif has_t and (t_target < -25.0 or t_target > 55.0):
+            decision = "SENSOR_FAULT"
+            severity = "CRITICAL"
+            root_cause = "temperature_physical_bounds_violation"
+            explanation = f"Observed temperature {t_target:.1f}°C exceeds surface atmospheric limits [-25°C to 55°C]."
+            evidence_score = 0.9950
+            confidence = 0.99
+        elif has_t and abs(z_t) >= 4.5 and abs(res_t) >= 4.5 and len(valid_neighbors_t) >= 3:
+            decision = "SENSOR_FAULT"
+            severity = "CRITICAL" if abs(z_t) >= 6.0 else "HIGH"
+            root_cause = "temperature_spike_deviation"
+            explanation = f"Observed temperature {t_target:.1f}°C deviates by {abs(z_t):.1f}σ ({res_t:+.1f}°C) from lapse-compensated regional consensus ({exp_t:.1f}°C)."
+            confidence = 0.965
+            evidence_score = max(evidence_score, min(0.99, 0.78 + (abs(z_t) - 4.5) * 0.04))
+        elif has_p and abs(z_p) >= 4.5 and abs(res_p) >= 12.0 and len(valid_neighbors_p) >= 3:
+            decision = "SENSOR_FAULT"
+            severity = "HIGH"
+            root_cause = "barometric_pressure_drift"
+            explanation = f"Observed barometric pressure {p_target:.1f} hPa deviates by {abs(z_p):.1f}σ ({res_p:+.1f} hPa) from altimeter-reduced regional consensus ({exp_p:.1f} hPa)."
+            confidence = 0.942
+            evidence_score = max(evidence_score, min(0.99, 0.76 + (abs(z_p) - 4.5) * 0.03))
+        elif has_rh and abs(z_rh) >= 4.8 and abs(res_rh) >= 25.0 and len(valid_neighbors_rh) >= 3:
+            decision = "SENSOR_FAULT"
+            severity = "MEDIUM"
+            root_cause = "relative_humidity_saturation"
+            explanation = f"Observed humidity {rh_target:.0f}% deviates by {abs(z_rh):.1f}σ from spatial consensus ({exp_rh:.0f}%)."
+            confidence = 0.915
+            evidence_score = max(evidence_score, 0.7650)
         elif freeze_count >= 6:
             decision = "SENSOR_FAULT"
             severity = "CRITICAL"
@@ -387,34 +439,6 @@ class DeepEnsembleDetector:
             explanation = f"Sensor reporting constant reading across {freeze_count} consecutive intervals while local diurnal cycle predicts variation."
             confidence = 0.978
             evidence_score = max(evidence_score, 0.8950)
-        elif abs(z_t) >= 4.0:
-            decision = "SENSOR_FAULT"
-            severity = "CRITICAL" if abs(z_t) >= 5.0 else "HIGH"
-            root_cause = "temperature_spike_deviation"
-            explanation = f"Temperature reading {t_target:.1f}°C deviates by {abs(z_t):.1f}σ from lapse-adjusted consensus ({exp_t:.1f}°C)."
-            confidence = 0.965
-            evidence_score = max(evidence_score, min(0.99, 0.75 + (abs(z_t) - 4.0) * 0.05))
-        elif abs(z_p) >= 3.8:
-            decision = "SENSOR_FAULT"
-            severity = "HIGH"
-            root_cause = "barometric_pressure_drift"
-            explanation = f"Barometric pressure transducer differs by {abs(res_p):.1f} hPa ({abs(z_p):.1f}σ) from altimeter-reduced consensus."
-            confidence = 0.942
-            evidence_score = max(evidence_score, 0.8420)
-        elif abs(z_rh) >= 4.2:
-            decision = "SENSOR_FAULT"
-            severity = "MEDIUM"
-            root_cause = "relative_humidity_saturation"
-            explanation = f"Relative humidity sensor differs from spatial consensus by {abs(z_rh):.1f}σ without thermodynamic dew point support."
-            confidence = 0.915
-            evidence_score = max(evidence_score, 0.7650)
-        elif max_abs_z >= 2.8:
-            decision = "PROBABLE_FAULT"
-            severity = "LOW"
-            root_cause = "spatial_lapse_rate_discrepancy"
-            explanation = f"Isolated divergence of {max_abs_z:.1f}σ from elevation-corrected neighboring stations."
-            confidence = 0.785
-            evidence_score = max(evidence_score, 0.6240)
         else:
             decision = "NORMAL"
             severity = "NOMINAL"
@@ -422,6 +446,7 @@ class DeepEnsembleDetector:
             explanation = f"Sensors match elevation-adjusted regional spatial consensus within {max_abs_z:.2f} robust MAD scales."
             confidence = round(1.0 - evidence_score, 4)
 
+        neighbor_count = max(len(valid_neighbors_t), len(valid_neighbors_p), len(valid_neighbors_rh))
         return EnsembleResult(
             station_id=sid,
             station_name=name,
@@ -436,6 +461,6 @@ class DeepEnsembleDetector:
             expected_values={"temperature_c": round(exp_t, 1), "pressure_hpa": round(exp_p, 1), "relative_humidity_pct": round(exp_rh, 1)},
             residuals={"temperature_c": round(res_t, 2), "pressure_hpa": round(res_p, 2), "relative_humidity_pct": round(res_rh, 2)},
             z_scores={"temperature_z": round(z_t, 2), "pressure_z": round(z_p, 2), "humidity_z": round(z_rh, 2), "max_z": round(max_abs_z, 2)},
-            neighbor_count=len(valid_neighbors),
+            neighbor_count=neighbor_count,
             confidence=round(confidence, 4),
         )
