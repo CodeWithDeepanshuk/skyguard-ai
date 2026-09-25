@@ -68,14 +68,39 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
   `;
   host.appendChild(controlsBar);
 
-  // Bind window pill events
+  // Bind window pill events with backend history fetch trigger
   controlsBar.querySelectorAll('.window-pill').forEach(btn => {
     btn.addEventListener('click', () => {
       const w = btn.dataset.window;
       window.currentSensorTimeWindow = w;
-      window.renderSensorTrace(rows, activeParameter, tripletTraces, w);
+      if (typeof window.onSensorWindowChange === 'function') {
+        window.onSensorWindowChange(w);
+      } else {
+        window.renderSensorTrace(rows, activeParameter, tripletTraces, w);
+      }
     });
   });
+
+  // Metadata Banner: Observation count, oldest and newest times, source provenance, and freshness
+  const oldestTime = validRows.length ? Math.min(...validRows.map(r => Date.parse(r.timestamp_utc))) : null;
+  const newestTime = validRows.length ? Math.max(...validRows.map(r => Date.parse(r.timestamp_utc))) : null;
+  const oldestStr = oldestTime ? new Date(oldestTime).toISOString().replace('T', ' ').slice(0, 16) + ' UTC' : '—';
+  const newestStr = newestTime ? new Date(newestTime).toISOString().replace('T', ' ').slice(0, 16) + ' UTC' : '—';
+  const obsCount = validRows.length;
+  const nowMs = Date.now();
+  const feedAgeMin = newestTime ? Math.round((nowMs - newestTime) / 60000) : null;
+  const freshnessStr = feedAgeMin !== null ? (feedAgeMin <= 20 ? `${feedAgeMin}m ago (Fresh)` : `${feedAgeMin}m ago (Stale Feed)`) : '—';
+
+  const metaBar = document.createElement('div');
+  metaBar.className = 'sensor-chart-metadata-bar';
+  metaBar.style.cssText = 'display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:11px; color:#475569; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:6px 12px; margin-bottom:12px;';
+  metaBar.innerHTML = `
+    <span><strong>Observations in ${activeWindow}:</strong> <span style="color:#0F172A; font-weight:700;">${obsCount}</span> ${obsCount === 1 ? '<span style="color:#D97706; font-weight:600;">(Single observation · Insufficient history for trend line)</span>' : ''}</span>
+    <span><strong>Window Extent:</strong> ${oldestStr} → ${newestStr}</span>
+    <span><strong>Provenance:</strong> IMD AWS Surface Network</span>
+    <span><strong>Freshness:</strong> ${freshnessStr}</span>
+  `;
+  host.appendChild(metaBar);
 
   if (!validRows.length && !tripletTraces) {
     const empty = document.createElement('div');
@@ -133,13 +158,14 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
     const minVal = values.length ? Math.min(...values) : null;
     const maxVal = values.length ? Math.max(...values) : null;
     const meanVal = values.length ? (values.reduce((a, b) => a + b, 0) / values.length) : null;
+    const isSinglePoint = values.length === 1;
 
     // Outer Box Container for this parameter term
     const box = document.createElement('div');
     box.className = 'parameter-graph-box';
     box.id = `graph-box-${key}`;
 
-    // Box Header
+    // Box Header with 1-point trend warning pill
     const header = document.createElement('div');
     header.className = 'parameter-graph-header';
     header.innerHTML = `
@@ -147,6 +173,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
         <span style="font-size:16px;">${icon}</span>
         <span>${title}</span>
         <span class="stat-pill live">Latest: <strong>${latestVal != null ? latestVal.toFixed(1) : '—'} ${unit}</strong></span>
+        ${isSinglePoint ? '<span class="stat-pill warning" style="background:#FEF3C7; color:#92400E; border:1px solid #FCD34D;">1 reading · Insufficient history for trend line</span>' : ''}
       </div>
       <div class="parameter-graph-stats">
         <span class="stat-pill">Min: <strong>${minVal != null ? minVal.toFixed(1) : '—'} ${unit}</strong></span>
@@ -296,9 +323,10 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       }, timeStr));
     }
 
-    // Draw reference traces
+    // Draw reference traces (only if explicitly computed with genuine values)
     const drawTracePath = (traceData, strokeColor, strokeWidth, dashArray, valueGetter) => {
       let d = '', pen = false;
+      let lastT = null;
       const sorted = [...traceData]
         .filter(r => Date.parse(r.timestamp_utc) >= minTimeCutoff)
         .sort((a, b) => Date.parse(a.timestamp_utc) - Date.parse(b.timestamp_utc));
@@ -307,11 +335,17 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
         const val = valueGetter(r);
         const t = Date.parse(r.timestamp_utc);
         if (!numeric(val) || !Number.isFinite(t)) { pen = false; return; }
+        // Break line across missing telemetry gaps (> 45 minutes)
+        if (lastT !== null && (t - lastT) > 45 * 60 * 1000) {
+          pen = false;
+        }
+        lastT = t;
         const px = x(t), py = y(Number(val));
         d += `${pen ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)} `;
         pen = true;
       });
-      if (d) {
+      // Only draw path line if multiple distinct observations exist
+      if (d && sorted.filter(r => numeric(valueGetter(r))).length > 1) {
         const pathAttrs = {
           d,
           fill: 'none',
@@ -324,12 +358,18 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       }
     };
 
-    if (tripletTraces && tripletTraces.reference_model) {
-      drawTracePath(tripletTraces.reference_model, '#6366F1', 2.0, '5 3', r => (r[paramKey] != null ? r[paramKey] : r[key]));
+    if (tripletTraces && Array.isArray(tripletTraces.reference_model) && tripletTraces.reference_model.length > 0) {
+      const hasComputedRef = tripletTraces.reference_model.some(r => numeric(r[paramKey] != null ? r[paramKey] : r[key]));
+      if (hasComputedRef) {
+        drawTracePath(tripletTraces.reference_model, '#6366F1', 2.0, '5 3', r => (r[paramKey] != null ? r[paramKey] : r[key]));
+      }
     }
 
-    if (tripletTraces && tripletTraces.neighbor_consensus) {
-      drawTracePath(tripletTraces.neighbor_consensus, '#F59E0B', 2.2, '2 3', r => (r[paramKey] != null ? r[paramKey] : r[key]));
+    if (tripletTraces && Array.isArray(tripletTraces.neighbor_consensus) && tripletTraces.neighbor_consensus.length > 0) {
+      const hasComputedNeighbor = tripletTraces.neighbor_consensus.some(r => numeric(r[paramKey] != null ? r[paramKey] : r[key]));
+      if (hasComputedNeighbor) {
+        drawTracePath(tripletTraces.neighbor_consensus, '#F59E0B', 2.2, '2 3', r => (r[paramKey] != null ? r[paramKey] : r[key]));
+      }
     }
 
     // Draw Observed In-Situ Primary Path
@@ -341,6 +381,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
     }
 
     let path = '', pen = false;
+    let lastObsTime = null;
     const sortedObs = [...obsData].sort((a, b) => Date.parse(a.timestamp_utc) - Date.parse(b.timestamp_utc));
     
     // Tap-to-Inspect handler function
@@ -373,6 +414,13 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       const val = obsGetter(r);
       const t = Date.parse(r.timestamp_utc);
       if (!numeric(val) || !Number.isFinite(t)) { pen = false; return; }
+
+      // Gap detection: break path line across gaps (> 45 min for a 15-min feed)
+      if (lastObsTime !== null && (t - lastObsTime) > 45 * 60 * 1000) {
+        pen = false;
+      }
+      lastObsTime = t;
+
       const px = x(t), py = y(Number(val));
       path += `${pen ? 'L' : 'M'}${px.toFixed(1)},${py.toFixed(1)} `;
       pen = true;
@@ -405,7 +453,9 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       svg.appendChild(dot);
     });
 
-    if (path) {
+    // Only draw continuous trend line if 2 or more distinct observations exist
+    const validObsCount = sortedObs.filter(r => numeric(obsGetter(r))).length;
+    if (path && validObsCount > 1) {
       svg.appendChild(element('path', {
         d: path,
         fill: 'none',

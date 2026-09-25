@@ -861,7 +861,7 @@ def create_v1_router(
         store = require_store()
         raw_receipt = payload.get("receipt") or {}
         raw_payload_str = str(payload.get("raw_payload_json") or payload.get("raw_payload") or "")
-        records_in = payload.get("records") or []
+        records_in = payload.get("records") or payload.get("observations") or payload.get("data") or []
 
         # If records not pre-normalized, extract from raw IMD list/dict
         if not records_in:
@@ -925,9 +925,13 @@ def create_v1_router(
                 except (TypeError, ValueError):
                     return None
 
-            temp_c = _clean_num(item.get("temperature_c") or item.get("CURR_TEMP") or item.get("TEMP"))
-            press_hpa = _clean_num(item.get("pressure_hpa") or item.get("MSLP") or item.get("SLP") or item.get("PRESSURE"))
-            rh_pct = _clean_num(item.get("relative_humidity_pct") or item.get("RH") or item.get("HUMIDITY"))
+            temp_raw = item.get("temperature_c") if item.get("temperature_c") is not None else (item.get("CURR_TEMP") if item.get("CURR_TEMP") is not None else item.get("TEMP"))
+            press_raw = item.get("pressure_hpa") if item.get("pressure_hpa") is not None else (item.get("MSLP") if item.get("MSLP") is not None else (item.get("SLP") if item.get("SLP") is not None else item.get("PRESSURE")))
+            rh_raw = item.get("relative_humidity_pct") if item.get("relative_humidity_pct") is not None else (item.get("RH") if item.get("RH") is not None else item.get("HUMIDITY"))
+
+            temp_c = _clean_num(temp_raw)
+            press_hpa = _clean_num(press_raw)
+            rh_pct = _clean_num(rh_raw)
 
             # Must have at least one of the 3 allowed parameters
             if temp_c is None and press_hpa is None and rh_pct is None:
@@ -1010,6 +1014,7 @@ def create_v1_router(
             logger.warning("Filesystem write skipped for raw payload: %s", exc)
 
         # Update in-memory live service and disk cache so website immediately serves the new observations
+        inference_results: Dict[str, Any] = {}
         try:
             live_service = getattr(getattr(request, "app", None), "state", None)
             live_obj = getattr(live_service, "live", None)
@@ -1046,12 +1051,11 @@ def create_v1_router(
                         "observation_origin": "official_imd_portal",
                         "humidity_origin": "direct_hygrometer_sensor",
                         "event_decision": "nominal",
-                        "fault_probability": 0.01,
-                        "weather_event_probability": 0.05,
-                        "p_nominal": 0.94,
-                        "p_fault": 0.01,
-                        "p_weather": 0.05,
-                        "decision_reason": "IMD Portal authenticated telemetry nominal",
+                        "anomaly_score": 0.05,
+                        "fault_probability": None,
+                        "is_calibrated": False,
+                        "calibration_status": "NOT_CALIBRATED",
+                        "weather_probability": None,
                     })
 
                 valid_ts = [r["timestamp_utc"] for r in new_readings if r.get("timestamp_utc")]
@@ -1066,6 +1070,133 @@ def create_v1_router(
                 for r in new_readings:
                     existing_dict[str(r.get("station_id") or "")] = r
                 merged_readings = list(existing_dict.values())
+
+                # Real ML Model & Spatial QC Execution using PyTorch CausalTCN & Multi-Evidence Ensemble
+                new_incidents = []
+                new_alerts = []
+                try:
+                    from skyguard.models.deep_ensemble import DeepEnsembleDetector
+                    detector = DeepEnsembleDetector(root)
+
+                    for reading in new_readings:
+                        sid = reading["station_id"]
+                        stn_history = store.history(sid, hours=24, limit=50)
+
+                        target_dict = {
+                            "station_id": sid,
+                            "station_name": reading.get("station_name") or sid,
+                            "latitude": reading.get("latitude") or 20.0,
+                            "longitude": reading.get("longitude") or 78.0,
+                            "elevation_m": reading.get("elevation_m") or 150.0,
+                            "temperature": reading.get("temperature_c"),
+                            "pressure": reading.get("pressure_hpa"),
+                            "humidity": reading.get("relative_humidity_pct"),
+                            "timestamp_utc": reading.get("timestamp_utc"),
+                        }
+
+                        # Run real model inference with spatio-temporal neural autoencoder and spatial consensus
+                        ens_res = detector.detect(
+                            target=target_dict,
+                            neighbors=merged_readings,
+                            history_24h=stn_history,
+                        )
+
+                        reading["anomaly_score"] = ens_res.evidence_score
+                        reading["event_decision"] = "sensor_fault" if ens_res.decision == "SENSOR_FAULT" else "nominal"
+                        reading["fault_probability"] = None  # Explicitly uncalibrated
+                        reading["is_calibrated"] = False
+                        reading["calibration_status"] = "NOT_CALIBRATED"
+                        reading["weather_probability"] = None
+                        reading["neighbor_count"] = ens_res.neighbor_count
+                        reading["neighbor_evidence"] = ens_res.neighbor_evidence
+                        reading["ml_scores"] = {
+                            "neural_autoencoder_score": ens_res.neural_score,
+                            "drift_heuristic_score": ens_res.tree_score,
+                            "spatial_consensus_score": ens_res.spatial_score,
+                            "ensemble_anomaly_score": ens_res.evidence_score,
+                            "calibration_status": "NOT_CALIBRATED",
+                            "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Deep Ensemble)"
+                        }
+
+                        # Update existing_dict with inference-enriched reading
+                        existing_dict[sid] = reading
+
+                        inference_results[sid] = {
+                            "station_id": sid,
+                            "anomaly_score": ens_res.evidence_score,
+                            "decision": ens_res.decision,
+                            "calibrated_fault_probability": None,
+                            "fault_probability": None,
+                            "is_calibrated": False,
+                            "calibration_status": "NOT_CALIBRATED",
+                            "neighbor_evidence": ens_res.neighbor_evidence,
+                            "neighbor_count": ens_res.neighbor_count,
+                            "expected_values": ens_res.expected_values,
+                            "ml_scores": reading["ml_scores"],
+                        }
+
+                        # If anomalous, record incident
+                        if ens_res.evidence_score >= 0.65 or ens_res.decision == "SENSOR_FAULT":
+                            aff_param = "pressure" if (abs(ens_res.z_scores.get("pressure", 0)) > 3.0 or (reading.get("pressure_hpa") or 0) > 1075) else "temperature" if abs(ens_res.z_scores.get("temperature", 0)) > 3.0 else "humidity"
+                            obs_val = reading.get("pressure_hpa") if aff_param == "pressure" else reading.get("temperature_c") if aff_param == "temperature" else reading.get("relative_humidity_pct")
+                            exp_val = ens_res.expected_values.get(aff_param, obs_val)
+                            res_val = round(obs_val - exp_val, 2) if (obs_val is not None and exp_val is not None) else 0.0
+
+                            inc_id = f"INC-IMD-{sid}"
+                            new_incidents.append({
+                                "incident_id": inc_id,
+                                "station_id": sid,
+                                "station_name": reading.get("station_name"),
+                                "latitude": reading.get("latitude"),
+                                "longitude": reading.get("longitude"),
+                                "state": reading.get("state"),
+                                "district": reading.get("district"),
+                                "severity": ens_res.severity,
+                                "affected_parameter": aff_param,
+                                "sensor": aff_param,
+                                "affected_sensors": [aff_param],
+                                "observed_value": f"{obs_val} {'hPa' if aff_param == 'pressure' else '°C' if aff_param == 'temperature' else '%'}",
+                                "observed_value_numeric": obs_val,
+                                "expected_value": exp_val,
+                                "residual": res_val,
+                                "z_spatial": abs(ens_res.z_scores.get(aff_param, 0.0)),
+                                "root_cause": ens_res.root_cause,
+                                "explanation": ens_res.root_cause_explanation,
+                                "anomaly_score": ens_res.evidence_score,
+                                "fault_probability": None,
+                                "is_calibrated": False,
+                                "status": "new",
+                                "active": True,
+                                "detected_timestamp_utc": reading.get("timestamp_utc"),
+                                "timestamp_utc": reading.get("timestamp_utc"),
+                                "neighbor_count": ens_res.neighbor_count,
+                                "neighbor_evidence": ens_res.neighbor_evidence,
+                                "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Deep Ensemble)",
+                            })
+                            new_alerts.append({
+                                "alert_id": f"ALERT-{sid}",
+                                "station_id": sid,
+                                "timestamp_utc": reading.get("timestamp_utc"),
+                                "alert_type": ens_res.root_cause,
+                                "severity": ens_res.severity.lower(),
+                                "score": ens_res.evidence_score,
+                                "explanation": ens_res.root_cause_explanation,
+                                "source": "official_imd_neural_ensemble",
+                            })
+                except Exception as ml_err:
+                    logger.warning("Real ML inference skipped on ingestion: %s", ml_err)
+
+                merged_readings = list(existing_dict.values())
+
+                existing_incidents = {str(i.get("station_id")): i for i in live_obj.payload.get("incidents", [])}
+                for inc in new_incidents:
+                    existing_incidents[str(inc["station_id"])] = inc
+                merged_incidents = list(existing_incidents.values())
+
+                existing_alerts = {str(a.get("alert_id")): a for a in live_obj.payload.get("alerts", [])}
+                for al in new_alerts:
+                    existing_alerts[str(al["alert_id"])] = al
+                merged_alerts = list(existing_alerts.values())
 
                 total_catalog = int(live_obj.payload.get("total_network_stations") or 1153)
                 reporting_stations = sum(
@@ -1092,6 +1223,11 @@ def create_v1_router(
                     "stations_without_observations": missing_stations,
                     "observation_count": len(merged_readings),
                     "readings": merged_readings,
+                    "incidents": merged_incidents,
+                    "alerts": merged_alerts,
+                    "model_alert_count": len(merged_alerts),
+                    "quality_alert_count": len(merged_alerts),
+                    "incident_shadow_active_count": sum(1 for inc in merged_incidents if inc.get("active")),
                 })
                 live_obj.payload = live_payload
                 if hasattr(live_obj, "cache_path") and live_obj.cache_path:
@@ -1115,6 +1251,39 @@ def create_v1_router(
             "raw_payloads": receipt_store.get("raw_payloads", 0),
             "watermark_utc": watermark,
             "payload_sha256": raw_receipt.get("payload_sha256"),
+            "inference_performed": bool(inference_results),
+            "evaluated_stations": len(inference_results),
+            "inferences": inference_results,
         }
+
+    @router.get("/observations/history")
+    def get_observation_history(
+        station_id: str = Query(..., description="Canonical station identifier"),
+        range: str = Query("24h", description="Time range: '1h', '6h', '24h', '7d', or integer hours"),
+        page: int = Query(1, ge=1, description="Page number (1-indexed)"),
+        limit: int = Query(50, ge=1, le=1000, description="Observations per page"),
+        parameter: Optional[str] = Query(None, description="Optional parameter filter ('temperature', 'pressure', 'humidity')"),
+        relative_to_latest: bool = Query(True, description="Calculate range relative to latest station observation if historical"),
+    ) -> dict[str, object]:
+        """Expose station history through a paginated API with selectable 1-hour, 6-hour, 24-hour, and 7-day ranges."""
+        store = require_store()
+        hours_map = {"1h": 1, "6h": 6, "24h": 24, "7d": 168}
+        if range.lower() in hours_map:
+            hours = hours_map[range.lower()]
+        else:
+            try:
+                hours = int(range.replace("h", "").replace("d", ""))
+            except ValueError:
+                hours = 24
+
+        res = store.paginated_history(
+            station_id=station_id,
+            hours=hours,
+            page=page,
+            limit=limit,
+            relative_to_latest=relative_to_latest,
+            parameter_filter=parameter,
+        )
+        return res
 
     return router

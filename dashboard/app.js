@@ -567,24 +567,51 @@ function renderNetwork() {
   renderStationCards();
 }
 
-function selectStation(stationId) {
-  state.selectedStation = stationId;
-  const existing = state.readings.filter((row) => row.station_id === state.selectedStation);
-  if (!existing.length && typeof fetch !== 'undefined') {
-    const endpoint = state.mode === 'live'
-      ? `/api/live/readings?station_id=${encodeURIComponent(state.selectedStation)}&limit=100`
-      : `/api/readings?station_id=${encodeURIComponent(state.selectedStation)}&limit=100`;
-    api(endpoint).then((fetched) => {
-      if (fetched && fetched.length) {
-        const parsed = fetched.map(parseReading);
-        state.readings = [...state.readings.filter(r => r.station_id !== state.selectedStation), ...parsed];
+async function loadStationHistory(stationId, range = '24h') {
+  if (!stationId) return;
+  const endpoint = state.mode === 'live'
+    ? `/api/v1/observations/history?station_id=${encodeURIComponent(stationId)}&range=${encodeURIComponent(range)}&limit=500`
+    : `/api/readings?station_id=${encodeURIComponent(stationId)}&limit=500`;
+  try {
+    const res = await api(endpoint);
+    let rows = [];
+    if (res && res.readings && Array.isArray(res.readings)) {
+      rows = res.readings;
+    } else if (Array.isArray(res)) {
+      rows = res;
+    }
+    if (rows && rows.length) {
+      const parsed = rows.map(parseReading);
+      state.readings = [...state.readings.filter(r => r.station_id !== stationId), ...parsed];
+      renderNetwork();
+      renderReadings();
+    }
+  } catch (err) {
+    try {
+      const fallbackEndpoint = `/api/live/readings?station_id=${encodeURIComponent(stationId)}&range=${encodeURIComponent(range)}&limit=500`;
+      const fallbackRows = await api(fallbackEndpoint);
+      if (Array.isArray(fallbackRows) && fallbackRows.length) {
+        const parsed = fallbackRows.map(parseReading);
+        state.readings = [...state.readings.filter(r => r.station_id !== stationId), ...parsed];
         renderNetwork();
         renderReadings();
       }
-    }).catch((err) => {
-      console.warn("Could not load station trace", err);
-    });
+    } catch (e) {
+      console.warn("Could not load station history trace", e);
+    }
   }
+}
+
+window.onSensorWindowChange = (timeWindow) => {
+  if (state.selectedStation) {
+    loadStationHistory(state.selectedStation, timeWindow);
+  }
+};
+
+function selectStation(stationId) {
+  state.selectedStation = stationId;
+  const currentWindow = window.currentSensorTimeWindow || '24h';
+  loadStationHistory(stationId, currentWindow);
   if (typeof renderSelectedStationQc === 'function') {
     renderSelectedStationQc(stationId);
   }

@@ -667,6 +667,14 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         latest_only: bool = False,
     ) -> list[dict[str, object]]:
         bootstrap_live_source()
+        if station_id and not latest_only and observation_store:
+            try:
+                hist_res = observation_store.paginated_history(station_id, hours=168, limit=limit, relative_to_latest=True)
+                items = hist_res.get("items") or []
+                if items:
+                    return items
+            except Exception:
+                pass
         return live.readings(limit, station_id, latest_only)
 
     @app.get("/api/live/alerts")

@@ -8,6 +8,7 @@ production because Render's free-service filesystem is ephemeral.
 from __future__ import annotations
 
 import json
+import math
 import os
 import sqlite3
 import uuid
@@ -234,6 +235,133 @@ class ObservationStore:
         with self._connection() as connection:
             rows = connection.execute(sql, (station_id, cutoff.isoformat(), limit)).fetchall()
         return [self._decode_row(row) for row in rows]
+
+    def paginated_history(
+        self,
+        station_id: str,
+        *,
+        hours: int = 24,
+        range_param: Optional[str] = None,
+        range: Optional[str] = None,
+        page: int = 1,
+        limit: int = 50,
+        relative_to_latest: bool = True,
+        end_time: Optional[datetime] = None,
+        parameter_filter: Optional[str] = None,
+    ) -> dict[str, Any]:
+        """Expose station observation history with selectable ranges (1h, 6h, 24h, 7d) and pagination."""
+        parameter = "%s" if self.backend == "postgresql" else "?"
+        chosen_range = range_param or range
+        if chosen_range:
+            hours_map = {"1h": 1, "6h": 6, "24h": 24, "7d": 168}
+            if str(chosen_range).lower() in hours_map:
+                hours = hours_map[str(chosen_range).lower()]
+            else:
+                try:
+                    hours = int(str(chosen_range).lower().replace("h", "").replace("d", ""))
+                except Exception:
+                    pass
+        hours_clamped = max(1, min(hours, 24 * 365))
+        page_clamped = max(1, page)
+        limit_clamped = max(1, min(limit, 1000))
+        offset = (page_clamped - 1) * limit_clamped
+
+        with self._connection() as connection:
+            # 1. Determine end timestamp
+            if end_time is not None:
+                end_dt = end_time if end_time.tzinfo else end_time.replace(tzinfo=timezone.utc)
+            elif relative_to_latest:
+                row_max = connection.execute(
+                    f"SELECT MAX(observation_timestamp_utc) FROM observations WHERE canonical_station_id={parameter}",
+                    (station_id,),
+                ).fetchone()
+                max_str = row_max[0] if (row_max and row_max[0]) else None
+                if max_str:
+                    try:
+                        end_dt = datetime.fromisoformat(str(max_str).replace("Z", "+00:00"))
+                    except Exception:
+                        end_dt = datetime.now(timezone.utc)
+                else:
+                    end_dt = datetime.now(timezone.utc)
+            else:
+                end_dt = datetime.now(timezone.utc)
+
+            start_dt = end_dt - timedelta(hours=hours_clamped)
+            start_iso = start_dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            end_iso = end_dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+            # 2. Build where clause
+            where_clauses = [
+                f"canonical_station_id={parameter}",
+                f"observation_timestamp_utc>={parameter}",
+                f"observation_timestamp_utc<={parameter}",
+            ]
+            params: list[Any] = [station_id, start_iso, end_iso]
+
+            if parameter_filter == "temperature":
+                where_clauses.append("temperature_c IS NOT NULL")
+            elif parameter_filter == "pressure":
+                where_clauses.append("pressure_hpa IS NOT NULL")
+            elif parameter_filter in ("humidity", "relative_humidity"):
+                where_clauses.append("relative_humidity_pct IS NOT NULL")
+
+            where_str = " AND ".join(where_clauses)
+
+            # 3. Total count
+            count_sql = f"SELECT COUNT(*) FROM observations WHERE {where_str}"
+            total_count = connection.execute(count_sql, tuple(params)).fetchone()[0]
+
+            # 4. Fetch chronological observations
+            query_sql = f"""
+                SELECT * FROM observations
+                WHERE {where_str}
+                ORDER BY observation_timestamp_utc ASC
+                LIMIT {parameter} OFFSET {parameter}
+            """
+            rows = connection.execute(query_sql, tuple(params + [limit_clamped, offset])).fetchall()
+            decoded_rows = [self._decode_row(r) for r in rows]
+
+            # Also get earliest and latest overall for this station
+            bounds_sql = f"""
+                SELECT MIN(observation_timestamp_utc), MAX(observation_timestamp_utc)
+                FROM observations WHERE canonical_station_id={parameter}
+            """
+            b_row = connection.execute(bounds_sql, (station_id,)).fetchone()
+            oldest_overall = b_row[0] if (b_row and b_row[0]) else None
+            newest_overall = b_row[1] if (b_row and b_row[1]) else None
+
+            now_utc = datetime.now(timezone.utc)
+            freshness_m = None
+            if newest_overall:
+                try:
+                    latest_dt = datetime.fromisoformat(str(newest_overall).replace("Z", "+00:00"))
+                    freshness_m = round((now_utc - latest_dt).total_seconds() / 60.0, 1)
+                except Exception:
+                    freshness_m = None
+
+            total_pages = max(1, math.ceil(total_count / limit_clamped)) if total_count > 0 else 1
+            range_lbl = f"{hours_clamped}h" if hours_clamped < 168 else "7d"
+
+            return {
+                "station_id": station_id,
+                "range": range_lbl,
+                "range_hours": hours_clamped,
+                "range_label": range_lbl,
+                "page": page_clamped,
+                "limit": limit_clamped,
+                "total": total_count,
+                "total_count": total_count,
+                "pages": total_pages,
+                "total_pages": total_pages,
+                "items": decoded_rows,
+                "readings": decoded_rows,
+                "start_time_utc": start_dt.isoformat().replace("+00:00", "Z"),
+                "end_time_utc": end_dt.isoformat().replace("+00:00", "Z"),
+                "oldest_observation_utc": str(oldest_overall).replace("+00:00", "Z") if oldest_overall else None,
+                "newest_observation_utc": str(newest_overall).replace("+00:00", "Z") if newest_overall else None,
+                "freshness_minutes": freshness_m,
+                "observation_count": total_count,
+            }
 
     def recent_observations(self, *, hours: int = 48, limit: int = 250000) -> list[dict[str, Any]]:
         """Return a bounded causal network window for batch operational QC."""

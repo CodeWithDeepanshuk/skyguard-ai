@@ -234,7 +234,6 @@ class OCIIMDCollector:
                 records = [payload]
 
         normalized: List[Dict[str, Any]] = []
-        now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
         for r in records:
             sid = str(r.get("CALL_SIGN") or r.get("ID") or r.get("station_id") or "").strip()
@@ -249,16 +248,26 @@ class OCIIMDCollector:
             if temp_c is None and press_hpa is None and rh_pct is None:
                 continue
 
-            # Parse timestamp
+            # Parse provider timestamp strictly without fabricating current time
             date_str = str(r.get("DATE") or r.get("Date") or "").strip()
             time_str = str(r.get("TIME") or r.get("Time") or "00:00:00").strip()
-            ts_utc = now_iso
+            ts_utc = None
             if date_str:
                 try:
                     dt = datetime.datetime.fromisoformat(f"{date_str}T{time_str}Z".replace("Z", "+00:00"))
                     ts_utc = dt.astimezone(datetime.timezone.utc).isoformat()
                 except Exception:
-                    ts_utc = now_iso
+                    ts_utc = None
+            elif r.get("timestamp_utc"):
+                try:
+                    dt = datetime.datetime.fromisoformat(str(r["timestamp_utc"]).replace("Z", "+00:00"))
+                    ts_utc = dt.astimezone(datetime.timezone.utc).isoformat()
+                except Exception:
+                    ts_utc = None
+
+            if not ts_utc:
+                # Never fabricate a timestamp; record is discarded if provider did not timestamp it
+                continue
 
             normalized.append({
                 "station_id": sid,

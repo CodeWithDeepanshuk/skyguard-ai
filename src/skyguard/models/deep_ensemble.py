@@ -201,7 +201,10 @@ class DeepEnsembleDetector:
     and Spatial Lapse-Rate consensus with zero synthetic or hardcoded fallbacks.
     """
     def __init__(self, weights_path: Optional[Path] = None):
-        self.weights_path = weights_path or DEFAULT_NEURAL_WEIGHTS
+        if weights_path and Path(weights_path).is_dir():
+            self.weights_path = Path(weights_path) / "models" / "spatio_temporal_neural_engine.pt"
+        else:
+            self.weights_path = Path(weights_path) if weights_path else DEFAULT_NEURAL_WEIGHTS
         self.neural_engine = SpatioTemporalNeuralEngine(in_features=6, hidden_dim=32, latent_dim=16)
         self._load_or_train_weights()
 
@@ -224,6 +227,15 @@ class DeepEnsembleDetector:
         except Exception:
             pass
         self.neural_engine.eval()
+
+    def detect(
+        self,
+        target: Dict[str, Any],
+        neighbors: List[Dict[str, Any]],
+        history_24h: Optional[List[Dict[str, Any]]] = None,
+    ) -> EnsembleResult:
+        """Ergonomic wrapper alias forwarding to evaluate_station."""
+        return self.evaluate_station(target, history_24h or [], neighbors)
 
     def evaluate_station(
         self,
