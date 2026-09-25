@@ -1,0 +1,9 @@
+{
+  "endpoint_name": "aws_data",
+  "source_url": "https://api.imd.gov.in/api/v1/aws_data",
+  "retrieved_at_utc": "2026-09-24T21:00:00Z",
+  "gateway_egress_ip": "140.238.10.20",
+  "payload_bytes": 1024,
+  "payload_sha256": "837fa4675d0ea98b79c41533ed9f35feefd73b7b88ca9134fd8a750cb7863ffc",
+  "provenance": "ORACLE_CLOUD_ALWAYS_FREE_GATEWAY"
+}

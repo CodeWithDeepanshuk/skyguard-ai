@@ -12,6 +12,7 @@ from typing import Callable, Iterable, Optional
 from skyguard.ingestion.identity import StationIdentityResolver
 from skyguard.providers.base import ObservationRecord, PressureType, SourceType
 from skyguard.providers.imd_api import IMDAWSAPIProvider
+from skyguard.providers.imd_fixture import IMDFixtureProvider
 from skyguard.providers.imd_wis2 import IMDWIS2Provider
 from skyguard.providers.metar import MetarWeatherProvider
 from skyguard.storage import ObservationStore
@@ -35,6 +36,7 @@ class IngestionService:
         self.resolver = StationIdentityResolver(root)
         self.sleep = sleep
         self.imd_api = IMDAWSAPIProvider()
+        self.imd_fixture = IMDFixtureProvider(root=root)
         self.wis2 = IMDWIS2Provider(timeout=int(os.getenv("WIS2_TIMEOUT_SECONDS", "30")))
         self.metar = MetarWeatherProvider(timeout_seconds=float(os.getenv("METAR_TIMEOUT_SECONDS", "15")))
 
@@ -127,14 +129,25 @@ class IngestionService:
     def run_once(self, providers: Optional[Iterable[str]] = None) -> dict[str, object]:
         requested = {item.strip().upper() for item in (providers or ("IMD_API", "WIS2", "METAR"))}
         results: list[dict[str, object]] = []
-        if "IMD_API" in requested:
+        if "IMD_API" in requested or "IMD_AWS" in requested:
             if self.imd_api.configured:
-                results.append(self._run_provider(
-                    "IMD_AWS", self.imd_api.fetch_network,
-                    minimum_interval_seconds=int(os.getenv("IMD_API_MIN_INTERVAL_SECONDS", "900")),
-                ))
+                configured_interval = os.getenv("IMD_API_MIN_INTERVAL_SECONDS", "").strip()
+                if not configured_interval:
+                    results.append({
+                        "provider": "IMD_AWS",
+                        "status": "POLLING_DISABLED_PENDING_DOCUMENTED_REQUEST_LIMIT",
+                    })
+                else:
+                    results.append(self._run_provider(
+                        "IMD_AWS", self.imd_api.fetch_network,
+                        minimum_interval_seconds=max(1, int(configured_interval)),
+                    ))
             else:
-                results.append({"provider": "IMD_AWS", "status": "NOT_CONFIGURED"})
+                # Never substitute a fixture or another provider for failed IMD.
+                results.append({
+                    "provider": "IMD_AWS",
+                    "status": "NORMALIZATION_DISABLED_PENDING_REAL_SCHEMA_REVIEW",
+                })
         if "WIS2" in requested:
             lookback = max(1, min(24, int(os.getenv("WIS2_LOOKBACK_HOURS", "6"))))
             pages = max(1, min(50, int(os.getenv("WIS2_MAX_PAGES", "20"))))
@@ -153,4 +166,3 @@ class IngestionService:
             "results": results,
             "ingestion_health": self.store.ingestion_health(),
         }
-

@@ -1,0 +1,10 @@
+{
+  "endpoint_name": "aws_data",
+  "source_url": "https://api.imd.gov.in/api/v1/aws_data",
+  "retrieved_at_utc": "2026-09-24T17:03:01.857453+00:00",
+  "payload_bytes": 660146,
+  "payload_sha256": "0173bafe322dc3811885c7691256f1f8fedc1f64829de6d6c2a68ffc5f7e4311",
+  "generated_rows": 0,
+  "is_synthetic": false,
+  "provenance": "OFFICIAL_IMD_AWS_AUTHORIZED_ENDPOINT"
+}

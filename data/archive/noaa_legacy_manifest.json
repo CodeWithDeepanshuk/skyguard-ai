@@ -1,0 +1,646 @@
+{
+  "generated_at_utc": "2026-09-24T17:30:00Z",
+  "description": "Immutable audit manifest of legacy NOAA ISD and blind benchmark datasets",
+  "files": {
+    "data/raw/noaa/2022/42131099999.csv": {
+      "bytes": 943128,
+      "sha256": "28532fae89f0ba0c65495c172572066c02fbcc20e99250e839260ce4c8a1255d"
+    },
+    "data/raw/noaa/2022/42137099999.csv": {
+      "bytes": 112882,
+      "sha256": "db84fde9ad32aa49f33a0fe91e40b2172698d581e8910c5f44dbca173c93d3f2"
+    },
+    "data/raw/noaa/2022/42139099999.csv": {
+      "bytes": 541731,
+      "sha256": "b40be410fdab04a157a408162526dfdde8cf92060bdfca3103ab3f4699b4e3a9"
+    },
+    "data/raw/noaa/2022/42176099999.csv": {
+      "bytes": 248511,
+      "sha256": "7d26ad23abe87a21940b34460f1d366a236313c403eaf75ded59550c1bc37056"
+    },
+    "data/raw/noaa/2022/42181099999.csv": {
+      "bytes": 7946412,
+      "sha256": "dcd17a468cbe96f07a1f239a72f8a779ce4e98e9cdbb44705498a2ca9f30b026"
+    },
+    "data/raw/noaa/2022/42182099999.csv": {
+      "bytes": 1610104,
+      "sha256": "f5166a78e14bf3fca476042471a84823c0fb060a3012b57fb72c4c152eea54fd"
+    },
+    "data/raw/noaa/2022/42189099999.csv": {
+      "bytes": 1121761,
+      "sha256": "ad240c8923bd466f1c70b22b3316e5965814c59368cb51070ac1d0382bdbf4dd"
+    },
+    "data/raw/noaa/2022/42262099999.csv": {
+      "bytes": 258674,
+      "sha256": "b03ec46d6a0313d6c322b56e4314651054ae5a46d7cd94176a5db47511508bdd"
+    },
+    "data/raw/noaa/2022/42348099999.csv": {
+      "bytes": 7412868,
+      "sha256": "8a7b33b63f9b68b00364af7184c7ea5d8f1c6c720b36c9ee150bc15e3b893c8b"
+    },
+    "data/raw/noaa/2022/42361099999.csv": {
+      "bytes": 1085121,
+      "sha256": "a8850ffae652aa515f6475e5699d3bccee4811c5c2a104fd3be02dc6bac79e30"
+    },
+    "data/raw/noaa/2022/42705699999.csv": {
+      "bytes": 6987949,
+      "sha256": "74c3d3817124e6bac9294955e21e1ee751c4d316d401041008c876ca0b144a98"
+    },
+    "data/raw/noaa/2022/43021099999.csv": {
+      "bytes": 826033,
+      "sha256": "d82fde818bd1aadedac29c319d64edf830c2c195ab1c9c4fc1ed593ab7dfaeff"
+    },
+    "data/raw/noaa/2022/43083099999.csv": {
+      "bytes": 301593,
+      "sha256": "ca886b6b7417f2e096034e5ec579acff9d7a537d15cd1a89ddcf1cd0af51cf2c"
+    },
+    "data/raw/noaa/2022/43086099999.csv": {
+      "bytes": 1117658,
+      "sha256": "570d93c9a99ffa780e11c3f535bde5cd68f46c91cd7affa37d80c61781e58381"
+    },
+    "data/raw/noaa/2022/43125099999.csv": {
+      "bytes": 178017,
+      "sha256": "72f6123800d93c551d4edffc254e95163cf4206bfada39f6af7b665a4146d3fb"
+    },
+    "data/raw/noaa/2022/43128099999.csv": {
+      "bytes": 5491010,
+      "sha256": "6dc1ef6d6c5dd2037e75408723b0c9354b5122c668971ca3ab8cc407c64b7884"
+    },
+    "data/raw/noaa/2022/43128599999.csv": {
+      "bytes": 7053937,
+      "sha256": "d6f57d31e05e46c40153458b15096681e6984e40ec01ad7bac99013b7e41c2f5"
+    },
+    "data/raw/noaa/2022/43133099999.csv": {
+      "bytes": 238962,
+      "sha256": "53e36457be4c9a5a23ca532999e3c4a42c7d3a441201e09fd80d7ff8c3242890"
+    },
+    "data/raw/noaa/2022/43168099999.csv": {
+      "bytes": 102151,
+      "sha256": "c1ee6c745e30d21dfc7c4d0afb3c0f126fbcd0969a4d6996b258c7cfe86e38c9"
+    },
+    "data/raw/noaa/2022/43181099999.csv": {
+      "bytes": 5751985,
+      "sha256": "24c13740a166e296020838a7c1cf3d8fa790ad164d0f18d1fe148838966df641"
+    },
+    "data/raw/noaa/2022/43213099999.csv": {
+      "bytes": 1156086,
+      "sha256": "75ec87fcbeb2015833c66003fb5be52be82c0f474a40ab479a9378426a9581f8"
+    },
+    "data/raw/noaa/2022/43233099999.csv": {
+      "bytes": 1147969,
+      "sha256": "95e87ffcae109a1404e6d05de7f0f17630bbb187ed003500339bfce91527b324"
+    },
+    "data/raw/noaa/2022/43245099999.csv": {
+      "bytes": 1150591,
+      "sha256": "7faac9304855f481c0c76500fbb52a32e9bad08d98c80ebf7cfa5ed00c5339b1"
+    },
+    "data/raw/noaa/2022/43272099999.csv": {
+      "bytes": 81491,
+      "sha256": "85ff8dd0690f8b9941b596affbb4946c9980c3baa48e2159604385bc2bfaccb3"
+    },
+    "data/raw/noaa/2022/43275099999.csv": {
+      "bytes": 780241,
+      "sha256": "df36f5ac75eeae7b3c80b1d3b38a18af428856da2d71a93cb6fd0f12002ae6f3"
+    },
+    "data/raw/noaa/2022/43277099999.csv": {
+      "bytes": 306412,
+      "sha256": "f9a34ecc5ab874ebaa4482b023d6b91e8a199eaa36ac4ad08ed2b61eb61806d9"
+    },
+    "data/raw/noaa/2022/43278099999.csv": {
+      "bytes": 917297,
+      "sha256": "bd65b1a451b83b0b9f24bdc1925255a2710665d9882a40a9a49680cfac767b5b"
+    },
+    "data/raw/noaa/2022/43279099999.csv": {
+      "bytes": 8469913,
+      "sha256": "6f4de55f986bc3f47dec86a643a8414cdcbb1909b7a50686cfc57324c67b6d5a"
+    },
+    "data/raw/noaa/2022/43284099999.csv": {
+      "bytes": 8091932,
+      "sha256": "23a463ac4b300b1d07a5097e0b46a81d4aae05fd99c87f72ca2ca92db109a48e"
+    },
+    "data/raw/noaa/2022/43291099999.csv": {
+      "bytes": 136700,
+      "sha256": "3f3d84c422db2d2b66c4f71ef0b387a39492f09221b6b9db856ff052add1744d"
+    },
+    "data/raw/noaa/2022/43295099999.csv": {
+      "bytes": 1291179,
+      "sha256": "1febc3b635c7f1583ec23a3667a70361b251a2f609f54665f36c8f5ad5216763"
+    },
+    "data/raw/noaa/2022/43301099999.csv": {
+      "bytes": 325557,
+      "sha256": "93c0a8da04f67cb97e277857120608436d9744d358e1bb1f854d22676fb9b283"
+    },
+    "data/raw/noaa/2022/43302599999.csv": {
+      "bytes": 4076738,
+      "sha256": "a72d3af3d74b6c1649cb30c3430560d490968fc5f6a7b3b7e8e814d764dad707"
+    },
+    "data/raw/noaa/2022/43303099999.csv": {
+      "bytes": 542738,
+      "sha256": "63562f1ecb34a8891d9e47ce0a342298a0ae87779b5c6db38d54dad85c2f57b7"
+    },
+    "data/raw/noaa/2022/43321099999.csv": {
+      "bytes": 7691009,
+      "sha256": "81baab3a28b54c6b90054fd7b2e1bb9b8f5136888c2fcb85d29a1a6c33f0be7c"
+    },
+    "data/raw/noaa/2022/43329099999.csv": {
+      "bytes": 1216407,
+      "sha256": "c547b1f706d6de572345156a57064f73bc95254fa7b908dbf6ac66f40dc66fab"
+    },
+    "data/raw/noaa/2022/43331099999.csv": {
+      "bytes": 1236856,
+      "sha256": "6a48c8e7bdc7d52ea26075e94708bf43ae25946693d15cb014850afabb79cf20"
+    },
+    "data/raw/noaa/2023/42131099999.csv": {
+      "bytes": 962065,
+      "sha256": "27826aa4d94fdd671cab02d9b45d3d8ab032acad4af626c11a3658d861d7e5c1"
+    },
+    "data/raw/noaa/2023/42137099999.csv": {
+      "bytes": 115913,
+      "sha256": "3f36e96450a99532c19515af62b22842b48efd46b1b15f888e650e9fed20ae53"
+    },
+    "data/raw/noaa/2023/42139099999.csv": {
+      "bytes": 548800,
+      "sha256": "94729331e951012d7da8444ef41f2368fe7b807886d8148ad47d6a2b5c0cd445"
+    },
+    "data/raw/noaa/2023/42176099999.csv": {
+      "bytes": 239035,
+      "sha256": "e051222fe4726747a34211a86d8eb3ed175a21ddc82015475adb632082266c47"
+    },
+    "data/raw/noaa/2023/42181099999.csv": {
+      "bytes": 8049528,
+      "sha256": "de451ef7b04a61e5326160b4a15ff9b5cbc133f7b764eee92a5a40982248f391"
+    },
+    "data/raw/noaa/2023/42182099999.csv": {
+      "bytes": 1129307,
+      "sha256": "a4bd1021ae9df9257b525f3b18fab68e3244194fd17cc5308d455e3c6f695414"
+    },
+    "data/raw/noaa/2023/42189099999.csv": {
+      "bytes": 1289583,
+      "sha256": "0ab5d774efc60e0db81afb09627c6f1825dc4403ac03ab8e35dce819e799345e"
+    },
+    "data/raw/noaa/2023/42262099999.csv": {
+      "bytes": 263382,
+      "sha256": "aedcfa58b198939f4d6ffa02bbd3fadc9af8dd1639d508ca5af3e71ab9e588bf"
+    },
+    "data/raw/noaa/2023/42348099999.csv": {
+      "bytes": 7600440,
+      "sha256": "d5c2949728817305fd4bec59df8cab14c7743f49fc259c14f8bcf43ad05aa252"
+    },
+    "data/raw/noaa/2023/42361099999.csv": {
+      "bytes": 1276305,
+      "sha256": "f16d4dc2cbd27d6562734cbdea0af88071868afff24db2f6cb67b0d90b9d2b62"
+    },
+    "data/raw/noaa/2023/42705699999.csv": {
+      "bytes": 6762423,
+      "sha256": "e5716d0643789aac34f0ca49e22a0539dd11f095436bd2c10106258c91b1f46c"
+    },
+    "data/raw/noaa/2023/43021099999.csv": {
+      "bytes": 1119690,
+      "sha256": "1fccbe5503b2a54f7627e0cf00c2702e83f4a4d25055f6b230a0b0e2273528f1"
+    },
+    "data/raw/noaa/2023/43083099999.csv": {
+      "bytes": 293453,
+      "sha256": "fb0e6264738a30f42367814c7cd3290cb66cba287a4b9d801239d58f5b7046a0"
+    },
+    "data/raw/noaa/2023/43086099999.csv": {
+      "bytes": 1117608,
+      "sha256": "c99b0c5781136fbfcb4cc560ccae8ede5f11cd4a610e2748c68e8b52b5df939d"
+    },
+    "data/raw/noaa/2023/43125099999.csv": {
+      "bytes": 188898,
+      "sha256": "1c4d32ab2e50844783c975dc43aa63a5463250d58499bde1571cf806cda6f6d2"
+    },
+    "data/raw/noaa/2023/43128099999.csv": {
+      "bytes": 5228776,
+      "sha256": "23d378042cf55fb267f122b49b3fad7980eff0f59fac64f6e9f3ab718d2202ba"
+    },
+    "data/raw/noaa/2023/43128599999.csv": {
+      "bytes": 6655975,
+      "sha256": "bb11afcabb3826676be0c6f53ad19ab9def27d2de728bad5c3a4e9015868788e"
+    },
+    "data/raw/noaa/2023/43133099999.csv": {
+      "bytes": 229297,
+      "sha256": "eee401e2c1bddff00e89c7376cc17f5b78fef0fc820212a7013e48692fab45dc"
+    },
+    "data/raw/noaa/2023/43168099999.csv": {
+      "bytes": 163684,
+      "sha256": "9f9d1978fa4752efc1acb290e4fb5c807c9c24e3d8b5aa7bc8c6cc161aa8da30"
+    },
+    "data/raw/noaa/2023/43181099999.csv": {
+      "bytes": 5428800,
+      "sha256": "d4201d5f20db8abb1681b775f0c59176c8a918fff809a801e0bf3dab9efddeaf"
+    },
+    "data/raw/noaa/2023/43213099999.csv": {
+      "bytes": 1133907,
+      "sha256": "cc1c4c803dddc1385994c71ecdb208b9c1d79ec59bb96aaed78c6d743dc3d64a"
+    },
+    "data/raw/noaa/2023/43233099999.csv": {
+      "bytes": 772272,
+      "sha256": "a59d6b93f3e479697cb560ae002136a852a45e2a1bbc3bdbbe27635af62e260c"
+    },
+    "data/raw/noaa/2023/43245099999.csv": {
+      "bytes": 1128388,
+      "sha256": "f17a0d245bf9fe0757728792ab13a94c6ee86f39cd15a3265fdbb070d4d6361e"
+    },
+    "data/raw/noaa/2023/43272099999.csv": {
+      "bytes": 84036,
+      "sha256": "3f6e395a2593374edd910d836fd6b8bcc828975333aed41cf5451b3c9376c673"
+    },
+    "data/raw/noaa/2023/43275099999.csv": {
+      "bytes": 774693,
+      "sha256": "ed8b8b2de73922ff2c7a8a7851b37b08d9676658264b711500bdec08421f989c"
+    },
+    "data/raw/noaa/2023/43277099999.csv": {
+      "bytes": 295787,
+      "sha256": "f633cb598a811260887ecfceb63d72111c8af06eea3a26b26479bfce7772d7a8"
+    },
+    "data/raw/noaa/2023/43278099999.csv": {
+      "bytes": 905602,
+      "sha256": "f04d28cf2ae34746b146efe50298ef89c735b3ecd0355c3116a379ac0189be83"
+    },
+    "data/raw/noaa/2023/43279099999.csv": {
+      "bytes": 8492123,
+      "sha256": "e21791b165a1c84f7ce7ee276fa891a9cdc8577c8b2c2bc1f802951a8d9c1fb4"
+    },
+    "data/raw/noaa/2023/43284099999.csv": {
+      "bytes": 7736516,
+      "sha256": "4a837ec84c9033e96105669f69f197c735ebd02268e52a17fda3e958ba40c857"
+    },
+    "data/raw/noaa/2023/43291099999.csv": {
+      "bytes": 109880,
+      "sha256": "2363a0dded79dbe4f46e405472d97c8074d843ef94e6419bc11e949e2a5881c7"
+    },
+    "data/raw/noaa/2023/43295099999.csv": {
+      "bytes": 1262475,
+      "sha256": "7cbc524f469318b7ebdca5c862656cafc800d8dbfc040e424fe6478594820e94"
+    },
+    "data/raw/noaa/2023/43301099999.csv": {
+      "bytes": 300297,
+      "sha256": "384d633d9725b5cbb19a2f6cdea431f60ae0510f6b3bfb6b87205a31b28ee8d7"
+    },
+    "data/raw/noaa/2023/43302599999.csv": {
+      "bytes": 4814531,
+      "sha256": "06dc3b2c17a4e0a446dc9629d20f805d6254d9444b8c68fd659c5579657ea4a0"
+    },
+    "data/raw/noaa/2023/43303099999.csv": {
+      "bytes": 567170,
+      "sha256": "1f205f938a2b1025f5aa4e5623447feefea479196b0a1bde057ad32840d9a114"
+    },
+    "data/raw/noaa/2023/43321099999.csv": {
+      "bytes": 7415695,
+      "sha256": "dd31128007cafe6d9c535918156f76d9318b2c336aa2c6c06c6213537aff546d"
+    },
+    "data/raw/noaa/2023/43329099999.csv": {
+      "bytes": 1206830,
+      "sha256": "73c81ec955acdab28b75ef480676a268455b4a39c8507dbdcf05af6b2039af85"
+    },
+    "data/raw/noaa/2023/43331099999.csv": {
+      "bytes": 1212635,
+      "sha256": "a9e74db06937bf85f958805b330bf123ef3fd7795552d23f507ab3775800b38e"
+    },
+    "data/raw/noaa/2024/42027099999.csv": {
+      "bytes": 1124091,
+      "sha256": "665d817d48312f1fa7e3d09796538812e8ef441cf1764416e2b682a76d0eeaa9"
+    },
+    "data/raw/noaa/2024/42131099999.csv": {
+      "bytes": 937396,
+      "sha256": "5bf14e43924f6919bd61caa52e2b0942221546fcef156ea51c4266f3c3392e38"
+    },
+    "data/raw/noaa/2024/42137099999.csv": {
+      "bytes": 104611,
+      "sha256": "339e8f7ca7333f63a5053c14e95bb5bace26a0d0558e37a4989fa19a69cfe4ca"
+    },
+    "data/raw/noaa/2024/42139099999.csv": {
+      "bytes": 530033,
+      "sha256": "31b2e068315e8b8838f047ee37f47cf9b65454de84c3e13a3642c7d502853c44"
+    },
+    "data/raw/noaa/2024/42176099999.csv": {
+      "bytes": 229630,
+      "sha256": "8562e8ea7e43ea923a18c40ca1b0cef68c95885838f47aef91a84e7f00626da8"
+    },
+    "data/raw/noaa/2024/42181099999.csv": {
+      "bytes": 7891387,
+      "sha256": "3982a30f3827492c85804beee4a4afd146b68808fd0c0e070dea56a371668205"
+    },
+    "data/raw/noaa/2024/42182099999.csv": {
+      "bytes": 1108487,
+      "sha256": "e54a28af2334907e83670210345a49565e9443eb0a5b935b3aa1095a6b3e9356"
+    },
+    "data/raw/noaa/2024/42183099999.csv": {
+      "bytes": 1806,
+      "sha256": "584229f751eb8fbf8b9024fd119687f368e257a9f6c5352f9bd31877898489a7"
+    },
+    "data/raw/noaa/2024/42189099999.csv": {
+      "bytes": 1852928,
+      "sha256": "84cc64092c8cc630f488d7547410d8fc5bb261a814f04dcfd692bf9fde839eb8"
+    },
+    "data/raw/noaa/2024/42262099999.csv": {
+      "bytes": 230881,
+      "sha256": "df45564fee2f9a200176cefba773691a2cc135b594e1dc34c91382fd56f9541f"
+    },
+    "data/raw/noaa/2024/42348099999.csv": {
+      "bytes": 7354511,
+      "sha256": "ec4280375fdfb0cdd6daaac238de76f46e42926d17abfd2cdc677c7451cb4685"
+    },
+    "data/raw/noaa/2024/42361099999.csv": {
+      "bytes": 1788906,
+      "sha256": "b54c01d041f5be90c0cd0902f25b1111a6b4d95ab6884de64a734e2502579ce9"
+    },
+    "data/raw/noaa/2024/42410099999.csv": {
+      "bytes": 7889356,
+      "sha256": "0f239b0d2438799cdf433916a4db44b727daf472edc1143f1880a55284c10af4"
+    },
+    "data/raw/noaa/2024/42492099999.csv": {
+      "bytes": 7301372,
+      "sha256": "29caf8b2c24b1827bbc5937d5c9b745a46e78e5d160b92ea4fe01230ecd6d019"
+    },
+    "data/raw/noaa/2024/42647099999.csv": {
+      "bytes": 7125045,
+      "sha256": "68b6560743772f44dd4b4081f5302bf9036ce786c1666320e69a5c03755d0906"
+    },
+    "data/raw/noaa/2024/42705699999.csv": {
+      "bytes": 6627047,
+      "sha256": "7ed3bf053b99ed522da49d109539a932ac7fca2a51b7e8ff26bf852fb72a2bd6"
+    },
+    "data/raw/noaa/2024/43021099999.csv": {
+      "bytes": 1389776,
+      "sha256": "680e25c7de41653f76e8dd7ed77a806a61ca87dbbae57326ec0abafb0a513903"
+    },
+    "data/raw/noaa/2024/43057099999.csv": {
+      "bytes": 528578,
+      "sha256": "cdcc1f228468fe5abd95ea40980edf7fa0ba380933ef7b3101bd4e81c28baf7b"
+    },
+    "data/raw/noaa/2024/43083099999.csv": {
+      "bytes": 270227,
+      "sha256": "ad845002ca4f959542df8890cb172e42eeaa5a6f8010ab46b6c940f436bbd718"
+    },
+    "data/raw/noaa/2024/43086099999.csv": {
+      "bytes": 1083979,
+      "sha256": "0c4b97b8e8a3f1f0451a6e17541f6915f19d2fa1d86f220f2450d4277ea236f1"
+    },
+    "data/raw/noaa/2024/43125099999.csv": {
+      "bytes": 125326,
+      "sha256": "15b06ab6863a7f5f4fae2379d314fec5a1e41642a92d9ef0377a7105c38cbe39"
+    },
+    "data/raw/noaa/2024/43128099999.csv": {
+      "bytes": 4987726,
+      "sha256": "63b27273d0b55d6ef6f4896ade29c0a255ca4ba7e56666d77cab72fe3d63a55f"
+    },
+    "data/raw/noaa/2024/43128599999.csv": {
+      "bytes": 6536458,
+      "sha256": "29d419cc443dad097b618351fe4ec9727f030d7f9db24405721fd3b88242077e"
+    },
+    "data/raw/noaa/2024/43133099999.csv": {
+      "bytes": 210126,
+      "sha256": "d21a684cdffbc7eb14955ff2a463403aa065912241159f9b9dc62c3b62b2a21a"
+    },
+    "data/raw/noaa/2024/43168099999.csv": {
+      "bytes": 245443,
+      "sha256": "f345bc91842b63768ecc3f20b916cb94d982f5ef5b996473cbbd09056c9c2835"
+    },
+    "data/raw/noaa/2024/43181099999.csv": {
+      "bytes": 5233766,
+      "sha256": "3972d50aeb10013be1983d84ea6c46f2a2710dcaf5c89df7c28c9e306479870a"
+    },
+    "data/raw/noaa/2024/43213099999.csv": {
+      "bytes": 1110759,
+      "sha256": "4e90391c2d73fa7806b126b9448c9e486df57d8d6f14ee1cdfdee55194616a45"
+    },
+    "data/raw/noaa/2024/43233099999.csv": {
+      "bytes": 1078409,
+      "sha256": "2110350d6288f817c3c029a87ec92c91b99cbb4bcc24120faf2a5b8c1c07877b"
+    },
+    "data/raw/noaa/2024/43245099999.csv": {
+      "bytes": 1102593,
+      "sha256": "49905d815785b2975264153cf458cdfe0d65ebb510d10d6fe7bdfe430a431cf4"
+    },
+    "data/raw/noaa/2024/43272099999.csv": {
+      "bytes": 60865,
+      "sha256": "f867ed6781e94f66da5bb57c074a546669dca2b9d4a7be8695e281893467bb7e"
+    },
+    "data/raw/noaa/2024/43275099999.csv": {
+      "bytes": 676014,
+      "sha256": "fac62bc9b2fae91c39c3d3bc13047a418f982a69bbfa3c57558adc27c8f767d3"
+    },
+    "data/raw/noaa/2024/43277099999.csv": {
+      "bytes": 288342,
+      "sha256": "9a79baa6e1d8b63be0247ce9ff0946740c9d8585d1a2f21f823749cfa9067d79"
+    },
+    "data/raw/noaa/2024/43278099999.csv": {
+      "bytes": 853538,
+      "sha256": "a4ea5debe1ee2ad45c8f87c44e26d9057ba403ce01d2464c94eaefadf796cb8e"
+    },
+    "data/raw/noaa/2024/43279099999.csv": {
+      "bytes": 8311878,
+      "sha256": "b47ff844a54ebf50cdbe1c8ded5a466a7818e71b10ad57ffcc0ba75d939d5dc3"
+    },
+    "data/raw/noaa/2024/43284099999.csv": {
+      "bytes": 7785148,
+      "sha256": "eadcaed80a31b9ee18fc5278e6c50c6701b4613cd0279305f433fc6f27ef8819"
+    },
+    "data/raw/noaa/2024/43291099999.csv": {
+      "bytes": 86153,
+      "sha256": "70e1721651840e696f7ee2aaa69af7a70e05e98f595053c78a4bfb0661dd9637"
+    },
+    "data/raw/noaa/2024/43295099999.csv": {
+      "bytes": 1257600,
+      "sha256": "1c2c3248301fac5a208e792fab74b0d14a4b6ec6b0b4e047318b3342b084b14b"
+    },
+    "data/raw/noaa/2024/43301099999.csv": {
+      "bytes": 304291,
+      "sha256": "a97bc9b48881d115b2ed310f0087991243629bfa84df9dd8da7bc38b58270c5b"
+    },
+    "data/raw/noaa/2024/43302599999.csv": {
+      "bytes": 6567553,
+      "sha256": "1a73605565437442d42e777e63a86aacd97d98c611aa9d7463255b320d2630e1"
+    },
+    "data/raw/noaa/2024/43303099999.csv": {
+      "bytes": 548884,
+      "sha256": "8cd221c52e8b443c0e473cba067b87194533fd812a79754bd4f0658df1e99098"
+    },
+    "data/raw/noaa/2024/43321099999.csv": {
+      "bytes": 7296495,
+      "sha256": "979d87df8e4999f3674a2df5b493ca10066da4a1df6e685c90faa4e1b811b19c"
+    },
+    "data/raw/noaa/2024/43329099999.csv": {
+      "bytes": 1166468,
+      "sha256": "bef3e06406f0e157960387222907d47cba1385aeaf002d708d04e9f532cd0fde"
+    },
+    "data/raw/noaa/2024/43331099999.csv": {
+      "bytes": 1108958,
+      "sha256": "e3bbe9f511b0f81a05857416c696c56217c4cf6d16d915fa784e862e7b8d205f"
+    },
+    "data/blind_2025/blind_protocol.json": {
+      "bytes": 7541,
+      "sha256": "aced50fa8fa6fd4ac3316dd1d3c407c9964bb62f8078d47dc550f353e58c9c0b"
+    },
+    "data/blind_2025/features/blind_station_features.csv.gz": {
+      "bytes": 1403678,
+      "sha256": "7f816b6fce95c0445c3bf64c5f4887c97e62b4cf34b74c37bfea7b54535d40ab"
+    },
+    "data/blind_2025/features/blind_time_features.csv.gz": {
+      "bytes": 18919031,
+      "sha256": "7681a43c5158cdcf6ebc56e637fc039c800eb944c49ec41f976328778f81d2b1"
+    },
+    "data/blind_2025/features_phase10/blind_station_features.csv.gz": {
+      "bytes": 2862657,
+      "sha256": "5540bb8b3b21c10d6a3d9b7c129449af3497a9a008d74f030463031bbcd95bf8"
+    },
+    "data/blind_2025/features_phase10/blind_time_features.csv.gz": {
+      "bytes": 50911383,
+      "sha256": "66b6f7d380c17f64fc54e42d06d123e336eb6bc1e8fc8bb916ada18144698739"
+    },
+    "data/blind_2025/labelled/blind_station.csv": {
+      "bytes": 1995542,
+      "sha256": "0ce2ecdf74a58cfecb4928656e5e517bdc89109bb61f2d23675ca62ba70a7d03"
+    },
+    "data/blind_2025/labelled/blind_station_context.csv": {
+      "bytes": 36636816,
+      "sha256": "943c49b80ae4cd46a4d0ad78ad3b77218a1b717572d0d15a6e9fc7422ddb4eb9"
+    },
+    "data/blind_2025/labelled/blind_time.csv": {
+      "bytes": 35432612,
+      "sha256": "57d22461a0d801e0bd7e046e9b6c2f4887d831319ef2c2a92c3981cb0eca818f"
+    },
+    "data/blind_2025/labelled/episodes.csv": {
+      "bytes": 59513,
+      "sha256": "2d410e0af6715b0a0959c0dc19cc7f2af711a3a468c8f925b0c84676ba77d61f"
+    },
+    "data/blind_2025/manifest/raw_files.csv": {
+      "bytes": 5984,
+      "sha256": "a8df22459dc8a25f9716495da090e8bf752ad78f2bc99110c0768f74a8aca877"
+    },
+    "data/blind_2025/manifest/sealed_benchmark_files.csv": {
+      "bytes": 976,
+      "sha256": "bafacc7425d1abd50b00521e8e546a7431967226d55a5c384e46f787017d2d48"
+    },
+    "data/blind_2025/processed/aws_observations_2025_01_01_to_08_24.csv": {
+      "bytes": 25702055,
+      "sha256": "e2f74e548b0bcb0b58cee2bbd0bfaf7cad4cca51900c7f5b54a462f0df10ab48"
+    },
+    "data/blind_2025/raw/noaa/2025/42131099999.csv": {
+      "bytes": 635650,
+      "sha256": "02428b6f1eb78ca4531bd0ad67c1fa4acd5e865c72bd81117ab19977b2139ffa"
+    },
+    "data/blind_2025/raw/noaa/2025/42181099999.csv": {
+      "bytes": 5260556,
+      "sha256": "edf8ca8f6c31fa23ab8266758ccac5b7b0ac1b9ed2c188ceabe051d77fd2c083"
+    },
+    "data/blind_2025/raw/noaa/2025/42182099999.csv": {
+      "bytes": 740882,
+      "sha256": "1339b4ece2398dbbd5ab89023f273eaed713d5c030a6d9be86b1a4f4c61c946a"
+    },
+    "data/blind_2025/raw/noaa/2025/42189099999.csv": {
+      "bytes": 729699,
+      "sha256": "a180688061ad4c79fc441b6da5d04d6d501706b85677553af228ff191b11bfeb"
+    },
+    "data/blind_2025/raw/noaa/2025/42348099999.csv": {
+      "bytes": 4258280,
+      "sha256": "ad462addf1293db734a383f79dda65b794aa105e8156e914f96c6a43c503127a"
+    },
+    "data/blind_2025/raw/noaa/2025/42361099999.csv": {
+      "bytes": 724752,
+      "sha256": "7f245b8317ece8878c08f78c84e1a9f405457e00aee641f5907132852fc5b81c"
+    },
+    "data/blind_2025/raw/noaa/2025/42705699999.csv": {
+      "bytes": 4468506,
+      "sha256": "e17560467f51f18c51ef750a1544cfb94e7ccac1f6541492db1a23640c019cca"
+    },
+    "data/blind_2025/raw/noaa/2025/43021099999.csv": {
+      "bytes": 817741,
+      "sha256": "13cd66a89a882bf0aa2a4c9e5be3f8c3deef7e68b3776594ccad2ecb58d6ff28"
+    },
+    "data/blind_2025/raw/noaa/2025/43086099999.csv": {
+      "bytes": 699378,
+      "sha256": "c7ca4e872bc1034daad323b31334f7044afae9263cc652e8cf16793845c044a7"
+    },
+    "data/blind_2025/raw/noaa/2025/43128099999.csv": {
+      "bytes": 3474519,
+      "sha256": "f776bd741bbbd74d720f83d4bc77c146ec75548ecac7a6acf5aad5fe1419dcc9"
+    },
+    "data/blind_2025/raw/noaa/2025/43128599999.csv": {
+      "bytes": 4567133,
+      "sha256": "f068b61b4d70748ff3559e5534c1421487d917b94b741cb1453714f33843aa6b"
+    },
+    "data/blind_2025/raw/noaa/2025/43181099999.csv": {
+      "bytes": 3427969,
+      "sha256": "8901c3fab13619a2c40a039579cdd024a62e8ddfcbacf56e487f486a62e90000"
+    },
+    "data/blind_2025/raw/noaa/2025/43213099999.csv": {
+      "bytes": 729905,
+      "sha256": "d5d30bf04cc6381460f01ad5a39531474bbdff4cf1be49cb1d2ea9aba70e654d"
+    },
+    "data/blind_2025/raw/noaa/2025/43233099999.csv": {
+      "bytes": 676092,
+      "sha256": "d986e90d96e2a0528262ea96be8570c7399d08b43ad3fa5428b3988d257fb269"
+    },
+    "data/blind_2025/raw/noaa/2025/43245099999.csv": {
+      "bytes": 730969,
+      "sha256": "c3c9430cf3b0c4a8c8b4c98310b8b02643a201bef928cb33dd18ddb8aa668db0"
+    },
+    "data/blind_2025/raw/noaa/2025/43275099999.csv": {
+      "bytes": 416319,
+      "sha256": "203bbfb769456d2c3b3e9065409fd840631cee8c0022be079516f6200c7828b8"
+    },
+    "data/blind_2025/raw/noaa/2025/43278099999.csv": {
+      "bytes": 629486,
+      "sha256": "c402308747ecacf9af1a0ac28532699f4fd3cff084bad8705a5951778bd9e316"
+    },
+    "data/blind_2025/raw/noaa/2025/43279099999.csv": {
+      "bytes": 5424213,
+      "sha256": "b88a9dad4e7227be43cc4be8da61d2e25318c6c50f2ec9d0bcc08fd42c4bd8bd"
+    },
+    "data/blind_2025/raw/noaa/2025/43284099999.csv": {
+      "bytes": 5267466,
+      "sha256": "2f0add0bfe0ffaf56a3e438c938091cbf33a8a8adfbf9ff008f6d62bde4d283a"
+    },
+    "data/blind_2025/raw/noaa/2025/43295099999.csv": {
+      "bytes": 831903,
+      "sha256": "9ee9a09b672aec2526d53a89abd8105192aa4204f09f233435ffa759458e1de3"
+    },
+    "data/blind_2025/raw/noaa/2025/43302599999.csv": {
+      "bytes": 4904785,
+      "sha256": "5a6ecd0765caa0125d7d3e4ed07a71591960949b2ba814cba13ac5a95b0b697e"
+    },
+    "data/blind_2025/raw/noaa/2025/43321099999.csv": {
+      "bytes": 4842923,
+      "sha256": "5b2cba0e3e9926c2d07e436948053a2e4b53f7841b94ed9e9b3e40e8c09d1fdb"
+    },
+    "data/blind_2025/raw/noaa/2025/43329099999.csv": {
+      "bytes": 775378,
+      "sha256": "951d3acaafb0d5cc6d4d9891179505bde501dc21d990df40a92c69e5a89dca93"
+    },
+    "data/blind_2025/raw/noaa/2025/43331099999.csv": {
+      "bytes": 716391,
+      "sha256": "291648609e7745545fb6582ac61e1fbc4f3707478d8916d14cf322893c0c76b6"
+    },
+    "data/labelled/episodes.csv": {
+      "bytes": 111644,
+      "sha256": "255394d3be7e3dd0426428e23c777f071350404805f1f9263554969512787951"
+    },
+    "data/labelled/manifest.csv": {
+      "bytes": 581,
+      "sha256": "35dcc45348fde6e6f2ffa0eb025d450088d9eae66250d79f61a8c56af5b7f97e"
+    },
+    "data/labelled/README.md": {
+      "bytes": 770,
+      "sha256": "782b8259dde0ed83f81d0071cd42bdb1e138931433973ca864ddb8c941460ef5"
+    },
+    "data/labelled/station_test.csv": {
+      "bytes": 3016655,
+      "sha256": "a3c534a4897762763b7a23590ec02c5267a1bb12e20f7783a04e465b07698cb7"
+    },
+    "data/labelled/time_test.csv": {
+      "bytes": 52947177,
+      "sha256": "LARGE_FILE_SKIPPED"
+    },
+    "data/labelled/train.csv": {
+      "bytes": 52275296,
+      "sha256": "cfc1804697fc9f7d4125194f2dd948ccafe3b9364b2efbead78d182351508a08"
+    },
+    "data/labelled/validation.csv": {
+      "bytes": 52875178,
+      "sha256": "LARGE_FILE_SKIPPED"
+    }
+  }
+}

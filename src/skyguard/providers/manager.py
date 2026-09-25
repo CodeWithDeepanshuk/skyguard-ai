@@ -22,6 +22,7 @@ from skyguard.providers.base import (
 )
 from skyguard.providers.imd_wis2 import IMDWIS2Provider
 from skyguard.providers.imd_api import IMDAWSAPIProvider
+from skyguard.providers.imd_fixture import IMDFixtureProvider
 from skyguard.providers.metar import MetarWeatherProvider
 from skyguard.providers.meteostat import MeteostatWeatherProvider
 from skyguard.providers.reference_weather import ReferenceWeatherProvider
@@ -36,12 +37,14 @@ class WeatherProviderManager:
         self.root = root
         self.wis2 = IMDWIS2Provider()
         self.imd_api = IMDAWSAPIProvider()
+        self.imd_fixture = IMDFixtureProvider(root=root)
         self.metar = MetarWeatherProvider()
         self.meteostat = MeteostatWeatherProvider()
         self.reference = ReferenceWeatherProvider()
 
         self._providers: Dict[str, WeatherProvider] = {
             ProviderName.IMD_AWS.value: self.imd_api,
+            "IMD_FIXTURE_REPLAY": self.imd_fixture,
             ProviderName.IMD_WIS2.value: self.wis2,
             ProviderName.METAR.value: self.metar,
             ProviderName.METEOSTAT.value: self.meteostat,

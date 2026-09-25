@@ -1,0 +1,27 @@
+{
+  "archived_at_utc": "2026-09-24T17:44:22.363123+00:00",
+  "reason": "Purge unverified NOAA ISD legacy datasets; establish authentic IMD AWS ground truth.",
+  "archived_files": [
+    {
+      "original_path": "data/processed/aws_observations_2022_2024.csv",
+      "archive_path": "data/archive/legacy_noaa_aws/aws_observations_2022_2024.csv",
+      "bytes": 114660436,
+      "sha256": "8d1bbfd21cb9032c2242b3215432d2c2490e745e9ea79fa07d27e329c5671d08",
+      "moved_at_utc": "2026-09-24T17:44:22.326834+00:00"
+    },
+    {
+      "original_path": "data/processed/aws_observations_2024.csv",
+      "archive_path": "data/archive/legacy_noaa_aws/aws_observations_2024.csv",
+      "bytes": 15666766,
+      "sha256": "1b6a376f12eb8d756b25c6b2f317431a5890728cad030041f859a9d963b36bf8",
+      "moved_at_utc": "2026-09-24T17:44:22.346165+00:00"
+    },
+    {
+      "original_path": "data/processed/qc_alerts_2022_2024.csv",
+      "archive_path": "data/archive/legacy_noaa_aws/qc_alerts_2022_2024.csv",
+      "bytes": 3390730,
+      "sha256": "03f2a9743a402c3cd5af5812779d3264f485dcf59da862efa5fc5f93f5c132ba",
+      "moved_at_utc": "2026-09-24T17:44:22.363090+00:00"
+    }
+  ]
+}

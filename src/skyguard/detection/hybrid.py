@@ -143,12 +143,42 @@ def analyze_row(row):
     persistence = max([float(row.get(f"{s}_frozen_run",1) or 1) for s in SENSORS])
     impact = probability + .06*len(set(affected)) + min(.15, persistence/100)
     severity = "CRITICAL" if impact >= 1.0 else "HIGH" if impact >= .8 else "MEDIUM" if impact >= .55 else "LOW" if impact >= .25 else "INFO"
-    return {"is_anomaly":probability >= .5, "anomaly_probability":round(probability,6),
-            "confidence_calibrated":False, "severity":severity, "root_cause":root,
-            "affected_parameters":sorted(set(affected+missing)), "reason_codes":reasons,
-            "spatial_context_available":spatial_available,
-            "possible_genuine_meteorological_event":possible_event,
-            "explanation":"; ".join(reasons) if reasons else "No validated anomaly trigger."}
+
+    # Explicit 5-way event triage classification
+    if possible_event:
+        event_class = "possible_weather_event"
+        suggested_action = "Tag as regional meteorological advisory; cross-check radar and synoptic weather maps."
+    elif missing:
+        event_class = "suspected_reporting_issue"
+        suggested_action = "Check data logger buffer, communication modem signal, and station solar power."
+    elif probability >= .5:
+        if spatial_available and isolated >= .5:
+            event_class = "suspected_sensor_fault"
+            suggested_action = f"Inspect {', '.join(affected) or 'sensor'} hardware connection and recalibrate probe."
+        elif not spatial_available:
+            event_class = "uncertain"
+            suggested_action = "Sparse peer network; flag for operator review before dispatching field team."
+        else:
+            event_class = "suspected_sensor_fault"
+            suggested_action = f"Inspect {', '.join(affected) or 'sensor'} transducer and verify calibration."
+    else:
+        event_class = "normal"
+        suggested_action = "No maintenance action required; station operating within normal parameters."
+
+    return {
+        "is_anomaly": probability >= .5,
+        "anomaly_probability": round(probability, 6),
+        "confidence_calibrated": False,
+        "severity": severity,
+        "event_classification": event_class,
+        "suggested_action": suggested_action,
+        "root_cause": root,
+        "affected_parameters": sorted(set(affected + missing)),
+        "reason_codes": reasons,
+        "spatial_context_available": spatial_available,
+        "possible_genuine_meteorological_event": possible_event,
+        "explanation": "; ".join(reasons) if reasons else "No validated anomaly trigger.",
+    }
 
 
 def analyze_frame(frame):

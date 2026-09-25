@@ -8,6 +8,8 @@ secrets*
 credentials*
 data/raw_imd/
 data/processed_imd/
+data/imd_authorized/
+data/archive/pre_imd_api_*/
 data/benchmark_injected/
 data/derived_features/
 models/iteration13/
@@ -68,3 +70,4 @@ aws_observations_*.csv
 *.gz
 !data/demo/*.csv.gz
 !data/incidents/*.jsonl.gz
+!data/archive/legacy_noaa_aws/*.csv.gz

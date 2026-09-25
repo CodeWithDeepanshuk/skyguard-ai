@@ -1,0 +1,298 @@
+"""Generate the polished SVG, HTML, and high-resolution PNG for SIH Problem Statement 26073."""
+
+import subprocess
+from pathlib import Path
+
+SVG_CONTENT = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" style="background:#ffffff; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
+  <defs>
+    <!-- Arrowhead Markers -->
+    <marker id="arrow-teal" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0d9488" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#16a34a" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#dc2626" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#d97706" />
+    </marker>
+    <marker id="arrow-slate" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- ==================== HEADER ==================== -->
+  <text x="80" y="68" font-size="34" font-weight="800" fill="#0a2540" letter-spacing="0.5">TECHNICAL APPROACH</text>
+  <text x="80" y="102" font-size="17" font-weight="500" fill="#475569">From weather readings to explainable sensor alerts • SIH Problem Statement 26073</text>
+
+  <!-- ==================== LEFT PANEL: 3 SHORT EXPLANATIONS (25% Width) ==================== -->
+  <rect x="80" y="136" width="430" height="745" rx="16" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" />
+  
+  <!-- Section 1 -->
+  <g transform="translate(110, 175)">
+    <circle cx="16" cy="16" r="16" fill="#e0f2fe" />
+    <text x="16" y="22" font-size="16" font-weight="700" fill="#0369a1" text-anchor="middle">1</text>
+    <text x="44" y="22" font-size="18" font-weight="700" fill="#0a2540">Collect &amp; check readings</text>
+    <text x="0" y="56" font-size="14" fill="#475569">
+      <tspan x="0" dy="0">Ingest temperature, pressure, and relative</tspan>
+      <tspan x="0" dy="24">humidity telemetry. Flag missing readings,</tspan>
+      <tspan x="0" dy="24">wrong values, and time gaps while strictly</tspan>
+      <tspan x="0" dy="24">preserving original raw sensor records.</tspan>
+    </text>
+  </g>
+
+  <line x1="110" y1="355" x2="480" y2="355" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Section 2 -->
+  <g transform="translate(110, 390)">
+    <circle cx="16" cy="16" r="16" fill="#e0f2fe" />
+    <text x="16" y="22" font-size="16" font-weight="700" fill="#0369a1" text-anchor="middle">2</text>
+    <text x="44" y="22" font-size="18" font-weight="700" fill="#0a2540">Compare history &amp; nearby</text>
+    <text x="0" y="56" font-size="14" fill="#475569">
+      <tspan x="0" dy="0">Evaluate local temporal sequences (sudden</tspan>
+      <tspan x="0" dy="24">jumps, stuck values, slow CUSUM drift)</tspan>
+      <tspan x="0" dy="24">and cross-examine nearby peer stations,</tspan>
+      <tspan x="0" dy="24">accounting for distance and elevation.</tspan>
+    </text>
+  </g>
+
+  <line x1="110" y1="570" x2="480" y2="570" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- Section 3 -->
+  <g transform="translate(110, 605)">
+    <circle cx="16" cy="16" r="16" fill="#e0f2fe" />
+    <text x="16" y="22" font-size="16" font-weight="700" fill="#0369a1" text-anchor="middle">3</text>
+    <text x="44" y="22" font-size="18" font-weight="700" fill="#0a2540">Explain alerts to operators</text>
+    <text x="0" y="56" font-size="14" fill="#475569">
+      <tspan x="0" dy="0">Distinguish wide-area weather fronts from</tspan>
+      <tspan x="0" dy="24">isolated sensor hardware faults. Dispatch</tspan>
+      <tspan x="0" dy="24">actionable diagnoses, severity tags, and</tspan>
+      <tspan x="0" dy="24">clearly labelled estimated readings.</tspan>
+    </text>
+  </g>
+
+  <!-- ==================== MAIN FLOW (75% Width) ==================== -->
+  
+  <!-- Flow Connecting Lines (Center X = 1130) -->
+  <!-- 1 -> 2 -->
+  <line x1="1130" y1="212" x2="1130" y2="238" stroke="#0d9488" stroke-width="2.5" marker-end="url(#arrow-teal)" />
+  <!-- 2 -> 3 -->
+  <line x1="1130" y1="314" x2="1130" y2="340" stroke="#0d9488" stroke-width="2.5" marker-end="url(#arrow-teal)" />
+  <!-- 3 -> 4 -->
+  <line x1="1130" y1="416" x2="1130" y2="442" stroke="#0d9488" stroke-width="2.5" marker-end="url(#arrow-teal)" />
+  <!-- 4 -> Decision Branches -->
+  <path d="M 1130 518 L 1130 540 L 735 540 L 735 566" fill="none" stroke="#16a34a" stroke-width="2" marker-end="url(#arrow-green)" />
+  <path d="M 1130 518 L 1130 566" fill="none" stroke="#dc2626" stroke-width="2" marker-end="url(#arrow-red)" />
+  <path d="M 1130 518 L 1130 540 L 1525 540 L 1525 566" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-amber)" />
+
+  <!-- Normal / In-Spec Bypass Path -->
+  <path d="M 1700 276 L 1750 276 L 1750 782 L 1700 782" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow-slate)" />
+  <rect x="1685" y="495" width="130" height="46" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+  <text x="1750" y="515" font-size="11.5" font-weight="700" fill="#1e293b" text-anchor="middle">Normal Readings</text>
+  <text x="1750" y="531" font-size="10" fill="#64748b" text-anchor="middle">Direct routine log</text>
+
+  <!-- Branches -> Dashboard -->
+  <path d="M 735 684 L 735 712 L 1130 712 L 1130 736" fill="none" stroke="#16a34a" stroke-width="2" />
+  <path d="M 1130 684 L 1130 736" fill="none" stroke="#dc2626" stroke-width="2" />
+  <path d="M 1525 684 L 1525 712 L 1130 712 L 1130 736" fill="none" stroke="#d97706" stroke-width="2" marker-end="url(#arrow-teal)" />
+
+  <!-- Step 1: Collect Weather Readings -->
+  <g transform="translate(550, 136)">
+    <rect x="0" y="0" width="1160" height="76" rx="12" fill="#f0fdfa" stroke="#0d9488" stroke-width="2" />
+    <!-- Weather Station Icon -->
+    <g transform="translate(22, 18)">
+      <circle cx="20" cy="20" r="18" fill="#ccfbf1" />
+      <path d="M20 8 L20 32 M12 16 L28 16 M14 24 L26 24" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" />
+    </g>
+    <text x="76" y="34" font-size="18" font-weight="700" fill="#0f766e">1. Collect Weather Readings</text>
+    <text x="345" y="34" font-size="15" font-weight="600" fill="#0f172a">• Temperature  • Pressure  • Humidity</text>
+    <text x="76" y="58" font-size="13" font-weight="500" fill="#475569">Connected weather-station data sources</text>
+  </g>
+
+  <!-- Step 2: Check Data Quality -->
+  <g transform="translate(550, 238)">
+    <rect x="0" y="0" width="1160" height="76" rx="12" fill="#f0fdfa" stroke="#0d9488" stroke-width="2" />
+    <!-- Checklist Icon -->
+    <g transform="translate(22, 18)">
+      <circle cx="20" cy="20" r="18" fill="#ccfbf1" />
+      <path d="M13 20 L18 25 L27 15" fill="none" stroke="#0f766e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+    <text x="76" y="34" font-size="18" font-weight="700" fill="#0f766e">2. Check Data Quality</text>
+    <text x="285" y="34" font-size="15" font-weight="600" fill="#0f172a">• Missing readings  • Wrong values  • Time gaps</text>
+    <text x="76" y="58" font-size="13" font-weight="500" fill="#475569">Preserve original readings and attach quality flags</text>
+  </g>
+
+  <!-- Step 3: Detect Unusual Patterns -->
+  <g transform="translate(550, 340)">
+    <rect x="0" y="0" width="1160" height="76" rx="12" fill="#f0fdfa" stroke="#0d9488" stroke-width="2" />
+    <!-- AI Brain Icon -->
+    <g transform="translate(22, 18)">
+      <circle cx="20" cy="20" r="18" fill="#ccfbf1" />
+      <path d="M14 24 Q14 14 20 14 Q26 14 26 24 Z" fill="none" stroke="#0f766e" stroke-width="2" />
+      <circle cx="20" cy="20" r="3" fill="#0f766e" />
+    </g>
+    <text x="76" y="34" font-size="18" font-weight="700" fill="#0f766e">3. Detect Unusual Patterns</text>
+    <text x="320" y="34" font-size="15" font-weight="600" fill="#0f172a">• Sudden jumps  • Stuck readings  • Slow drift</text>
+    <text x="76" y="58" font-size="13" font-weight="500" fill="#475569">AI models and basic quality checks examine current and past readings</text>
+  </g>
+
+  <!-- Step 4: Check Supporting Evidence -->
+  <g transform="translate(550, 442)">
+    <rect x="0" y="0" width="1160" height="76" rx="12" fill="#f0fdfa" stroke="#0d9488" stroke-width="2" />
+    <!-- Nearby Network Icon -->
+    <g transform="translate(22, 18)">
+      <circle cx="20" cy="20" r="18" fill="#ccfbf1" />
+      <circle cx="14" cy="24" r="3" fill="#0f766e" />
+      <circle cx="26" cy="24" r="3" fill="#0f766e" />
+      <circle cx="20" cy="14" r="3" fill="#0f766e" />
+      <line x1="14" y1="24" x2="20" y2="14" stroke="#0f766e" stroke-width="1.5" />
+      <line x1="26" y1="24" x2="20" y2="14" stroke="#0f766e" stroke-width="1.5" />
+    </g>
+    <text x="76" y="34" font-size="18" font-weight="700" fill="#0f766e">4. Check Supporting Evidence</text>
+    <text x="345" y="34" font-size="15" font-weight="600" fill="#0f172a">• Station history  • Nearby stations</text>
+    <text x="76" y="58" font-size="13" font-weight="500" fill="#475569">Compare suitable nearby stations, accounting for location and elevation where implemented (using only information available at detection time)</text>
+  </g>
+
+  <!-- Step 5: Decision Header Pill -->
+  <g transform="translate(830, 526)">
+    <rect x="0" y="0" width="600" height="28" rx="14" fill="#0f172a" />
+    <text x="300" y="19" font-size="12.5" font-weight="700" fill="#ffffff" text-anchor="middle">5. DECISION: WEATHER CHANGE OR SENSOR PROBLEM?</text>
+  </g>
+
+  <!-- Step 5: Three Decision Branches Side by Side -->
+  
+  <!-- Branch A: Likely Real Weather (Green) -->
+  <g transform="translate(550, 566)">
+    <rect x="0" y="0" width="370" height="118" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="2" />
+    <rect x="14" y="14" width="130" height="24" rx="6" fill="#dcfce7" />
+    <text x="79" y="30" font-size="11" font-weight="800" fill="#15803d" text-anchor="middle">WEATHER ADVISORY</text>
+    <text x="14" y="62" font-size="17" font-weight="800" fill="#15803d">Likely Real Weather</text>
+    <text x="14" y="84" font-size="13.5" font-weight="600" fill="#0f172a">Similar changes nearby</text>
+    <text x="14" y="103" font-size="11.5" fill="#475569">Nearby agreement is supporting evidence</text>
+  </g>
+
+  <!-- Branch B: Suspected Sensor Fault (Red) -->
+  <g transform="translate(945, 566)">
+    <rect x="0" y="0" width="370" height="118" rx="12" fill="#fef2f2" stroke="#dc2626" stroke-width="2" />
+    <rect x="14" y="14" width="115" height="24" rx="6" fill="#fee2e2" />
+    <text x="71.5" y="30" font-size="11" font-weight="800" fill="#b91c1c" text-anchor="middle">SENSOR ALERT</text>
+    <text x="14" y="62" font-size="17" font-weight="800" fill="#b91c1c">Suspected Sensor Fault</text>
+    <text x="14" y="84" font-size="13.5" font-weight="600" fill="#0f172a">Unusual station-specific behaviour</text>
+    <text x="14" y="103" font-size="11.5" fill="#475569">Supported by fault evidence &amp; persistence</text>
+  </g>
+
+  <!-- Branch C: Needs Review (Amber) -->
+  <g transform="translate(1340, 566)">
+    <rect x="0" y="0" width="370" height="118" rx="12" fill="#fef3c7" stroke="#d97706" stroke-width="2" />
+    <rect x="14" y="14" width="120" height="24" rx="6" fill="#fde68a" />
+    <text x="74" y="30" font-size="11" font-weight="800" fill="#92400e" text-anchor="middle">MANUAL REVIEW</text>
+    <text x="14" y="62" font-size="17" font-weight="800" fill="#b45309">Needs Review</text>
+    <text x="14" y="84" font-size="13.5" font-weight="600" fill="#0f172a">Insufficient or conflicting evidence</text>
+    <text x="14" y="103" font-size="11.5" fill="#475569">Uncertain cases are not marked healthy</text>
+  </g>
+
+  <!-- Optional Box: Maintenance Support (Secondary) -->
+  <g transform="translate(550, 694)">
+    <rect x="0" y="0" width="1160" height="32" rx="6" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="580" y="21" font-size="12" font-weight="600" fill="#475569" text-anchor="middle">
+      <tspan font-weight="700" fill="#0f172a">Maintenance Support:</tspan> Fault explanation and clearly labelled estimated readings (original observations remain preserved separately).
+    </text>
+  </g>
+
+  <!-- Step 6: Operator Dashboard -->
+  <g transform="translate(550, 738)">
+    <rect x="0" y="0" width="1160" height="88" rx="12" fill="#f0fdfa" stroke="#0d9488" stroke-width="2.5" />
+    <!-- Dashboard Screen Icon -->
+    <g transform="translate(22, 22)">
+      <circle cx="22" cy="22" r="20" fill="#ccfbf1" />
+      <rect x="12" y="13" width="20" height="15" rx="2" fill="none" stroke="#0f766e" stroke-width="2" />
+      <line x1="22" y1="28" x2="22" y2="33" stroke="#0f766e" stroke-width="2" />
+      <line x1="16" y1="33" x2="28" y2="33" stroke="#0f766e" stroke-width="2" />
+    </g>
+    <text x="80" y="38" font-size="20" font-weight="800" fill="#0f766e">6. Operator Dashboard</text>
+    <text x="320" y="38" font-size="16" font-weight="600" fill="#0f172a">• Station map  • Reading trends  • Alerts with reasons</text>
+    <text x="80" y="66" font-size="13.5" font-weight="500" fill="#475569">Displays weather advisories, suspected faults, and review cases as distinct operational statuses</text>
+  </g>
+
+  <!-- ==================== TECHNOLOGY FOOTER ==================== -->
+  <g transform="translate(80, 905)">
+    <rect x="0" y="0" width="1760" height="115" rx="12" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1.5" />
+    <text x="24" y="32" font-size="14" font-weight="800" fill="#0a2540" letter-spacing="0.5">Technology used (Verified in Project Implementation):</text>
+    
+    <g transform="translate(24, 52)">
+      <!-- Data / API -->
+      <text x="0" y="20" font-size="13" font-weight="700" fill="#0f766e">Data / API:</text>
+      <text x="80" y="20" font-size="13" font-weight="500" fill="#1e293b">Python 3.12, FastAPI (Async operational routes)</text>
+      
+      <!-- Analysis -->
+      <text x="440" y="20" font-size="13" font-weight="700" fill="#0f766e">Analysis:</text>
+      <text x="510" y="20" font-size="13" font-weight="500" fill="#1e293b">LightGBM GBDT, Scikit-learn (Isolation Forest), Rule-based Quality Checks (CUSUM, Range, Step, Spatial Consensus)</text>
+      
+      <!-- Storage -->
+      <text x="0" y="46" font-size="13" font-weight="700" fill="#0f766e">Storage:</text>
+      <text x="68" y="46" font-size="13" font-weight="500" fill="#1e293b">SQLite (Local active default / offline fallback), PostgreSQL (Configured production repository via psycopg)</text>
+
+      <!-- Dashboard -->
+      <text x="760" y="46" font-size="13" font-weight="700" fill="#0f766e">Dashboard:</text>
+      <text x="845" y="46" font-size="13" font-weight="500" fill="#1e293b">Next.js 14, React 18, MapLibre GL (Interactive station dots), Recharts (Continuous diurnal traces), Tailwind CSS</text>
+    </g>
+  </g>
+
+</svg>'''
+
+def main():
+    root = Path(__file__).resolve().parents[1]
+    
+    # 1. Write SVG
+    svg_path = root / "sih26073_technical_approach.svg"
+    svg_path.write_text(SVG_CONTENT, encoding="utf-8")
+    print(f"Written: {svg_path}")
+
+    # 2. Write HTML wrapper
+    html_content = f'''<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {{
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+    }}
+    svg {{
+      width: 1920px;
+      height: 1080px;
+      display: block;
+    }}
+  </style>
+</head>
+<body>
+{SVG_CONTENT}
+</body>
+</html>'''
+    html_path = root / "sih26073_technical_approach.html"
+    html_path.write_text(html_content, encoding="utf-8")
+    print(f"Written: {html_path}")
+
+    # 3. Render PNG using Edge headless at 1920x1080
+    png_path = root / "sih26073_technical_approach.png"
+    edge_exe = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+    
+    cmd = [
+        edge_exe,
+        "--headless",
+        "--disable-gpu",
+        f"--screenshot={png_path}",
+        "--window-size=1920,1080",
+        html_path.as_uri()
+    ]
+    subprocess.run(cmd, check=True)
+    print(f"Rendered PNG: {png_path} ({png_path.stat().st_size} bytes)")
+
+if __name__ == "__main__":
+    main()

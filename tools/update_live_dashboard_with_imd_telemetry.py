@@ -217,7 +217,15 @@ def main() -> None:
             "p_weather": p_wx,
         }
 
-        row_hash = hashlib.sha256(f"{sid}:2026-09-24T16:45:00Z".encode()).hexdigest()[:20]
+        raw_ts = str(r.get("timestamp_utc") or "")
+        if raw_ts:
+            obs_ts_clean = raw_ts.replace("+00:00", "Z")
+            if not obs_ts_clean.endswith("Z"):
+                obs_ts_clean += "Z"
+        else:
+            obs_ts_clean = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+        row_hash = hashlib.sha256(f"{sid}:{obs_ts_clean}".encode()).hexdigest()[:20]
         climate_zone = matched_cat.get("climate_zone") if matched_cat else str(r.get("state") or "Indo-Gangetic Plains")
         cluster = matched_cat.get("cluster") if matched_cat else climate_zone.lower().replace(" ", "_")
 
@@ -227,8 +235,8 @@ def main() -> None:
             "station_name": sname,
             "icao": matched_cat.get("icao", "") if matched_cat else "",
             "catalog_station_id": canon_id,
-            "timestamp_utc": "2026-09-24T16:45:00.000Z",
-            "emitted_timestamp_utc": "2026-09-24T16:45:00.000Z",
+            "timestamp_utc": obs_ts_clean,
+            "emitted_timestamp_utc": obs_ts_clean,
             "split": "live",
             "cluster": cluster,
             "climate_zone": climate_zone,
@@ -327,6 +335,14 @@ def main() -> None:
         matched_cat = matching_obs.get("_cat_match")
         canon_id = str(matched_cat.get("station_id") or sid) if matched_cat else sid
 
+        matching_ts_raw = str(matching_obs.get("timestamp_utc") or "")
+        if matching_ts_raw:
+            inc_ts = matching_ts_raw.replace("+00:00", "Z")
+            if not inc_ts.endswith("Z"):
+                inc_ts += "Z"
+        else:
+            inc_ts = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
         incidents.append({
             "incident_id": f"INC-IMD-{sid}",
             "station_id": sid,
@@ -346,7 +362,7 @@ def main() -> None:
             "confidence": round(f_res.confidence, 2),
             "anomaly_score": score,
             "status": "active",
-            "detected_timestamp_utc": "2026-09-24T16:45:00Z",
+            "detected_timestamp_utc": inc_ts,
             "duration_minutes": 60,
             "affected_parameter": param,
             "sensor": param,
@@ -369,7 +385,7 @@ def main() -> None:
             "provider_station_id": sid,
             "catalog_station_id": canon_id,
             "station_name": sname,
-            "timestamp_utc": "2026-09-24T16:45:00Z",
+            "timestamp_utc": inc_ts,
             "severity": sev,
             "parameter": param,
             "sensor": param,
@@ -384,6 +400,23 @@ def main() -> None:
     reporting_count = len(readings)
     offline_count = 0
 
+    now_utc = datetime.now(timezone.utc)
+    now_utc_str = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
+    fetched_at = obs_payload.get("retrieved_at_utc") or now_utc_str
+    if "+00:00" in fetched_at:
+        fetched_at = fetched_at.replace("+00:00", "Z")
+
+    valid_ts = [r.get("timestamp_utc", "") for r in readings if r.get("timestamp_utc")]
+    latest_obs_utc = max(valid_ts) if valid_ts else fetched_at
+    if "+00:00" in latest_obs_utc:
+        latest_obs_utc = latest_obs_utc.replace("+00:00", "Z")
+
+    try:
+        latest_dt = datetime.fromisoformat(latest_obs_utc.replace("Z", "+00:00"))
+        source_age_min = round(max(0.0, (now_utc - latest_dt).total_seconds() / 60.0), 2)
+    except Exception:
+        source_age_min = 15.0
+
     latest_payload = {
         "status": "live",
         "mode": "live",
@@ -392,9 +425,9 @@ def main() -> None:
         "provider": "India Meteorological Department AWS Portal",
         "product": "Official IMD AWS Network Telemetry (SIH Problem Statement 26073)",
         "source_url": "https://api.imd.gov.in/api/v1/aws_data",
-        "fetched_at_utc": "2026-09-24T17:03:01Z",
-        "latest_observation_utc": "2026-09-24T16:45:00Z",
-        "source_age_minutes": 15.0,
+        "fetched_at_utc": fetched_at,
+        "latest_observation_utc": latest_obs_utc,
+        "source_age_minutes": source_age_min,
         "requested_hours": 24,
         "configured_icao_stations": 0,
         "all_india_stations_count": reporting_count,

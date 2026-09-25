@@ -1,0 +1,95 @@
+{
+  "project": "SkyGuard AI — Real-Time Anomaly Detection in Automatic Weather Stations (SIH 26073)",
+  "dataset": "NOAA ISD Indian Surface Network Historical Archive (2022-2024)",
+  "period": "2022-01-01 to 2024-12-31",
+  "generated_at_utc": "2026-09-25T15:00:00Z",
+  "monitored_stations": 24,
+  "total_observations": 578448,
+  "splits": {
+    "train_2022_to_mid2023": 290112,
+    "validation_late2023": 95820,
+    "test_temporal_2024": 182276,
+    "test_spatial_holdout_2024": 10516
+  },
+  "operational_constraints": {
+    "target_false_alarms_per_station_day": 0.05,
+    "achieved_test_false_alarms_per_station_day": 0.0125,
+    "achieved_spatial_holdout_fa_rate": 0.0152,
+    "operational_threshold": 0.6845
+  },
+  "models": {
+    "Physical_Bounds": {
+      "type": "Deterministic Physical Range Filter",
+      "status": "Operational",
+      "false_alarms_per_station_day": 0.0,
+      "parameters_checked": ["temperature [-25, 55] C", "pressure [800, 1080] hPa", "humidity [0, 100] %"]
+    },
+    "Hampel_Robust_Z": {
+      "type": "24-Hour Rolling Median / MAD Robust Filter",
+      "status": "Operational",
+      "false_alarms_per_station_day": 0.0182,
+      "scale": "1.4826 * MAD"
+    },
+    "EWMA_Residual": {
+      "type": "Exponentially Weighted Moving Average Prior Residual",
+      "status": "Operational",
+      "false_alarms_per_station_day": 0.0215,
+      "alpha": 0.2
+    },
+    "Spatial_Buddy_Check": {
+      "type": "Atmospheric Lapse-Rate Elevation-Reduced Consensus",
+      "status": "Operational",
+      "false_alarms_per_station_day": 0.0140,
+      "lapse_rate_c_per_km": 6.5,
+      "radius_km": 500
+    },
+    "Isolation_Forest": {
+      "type": "Unsupervised Tree Isolation (sklearn)",
+      "status": "Trained & Persisted",
+      "artifact": "models/production/isolation_forest_real_2022_2023.joblib",
+      "false_alarms_per_station_day": 0.0380
+    },
+    "Calibrated_LightGBM": {
+      "type": "Gradient Boosted Decision Trees + Platt Sigmoid Calibration",
+      "status": "Trained & Persisted",
+      "artifact": "models/production/lightgbm_real_aws.joblib",
+      "false_alarms_per_station_day": 0.0290
+    },
+    "Causal_TCN": {
+      "type": "PyTorch 1D Dilated Causal Convolutional Network",
+      "status": "Trained & Persisted",
+      "artifact": "models/production/tcn_real_aws.pt",
+      "false_alarms_per_station_day": 0.0240,
+      "sequence_length": 24
+    },
+    "Spatio_Temporal_Autoencoder": {
+      "type": "PyTorch Neural Manifold Reconstruction",
+      "status": "Trained & Persisted",
+      "artifact": "models/production/spatio_temporal_autoencoder_real.pt",
+      "false_alarms_per_station_day": 0.0260,
+      "input_dimension": 6
+    },
+    "Multi_Evidence_Ensemble": {
+      "type": "Validation-Learned Calibrated Multi-Evidence Fusion",
+      "status": "Primary Production Detector",
+      "false_alarms_per_station_day": 0.0125,
+      "spatial_holdout_fa_rate": 0.0152,
+      "fusion_weights": {
+        "spatial_consensus": 0.35,
+        "isolation_forest": 0.30,
+        "causal_residual_combined": 0.35
+      }
+    }
+  },
+  "synthetic_stress_benchmark_performance": {
+    "dataset": "data/labelled/ (Controlled synthetic fault injections)",
+    "note": "Reported separately as secondary stress test benchmark. NOT claimed as real IMD operational ground truth.",
+    "event_precision": 0.912,
+    "event_recall": 0.972,
+    "event_f1": 0.941,
+    "roc_auc": 0.968,
+    "pr_auc": 0.924,
+    "balanced_accuracy": 0.945,
+    "mcc": 0.887
+  }
+}

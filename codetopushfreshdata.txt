@@ -1,0 +1,5 @@
+# 1. Fetch latest snapshot from official IMD Portal
+python tools/fetch_official_imd_aws.py
+
+# 2. Synchronize to local database and forward to live Render backend
+python tools/sync_latest_imd_to_store.py --forward-to-render https://skyguard-ai-wbm9.onrender.com --token sih26073_secure_token_2026

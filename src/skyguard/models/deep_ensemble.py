@@ -368,7 +368,7 @@ class DeepEnsembleDetector:
         neural_score = max(0.012, min(0.992, neural_score))
 
         # --------------------------------------------------------------------
-        # Stream 3: Non-Linear Temporal & Drift Indicators (Tree Proxy)
+        # Stream 3: Non-Linear Temporal & Drift Indicators (Heuristic Drift Stream)
         # --------------------------------------------------------------------
         freeze_count = 1
         drift_cusum = 0.0
@@ -379,18 +379,18 @@ class DeepEnsembleDetector:
             mean_temp = float(np.mean(temps))
             drift_cusum = abs(float(np.sum([temps[k] - mean_temp for k in range(len(temps))]))) / max(1.0, float(np.std(temps)))
 
-        tree_metric = max(
+        drift_metric = max(
             abs(z_t) / 3.5 if has_t else 0.0,
             abs(z_p) / 3.5 if has_p else 0.0,
             freeze_count / 6.0 if freeze_count >= 5 else 0.0,
             drift_cusum / 8.0 if drift_cusum >= 2.5 else 0.0,
         )
-        tree_score = max(0.010, min(0.990, float(1.0 / (1.0 + math.exp(-3.0 * (tree_metric - 0.95))))))
+        drift_heuristic_score = max(0.010, min(0.990, float(1.0 / (1.0 + math.exp(-3.0 * (drift_metric - 0.95))))))
 
         # --------------------------------------------------------------------
         # Stream 4: Multi-Evidence Ensemble Fusion
         # --------------------------------------------------------------------
-        evidence_score = round(0.40 * neural_score + 0.35 * tree_score + 0.25 * spatial_score, 4)
+        evidence_score = round(0.40 * neural_score + 0.35 * drift_heuristic_score + 0.25 * spatial_score, 4)
         evidence_score = max(0.0120, min(0.9980, evidence_score))
 
         # --------------------------------------------------------------------
@@ -403,42 +403,42 @@ class DeepEnsembleDetector:
             root_cause = "pressure_physical_bounds_violation"
             explanation = f"Observed barometric pressure {p_target:.1f} hPa exceeds surface atmospheric physical boundaries [800 - 1075 hPa]."
             evidence_score = 0.9950
-            confidence = 0.99
+            confidence = evidence_score
         elif has_t and (t_target < -25.0 or t_target > 55.0):
             decision = "SENSOR_FAULT"
             severity = "CRITICAL"
             root_cause = "temperature_physical_bounds_violation"
             explanation = f"Observed temperature {t_target:.1f}°C exceeds surface atmospheric limits [-25°C to 55°C]."
             evidence_score = 0.9950
-            confidence = 0.99
+            confidence = evidence_score
         elif has_t and abs(z_t) >= 4.5 and abs(res_t) >= 4.5 and len(valid_neighbors_t) >= 3:
             decision = "SENSOR_FAULT"
             severity = "CRITICAL" if abs(z_t) >= 6.0 else "HIGH"
             root_cause = "temperature_spike_deviation"
             explanation = f"Observed temperature {t_target:.1f}°C deviates by {abs(z_t):.1f}σ ({res_t:+.1f}°C) from lapse-compensated regional consensus ({exp_t:.1f}°C)."
-            confidence = 0.965
             evidence_score = max(evidence_score, min(0.99, 0.78 + (abs(z_t) - 4.5) * 0.04))
+            confidence = round(evidence_score, 4)
         elif has_p and abs(z_p) >= 4.5 and abs(res_p) >= 12.0 and len(valid_neighbors_p) >= 3:
             decision = "SENSOR_FAULT"
             severity = "HIGH"
             root_cause = "barometric_pressure_drift"
             explanation = f"Observed barometric pressure {p_target:.1f} hPa deviates by {abs(z_p):.1f}σ ({res_p:+.1f} hPa) from altimeter-reduced regional consensus ({exp_p:.1f} hPa)."
-            confidence = 0.942
             evidence_score = max(evidence_score, min(0.99, 0.76 + (abs(z_p) - 4.5) * 0.03))
+            confidence = round(evidence_score, 4)
         elif has_rh and abs(z_rh) >= 4.8 and abs(res_rh) >= 25.0 and len(valid_neighbors_rh) >= 3:
             decision = "SENSOR_FAULT"
             severity = "MEDIUM"
             root_cause = "relative_humidity_saturation"
             explanation = f"Observed humidity {rh_target:.0f}% deviates by {abs(z_rh):.1f}σ from spatial consensus ({exp_rh:.0f}%)."
-            confidence = 0.915
             evidence_score = max(evidence_score, 0.7650)
+            confidence = round(evidence_score, 4)
         elif freeze_count >= 6:
             decision = "SENSOR_FAULT"
             severity = "CRITICAL"
             root_cause = "stuck_sensor_flatline"
             explanation = f"Sensor reporting constant reading across {freeze_count} consecutive intervals while local diurnal cycle predicts variation."
-            confidence = 0.978
             evidence_score = max(evidence_score, 0.8950)
+            confidence = round(evidence_score, 4)
         else:
             decision = "NORMAL"
             severity = "NOMINAL"
@@ -452,7 +452,7 @@ class DeepEnsembleDetector:
             station_name=name,
             evidence_score=evidence_score,
             neural_score=round(neural_score, 4),
-            tree_score=round(tree_score, 4),
+            tree_score=round(drift_heuristic_score, 4),
             spatial_score=round(spatial_score, 4),
             decision=decision,
             severity=severity,

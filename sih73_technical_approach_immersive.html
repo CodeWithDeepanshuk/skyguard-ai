@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Technical Approach - Team Darkmode - SIH 2024</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 1920px;
+    height: 1080px;
+    background: #ffffff;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    color: #0f172a;
+    position: relative;
+    overflow: hidden;
+    padding: 16px 24px;
+  }
+
+  /* Slide Outer Border */
+  .slide-border {
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 3px solid #1e293b;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  /* Header Bar */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 82px;
+    padding: 0 12px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 14px;
+  }
+
+  /* Team Name in Dark Mode Badge */
+  .team-badge-dark {
+    background: #0f172a;
+    border: 2px solid #38bdf8;
+    border-radius: 9999px;
+    padding: 8px 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+  }
+
+  .team-dot {
+    width: 12px;
+    height: 12px;
+    background: #38bdf8;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #38bdf8;
+  }
+
+  .team-badge-text {
+    font-size: 23px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .title-block {
+    text-align: center;
+  }
+
+  .slide-title {
+    font-size: 44px;
+    font-weight: 900;
+    font-family: 'Times New Roman', Georgia, serif;
+    color: #1a2a5a;
+    letter-spacing: 3px;
+    line-height: 1.1;
+  }
+
+  .slide-subtitle {
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+
+  .sih-logo-block {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sih-text {
+    text-align: right;
+    font-weight: 900;
+    font-size: 15px;
+    line-height: 1.2;
+    color: #0f172a;
+  }
+
+  .sih-year {
+    font-size: 19px;
+    color: #0f172a;
+    font-weight: 900;
+  }
+
+  /* Main Split Layout */
+  .main-container {
+    display: flex;
+    height: calc(1080px - 132px);
+    gap: 20px;
+  }
+
+  /* Left Column: 42% width */
+  .left-column {
+    flex: 0 0 780px;
+    border: 2.5px dashed #2563eb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.02);
+  }
+
+  .section-badge-left {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1d4ed8;
+    background: #dbeafe;
+    padding: 3px 12px;
+    border-radius: 6px;
+    width: fit-content;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .tech-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.34;
+    color: #1e293b;
+    background: #ffffff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+  }
+
+  .bullet-icon {
+    color: #dc2626;
+    font-size: 15px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .tech-name {
+    font-weight: 800;
+    color: #dc2626;
+  }
+
+  .tech-role {
+    font-weight: 700;
+    color: #2563eb;
+    margin-right: 4px;
+  }
+
+  .simple-desc {
+    color: #334155;
+    font-weight: 500;
+  }
+
+  /* Right Column: Architectural Diagram */
+  .right-column {
+    flex: 1;
+    position: relative;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    height: 100%;
+    padding: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+  }
+
+  /* Connector SVG Canvas with exact 1:1 pixel coords */
+  .connector-canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Diagram Node Box */
+  .diagram-node {
+    position: absolute;
+    z-index: 2;
+    background: #ffffff;
+    border: 2px solid #eab308;
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    transition: all 0.2s ease;
+  }
+
+  .node-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+  }
+
+  .node-sub {
+    font-size: 11px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .node-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: #f8fafc;
+  }
+
+  /* Central FastAPI Backend */
+  #node-backend {
+    top: 210px; left: 240px; width: 230px; height: 84px;
+    border: 2.5px solid #ef4444; background: #fff5f5;
+    padding: 10px 14px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.12);
+  }
+
+  /* Ingest & Cache */
+  #node-ingest {
+    top: 25px; left: 245px; width: 220px; height: 64px;
+    border-color: #3b82f6; background: #eff6ff;
+  }
+
+  #node-sqlite {
+    top: 130px; left: 25px; width: 195px; height: 64px;
+    border-color: #64748b; background: #f8fafc;
+  }
+
+  /* Frontend Clients */
+  #node-web {
+    top: 340px; left: 25px; width: 195px; height: 70px;
+    border-color: #0284c7; background: #f0f9ff;
+  }
+
+  #node-map {
+    top: 490px; left: 20px; width: 175px; height: 64px;
+    border-color: #059669; background: #f0fdf4;
+  }
+
+  #node-charts {
+    top: 490px; left: 210px; width: 175px; height: 64px;
+    border-color: #f59e0b; background: #fffbeb;
+  }
+
+  /* Right Microservices Stack (Left = 570px, Width = 380px, Height = 58px) */
+  .right-stack-node {
+    left: 570px; width: 380px; height: 58px;
+  }
+  #node-range-qc { top: 20px; border-color: #6366f1; background: #faf5ff; }
+  #node-cusum    { top: 96px; border-color: #eab308; background: #fefce8; }
+  #node-lightgbm { top: 172px; border-color: #8b5cf6; background: #f5f3ff; }
+  #node-spatial  { top: 248px; border-color: #0ea5e9; background: #f0f9ff; }
+  #node-triage   { top: 324px; border-color: #10b981; background: #ecfdf5; }
+  #node-impute   { top: 400px; border-color: #06b6d4; background: #ecfeff; }
+  #node-alerts   { top: 476px; border-color: #f97316; background: #fff7ed; }
+  #node-postgres { top: 552px; border-color: #2563eb; background: #eff6ff; }
+  #node-archive  { top: 628px; border-color: #64748b; background: #f8fafc; }
+
+  /* Big Postgres Elephant Logo on Right Margin */
+  .postgres-badge {
+    position: absolute;
+    left: 975px;
+    top: 540px;
+    width: 85px;
+    height: 85px;
+    z-index: 3;
+  }
+
+  /* Flow indicators */
+  .flow-label {
+    position: absolute;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #475569;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<div class="slide-border"></div>
+
+<div class="header">
+  <!-- Team Name Dark Mode Pill -->
+  <div class="team-badge-dark">
+    <div class="team-dot"></div>
+    <div class="team-badge-text">Darkmode</div>
+  </div>
+
+  <!-- Title & Subtitle -->
+  <div class="title-block">
+    <div class="slide-title">TECHNICAL APPROACH</div>
+    <div class="slide-subtitle">SIH Problem Statement 26073 • Automated Weather Station Sensor Anomaly Detection</div>
+  </div>
+
+  <!-- SIH Official Logo Block -->
+  <div class="sih-logo-block">
+    <svg width="48" height="48" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#f97316" stroke-width="4"/>
+      <path d="M50 18 C34 18 22 30 22 46 C22 56 28 65 37 70 L37 78 L63 78 L63 70 C72 65 78 56 78 46 C78 30 66 18 50 18 Z" fill="#eff6ff" stroke="#3b82f6" stroke-width="3"/>
+      <path d="M42 78 L58 78 M45 84 L55 84" stroke="#10b981" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="38" cy="38" r="4" fill="#ef4444"/>
+      <circle cx="62" cy="38" r="4" fill="#10b981"/>
+      <circle cx="50" cy="50" r="5" fill="#f59e0b"/>
+      <line x1="38" y1="38" x2="50" y2="50" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="62" y1="38" x2="50" y2="50" stroke="#94a3b8" stroke-width="2"/>
+      <line x1="50" y1="50" x2="50" y2="70" stroke="#94a3b8" stroke-width="2"/>
+    </svg>
+    <div class="sih-text">
+      SMART INDIA<br>HACKATHON<br><span class="sih-year">2024</span>
+    </div>
+  </div>
+</div>
+
+<div class="main-container">
+  <!-- LEFT COLUMN: Technology & Plain-English Explanations -->
+  <div class="left-column">
+    <div class="section-badge-left">Core Technologies & Purpose</div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Next.js 14 & React 18</span> <span class="tech-role">(Operator UI):</span> <span class="simple-desc">Fast, responsive web dashboard so station operators can monitor alerts and sensor health without delay.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">MapLibre GL</span> <span class="tech-role">(Station Map):</span> <span class="simple-desc">Visualizes weather stations across the region on an interactive map with green, red, and amber health dots.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Recharts</span> <span class="tech-role">(Live Weather Graphs):</span> <span class="simple-desc">Draws smooth 24-hour diurnal curves for temperature, pressure, and humidity to easily spot sudden shifts.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Python 3.12 & FastAPI</span> <span class="tech-role">(Core Backend):</span> <span class="simple-desc">High-speed server that streams incoming station telemetry and executes AI quality tests in under a second.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">PostgreSQL</span> <span class="tech-role">(Central Database):</span> <span class="simple-desc">Scalable relational database using psycopg that stores historical weather data and audited alert records.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">SQLite</span> <span class="tech-role">(Offline / Local Cache):</span> <span class="simple-desc">Stores data locally so demonstrations and field stations function seamlessly without active internet.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">LightGBM & Scikit-learn</span> <span class="tech-role">(AI Models):</span> <span class="simple-desc">Trained machine learning models (Gradient Boosting & Isolation Forest) to spot complex, multi-sensor anomalies.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">CUSUM Algorithm</span> <span class="tech-role">(Drift Detector):</span> <span class="simple-desc">Cumulative sum tracking that catches aging sensors that slowly drift out of calibration over days.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Physical Limit & Step QC</span> <span class="tech-role">(Rule Checks):</span> <span class="simple-desc">Immediate WMO rules that reject impossible readings (e.g., 75°C) and sudden 10°C spikes in one minute.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Spatial Consensus</span> <span class="tech-role">(Peer Validation):</span> <span class="simple-desc">Compares readings with neighboring stations (accounting for altitude & distance) to verify local trends.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Decision & Triage Logic</span> <span class="tech-role">(Classifier):</span> <span class="simple-desc">Separates real extreme weather from broken sensor hardware, stopping false alarms before dispatch.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Physics-Based Imputation</span> <span class="tech-role">(Gap Filling):</span> <span class="simple-desc">Generates clean replacement estimates for faulty values so downstream weather forecasting models don't crash.</span></div>
+    </div>
+
+    <div class="tech-item">
+      <span class="bullet-icon">❖</span>
+      <div><span class="tech-name">Raw Data Integrity</span> <span class="tech-role">(Audit Trail):</span> <span class="simple-desc">Original sensor measurements are never erased or modified; quality flags are attached transparently.</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN: Screen-Fitted Architecture Schematic -->
+  <div class="right-column">
+    <svg class="connector-canvas" viewBox="0 0 1070 920">
+      <!-- Yellow connector lines mimicking reference slide -->
+      <g stroke="#facc15" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Ingest to Backend -->
+        <path d="M 355 89 L 355 210" />
+        
+        <!-- SQLite to Backend -->
+        <path d="M 220 162 L 255 162 L 255 210" />
+        
+        <!-- Backend to Frontend -->
+        <path d="M 355 294 L 355 315 L 122 315 L 122 340" />
+        
+        <!-- Frontend to MapLibre and Recharts -->
+        <path d="M 122 410 L 122 450 L 107 450 L 107 490" />
+        <path d="M 122 450 L 297 450 L 297 490" />
+
+        <!-- Backend main bus (470, 252) to Right Trunk (X = 520) -->
+        <path d="M 470 252 L 520 252" />
+        
+        <!-- Vertical Trunk at X = 520 from Y = 49 to Y = 657 -->
+        <path d="M 520 49 L 520 657" />
+        
+        <!-- Horizontal branches from Trunk into each microservice box (left: 570) -->
+        <path d="M 520 49 L 570 49" />
+        <path d="M 520 125 L 570 125" />
+        <path d="M 520 201 L 570 201" />
+        <path d="M 520 277 L 570 277" />
+        <path d="M 520 353 L 570 353" />
+        <path d="M 520 429 L 570 429" />
+        <path d="M 520 505 L 570 505" />
+        <path d="M 520 581 L 570 581" />
+        <path d="M 520 657 L 570 657" />
+
+        <!-- Postgres node to big elephant logo on right -->
+        <path d="M 950 581 L 975 581" />
+      </g>
+    </svg>
+
+    <!-- Node 1: AWS Telemetry Ingestion -->
+    <div class="diagram-node" id="node-ingest">
+      <div class="node-icon" style="background:#dbeafe;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      </div>
+      <div>
+        <div class="node-title">AWS Telemetry Ingestion</div>
+        <div class="node-sub">Temp • Pressure • Humidity</div>
+      </div>
+    </div>
+
+    <!-- Node 2: SQLite Local Replay -->
+    <div class="diagram-node" id="node-sqlite">
+      <div class="node-icon" style="background:#f1f5f9;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      </div>
+      <div>
+        <div class="node-title">SQLite Cache</div>
+        <div class="node-sub">Local Replay & Offline Mode</div>
+      </div>
+    </div>
+
+    <!-- Central Node: FastAPI Backend -->
+    <div class="diagram-node" id="node-backend">
+      <div class="node-icon" style="background:#fee2e2; width:40px; height:40px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      </div>
+      <div>
+        <div class="node-title" style="font-size:16px; color:#b91c1c;">FastAPI Backend</div>
+        <div class="node-sub" style="color:#7f1d1d;">Python 3.12 Asynchronous Core</div>
+      </div>
+    </div>
+
+    <!-- Node 4: Web Applications -->
+    <div class="diagram-node" id="node-web">
+      <div class="node-icon" style="background:#e0f2fe;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Web Dashboard</div>
+        <div class="node-sub">Next.js 14 & React 18</div>
+      </div>
+    </div>
+
+    <!-- Node 5: MapLibre GL -->
+    <div class="diagram-node" id="node-map">
+      <div class="node-icon" style="background:#dcfce7;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      </div>
+      <div>
+        <div class="node-title">MapLibre GL</div>
+        <div class="node-sub">Station Geo Map</div>
+      </div>
+    </div>
+
+    <!-- Node 6: Recharts Graphs -->
+    <div class="diagram-node" id="node-charts">
+      <div class="node-icon" style="background:#fef3c7;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Recharts Visuals</div>
+        <div class="node-sub">Diurnal Multi-Trace</div>
+      </div>
+    </div>
+
+    <!-- RIGHT MICROSERVICES / MODULES -->
+    <div class="diagram-node right-stack-node" id="node-range-qc">
+      <div class="node-icon" style="background:#ede9fe;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Physical Limits & Step QC</div>
+        <div class="node-sub">WMO Range Bounds & Sudden Jump Tests</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-cusum">
+      <div class="node-icon" style="background:#fef9c3;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2.2"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-6 6"/></svg>
+      </div>
+      <div>
+        <div class="node-title">CUSUM Drift Detector</div>
+        <div class="node-sub">Cumulative Sum Tracking for Sensor Offset Decay</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-lightgbm">
+      <div class="node-icon" style="background:#f3e8ff;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/><path d="M8.5 15.5l7-7"/></svg>
+      </div>
+      <div>
+        <div class="node-title">LightGBM & Scikit-learn</div>
+        <div class="node-sub">Multivariate Machine Learning Anomaly Scorer</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-spatial">
+      <div class="node-icon" style="background:#e0f2fe;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Spatial Consensus Engine</div>
+        <div class="node-sub">Peer Station Validation with Elevation Weighting</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-triage">
+      <div class="node-icon" style="background:#d1fae5;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Decision & Triage Matrix</div>
+        <div class="node-sub">Real Weather vs Hardware Fault vs Needs Review</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-impute">
+      <div class="node-icon" style="background:#cffafe;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2.2"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Data Imputation Engine</div>
+        <div class="node-sub">Physics-Informed Clean Interpolation Feed</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-alerts">
+      <div class="node-icon" style="background:#ffedd5;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Operator Alert Service</div>
+        <div class="node-sub">Actionable Diagnoses & Root-Cause Explanations</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-postgres">
+      <div class="node-icon" style="background:#dbeafe;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+      </div>
+      <div>
+        <div class="node-title">PostgreSQL Central Store</div>
+        <div class="node-sub">High-Volume Historical Database via psycopg</div>
+      </div>
+    </div>
+
+    <div class="diagram-node right-stack-node" id="node-archive">
+      <div class="node-icon" style="background:#f1f5f9;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#475569" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </div>
+      <div>
+        <div class="node-title">Raw Telemetry Archive</div>
+        <div class="node-sub">Immutable Observations with Quality Flags</div>
+      </div>
+    </div>
+
+    <!-- Big Postgres Elephant Badge on Right Margin -->
+    <svg class="postgres-badge" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="#336791"/>
+      <path d="M50 20 C36 20 28 28 28 40 C28 50 32 58 36 68 L36 82 L46 82 L46 72 C48 72 52 72 54 72 L54 82 L64 82 L64 68 C68 58 72 50 72 40 C72 28 64 20 50 20 Z" fill="#ffffff" opacity="0.95"/>
+      <circle cx="40" cy="38" r="3.5" fill="#336791"/>
+      <circle cx="60" cy="38" r="3.5" fill="#336791"/>
+      <path d="M38 52 Q50 62 62 52" stroke="#336791" stroke-width="3" fill="none"/>
+      <path d="M47 50 L47 70 C47 74 53 74 53 70 L53 50" stroke="#336791" stroke-width="2.5" fill="none"/>
+    </svg>
+
+  </div>
+</div>
+
+</body>
+</html>

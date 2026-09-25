@@ -55,9 +55,9 @@ Iterations 8 and 9 used the official DWD corpus and domain-invariant calibration
 
 The standalone Iteration 10 notebook combines corrected official India data and DWD development data without opening 2024/2025. It provides cadence-adaptive injection, 13 operational faults, six coherent weather families, 76 strict causal features, a three-way incident state, independent weather gate, elapsed-time k-of-n persistence, drift rescue, hierarchical root diagnosis, confidence calibration, correction/health evidence, three fresh seeds and strict promotion gates. Static verification and real-data curriculum smoke tests pass. Final empirical metrics remain pending until the user runs the T4 notebook and returns its result package.
 
-### Phase 17 — Deployment proof
+### Phase 17 — Official IMD AWS integration: secure inspection implemented, live evidence pending
 
-Add an official IMD adapter when credentials/data are supplied, sustained concurrent load tests, p95/p99 latency, restart/backpressure tests and calibrated power measurement.
+The portal contract is now implemented as a backend-only, static-IP, API-key + short-lived JWT download stage. Exact payload bytes, safe receipts and value-free schema fingerprints are supported, while operational normalization remains disabled until both real endpoint responses are reviewed for units, timezone, identifiers, missing codes, provider flags, revisions, coverage, history and request limits. No fallback provider impersonates IMD. See `docs/IMD_AWS_IMPLEMENTATION_PLAN.md` for gates and the exact remaining live test.
 
 ### Phase 18 — Final SIH freeze
 

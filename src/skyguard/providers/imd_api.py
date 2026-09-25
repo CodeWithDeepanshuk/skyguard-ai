@@ -14,9 +14,11 @@ import json
 import math
 import os
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from skyguard.providers.base import (
@@ -31,6 +33,7 @@ from skyguard.providers.base import (
 
 AWS_ENDPOINT = "https://api.imd.gov.in/api/v1/aws_data"
 AWS_MAPPING_ENDPOINT = "https://api.imd.gov.in/api/v1/aws_data_mapping"
+TOKEN_ENDPOINT = "https://api.imd.gov.in/api/oauth/token.php"
 
 
 def _number(value: Any) -> Optional[float]:
@@ -76,30 +79,70 @@ class IMDAWSAPIProvider(WeatherProvider):
         self,
         endpoint: str = AWS_ENDPOINT,
         mapping_endpoint: str = AWS_MAPPING_ENDPOINT,
+        token_endpoint: str = TOKEN_ENDPOINT,
         timeout_seconds: float = 20.0,
     ) -> None:
         super().__init__(name=ProviderName.IMD_AWS.value, source_type=SourceType.OBSERVED)
         self.endpoint = endpoint
         self.mapping_endpoint = mapping_endpoint
+        self.token_endpoint = token_endpoint
         self.timeout_seconds = timeout_seconds
+        self._jwt_token = ""
+        self._jwt_expires_at = datetime.min.replace(tzinfo=timezone.utc)
 
     @property
     def auth_headers(self) -> Dict[str, str]:
-        explicit_header = os.getenv("IMD_API_AUTH_HEADER", "").strip()
-        explicit_value = os.getenv("IMD_API_AUTH_VALUE", "").strip()
-        if explicit_header and explicit_value:
-            return {explicit_header: explicit_value}
         api_key = os.getenv("IMD_API_KEY", "").strip()
-        if api_key:
-            return {"X-API-Key": api_key}
-        token = os.getenv("IMD_API_TOKEN", "").strip()
-        if token:
-            return {"Authorization": f"Bearer {token}"}
-        return {}
+        token = self._access_token()
+        if not api_key or not token:
+            return {}
+        return {"X-API-KEY": api_key, "Authorization": f"Bearer {token}"}
 
     @property
     def configured(self) -> bool:
-        return bool(self.auth_headers)
+        api_key = os.getenv("IMD_API_KEY", "").strip()
+        static_token = os.getenv("IMD_API_JWT_TOKEN", "").strip() or os.getenv("IMD_API_TOKEN", "").strip()
+        email = os.getenv("IMD_API_EMAIL", "").strip()
+        password = os.getenv("IMD_API_PASSWORD", "").strip()
+        schema_verified = os.getenv("IMD_NORMALIZATION_ENABLED", "").strip().lower() in {"1", "true", "yes"}
+        contract_value = os.getenv("IMD_SCHEMA_CONTRACT_PATH", "").strip()
+        contract_exists = bool(contract_value and Path(contract_value).is_file())
+        return bool(schema_verified and contract_exists and api_key and (static_token or (email and password)))
+
+    def _access_token(self) -> str:
+        """Return a valid JWT without ever persisting it to disk or logs."""
+        static_token = os.getenv("IMD_API_JWT_TOKEN", "").strip() or os.getenv("IMD_API_TOKEN", "").strip()
+        if static_token:
+            return static_token
+        if self._jwt_token and datetime.now(timezone.utc) < self._jwt_expires_at:
+            return self._jwt_token
+        email = os.getenv("IMD_API_EMAIL", "").strip()
+        password = os.getenv("IMD_API_PASSWORD", "").strip()
+        if not email or not password:
+            return ""
+        body = json.dumps({"email": email, "password": password}).encode("utf-8")
+        request = urllib.request.Request(
+            self.token_endpoint,
+            data=body,
+            headers={"Content-Type": "application/json", "Accept": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:  # noqa: S310
+                payload = json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            raise RuntimeError(f"IMD JWT request failed with HTTP {exc.code}") from exc
+        token = str(payload.get("access_token") or "").strip()
+        if not token:
+            raise RuntimeError("IMD JWT response did not contain access_token")
+        try:
+            expires_in = max(60, int(payload.get("expires_in", 3600)))
+        except (TypeError, ValueError):
+            expires_in = 3600
+        self._jwt_token = token
+        # Refresh early so an in-flight national request never uses a near-expiry token.
+        self._jwt_expires_at = datetime.now(timezone.utc) + timedelta(seconds=max(30, expires_in - 300))
+        return token
 
     def _request_json(self, url: str) -> Any:
         if not self.configured:
@@ -110,8 +153,23 @@ class IMDAWSAPIProvider(WeatherProvider):
             **self.auth_headers,
         }
         request = urllib.request.Request(url, headers=headers)
-        with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:  # noqa: S310
-            return json.loads(response.read().decode("utf-8"))
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout_seconds) as response:  # noqa: S310
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            # A cached JWT may expire or be revoked before its advertised expiry.
+            if exc.code == 401 and not os.getenv("IMD_API_JWT_TOKEN", "").strip():
+                self._jwt_token = ""
+                self._jwt_expires_at = datetime.min.replace(tzinfo=timezone.utc)
+                retry_headers = {
+                    "Accept": "application/json",
+                    "User-Agent": "SkyGuard-AI-SIH26073-Academic/2.0",
+                    **self.auth_headers,
+                }
+                retry = urllib.request.Request(url, headers=retry_headers)
+                with urllib.request.urlopen(retry, timeout=self.timeout_seconds) as response:  # noqa: S310
+                    return json.loads(response.read().decode("utf-8"))
+            raise RuntimeError(f"IMD API request failed with HTTP {exc.code}") from exc
 
     def fetch_network(self, *, state_id: Optional[int] = None) -> List[ObservationRecord]:
         url = self.endpoint
@@ -188,9 +246,10 @@ class IMDAWSAPIProvider(WeatherProvider):
         if not self.configured:
             return {
                 "provider": self.name,
-                "status": "not_configured",
+                "status": "normalization_disabled_pending_real_schema_review",
                 "endpoint": self.endpoint,
                 "credential_source": "environment",
+                "required_auth": "X-API-KEY + JWT bearer",
             }
         started = time.perf_counter()
         try:

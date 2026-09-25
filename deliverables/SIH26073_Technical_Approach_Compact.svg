@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1050" viewBox="0 0 900 1050" role="img" aria-labelledby="title desc">
+  <title id="title">SkyGuard AI technical approach for SIH 26073</title>
+  <desc id="desc">Direct IMD WIS2 and METAR observations plus separate Open-Meteo model reference pass through provenance and causal alignment. Temporal, spatial and advisory offline ML evidence feed a weather veto and incident state machine. FastAPI and a Next.js command centre show alerts, root cause, sensor health and advisory corrections. Open-Meteo is not AWS telemetry and offline injected-fault results are not field accuracy.</desc>
+  <defs>
+    <style>
+      .base { font-family: "Segoe UI", Arial, sans-serif; fill: #173149; }
+      .title { font-size: 42px; font-weight: 700; letter-spacing: -.6px; }
+      .eyebrow { font-size: 18px; font-weight: 700; letter-spacing: 2.2px; }
+      .subtitle { font-size: 19px; fill: #547084; }
+      .section { font-size: 19px; font-weight: 700; letter-spacing: 1.6px; }
+      .card-title { font-size: 25px; font-weight: 700; }
+      .card-body { font-size: 18px; fill: #405D70; }
+      .card-caption { font-size: 16px; fill: #536E7E; }
+      .tiny { font-size: 15px; fill: #596F7D; }
+      .arrow { fill: none; stroke: #4E7B90; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+      .research-arrow { fill: none; stroke: #856EA6; stroke-width: 3; stroke-dasharray: 8 6; stroke-linecap: round; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4E7B90"/>
+    </marker>
+    <marker id="research-arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#856EA6"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="1050" fill="#FFFFFF"/>
+  <text class="base eyebrow" x="38" y="40" fill="#087D86">SKYGUARD AI  /  SIH 26073</text>
+  <text class="base title" x="38" y="91">Technical approach</text>
+  <text class="base subtitle" x="38" y="122">Detect sensor faults without suppressing real weather.</text>
+
+  <!-- Distinct inputs: observations versus numerical weather prediction. -->
+  <rect x="38" y="150" width="398" height="122" rx="18" fill="#E7F6F4" stroke="#A9DCD4" stroke-width="2"/>
+  <rect x="464" y="150" width="398" height="122" rx="18" fill="#ECF4FB" stroke="#BDD6EA" stroke-width="2"/>
+  <text class="base section" x="61" y="181" fill="#087D86">DIRECT OBSERVATIONS</text>
+  <text class="base card-title" x="61" y="214">IMD WIS2 · METAR</text>
+  <text class="base card-body" x="61" y="244">Temperature · pressure · RH*</text>
+  <text class="base section" x="487" y="181" fill="#2768A4">MODEL REFERENCE</text>
+  <text class="base card-title" x="487" y="214">Open-Meteo</text>
+  <text class="base card-body" x="487" y="244">Weather fields at mapped points</text>
+
+  <path class="arrow" d="M237 272 V296 H450"/>
+  <path class="arrow" d="M663 272 V296 H450 V319" marker-end="url(#arrow)"/>
+
+  <rect x="38" y="330" width="824" height="118" rx="20" fill="#F3F8FB" stroke="#B9CFDC" stroke-width="2"/>
+  <rect x="58" y="350" width="57" height="58" rx="14" fill="#DDEDF4"/>
+  <text class="base card-title" x="86.5" y="388" text-anchor="middle" fill="#276E8A">01</text>
+  <text class="base card-title" x="134" y="372">Provenance + causal alignment</text>
+  <text class="base card-body" x="134" y="403">Source, UTC, pressure type, RH origin, gaps</text>
+  <text class="base card-body" x="134" y="427">Past-only history; no future-data leakage</text>
+
+  <path class="arrow" d="M450 448 V489 H164 M450 489 H736"/>
+  <path class="arrow" d="M164 489 V513" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M450 489 V513" marker-end="url(#arrow)"/>
+  <path class="research-arrow" d="M736 489 V513" marker-end="url(#research-arrow)"/>
+
+  <rect x="38" y="524" width="252" height="160" rx="17" fill="#EFF9F5" stroke="#B7DDC9" stroke-width="2"/>
+  <rect x="324" y="524" width="252" height="160" rx="17" fill="#EDF6FB" stroke="#B9D5E9" stroke-width="2"/>
+  <rect x="610" y="524" width="252" height="160" rx="17" fill="#F7F2FB" stroke="#BEABD4" stroke-width="2" stroke-dasharray="8 5"/>
+  <text class="base tiny" x="57" y="554" fill="#0F7864">SIGNAL 1</text>
+  <text class="base card-title" x="57" y="590">Temporal QC</text>
+  <text class="base card-body" x="57" y="622">Spike · freeze · drift</text>
+  <text class="base card-caption" x="57" y="652">Causal trends + CUSUM</text>
+  <text class="base tiny" x="343" y="554" fill="#236EAA">SIGNAL 2</text>
+  <text class="base card-title" x="343" y="590">Spatial QC</text>
+  <text class="base card-body" x="343" y="622">Nearby station checks</text>
+  <text class="base card-caption" x="343" y="652">Elevation + NWP context</text>
+  <text class="base tiny" x="629" y="554" fill="#765293">ADVISORY R&amp;D</text>
+  <text class="base card-title" x="629" y="590">ML evidence</text>
+  <text class="base card-body" x="629" y="622">LightGBM · TCN/GRU</text>
+  <text class="base card-caption" x="629" y="652">Injected-fault holdouts</text>
+
+  <path class="arrow" d="M164 684 V715 H450 M450 684 V715"/>
+  <path class="research-arrow" d="M736 684 V715 H450"/>
+  <path class="arrow" d="M450 715 V740" marker-end="url(#arrow)"/>
+
+  <rect x="38" y="751" width="824" height="112" rx="20" fill="#FFF7EA" stroke="#E7C996" stroke-width="2"/>
+  <rect x="58" y="770" width="57" height="57" rx="14" fill="#FBE9C7"/>
+  <text class="base card-title" x="86.5" y="807" text-anchor="middle" fill="#A86916">02</text>
+  <text class="base card-title" x="134" y="794">Weather veto + incident state</text>
+  <text class="base card-body" x="134" y="823">Regional event → preserve · isolated fault → review</text>
+  <text class="base card-caption" x="134" y="846">Insufficient evidence → abstain, collect more data</text>
+
+  <path class="arrow" d="M450 863 V883" marker-end="url(#arrow)"/>
+
+  <rect x="38" y="894" width="824" height="105" rx="20" fill="#EAF2FC" stroke="#B7CCE9" stroke-width="2"/>
+  <rect x="58" y="913" width="57" height="57" rx="14" fill="#D8E8F9"/>
+  <text class="base card-title" x="86.5" y="950" text-anchor="middle" fill="#24589C">03</text>
+  <text class="base card-title" x="134" y="937">Operator command centre</text>
+  <text class="base card-body" x="134" y="966">FastAPI + Next.js map, alerts, cause, sensor health</text>
+  <text class="base card-caption" x="134" y="990">Advisory corrections; original readings remain intact</text>
+
+  <text class="base tiny" x="38" y="1027">* RH may be derived. Open-Meteo is not AWS telemetry. ML recall is not field-certified.</text>
+</svg>
