@@ -172,8 +172,11 @@ def main() -> None:
     corrections_manifest = []
 
     for inc in raw_incidents:
-        sid = inc.get("station_id")
-        matches = df[df["station_id"] == sid]
+        sid = str(inc.get("station_id") or "")
+        prov_id = str(inc.get("provider_station_id") or sid)
+        matches = df[(df["station_id"] == sid) | (df["station_id"] == prov_id)]
+        if matches.empty and "provider_station_id" in df.columns:
+            matches = df[(df["provider_station_id"] == sid) | (df["provider_station_id"] == prov_id)]
         if matches.empty:
             continue
         t_idx = matches.index[0]

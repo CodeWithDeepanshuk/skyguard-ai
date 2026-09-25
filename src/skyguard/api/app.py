@@ -215,6 +215,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     runtime = ReplayRuntime(root, database)
     app.state.runtime = runtime
     live = MetarLiveService(root)
+    try:
+        live._model_bundle()
+        logger.info("Successfully loaded ML model bundle on startup")
+    except Exception as exc:
+        logger.warning("Could not pre-load model bundle on startup: %s", exc)
     app.state.live = live
     observation_store = None
     observation_store_error = ""
@@ -287,6 +292,28 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
     public_mode = os.getenv("SKYGUARD_PUBLIC_MODE", "false").lower() == "true"
     refresh_lock = threading.Lock()
     last_refresh_attempt = [0.0]
+
+    def start_hourly_background_refresh() -> None:
+        def _refresh_loop() -> None:
+            time.sleep(60)
+            while True:
+                try:
+                    logger.info("Triggering scheduled hourly live telemetry refresh...")
+                    if refresh_lock.acquire(blocking=False):
+                        try:
+                            last_refresh_attempt[0] = time.monotonic()
+                            live.refresh(24)
+                            logger.info("Hourly live telemetry refresh completed successfully.")
+                        finally:
+                            refresh_lock.release()
+                except Exception as err:
+                    logger.warning("Scheduled hourly refresh failed: %s", err)
+                time.sleep(3600)
+
+        t = threading.Thread(target=_refresh_loop, daemon=True, name="skyguard_hourly_live_refresh")
+        t.start()
+
+    start_hourly_background_refresh()
 
     def live_contract_ready(status: dict[str, object]) -> bool:
         return (

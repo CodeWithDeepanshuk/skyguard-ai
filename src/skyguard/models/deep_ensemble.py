@@ -333,8 +333,10 @@ class DeepEnsembleDetector:
             res_norm = float(torch.norm(recon_res[0]).item())
 
         # High neural reconstruction residual corresponds to sequence anomaly
-        neural_score = float(1.0 / (1.0 + math.exp(-2.5 * (res_norm - 2.0))))
-        neural_score = max(0.015, min(0.992, neural_score))
+        spatial_coupling = max_abs_z / 3.0
+        effective_loss = max(0.0, res_norm - 1.5) + 0.6 * spatial_coupling
+        neural_score = float(1.0 / (1.0 + math.exp(-2.5 * (effective_loss - 1.8))))
+        neural_score = max(0.012, min(0.992, neural_score))
 
         # --------------------------------------------------------------------
         # Stream 3: Non-Linear Temporal & Drift Indicators (Tree Proxy)
@@ -391,7 +393,7 @@ class DeepEnsembleDetector:
             root_cause = "temperature_spike_deviation"
             explanation = f"Temperature reading {t_target:.1f}°C deviates by {abs(z_t):.1f}σ from lapse-adjusted consensus ({exp_t:.1f}°C)."
             confidence = 0.965
-            evidence_score = max(evidence_score, 0.8840)
+            evidence_score = max(evidence_score, min(0.99, 0.75 + (abs(z_t) - 4.0) * 0.05))
         elif abs(z_p) >= 3.8:
             decision = "SENSOR_FAULT"
             severity = "HIGH"
