@@ -808,46 +808,73 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 pass
         return {"error": "Model evaluation metrics artifact not found"}
 
-    @app.post("/api/anomaly/predict")
-    def predict_anomaly(payload: dict[str, object]) -> dict[str, object]:
-        from skyguard.models.deep_ensemble import DeepEnsembleDetector
-        detector = DeepEnsembleDetector()
-        target_station = payload.get("station_data") if isinstance(payload.get("station_data"), dict) else payload
-        history = payload.get("recent_history") if isinstance(payload.get("recent_history"), list) else []
-        neighbors = payload.get("neighbor_observations") if isinstance(payload.get("neighbor_observations"), list) else []
-        result = detector.evaluate_station(target_station, history, neighbors)
-        ts = str(target_station.get("timestamp_utc") or target_station.get("timestamp") or datetime.now(timezone.utc).isoformat())
+    @app.get("/api/version")
+    def get_api_version() -> dict[str, object]:
+        try:
+            import skyguard.models.deep_ensemble as de
+            has_torch = getattr(de, "HAS_TORCH", False)
+        except Exception:
+            has_torch = False
         return {
-            "station_id": result.station_id,
-            "timestamp": ts,
-            "anomaly_score": result.evidence_score,
-            "fault_probability": result.confidence if result.decision == "SENSOR_FAULT" else round(1.0 - result.confidence, 4),
-            "decision": result.decision,
-            "severity": result.severity,
-            "root_cause": result.root_cause,
-            "confidence_type": "empirical_calibrated_evidence_score",
-            "evidence": {
-                "neural_reconstruction_score": result.neural_score,
-                "temporal_drift_score": result.tree_score,
-                "spatial_consensus_score": result.spatial_score,
-                "expected_values": result.expected_values,
-                "residuals": result.residuals,
-                "neighbor_count": result.neighbor_count,
+            "version": "1.0.0",
+            "commit": os.getenv("RENDER_GIT_COMMIT", "local"),
+            "has_torch": has_torch,
+            "status": "ready"
+        }
+
+    @app.post("/api/anomaly/predict")
+    def predict_anomaly(payload: dict[str, object]) -> Any:
+        try:
+            from skyguard.models.deep_ensemble import DeepEnsembleDetector
+            detector = DeepEnsembleDetector()
+            target_station = payload.get("station_data") if isinstance(payload.get("station_data"), dict) else payload
+            history = payload.get("recent_history") if isinstance(payload.get("recent_history"), list) else []
+            neighbors = (
+                payload.get("neighbor_observations")
+                if isinstance(payload.get("neighbor_observations"), list)
+                else (payload.get("neighbors") if isinstance(payload.get("neighbors"), list) else [])
+            )
+            result = detector.evaluate_station(target_station, history, neighbors)
+            ts = str(target_station.get("timestamp_utc") or target_station.get("timestamp") or datetime.now(timezone.utc).isoformat())
+            return {
+                "station_id": result.station_id,
+                "timestamp": ts,
+                "anomaly_score": result.evidence_score,
+                "fault_probability": result.confidence if result.decision == "SENSOR_FAULT" else round(1.0 - result.confidence, 4),
+                "decision": result.decision,
+                "severity": result.severity,
+                "root_cause": result.root_cause,
+                "confidence_type": "empirical_calibrated_evidence_score",
+                "evidence": {
+                    "neural_reconstruction_score": result.neural_score,
+                    "temporal_drift_score": result.tree_score,
+                    "spatial_consensus_score": result.spatial_score,
+                    "expected_values": result.expected_values,
+                    "residuals": result.residuals,
+                    "neighbor_count": result.neighbor_count,
+                    "tier1_20km": result.tier1_20km,
+                    "tier2_50km": result.tier2_50km,
+                    "tier3_100km": result.tier3_100km,
+                    "climate_zone": result.climate_zone,
+                    "is_coastal": result.is_coastal,
+                    "synoptic_weather_detected": result.synoptic_weather_detected,
+                },
                 "tier1_20km": result.tier1_20km,
                 "tier2_50km": result.tier2_50km,
                 "tier3_100km": result.tier3_100km,
                 "climate_zone": result.climate_zone,
                 "is_coastal": result.is_coastal,
                 "synoptic_weather_detected": result.synoptic_weather_detected,
-            },
-            "tier1_20km": result.tier1_20km,
-            "tier2_50km": result.tier2_50km,
-            "tier3_100km": result.tier3_100km,
-            "climate_zone": result.climate_zone,
-            "is_coastal": result.is_coastal,
-            "synoptic_weather_detected": result.synoptic_weather_detected,
-            "model_version": "production-2026.1.0"
-        }
+                "model_version": "production-2026.1.0"
+            }
+        except Exception as exc:
+            import traceback
+            tb = traceback.format_exc()
+            logger.error("predict_anomaly error: %s\n%s", exc, tb)
+            return JSONResponse(
+                {"error": str(exc), "traceback": tb, "decision": "NORMAL"},
+                status_code=500
+            )
 
     return app
 
