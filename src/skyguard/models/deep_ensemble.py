@@ -15,9 +15,19 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
+
+try:
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    HAS_TORCH = True
+except (ImportError, ModuleNotFoundError):
+    torch = None
+    nn = None
+    F = None
+    HAS_TORCH = False
+
+BaseModule = nn.Module if (HAS_TORCH and nn is not None) else object
 
 from skyguard.quality.indian_regional_bounds import (
     RegionalBounds,
@@ -38,12 +48,13 @@ DEFAULT_NEURAL_WEIGHTS = ROOT / "models" / "spatio_temporal_neural_engine.pt"
 # 1. PyTorch Spatio-Temporal Neural Network (Attention AutoEncoder)
 # ============================================================================
 
-class CausalConv1d(nn.Module):
+class CausalConv1d(BaseModule):
     """1D causal convolution with dilation for time series modeling."""
     def __init__(self, in_channels: int, out_channels: int, kernel_size: int = 3, dilation: int = 1):
-        super().__init__()
-        self.padding = (kernel_size - 1) * dilation
-        self.conv = nn.Conv1d(in_channels, out_channels, kernel_size=kernel_size, dilation=dilation)
+        if HAS_TORCH:
+            super().__init__()
+            self.padding = (kernel_size - 1) * dilation
+            self.conv = nn.Conv1d(in_channels, out_channels, kernel_size=kernel_size, dilation=dilation)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (batch_size, channels, time_steps)
@@ -51,20 +62,23 @@ class CausalConv1d(nn.Module):
         return self.conv(padded)
 
 
-class TemporalSelfAttention(nn.Module):
+class TemporalSelfAttention(BaseModule):
     """Multi-Head Self-Attention over temporal sequence."""
     def __init__(self, hidden_dim: int, num_heads: int = 4):
-        super().__init__()
-        self.attn = nn.MultiheadAttention(embed_dim=hidden_dim, num_heads=num_heads, batch_first=True)
-        self.norm = nn.LayerNorm(hidden_dim)
+        if HAS_TORCH and nn is not None:
+            super().__init__()
+            self.attn = nn.MultiheadAttention(embed_dim=hidden_dim, num_heads=num_heads, batch_first=True)
+            self.norm = nn.LayerNorm(hidden_dim)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
+    def forward(self, x: Any) -> Any:
+        if not HAS_TORCH:
+            return x
         # x: (batch_size, time_steps, hidden_dim)
         attn_out, _ = self.attn(x, x, x)
         return self.norm(x + attn_out)
 
 
-class SpatioTemporalNeuralEngine(nn.Module):
+class SpatioTemporalNeuralEngine(BaseModule):
     """Dual-Branch Neural Network Autoencoder with Causal TCN and Temporal Attention.
     
     Trained to reconstruct normal atmospheric dynamics (diurnal temperature curve,
@@ -72,26 +86,27 @@ class SpatioTemporalNeuralEngine(nn.Module):
     Sensors experiencing drift, flatlining, or spikes exhibit high reconstruction residuals.
     """
     def __init__(self, in_features: int = 6, hidden_dim: int = 32, latent_dim: int = 16):
-        super().__init__()
-        # in_features: [T, P, RH, delta_T_spatial, delta_P_spatial, delta_RH_spatial]
-        self.encoder_conv1 = CausalConv1d(in_features, hidden_dim, kernel_size=3, dilation=1)
-        self.encoder_conv2 = CausalConv1d(hidden_dim, hidden_dim, kernel_size=3, dilation=2)
-        self.encoder_conv3 = CausalConv1d(hidden_dim, hidden_dim, kernel_size=3, dilation=4)
-        
-        self.attention = TemporalSelfAttention(hidden_dim, num_heads=4)
-        self.to_latent = nn.Linear(hidden_dim, latent_dim)
-        self.from_latent = nn.Linear(latent_dim, hidden_dim)
-        
-        self.decoder_conv1 = nn.Conv1d(hidden_dim, hidden_dim, kernel_size=3, padding=1)
-        self.decoder_conv2 = nn.Conv1d(hidden_dim, in_features, kernel_size=3, padding=1)
-        
-        # Anomaly scoring projection from latent distance + reconstruction loss
-        self.anomaly_head = nn.Sequential(
-            nn.Linear(in_features + latent_dim, 16),
-            nn.ReLU(),
-            nn.Linear(16, 1),
-            nn.Sigmoid()
-        )
+        if HAS_TORCH and nn is not None:
+            super().__init__()
+            # in_features: [T, P, RH, delta_T_spatial, delta_P_spatial, delta_RH_spatial]
+            self.encoder_conv1 = CausalConv1d(in_features, hidden_dim, kernel_size=3, dilation=1)
+            self.encoder_conv2 = CausalConv1d(hidden_dim, hidden_dim, kernel_size=3, dilation=2)
+            self.encoder_conv3 = CausalConv1d(hidden_dim, hidden_dim, kernel_size=3, dilation=4)
+            
+            self.attention = TemporalSelfAttention(hidden_dim, num_heads=4)
+            self.to_latent = nn.Linear(hidden_dim, latent_dim)
+            self.from_latent = nn.Linear(latent_dim, hidden_dim)
+            
+            self.decoder_conv1 = nn.Conv1d(hidden_dim, hidden_dim, kernel_size=3, padding=1)
+            self.decoder_conv2 = nn.Conv1d(hidden_dim, in_features, kernel_size=3, padding=1)
+            
+            # Anomaly scoring projection from latent distance + reconstruction loss
+            self.anomaly_head = nn.Sequential(
+                nn.Linear(in_features + latent_dim, 16),
+                nn.ReLU(),
+                nn.Linear(16, 1),
+                nn.Sigmoid()
+            )
 
     def forward(self, x: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
         # x: (batch_size, time_steps, in_features)
@@ -222,11 +237,16 @@ class DeepEnsembleDetector:
             self.weights_path = Path(weights_path) / "models" / "spatio_temporal_neural_engine.pt"
         else:
             self.weights_path = Path(weights_path) if weights_path else DEFAULT_NEURAL_WEIGHTS
-        self.neural_engine = SpatioTemporalNeuralEngine(in_features=6, hidden_dim=32, latent_dim=16)
-        self._load_or_train_weights()
+        if HAS_TORCH and torch is not None:
+            self.neural_engine = SpatioTemporalNeuralEngine(in_features=6, hidden_dim=32, latent_dim=16)
+            self._load_or_train_weights()
+        else:
+            self.neural_engine = None
 
     def _load_or_train_weights(self) -> None:
         """Load pre-trained weights if available, or train and save in ~2 seconds."""
+        if not HAS_TORCH or torch is None or self.neural_engine is None:
+            return
         if self.weights_path.exists():
             try:
                 state_dict = torch.load(self.weights_path, map_location="cpu", weights_only=True)
@@ -237,13 +257,13 @@ class DeepEnsembleDetector:
                 pass
         
         # Train and persist
-        self.neural_engine.train_normal_baselines(epochs=60)
         try:
+            self.neural_engine.train_normal_baselines(epochs=60)
             self.weights_path.parent.mkdir(parents=True, exist_ok=True)
             torch.save(self.neural_engine.state_dict(), self.weights_path)
+            self.neural_engine.eval()
         except Exception:
             pass
-        self.neural_engine.eval()
 
     def detect(
         self,
@@ -434,10 +454,15 @@ class DeepEnsembleDetector:
             seq_data[0, i, 4] = res_p / 6.0
             seq_data[0, i, 5] = res_rh / 15.0
 
-        with torch.no_grad():
-            tensor_in = torch.from_numpy(seq_data)
-            _, recon_res, _ = self.neural_engine(tensor_in)
-            res_norm = float(torch.norm(recon_res[0]).item())
+        if HAS_TORCH and torch is not None and self.neural_engine is not None:
+            with torch.no_grad():
+                tensor_in = torch.from_numpy(seq_data)
+                _, recon_res, _ = self.neural_engine(tensor_in)
+                res_norm = float(torch.norm(recon_res[0]).item())
+        else:
+            spatial_part = float(np.sum(np.abs(seq_data[0, -1, 3:6])))
+            temporal_diff = float(np.mean(np.abs(np.diff(seq_data[0, :, 0])))) if seq_data.shape[1] > 1 else 0.0
+            res_norm = float(spatial_part * 1.5 + temporal_diff)
 
         spatial_coupling = max_abs_z / 3.0
         effective_loss = max(0.0, res_norm - 1.5) + 0.6 * spatial_coupling
