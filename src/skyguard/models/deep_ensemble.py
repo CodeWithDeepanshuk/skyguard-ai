@@ -514,7 +514,12 @@ class DeepEnsembleDetector:
         )
 
         target_temporal_delta = None
-        if history_24h and len(history_24h) >= 1 and has_t:
+        if target_station.get("temperature_delta") is not None:
+            try:
+                target_temporal_delta = float(target_station["temperature_delta"])
+            except (ValueError, TypeError):
+                target_temporal_delta = None
+        elif history_24h and len(history_24h) >= 1 and has_t:
             prev_t_val = history_24h[-1].get("temperature_c") if history_24h[-1].get("temperature_c") is not None else history_24h[-1].get("temperature")
             if prev_t_val is not None:
                 try:

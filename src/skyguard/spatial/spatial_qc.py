@@ -200,7 +200,7 @@ class MultiRadiusSpatialQcEngine:
                     "absolute_delta_c": round(abs_delta, 1),
                     "is_coastal": n_coastal,
                     "cross_coastal_boundary": cross_coastal,
-                    "temporal_delta": float(n.get("temperature_delta") or 0.0),
+                    "temporal_delta": float(n.get("temperature_delta") or n.get("temporal_delta") or 0.0),
                 }
 
                 all_valid_t.append(peer_info)
