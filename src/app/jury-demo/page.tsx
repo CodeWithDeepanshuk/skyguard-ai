@@ -575,7 +575,7 @@ export default function JuryDemoPage() {
                 <FlaskConical className="h-10 w-10 mx-auto mb-2 text-slate-300 stroke-[1.5]" />
                 <p className="text-xs font-medium text-slate-600">No active evaluation result</p>
                 <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
-                  Click "Execute Detector" or pick a scenario above to test the multi-stage quality control engine.
+                  Click &quot;Execute Detector&quot; or pick a scenario above to test the multi-stage quality control engine.
                 </p>
                 <button
                   onClick={runEvaluation}
