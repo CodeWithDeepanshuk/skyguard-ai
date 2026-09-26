@@ -376,9 +376,13 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             "/api/v1/ingestion/run",
             "/api/v1/ingestion/imd",
         )
+        allowed_public_posts = (
+            "/api/live/refresh",
+            "/api/anomaly/predict",
+        )
         if (
             public_mode and request.method not in ("GET", "HEAD", "OPTIONS")
-            and request.url.path != "/api/live/refresh" and not protected_ingestion
+            and request.url.path not in allowed_public_posts and not protected_ingestion
         ):
             return JSONResponse({"detail": "Shared-state demo mutations are disabled on the public service"}, status_code=403)
         started = time.perf_counter()
