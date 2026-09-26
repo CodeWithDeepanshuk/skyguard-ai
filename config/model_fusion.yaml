@@ -1,0 +1,78 @@
+version: "1.2.0"
+config_name: "model_fusion"
+description: "Centralized configuration for Multi-Evidence Ensemble Fusion and Decision Thresholds"
+last_updated: "2026-09-26"
+
+fusion_weights:
+  neural_reconstruction:
+    value: 0.40
+    unit: "weight"
+    type: "configurable_engineering_parameter"
+    source: "Validation Split Grid Search Optimization"
+    rationale: "Weight assigned to Causal TCN / Temporal Attention AutoEncoder reconstruction loss."
+    validation_status: "calibrated_on_validation_split"
+  drift_heuristic:
+    value: 0.35
+    unit: "weight"
+    type: "configurable_engineering_parameter"
+    source: "Validation Split Grid Search Optimization"
+    rationale: "Weight assigned to CUSUM drift and temporal step-difference indicators."
+    validation_status: "calibrated_on_validation_split"
+  spatial_consensus:
+    value: 0.25
+    unit: "weight"
+    type: "configurable_engineering_parameter"
+    source: "Validation Split Grid Search Optimization"
+    rationale: "Weight assigned to MAD-normalized spatial peer consensus z-score."
+    validation_status: "calibrated_on_validation_split"
+
+thresholds:
+  operational_anomaly_threshold:
+    value: 0.6845
+    unit: "score"
+    type: "learned_model_parameter"
+    source: "2023 Validation Split FAR Optimization (< 0.05 FAR target)"
+    rationale: "Operating point on the ROC curve achieving <= 0.0125 false alarms per station-day on pristine 2024 test data."
+    validation_status: "empirically_evaluated"
+  neural_effective_loss_offset:
+    value: 1.80
+    unit: "loss_units"
+    type: "configurable_engineering_parameter"
+    source: "AutoEncoder Normal Reconstruction Baseline"
+    rationale: "Baseline reconstruction error offset below which atmospheric sequence is considered nominal."
+    validation_status: "calibrated_on_validation_split"
+  neural_sigmoid_scale:
+    value: 2.50
+    unit: "scale"
+    type: "configurable_engineering_parameter"
+    source: "Sigmoid Probability Calibration Fit"
+    rationale: "Steepness parameter mapping neural residual loss to evidence probability."
+    validation_status: "calibrated_on_validation_split"
+  drift_metric_threshold:
+    value: 0.95
+    unit: "metric_units"
+    type: "configurable_engineering_parameter"
+    source: "Drift Heuristic Calibration"
+    rationale: "Offset parameter for mapping cumulative drift / freeze metrics to probability."
+    validation_status: "calibrated_on_validation_split"
+  drift_sigmoid_scale:
+    value: 3.00
+    unit: "scale"
+    type: "configurable_engineering_parameter"
+    source: "Drift Heuristic Calibration"
+    rationale: "Steepness parameter for drift evidence probability mapping."
+    validation_status: "calibrated_on_validation_split"
+  freeze_consecutive_count:
+    value: 5
+    unit: "consecutive_steps"
+    type: "configurable_engineering_parameter"
+    source: "WMO Sensor Freezing / Flatline Detection Standards"
+    rationale: "Number of consecutive identical float readings before flatline sensor fault is triggered."
+    validation_status: "empirically_evaluated"
+  cusum_drift_statistic_limit:
+    value: 2.50
+    unit: "sigma"
+    type: "configurable_engineering_parameter"
+    source: "Montgomery Statistical Quality Control Standard"
+    rationale: "Standard CUSUM decision interval for detecting small persistent parameter drifts (0.5 to 1.5 sigma shift)."
+    validation_status: "scientifically_established"

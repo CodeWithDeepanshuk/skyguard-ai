@@ -224,15 +224,32 @@ class ObservationStore:
             rows = connection.execute(sql, params).fetchall()
         return [self._decode_row(row) for row in rows]
 
-    def history(self, station_id: str, *, hours: int = 24, limit: int = 5000) -> list[dict[str, Any]]:
+    def history(self, station_id: str, *, hours: int = 24, limit: int = 5000, relative_to_latest: bool = True) -> list[dict[str, Any]]:
         parameter = "%s" if self.backend == "postgresql" else "?"
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=max(1, min(hours, 24 * 365)))
-        sql = f"""
-            SELECT * FROM observations
-            WHERE canonical_station_id={parameter} AND observation_timestamp_utc>={parameter}
-            ORDER BY observation_timestamp_utc ASC LIMIT {parameter}
-        """
         with self._connection() as connection:
+            if relative_to_latest:
+                row_max = connection.execute(
+                    f"SELECT MAX(observation_timestamp_utc) FROM observations WHERE canonical_station_id={parameter}",
+                    (station_id,),
+                ).fetchone()
+                val = row_max[0] if row_max else None
+                if val:
+                    if isinstance(val, str):
+                        end_dt = datetime.fromisoformat(val.replace("Z", "+00:00"))
+                    elif isinstance(val, datetime):
+                        end_dt = val if val.tzinfo else val.replace(tzinfo=timezone.utc)
+                    else:
+                        end_dt = datetime.now(timezone.utc)
+                else:
+                    end_dt = datetime.now(timezone.utc)
+            else:
+                end_dt = datetime.now(timezone.utc)
+            cutoff = end_dt - timedelta(hours=max(1, min(hours, 24 * 365)))
+            sql = f"""
+                SELECT * FROM observations
+                WHERE canonical_station_id={parameter} AND observation_timestamp_utc>={parameter}
+                ORDER BY observation_timestamp_utc ASC LIMIT {parameter}
+            """
             rows = connection.execute(sql, (station_id, cutoff.isoformat(), limit)).fetchall()
         return [self._decode_row(row) for row in rows]
 

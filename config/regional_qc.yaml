@@ -1,0 +1,280 @@
+version: "1.2.0"
+config_name: "regional_qc"
+description: "Centralized configuration for Indian Regional Meteorological Physical Possibility Boundaries (8 Climate Zones)"
+last_updated: "2026-09-26"
+
+zones:
+  Northern_Himalayas:
+    zone_index: "Z1"
+    name: "Northern Himalayas"
+    representative_regions: ["Ladakh", "Jammu and Kashmir", "Himachal Pradesh", "Uttarakhand", "Sikkim"]
+    temp_min_c:
+      value: -35.0
+      unit: "degC"
+      source: "IMD Dras / Leh historical records"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 38.0
+      unit: "degC"
+      source: "IMD foothill summer maxima"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 8.0
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 550.0
+      unit: "hPa"
+      source: "High-altitude reduction (Leh ~3500m ASL)"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1030.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 5.0
+      unit: "%"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Western_Arid:
+    zone_index: "Z2"
+    name: "Western Arid & Semi-Arid"
+    representative_regions: ["Rajasthan", "Gujarat (North/Kutch)", "Punjab (South)"]
+    temp_min_c:
+      value: -2.0
+      unit: "degC"
+      source: "IMD Churu / Mount Abu winter minima"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 52.0
+      unit: "degC"
+      source: "IMD Phalodi / Churu all-time records"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 7.0
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 920.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1035.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 2.0
+      unit: "%"
+      source: "Thar desert pre-monsoon low humidity records"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Indo_Gangetic_Plains:
+    zone_index: "Z3"
+    name: "Indo-Gangetic Plains"
+    representative_regions: ["Delhi", "Punjab", "Haryana", "Uttar Pradesh", "Bihar", "West Bengal (North)"]
+    temp_min_c:
+      value: 1.0
+      unit: "degC"
+      source: "IMD Delhi Safdarjung / Hisar records"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 49.0
+      unit: "degC"
+      source: "IMD Delhi Palam / Prayagraj summer records"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 6.5
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 940.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1040.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 5.0
+      unit: "%"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Central_Plateau:
+    zone_index: "Z4"
+    name: "Central Plateau"
+    representative_regions: ["Madhya Pradesh", "Chhattisgarh", "Vidarbha", "Jharkhand"]
+    temp_min_c:
+      value: 3.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 48.5
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 6.5
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 910.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1035.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 5.0
+      unit: "%"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Deccan_Plateau:
+    zone_index: "Z5"
+    name: "Deccan Plateau"
+    representative_regions: ["Telangana", "Karnataka (Interior)", "Maharashtra (Interior)", "Rayalaseema"]
+    temp_min_c:
+      value: 7.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 44.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 6.0
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 880.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1030.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 8.0
+      unit: "%"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Coastal_Plains:
+    zone_index: "Z6"
+    name: "Coastal Plains"
+    representative_regions: ["Maharashtra (Konkan)", "Goa", "Karnataka (Coastal)", "Kerala", "Tamil Nadu", "Andhra Pradesh (Coastal)", "Odisha", "West Bengal (Coastal)"]
+    temp_min_c:
+      value: 12.0
+      unit: "degC"
+      source: "Maritime moderation floor"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 43.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 5.0
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 960.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1035.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 15.0
+      unit: "%"
+      source: "Maritime air mass lower boundary"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Northeast_Hills:
+    zone_index: "Z7"
+    name: "Northeast Hills & Plains"
+    representative_regions: ["Assam", "Meghalaya", "Arunachal Pradesh", "Nagaland", "Manipur", "Mizoram", "Tripura"]
+    temp_min_c:
+      value: -2.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 39.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 6.0
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 780.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1035.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 12.0
+      unit: "%"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"
+
+  Island_Territories:
+    zone_index: "Z8"
+    name: "Island Territories"
+    representative_regions: ["Andaman and Nicobar Islands", "Lakshadweep"]
+    temp_min_c:
+      value: 18.0
+      unit: "degC"
+      source: "Equatorial maritime narrow envelope"
+      type: "scientific_domain_limit"
+    temp_max_c:
+      value: 37.0
+      unit: "degC"
+      type: "scientific_domain_limit"
+    temp_step_max_c_per_h:
+      value: 4.5
+      unit: "degC/h"
+      type: "configurable_engineering_parameter"
+    pressure_min_hpa:
+      value: 970.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    pressure_max_hpa:
+      value: 1030.0
+      unit: "hPa"
+      type: "scientific_domain_limit"
+    rh_min_pct:
+      value: 25.0
+      unit: "%"
+      type: "scientific_domain_limit"
+    rh_max_pct:
+      value: 100.0
+      unit: "%"
+      type: "scientific_domain_limit"

@@ -5,11 +5,13 @@
 * **Organization**: India Meteorological Department (IMD) / Ministry of Earth Sciences (MoES)
 * **Active Production Deployment**: [https://skyguard-ai-wbm9.onrender.com/](https://skyguard-ai-wbm9.onrender.com/)
 * **Codebase Version**: `v1.2.0-Production-Promoted` | **Test Suite**: 232/232 Passing (100%)
+* **Parameter Provenance Registry**: [`docs/PARAMETER_PROVENANCE.md`](docs/PARAMETER_PROVENANCE.md) | **Configurations**: [`config/`](config/)
+* **Master Verification Report**: [`artifacts/SKYGUARD_VERIFICATION_REPORT.md`](artifacts/SKYGUARD_VERIFICATION_REPORT.md)
 * **Report Date**: September 2026
 
 ---
 
-> **Note**: For the full master document with complete architectural diagrams, refer to [`docs/SKYGUARD_AI_SIH26073_COMPLETE_EXPLANATION.md`](docs/SKYGUARD_AI_SIH26073_COMPLETE_EXPLANATION.md).
+> **Note**: For the dedicated technical repository document, also see [`docs/SKYGUARD_AI_SIH26073_COMPLETE_EXPLANATION.md`](docs/SKYGUARD_AI_SIH26073_COMPLETE_EXPLANATION.md).
 
 ---
 
@@ -36,7 +38,7 @@ Across India, the India Meteorological Department (IMD) and state authorities op
 2. **Station Barometric Pressure ($\text{hPa}$)**
 3. **Relative Humidity ($\%$)**
 
-These observations feed Numerical Weather Prediction (NWP) models, flood forecasting systems, cyclone warning bulletins, agricultural advisories, and aviation alerts. However, ground stations operate in extreme, unconditioned outdoor environments—ranging from the high-altitude cold deserts of Ladakh ($-35^\circ\text{C}$) to the scorching arid sands of Rajasthan ($+50^\circ\text{C}$), high-humidity coastal spray in Mumbai and Chennai, and torrential monsoon downpours in Northeast India.
+These observations feed Numerical Weather Prediction (NWP) models, flood forecasting systems, cyclone warning bulletins, agricultural advisories, and aviation alerts. However, ground stations operate in extreme, unconditioned outdoor environments—ranging from the high-altitude cold deserts of Ladakh ($-35^\circ\text{C}$) to the scorching arid sands of Rajasthan ($+52^\circ\text{C}$), high-humidity coastal spray in Mumbai and Chennai, and torrential monsoon downpours in Northeast India.
 
 Under these conditions, physical sensors frequently suffer from hardware degradation and transmission issues:
 * **Transient Voltage Spikes & Noise**: Electrical surges causing single-point false readings.
@@ -54,15 +56,15 @@ SkyGuard AI completely re-engineers automated weather station quality control by
 1. **Concentric Multi-Radius Spatial Neighbor QC** (<20 km, 20–50 km, 50–100 km) with physical elevation lapse rate corrections ($-6.5^\circ\text{C}/\text{km}$) and coastal boundary buffers.
 2. **Synoptic Mesoscale Coherence Detection**: Cross-station voting that recognizes genuine weather fronts and suppresses false hardware alarms.
 3. **Deep Spatio-Temporal Neural Networks**: PyTorch Causal Dilated TCNs and Temporal Attention Autoencoders modeling atmospheric diurnal dynamics.
-4. **Calibrated Gradient-Boosted Trees (LightGBM)**: Classifying multivariate fault signatures into 12 distinct physical root causes with explainable feature contributions.
+4. **Calibrated Gradient-Boosted Trees (LightGBM)**: Classifying multivariate fault signatures into distinct physical root causes over 108 engineered features.
 5. **Continuous Indian Climate Envelope**: Dynamic regional physical possibility boundaries across India's 8 distinct climatic zones.
 
 ```
 +--------------------------------------------------------------------------------------------------+
 |                                     SKYGUARD AI CORE PHILOSOPHY                                  |
 |                                                                                                  |
-|   "NO STATIC BASELINES. ZERO HARDCODED NUMBERS. ALL DECISIONS ARE GROUNDED IN CONCENTRIC         |
-|    SPATIAL NEIGHBOR CONSENSUS, ATMOSPHERIC THERMODYNAMICS, AND CAUSAL MACHINE LEARNING."         |
+|   CENTRALIZED VERSIONED CONFIGURATION ARCHITECTURE. ALL DECISIONS ARE GROUNDED IN CONCENTRIC     |
+|   SPATIAL NEIGHBOR CONSENSUS, ATMOSPHERIC THERMODYNAMICS, AND CAUSAL MACHINE LEARNING.           |
 +--------------------------------------------------------------------------------------------------+
 ```
 
@@ -70,22 +72,22 @@ SkyGuard AI completely re-engineers automated weather station quality control by
 
 ## 2. Current Project Completion Status (Feature-by-Feature Audit)
 
-The project stands at **~94% overall operational completeness** for SIH 26073, with every mandatory requirement implemented, verified through 232 unit/integration tests, and deployed to production.
+The project stands at **~95% overall operational completeness** for SIH 26073, with every mandatory requirement implemented, verified through 232 unit/integration tests, and deployed to production.
 
 | Requirement ID | SIH 26073 Mandatory Requirement | Implementation Details in SkyGuard AI | Completion % | Operational Verification |
 | :--- | :--- | :--- | :---: | :--- |
 | **REQ-01** | **Strict Three-Parameter Input** | Strictly consumes Temperature ($^\circ\text{C}$), Pressure ($\text{hPa}$), and Relative Humidity ($\%$). Enforced by `SkyGuard-P10-compliant` contract; dew point and calendar shortcuts strictly prohibited by test suite. | **100%** | `tests/test_baselines.py`, `tests/test_phase10_policy.py` |
-| **REQ-02** | **Concentric Spatial Neighbor QC** | `MultiRadiusSpatialQcEngine` evaluating Tier 1 (<20 km, $\le 2^\circ\text{C}$), Tier 2 (20–50 km, $\le 3.5^\circ\text{C}$), and Tier 3 (50–100 km, $\le 5^\circ\text{C}$) with elevation lapse rate and coastal moderation. | **100%** | `src/skyguard/spatial/spatial_qc.py`, `tests/test_spatial_regional_qc.py` |
-| **REQ-03** | **Indian Regional Physical Possibility** | Authentic bounds across 8 Indian climate zones (`Northern Himalayas`, `Western Arid`, `Indo-Gangetic Plains`, `Deccan Plateau`, `Coastal Plains`, etc.) with elevation-aware barometric pressure scaling. | **100%** | `src/skyguard/quality/indian_regional_bounds.py` |
+| **REQ-02** | **Concentric Spatial Neighbor QC** | `MultiRadiusSpatialQcEngine` evaluating Tier 1 (<20 km, $\le 2^\circ\text{C}$), Tier 2 (20–50 km, $\le 3.5^\circ\text{C}$), and Tier 3 (50–100 km, $\le 5^\circ\text{C}$) with elevation lapse rate and coastal moderation. Parameters centralized in `config/spatial_qc.yaml`. | **100%** | `src/skyguard/spatial/spatial_qc.py`, `tests/test_spatial_regional_qc.py` |
+| **REQ-03** | **Indian Regional Physical Possibility** | Authentic bounds across 8 Indian climate zones (`Northern Himalayas`, `Western Arid`, `Indo-Gangetic Plains`, `Deccan Plateau`, `Coastal Plains`, etc.) with elevation-aware barometric pressure scaling. Centralized in `config/regional_qc.yaml`. | **100%** | `src/skyguard/quality/indian_regional_bounds.py` |
 | **REQ-04** | **Genuine Weather vs Fault Separation** | Synoptic front coherence algorithm ($\ge 50\%$ agreement in 50–100 km ring suppresses false alarm and yields `GENUINE_WEATHER_EVENT`). | **100%** | `src/skyguard/spatial/spatial_qc.py#L274-L290` |
 | **REQ-05** | **Deep Neural Network Autoencoder** | Dual-Branch Causal TCN + Multi-Head Self-Attention AutoEncoder reconstructing normal atmospheric diurnal cycles; includes pure NumPy fallback for lightweight cloud instances. | **100%** | `src/skyguard/models/deep_ensemble.py` |
-| **REQ-06** | **Real-Time Anomaly Inference API** | Sub-3ms inference latency; endpoint `/api/anomaly/predict` returning evidence scores, tier breakdowns, and calibrated probabilities. | **100%** | Deployed on Render; verified live via HTTP POST |
-| **REQ-07** | **Zero Static Baseline Elimination** | Eradicated arbitrary hardcoded spans (`34.0–38.5°C`). Replaced with live buddy consensus; normal ambient readings (e.g. 24.5°C) evaluate cleanly as `NORMAL`. | **100%** | `dashboard/index.html`, `dashboard/app.js` |
-| **REQ-08** | **Explainable Root-Cause Classification** | 12 physical fault classes (`temperature_spike`, `barometer_drift`, `humidity_saturation`, `sensor_flatline`, `transport_gap`, etc.) with natural-language operator rationales. | **100%** | `src/skyguard/incidents/diagnosis.py` |
-| **REQ-09** | **Sensor Health & Drift Tracking** | 7-day rolling health index, CUSUM drift accumulation, EWMA slope deviation, and proactive maintenance triage recommendations. | **92%** | `src/skyguard/incidents/drift.py`, `src/skyguard/incidents/state.py` |
-| **REQ-10** | **Interactive Visualization Dashboard** | High-performance MapLibre GL WebGL canvas showing 1,153 Indian stations, concentric radius circles, live telemetry charts, and mobile PWA responsive layout. | **95%** | Deployed at `https://skyguard-ai-wbm9.onrender.com/` |
-| **REQ-11** | **Causal Advisory Imputation** | Environmental lapse-rate buddy regression providing advisory replacement intervals for downstream NWP pipelines. | **90%** | `src/skyguard/correction/estimators.py` |
-| **REQ-12** | **Offline Replay & Testing Suite** | SQLite/Postgres replay database, 578,448 historical observations (2022–2024), 232 test cases, and Colab GPU training notebooks. | **95%** | `notebooks/SkyGuard_Real_AWS_Training_2022_2024.ipynb` |
+| **REQ-06** | **Real-Time Anomaly Inference API** | Measured **~3.16 ms median CPU latency** (p95: 5.17 ms, 288 evals/sec); endpoint `/api/anomaly/predict` returning evidence scores, tier breakdowns, and calibrated probabilities. | **100%** | `scripts/benchmark_inference.py`, `artifacts/inference_benchmark.json` |
+| **REQ-07** | **Zero Static Baseline Elimination** | Eradicated arbitrary hardcoded numbers. All radii, tolerances, and thresholds managed through versioned YAML files in `config/` with full provenance documented in `docs/PARAMETER_PROVENANCE.md`. | **100%** | `config/`, `src/skyguard/config.py` |
+| **REQ-08** | **Explainable Root-Cause Classification** | Distinct physical fault classes (`temperature_spike`, `barometer_drift`, `humidity_saturation`, `sensor_flatline`, `transport_gap`, etc.) with Fault Signature Hypotheses and technician actions. | **100%** | `src/skyguard/incidents/diagnosis.py`, `artifacts/fault_classes.json` |
+| **REQ-09** | **Sensor Health & Drift Tracking** | 7-day rolling health index, CUSUM drift accumulation, EWMA slope deviation, and proactive maintenance triage recommendations configured in `config/health.yaml`. | **95%** | `src/skyguard/incidents/drift.py`, `src/skyguard/incidents/state.py` |
+| **REQ-10** | **Interactive Visualization Dashboard** | High-performance MapLibre GL WebGL canvas showing 1,153 Indian stations, concentric radius circles, live telemetry charts, and mobile PWA responsive layout. Includes dedicated `/validation` evidence page. | **96%** | Deployed at `https://skyguard-ai-wbm9.onrender.com/` |
+| **REQ-11** | **Causal Advisory Imputation** | Environmental lapse-rate buddy regression providing advisory replacement intervals for downstream NWP pipelines. | **92%** | `src/skyguard/correction/estimators.py` |
+| **REQ-12** | **Offline Replay & Testing Suite** | SQLite/Postgres replay database, 578,448 historical observations (2022–2024), 232 test cases, and Colab GPU training notebooks. | **100%** | `scripts/verify_skyguard.py`, `artifacts/SKYGUARD_VERIFICATION_REPORT.md` |
 
 ---
 
@@ -102,55 +104,48 @@ flowchart TD
     end
 
     subgraph Ingestion_Engine ["2. Normalization & Transport Gateway"]
-        B1["Transport Gap & Heartbeat Detector<br/>(Missing packets != Hardware faults)"]
-        B2["Format Harmonizer & Coordinate Resolver<br/>(Lat, Lon, Elevation, Climate Zone)"]
+        B1["Ingestion Pipeline & Router<br/>(hourly_imd_pipeline.py)"]
+        B2["Three-Parameter Extractor<br/>(Temp, Press, RH)"]
+        B3["Metadata Enrichment<br/>(Elevation, Region, Coastal Flag)"]
+        A1 & A2 & A3 & A4 --> B1 --> B2 --> B3
     end
 
-    subgraph Quality_Control ["3. Concentric Multi-Radius Spatial QC Engine"]
-        C1["Indian Regional Physical Bounds<br/>(8 Climate Zones, Elevation Adjusted)"]
-        C2["Concentric Ring Partitioner<br/>(Tier 1 < 20km, Tier 2 20-50km, Tier 3 50-100km)"]
-        C3["Environmental Lapse Rate Adjuster<br/>(-6.5 C / 1000m altitude correction)"]
-        C4["Coastal vs Inland Boundary Buffer<br/>(+1.5 C maritime moderation tolerance)"]
-        C5["Synoptic Weather Front Coherence<br/>(>=50% agreement -> Suppress false alarms)"]
+    subgraph Quality_Control ["3. Multi-Stage Quality Control Engine"]
+        C1["Stage 1: Indian Regional Physical Bounds<br/>(8 Climatic Envelopes + Altimeter Scaling)"]
+        C2["Stage 2: Concentric Spatial Buddy QC<br/>(<20km, 20-50km, 50-100km + Lapse Rate)"]
+        C3["Stage 3: Synoptic Coherence Detector<br/>(Cross-Station Front Agreement Check)"]
+        B3 --> C1 --> C2 --> C3
     end
 
-    subgraph AI_Ensemble ["4. Deep Spatio-Temporal Neural & ML Ensemble"]
-        D1["PyTorch Causal TCN & Attention Autoencoder<br/>(Atmospheric Diurnal Cycle Reconstruction)"]
-        D2["LightGBM Gradient-Boosted Classifier<br/>(12 Multivariate Fault Patterns)"]
-        D3["Robust Statistical Median Consensus<br/>(MAD & Z-Score Spatial Outlier Scoring)"]
-        D4["Platt Sigmoid Probability Calibration<br/>(Empirical Reliability Curve)"]
+    subgraph AI_ML_Engine ["4. Deep Spatio-Temporal Neural & Tree Ensemble"]
+        D1["PyTorch Causal TCN + Self-Attention<br/>(Diurnal Cycle Reconstruction Loss)"]
+        D2["LightGBM 108-Feature Classifier<br/>(Platt Calibrated Posterior Probabilities)"]
+        D3["CUSUM & Non-Linear Drift Tracker<br/>(Cumulative Degradation State Machine)"]
+        D4["Ensemble Fusion Layer<br/>Score = 0.40*Neural + 0.35*Drift + 0.25*Spatial"]
+        C3 --> D1 & D2 & D3 --> D4
     end
 
-    subgraph Incident_Lifecycle ["5. Incident Triage & Advisory Engine"]
-        E1["Decision Logic<br/>(NORMAL / SENSOR_FAULT / GENUINE_WEATHER)"]
-        E2["Root-Cause Diagnostic Engine<br/>(Plain English Operator Explanations)"]
-        E3["Sensor Health & CUSUM Drift Tracker<br/>(7-Day Projection & Maintenance Priority)"]
-        E4["Causal Advisory Imputation<br/>(Clean value substitution for NWP models)"]
+    subgraph Decision_Output ["5. Operational Dispatch & Presentation"]
+        E1["Decision: NORMAL<br/>(Green Pill: Consensus Confirmed)"]
+        E2["Decision: GENUINE_WEATHER_EVENT<br/>(Blue Pill: Squall/Thunderstorm Front)"]
+        E3["Decision: SENSOR_FAULT<br/>(Red Pill: Fault Signature Hypothesis)"]
+        E4["Proactive Health & Incident Tracker<br/>(7-Day EWMA Maintenance Horizon)"]
+        D4 --> E1 & E2 & E3 --> E4
     end
 
-    subgraph Presentation_Layer ["6. Command Centre WebGL Platform"]
-        F1["MapLibre WebGL National Canvas<br/>(Color-coded status of 1,153 stations)"]
-        F2["Real-Time Concentric Telemetry Drawer<br/>(Tiers 1, 2, 3 Peer Metrics & Residuals)"]
-        F3["Historical Sensor Trace & Trend Charts<br/>(Canvas-rendered time-series curves)"]
-        F4["Automated PDF/Excel/JSON Incident Export<br/>(Field technician dispatch workbooks)"]
+    subgraph Delivery_Channels ["6. Web, Mobile & Enterprise Integration"]
+        F1["MapLibre GL Live Command Centre<br/>(1,153 Stations + Concentric Drawers)"]
+        F2["FastAPI Production REST Endpoints<br/>(/api/anomaly/predict, /api/verification)"]
+        F3["Downstream NWP Ingestion Stream<br/>(Flagged & Advisory Corrected Feed)"]
+        E4 --> F1 & F2 & F3
     end
-
-    A1 & A2 & A3 & A4 --> B1 & B2
-    B1 & B2 --> C1 & C2
-    C2 --> C3 --> C4 --> C5
-    C1 & C5 --> D1 & D2 & D3
-    D1 & D2 & D3 --> D4
-    D4 --> E1 --> E2 --> E3 --> E4
-    E1 & E2 & E3 & E4 --> F1 & F2 & F3 & F4
 ```
 
----
-
-### 3.2 Spatial Neighbor Consensus & Lapse Rate Sequence
+### 3.2 Real-Time Decision Sequence Diagram
 ```mermaid
 sequenceDiagram
     autonumber
-    actor TargetStation as Target Station S0 (e.g. Delhi AWS)
+    actor TargetStation as Target AWS (e.g. Delhi Safdarjung)
     participant Engine as MultiRadiusSpatialQcEngine
     participant RegionalKB as Indian Regional Bounds KB
     participant Neighbors as Concentric Neighbors Ring
@@ -159,7 +154,7 @@ sequenceDiagram
 
     TargetStation->>Engine: Send (T=30.0 C, P=1005 hPa, RH=65%, Elev=216m)
     Engine->>RegionalKB: Query Climate Zone ("Indo-Gangetic Plains")
-    RegionalKB-->>Engine: Bounds: T[-5 to 50 C], P[950-1045 hPa], RH[5-100%]
+    RegionalKB-->>Engine: Bounds: T[-1.0 to 49.5 C], P[930-1034 hPa], RH[8-100%]
     Note over Engine: Observation is physically possible
 
     Engine->>Neighbors: Query peers within 100 km radius
@@ -212,11 +207,11 @@ The foundational breakthrough of SkyGuard AI is replacing arbitrary static basel
                                      +-----------------------+
 ```
 
-### 4.1 Concentric Ring Specifications
+### 4.1 Concentric Ring Specifications (from `config/spatial_qc.yaml`)
 
 | Ring Identifier | Distance Boundary | Physical Atmospheric Regime | Temperature Tolerance ($\Delta T_{\text{tol}}$) | Expected Fault Behavior |
 | :--- | :--- | :--- | :---: | :--- |
-| **Tier 1 (Immediate)** | **$0\text{ to }20\text{ km}$** | Microscale & Local Boundary Layer | **$2.0^\circ\text{C}$** | At identical elevation, stations under 20 km must agree within $1\text{–}2^\circ\text{C}$. A difference $\ge 4\text{–}5^\circ\text{C}$ (e.g. $30^\circ\text{C}$ vs $25^\circ\text{C}$) triggers an immediate **`SENSOR_FAULT`**. |
+| **Tier 1 (Immediate)** | **$0\text{ to }20\text{ km}$** | Microscale & Local Boundary Layer | **$2.0^\circ\text{C}$** | At identical elevation, stations under 20 km must agree within $1\text{–}2^\circ\text{C}$. A difference $\ge 4\text{–}5^\circ\text{C}$ triggers a **`SENSOR_FAULT`**. |
 | **Tier 2 (Local)** | **$20\text{ to }50\text{ km}$** | Mesoscale-$\gamma$ convective scale | **$3.5^\circ\text{C}$** | Provides secondary peer validation if no station is present in Tier 1. Prevents single-station local microclimate false triggers. |
 | **Tier 3 (Regional)** | **$50\text{ to }100\text{ km}$** | Mesoscale-$\beta$ synoptic scale | **$5.0^\circ\text{C}$** | Outer constraint boundary. Evaluates regional consistency and synoptic weather front propagation. |
 
@@ -236,7 +231,7 @@ $$T_{\text{neighbor}}^{\text{adjusted}} = T_{\text{neighbor}}^{\text{raw}} + \Ga
 
 ### 4.3 Coastal vs. Inland Maritime Boundary Moderation
 Coastal stations experience diurnal sea-breeze fronts that penetrate inland between 5 km and 25 km, producing rapid cooling of $2\text{–}4^\circ\text{C}$ and sharp humidity jumps that inland stations do not experience. 
-SkyGuard AI detects when a target-neighbor pair straddles a coastal boundary and applies a **$+1.5^\circ\text{C}$ tolerance buffer** and down-weights cross-boundary influence in the inverse-distance calculation:
+SkyGuard AI detects when a target-neighbor pair straddles a coastal boundary and applies a **$+1.5^\circ\text{C}$ tolerance buffer** and down-weights cross-boundary influence:
 
 $$w_i = \frac{1}{\max(d_i, 2.0)^{1.5}} \times \begin{cases} 0.6 & \text{if cross-coastal} \\ 1.0 & \text{if homogeneous terrain} \end{cases}$$
 
@@ -252,18 +247,18 @@ $$\text{Coherence Ratio} = \frac{\sum_{i \in \text{Tier 3}} \mathbb{I}(\Delta T_
 
 ## 5. Indian Regional Physical Possibility Bounds (8 Climate Zones)
 
-India features 8 distinct climatic regimes with drastically different meteorological extremes. A single nationwide range check (e.g. $-10^\circ\text{C}$ to $50^\circ\text{C}$) is incapable of catching a broken heater in the Himalayas or a flatlined sensor in the Thar desert.
+India features 8 distinct climatic regimes with drastically different meteorological extremes. A single nationwide range check is incapable of catching a broken heater in the Himalayas or a flatlined sensor in the Thar desert.
 
-SkyGuard AI implements localized meteorological envelopes in [src/skyguard/quality/indian_regional_bounds.py](file:///c:/Users/deepa/OneDrive/Desktop/Sih%2073/src/skyguard/quality/indian_regional_bounds.py):
+Configured in [`config/regional_qc.yaml`](config/regional_qc.yaml) and verified in [`src/skyguard/quality/indian_regional_bounds.py`](src/skyguard/quality/indian_regional_bounds.py):
 
 | Zone Index | Climate Zone Name | Representative Regions | Valid Temperature ($^\circ\text{C}$) | Max $\Delta T$ Hourly Rate | Station Barometric Pressure ($\text{hPa}$) | Relative Humidity ($\%$) |
 | :---: | :--- | :--- | :---: | :---: | :---: | :---: |
 | **Z1** | **Northern Himalayas** | Ladakh, J&K, Himachal Pradesh, Uttarakhand | $-35.0\text{ to }+38.0$ | $8.0^\circ\text{C}/\text{h}$ | $550.0\text{ to }1030.0$ *(High altitude)* | $5.0\text{ to }100.0$ |
 | **Z2** | **Western Arid & Semi-Arid** | Rajasthan (Thar), North Gujarat | $-2.0\text{ to }+52.0$ | $7.0^\circ\text{C}/\text{h}$ | $920.0\text{ to }1035.0$ | $2.0\text{ to }100.0$ *(Very low min)* |
-| **Z3** | **Indo-Gangetic Plains** | Punjab, Haryana, Delhi, UP, Bihar, WB | $+1.0\text{ to }+49.0$ | $6.5^\circ\text{C}/\text{h}$ | $940.0\text{ to }1040.0$ | $5.0\text{ to }100.0$ |
+| **Z3** | **Indo-Gangetic Plains** | Punjab, Haryana, Delhi, UP, Bihar, WB | $+1.0\text{ to }+49.0$ | $6.5^\circ\text{C}/\text{h}$ | $930.0\text{ to }1034.0$ | $8.0\text{ to }100.0$ |
 | **Z4** | **Central Plateau** | MP, Chhattisgarh, Vidarbha | $+3.0\text{ to }+48.5$ | $6.5^\circ\text{C}/\text{h}$ | $910.0\text{ to }1035.0$ | $5.0\text{ to }100.0$ |
 | **Z5** | **Deccan Plateau** | Telangana, Karnataka, Interior Maharashtra | $+7.0\text{ to }+44.0$ | $6.0^\circ\text{C}/\text{h}$ | $880.0\text{ to }1030.0$ | $8.0\text{ to }100.0$ |
-| **Z6** | **Coastal Plains** | Mumbai, Konkan, Chennai, Odisha, Kerala | $+12.0\text{ to }+43.0$ | $5.0^\circ\text{C}/\text{h}$ | $960.0\text{ to }1035.0$ | $15.0\text{ to }100.0$ *(Maritime floor)* |
+| **Z6** | **Coastal Plains** | Mumbai, Konkan, Chennai, Odisha, Kerala | $+12.0\text{ to }+43.0$ | $5.0^\circ\text{C}/\text{h}$ | $915.0\text{ to }1035.0$ | $15.0\text{ to }100.0$ *(Maritime floor)* |
 | **Z7** | **Northeast Hills** | Assam, Meghalaya, Arunachal, Nagaland | $-2.0\text{ to }+39.0$ | $6.0^\circ\text{C}/\text{h}$ | $780.0\text{ to }1035.0$ | $12.0\text{ to }100.0$ |
 | **Z8** | **Island Territories** | Andaman & Nicobar, Lakshadweep | $+18.0\text{ to }+37.0$ | $4.5^\circ\text{C}/\text{h}$ | $970.0\text{ to }1030.0$ | $25.0\text{ to }100.0$ *(Equatorial narrow)* |
 
@@ -272,7 +267,7 @@ Because station pressure drops exponentially with altitude according to the baro
 
 $$P_{\text{station\_min}} = P_{\text{MSL\_min}} \times \left(1 - \frac{0.0065 \times h_{\text{ASL}}}{288.15}\right)^{5.25588}$$
 
-This prevents false pressure alarms at high-altitude stations like Leh ($3,500\text{ m}$ ASL, typical pressure $\sim 670\text{ hPa}$) and Ooty ($2,240\text{ m}$ ASL, $\sim 780\text{ hPa}$).
+This prevents false pressure alarms at high-altitude stations like Leh ($3,500\text{ m}$ ASL, typical pressure $\sim 670\text{ hPa}$) and Ooty ($2,240\text{ m}$ ASL, $\sim 780\text{ hPa}$). Stations reporting Mean Sea Level Pressure (`slp` / `mslp`) are automatically evaluated against the MSLP envelope.
 
 ---
 
@@ -295,7 +290,7 @@ graph LR
     end
 
     subgraph GBDT_Stream ["Stream 2: LightGBM Multivariate Classifier"]
-        TREES["300 Boosted Decision Trees<br/>(16 Causal Statistical Features)"]
+        TREES["100 Boosted Decision Trees<br/>(108 Engineered Features)"]
         CALIB["Platt Sigmoid Calibration<br/>(Reliability Scaling)"]
         TREES --> CALIB
     end
@@ -307,7 +302,7 @@ graph LR
     end
 
     subgraph Fusion_Layer ["Multi-Evidence Calibrated Fusion"]
-        FUSE["Weighted Evidence Fusion<br/>Score = 0.40*Neural + 0.35*Tree + 0.25*Spatial"]
+        FUSE["Weighted Evidence Fusion<br/>Score = 0.40*Neural + 0.35*Drift + 0.25*Spatial"]
         DECISION["Operational Decision Engine<br/>NORMAL | SENSOR_FAULT | GENUINE_WEATHER"]
     end
 
@@ -321,56 +316,59 @@ graph LR
 ```
 
 ### 6.1 PyTorch Causal TCN & Temporal Self-Attention AutoEncoder
-* **Purpose**: Models the normal diurnal atmospheric harmonic wave (temperature peaking at 14:00, semi-diurnal barometric pressure tide peaking at 10:00 and 22:00, and relative humidity inversely mirroring temperature).
+* **Purpose**: Models the normal diurnal atmospheric harmonic wave (temperature peaking in early afternoon, semi-diurnal barometric pressure tide, and relative humidity inversely mirroring temperature).
 * **Architecture**:
   * **Encoder**: 3-layer Dilated Causal 1D Convolution ($d \in \{1, 2, 4\}$) with causal left-padding so the future is never leaked into the past.
   * **Temporal Attention**: 4-head Multi-Head Self-Attention over the 24-hour sequence context.
   * **Latent Bottleneck**: Compresses 6 input channels into a 16-dimensional latent representation.
   * **Decoder**: Symmetric transposed convolution reconstructing expected nominal signals.
-* **Dual-Runtime Support**: Implemented in PyTorch for GPU/server training, with a lightweight, dependency-free pure NumPy inference kernel that guarantees instant, zero-crash execution on constrained cloud containers (e.g. Render 512MB RAM tier).
+* **Dual-Runtime Support**: PyTorch for GPU/server training, with a pure NumPy inference kernel that guarantees deterministic execution on constrained cloud containers.
 
 ### 6.2 Platt Calibrated LightGBM Decision Forest
-* **Features Used (Strictly 3-parameter derived)**:
-  * Robust Rolling Z-Scores (24h window).
-  * EWMA residuals and slope tendencies (6h and 24h).
+* **Features Used (108 engineered features strictly derived from 3 parameters)**:
+  * Robust Rolling Z-Scores (6h, 12h, 24h, 48h windows).
+  * EWMA residuals and slope tendencies.
   * Concentric spatial neighbor residuals.
   * CUSUM positive and negative drift sums.
   * Run-length counter of repeated float readings (flatline detector).
 * **Sigmoid Probability Calibration**:
-  Raw classifier outputs are mapped to true empirical probabilities using Platt Sigmoid Scaling (`CalibratedClassifierCV(method="sigmoid")`), ensuring an evidence score of $0.85$ corresponds to an $85\%$ true positive rate under cross-validation.
+  Raw classifier margins are mapped to true empirical probabilities using Platt Sigmoid Scaling (`CalibratedClassifierCV(method="sigmoid")`).
+
+### 6.3 Measured Algorithmic Compute Latency (from `artifacts/inference_benchmark.json`)
+* **1,000 Continuous In-Process CPU Runs**:
+  * **Median Latency**: **`3.16 ms`**
+  * **Mean Latency**: `3.46 ms` (±`0.92 ms`)
+  * **95th Percentile (p95)**: **`5.17 ms`**
+  * **Throughput**: **`288.3 evaluations/sec`**
+  * **Architectural Context**: In-process execution satisfies sub-5ms operational budgets. Public cloud network transit to Render accounts for ~200–450 ms round-trip.
 
 ---
 
 ## 7. Explainable Root-Cause Diagnosis & Incident Management
 
-Meteorological station managers cannot act on a black-box anomaly score. When a sensor fails, technician dispatch requires knowing:
-1. **Which exact transducer failed?** (Temperature probe, Barometer, Hygrometer, or GPRS modem).
-2. **What is the failure mechanism?** (Spike, drift, open-circuit freeze, or packet loss).
-3. **What is the recommended operational action?**
-
-SkyGuard AI implements 12 distinct physical fault classes with automated plain-language explanations:
+Automated server software cannot physically verify transducer continuity or wiring health. Therefore, SkyGuard AI adopts a scientifically defensible operational framing: **Fault Signature Hypotheses** paired with **actionable technician guidance**.
 
 ```mermaid
 flowchart TD
     Start["Observation Received"] --> CheckPhys{"Violates Indian<br/>Regional Physical Bounds?"}
     
     CheckPhys -- Yes --> PType{"Which Variable?"}
-    PType -- Temperature --> F1["temperature_out_of_bounds<br/>Action: Replace Platinum RTD Probe"]
-    PType -- Pressure --> F2["pressure_out_of_bounds<br/>Action: Check Piezoresistive Port & Vent"]
-    PType -- Humidity --> F3["humidity_out_of_bounds<br/>Action: Replace Capacitive RH Element"]
+    PType -- Temperature --> F1["temperature_physical_bounds_violation<br/>Hypothesis: Temperature Domain Violation<br/>Action: Check Wiring Terminals & Reference Voltage"]
+    PType -- Pressure --> F2["pressure_physical_bounds_violation<br/>Hypothesis: Pressure Domain Violation<br/>Action: Inspect Barometer Vent Tube & Test vs PTB330"]
+    PType -- Humidity --> F3["humidity_physical_bounds_violation<br/>Hypothesis: Humidity Domain Violation<br/>Action: Inspect Filter Cap & Test vs Psychrometer"]
 
-    CheckPhys -- No --> CheckFreeze{"Repeated identical float<br/>value for >= 4 steps?"}
-    CheckFreeze -- Yes --> F4["sensor_flatline_freeze<br/>Action: Power-cycle ADC / Check Serial Bus"]
+    CheckPhys -- No --> CheckFreeze{"Repeated identical reading<br/>for >= 5 steps?"}
+    CheckFreeze -- Yes --> F4["stuck_sensor_flatline<br/>Hypothesis: ADC Freeze / Bus Jam<br/>Action: Inspect Logger Input Channel & Supply Voltage"]
 
-    CheckFreeze -- No --> CheckSpatial{"Concentric Spatial Rings<br/>Tolerance Exceeded?"}
+    CheckPhys -- No --> CheckSpatial{"Concentric Spatial Rings<br/>Tolerance Exceeded?"}
     CheckSpatial -- Yes --> CheckWeather{"Mesoscale Coherence<br/>Ratio >= 50%?"}
     CheckWeather -- Yes --> W1["GENUINE_WEATHER_EVENT<br/>Status: Nominal Weather Front (Alert Suppressed)"]
     CheckWeather -- No --> CheckRate{"Step Delta > Max Rate?"}
-    CheckRate -- Yes --> F5["temperature_spike_spatial_discrepancy<br/>Action: Inspect Wiring for Intermittent Ground Fault"]
-    CheckRate -- No --> F6["spatial_neighbor_discrepancy<br/>Action: Schedule Recalibration Inspection"]
+    CheckRate -- Yes --> F5["transient_spike_burst<br/>Hypothesis: Transient Induced Spike<br/>Action: Inspect Surge Modules & Cable Shielding"]
+    CheckRate -- No --> F6["temperature_spatial_outlier<br/>Hypothesis: Radiation Shield Deficiency<br/>Action: Inspect Louvers & Test vs Reference Thermometer"]
 
     CheckSpatial -- No --> CheckDrift{"CUSUM Drift Statistic > 2.5?"}
-    CheckDrift -- Yes --> F7["sensor_calibration_drift<br/>Action: Clean & Re-zero Transducer"]
+    CheckDrift -- Yes --> F7["calibration_drift_bias<br/>Hypothesis: Transducer Calibration Drift<br/>Action: Perform Field Calibration vs Travelling Standard"]
     CheckDrift -- No --> Normal["NOMINAL CONSENSUS<br/>Status: Normal Observation (Pill: Green)"]
 ```
 
@@ -378,14 +376,14 @@ flowchart TD
 
 ## 8. Sensor Degradation Tracking & Proactive Maintenance
 
-Traditional AWS maintenance is purely reactive: a station stops sending data, and weeks later a field technician visits the site. SkyGuard AI provides **proactive sensor health tracking**:
+Traditional AWS maintenance is purely reactive: a station stops sending data, and weeks later a field technician visits the site. SkyGuard AI provides **proactive sensor health tracking** configured in [`config/health.yaml`](config/health.yaml):
 
 1. **Daily Health Score ($0\text{–}100$)**:
    $$\text{Health Index} = 100 - (\text{Drift Penalty} + \text{Residual Variance Penalty} + \text{Missing Packet Penalty})$$
-2. **7-Day Trend Projection**: Linear least-squares regression over the 7-day health moving average.
+2. **7-Day Trend Projection**: Linear regression over the 7-day health moving average.
 3. **Maintenance Horizon Indicator**:
-   * **Healthy ($> 85$)**: Routine monitoring.
-   * **Degrading ($60\text{–}85$)**: Low-level calibration drift detected; scheduled maintenance recommended within 14 days.
+   * **Healthy ($\ge 85$)**: Routine monitoring.
+   * **Degrading ($60\text{–}84$)**: Low-level calibration drift detected; scheduled maintenance recommended within 14 days.
    * **Critical ($< 60$)**: Multiple QC checks failing; immediate technician dispatch required.
 
 ---
@@ -394,14 +392,20 @@ Traditional AWS maintenance is purely reactive: a station stops sending data, an
 
 To guarantee scientific authenticity, SkyGuard AI completely avoids artificial or synthetic dataset shortcuts:
 
-* **Official Historical Training Dataset**: NOAA ISD / WMO GTS Indian Surface Meteorological Network.
-* **Volume**: 578,448 authentic historical observations across 24 core reference stations over 36 continuous months (January 2022 through December 2024).
-* **Strict Chronological Holdout (Zero Data Leakage)**:
-  * **Training Split (18 Months)**: 2022-01-01 to 2023-06-30 (~290,000 observations).
-  * **Validation Split (6 Months)**: 2023-07-01 to 2023-12-31 (~95,000 observations).
-  * **Untouched Benchmark Holdout (12 Months)**: 2024-01-01 to 2024-12-31 (~182,000 observations).
-* **Spatial Held-out Test**: 4 entire stations were withheld during all training to prove zero-shot spatial generalization to new weather stations.
-* **Operational False Alarm Rate on Pristine 2024 Data**: **0.0000 false alarms per station-day** achieved under nominal meteorological consensus.
+* **Official Historical Training Dataset**: NOAA Integrated Surface Database (ISD) Indian stations exchanged via WMO GTS.
+* **Volume**: **578,448 authentic historical observations** across 24 reference stations over 36 continuous months (January 2022 through December 2024). File size: 109.35 MB.
+* **AWS Master Catalog**: **1,153 stations** across 37 Indian states and Union Territories in `data/stations/imd_aws_master.csv`.
+* **Spatial Holdout Isolation (Zero Spatial Leakage)**:
+  * Exactly **4 entire stations** ($32,340$ rows) withheld from all model training:
+    * `42131099999` (HISSAR): 8,316 rows
+    * `43086099999` (RAMGUNDAM): 8,478 rows
+    * `43233099999` (CHITRADURGA): 7,338 rows
+    * `43331099999` (M.O. PONDICHERRY): 8,208 rows
+* **Empirical False Alarm Rate (FAR)** (from `artifacts/false_alarm_evaluation.json`):
+  * **Deterministic Physical Bounds Filter**: **`0.000391`** ($\approx 0.0000$ on certified physical envelope).
+  * **Complete Multi-Evidence Ensemble**: **`0.0028` false alarms per station-day** (1 false alarm every $\sim 354$ station-days across 1,416 station-days evaluated).
+  * **Precision**: **`86.21%`** on spatial holdout benchmark.
+* **Offline Synthetic Benchmark Data**: Splits in `data/labelled/` (`station_test.csv`, `time_test.csv`) are strictly designated as **algorithmic comparator benchmarks**, not certified IMD field technician failure logs.
 
 ---
 
@@ -409,49 +413,54 @@ To guarantee scientific authenticity, SkyGuard AI completely avoids artificial o
 
 ```
 c:\Users\deepa\OneDrive\Desktop\Sih 73\
-├── dashboard/                              # Production WebGL & PWA Frontend
-│   ├── index.html                          # Single-page application shell (zero static baselines)
-│   ├── app.js                              # Client state machine, concentric drawer, telemetry charts
-│   ├── assets/                             # Stylesheets, Leaflet/MapLibre vendor assets, SVG icons
-├── src/                                    # Core Python Source Code
+├── config/                                 # Centralized Versioned Configurations
+│   ├── spatial_qc.yaml                     # Concentric rings (<20km, <50km, <100km), lapse rates
+│   ├── model_fusion.yaml                   # Ensemble weights (0.40, 0.35, 0.25), decision thresholds
+│   ├── health.yaml                         # Health index cutoffs (85/60), rolling window, penalties
+│   └── regional_qc.yaml                    # 8 Indian climate zones physical possibility envelopes
+├── scripts/                                # Master Automated Verification & Audit Scripts
+│   ├── verify_skyguard.py                  # Master orchestration runner
+│   ├── verify_dataset.py                   # Ground-truth dataset provenance verifier
+│   ├── benchmark_inference.py              # 1,000-run CPU latency benchmark
+│   ├── evaluate_false_alarm_rate.py        # Holdout FAR & precision-recall evaluator
+│   └── list_fault_classes.py               # Detectable fault signatures cataloger
+├── artifacts/                              # Generated Auditable Evidence Artifacts
+│   ├── SKYGUARD_VERIFICATION_REPORT.json   # Master verification audit report (JSON)
+│   ├── SKYGUARD_VERIFICATION_REPORT.md     # Master verification audit report (Markdown)
+│   ├── dataset_audit.json & .md            # Exact row counts, station counts, date ranges
+│   ├── inference_benchmark.json & .md      # High-precision CPU latency measurements
+│   ├── false_alarm_evaluation.json & .md   # Confusion matrix, FAR, and MTBF
+│   └── fault_classes.json & .md            # Master fault taxonomy and technician guidance
+├── src/                                    # Production Source Code
 │   ├── skyguard/
+│   │   ├── config.py                       # Cached configuration loader
 │   │   ├── api/                            # FastAPI Router & Production Endpoints
-│   │   │   ├── app.py                      # Application factory, middleware, /api/anomaly/predict
+│   │   │   ├── app.py                      # Application factory, /api/anomaly/predict, /api/verification
 │   │   │   ├── v1_router.py                # Public RESTful endpoints (/api/v1/stations, readings)
 │   │   ├── spatial/                        # Concentric Multi-Radius QC Engine
 │   │   │   ├── spatial_qc.py               # Tier 1 (<20km), Tier 2 (<50km), Tier 3 (<100km)
 │   │   ├── quality/                        # Indian Meteorological Domain Rules
 │   │   │   ├── indian_regional_bounds.py   # 8 Indian climate zones, elevation pressure scaling
-│   │   │   ├── rules.py                    # Deterministic bounds and rate-of-change checkers
 │   │   ├── models/                         # AI/ML & Deep Neural Network Implementations
-│   │   │   ├── deep_ensemble.py            # Causal TCN + Temporal Attention + LightGBM + NumPy fallback
-│   │   │   ├── tcn.py                      # Phase 10 Causal Convolutional Network
-│   │   │   ├── baselines.py                # Statistical and isolation baselines
+│   │   │   ├── deep_ensemble.py            # Causal TCN + Attention + LightGBM + NumPy fallback
 │   │   ├── incidents/                      # Incident Lifecycle & Diagnostics
 │   │   │   ├── diagnosis.py                # 12-class physical root-cause classifier
-│   │   │   ├── drift.py                    # CUSUM drift and degradation analytics
-│   │   │   ├── state.py                    # Incident state machine (PENDING, ACTIVE, RESOLVED)
-│   │   ├── correction/                     # Causal Advisory Imputation
-│   │   │   ├── estimators.py               # Lapse-rate buddy regression for NWP input
-│   │   ├── live/                           # Real-Time Ingestion
-│   │   │   ├── metar.py                    # Live METAR / Open-Meteo surface parser
-│   ├── server/                             # Next.js / TypeScript Server Glue
-│   │   ├── liveData.ts                     # Live station feeder & concentric telemetry bridge
+│   │   ├── drift.py                        # CUSUM drift and degradation analytics
+│   │   ├── providers/                      # Provider abstractions & ObservationRecord
+│   │   │   ├── base.py                     # DataProvenanceType (REAL_HISTORICAL, REAL_OPERATIONAL)
 ├── data/                                   # Datasets & Database Storage
 │   ├── archive/legacy_noaa_aws/            # 578k authentic Indian AWS records (2022-2024)
-│   ├── runtime/replay.db                   # SQLite live replay and incident audit database
-├── notebooks/                              # Scientific Research & GPU Training
-│   ├── SkyGuard_Real_AWS_Training_2022_2024.ipynb # End-to-end training notebook (Colab ready)
+│   ├── stations/imd_aws_master.csv         # 1,153 master station catalog
+│   ├── labelled/                           # Controlled synthetic benchmark splits
 ├── tests/                                  # Comprehensive Test Suite (232 Passing Tests)
-│   ├── test_spatial_regional_qc.py         # 7 unit tests for concentric rings & Indian climate zones
+│   ├── test_spatial_regional_qc.py         # Unit tests for concentric rings & Indian climate zones
 │   ├── test_deep_ensemble.py               # Neural ensemble and fallback verification
 │   ├── test_api.py                         # REST API and endpoint contract tests
-│   ├── test_incident_state.py              # Incident lifecycle and persistence tests
-│   ├── frontend/                           # Node.js frontend validation tests
 ├── docs/                                   # Architectural Specifications & Reports
-│   ├── SKYGUARD_AI_SIH26073_COMPLETE_EXPLANATION.md # This master document
-│   ├── REAL_AWS_MODEL_RESULTS.md           # Empirical ML metrics and benchmark report
-│   ├── SIH_COMPLIANCE.md                   # SIH 26073 requirement matrix
+│   ├── PARAMETER_PROVENANCE.md             # Formal parameter registry (Categories A-D)
+│   ├── DATA_PROVENANCE.md                  # Four-tier data provenance registry
+│   ├── SKYGUARD_AI_SIH26073_COMPLETE_EXPLANATION.md # Dedicated technical master guide
+├── pytest.ini                              # Test runner configuration (pythonpath = src)
 ├── requirements.txt                        # Production dependency specification
 ├── render.yaml                             # Automated cloud deployment manifest
 └── README.md                               # Project entrypoint and quick-start guide
@@ -463,36 +472,40 @@ c:\Users\deepa\OneDrive\Desktop\Sih 73\
 
 When presenting SkyGuard AI to Smart India Hackathon evaluators and IMD leadership, follow this structured 5-minute flow:
 
-### Phase 1: The Problem (Minute 0:00 - 1:00)
+### Phase 1: The Problem & Architecture (Minute 0:00 - 1:00)
 1. Open the live dashboard at **`https://skyguard-ai-wbm9.onrender.com/`**.
-2. Point to the India National Map showing **1,153 active weather stations**.
-3. **The Core Message**: *"Current automated QC relies on rigid baselines that falsely alarm during genuine Indian monsoons and thunderstorms. SkyGuard AI has zero static baselines—all decisions are governed by concentric spatial neighbor consensus and deep neural diurnal modeling."*
+2. Point to the India National Map showing **1,153 official weather stations**.
+3. **The Core Message**: *"Current automated QC relies on rigid baselines that falsely alarm during genuine Indian monsoons and thunderstorms. SkyGuard AI enforces a Centralized Versioned Configuration Architecture—all decisions are governed by concentric spatial neighbor consensus, atmospheric thermodynamics, and deep neural diurnal modeling."*
 
-### Phase 2: Live Concentric Spatial Verification (Minute 1:00 - 2:30)
+### Phase 2: Live Concentric Spatial Verification (Minute 1:00 - 2:00)
 1. Select a station on the map (e.g., in Delhi or Rajasthan).
 2. Click the station to open the **Sensor Telemetry Drawer**.
 3. Point out the **Concentric Spatial Peer Consensus Cards**:
    * **Tier 1 (< 20 km)**: Shows nearest peer station, lapse-rate adjusted temperature, and delta ($\le 2.0^\circ\text{C}$).
-   * **Tier 2 (20 – 50 km)**: Shows intermediate mesoscale peers.
-   * **Tier 3 (50 – 100 km)**: Shows regional synoptic peers.
-   * **Terrain & Climate Tag**: Shows the station's assigned Indian climate zone (e.g. `Indo-Gangetic Plains`) and elevation barometric envelope.
+   * **Tier 2 (20 – 50 km)**: Shows intermediate mesoscale peers ($\le 3.5^\circ\text{C}$).
+   * **Tier 3 (50 – 100 km)**: Shows regional synoptic peers ($\le 5.0^\circ\text{C}$).
+   * **Terrain & Climate Tag**: Shows assigned Indian climate zone (e.g. `Indo-Gangetic Plains`) and elevation barometric envelope.
 
-### Phase 3: Hardware Sensor Fault vs. Genuine Weather Demonstration (Minute 2:30 - 3:45)
-1. Switch to the **Anomalies Tab** or trigger a test anomaly.
-2. Show a **$5.5^\circ\text{C}$ single-station divergence in Tier 1** ($30^\circ\text{C}$ vs $24.5^\circ\text{C}$):
+### Phase 3: Hardware Sensor Fault vs. Genuine Weather Demonstration (Minute 2:00 - 3:00)
+1. Show a **$5.5^\circ\text{C}$ single-station divergence in Tier 1** ($30^\circ\text{C}$ vs $24.5^\circ\text{C}$):
    * System flags: **`SENSOR_FAULT (CRITICAL)`**.
-   * Root cause explanation: `temperature_spike_spatial_neighbor_discrepancy`.
-   * Actionable recommendation: *"Inspect RTD probe wiring for intermittent open-circuit fault."*
-3. Show a **Thunderstorm Front ($4.5^\circ\text{C}$ temperature drop across multiple stations)**:
+   * Fault Signature Hypothesis: `Temperature Outlier / Radiation Shield Aspiration Deficiency`.
+   * Actionable guidance: *"Inspect multi-plate radiation shield for dust clogging; verify calibration against certified reference thermometer."*
+2. Show a **Thunderstorm Front ($4.5^\circ\text{C}$ temperature drop across multiple stations)**:
    * Mesoscale Coherence Algorithm detects $\ge 50\%$ agreement in the 50–100 km ring.
    * System flags: **`GENUINE_WEATHER_EVENT`** and **suppresses false alarm**.
 
-### Phase 4: Proactive Sensor Health & Maintenance (Minute 3:45 - 4:30)
+### Phase 4: Proactive Sensor Health & Maintenance (Minute 3:00 - 3:45)
 1. Navigate to the **Sensor Health Tab**.
 2. Demonstrate the **7-Day Degradation Trend** and CUSUM drift detection.
 3. Show how stations are prioritized into `Urgent`, `Degrading`, and `Nominal` queues before complete failure occurs.
 
-### Phase 5: Technical Provenance & Closing (Minute 4:30 - 5:00)
-1. Show the **232 passing unit tests** and the **Jupyter Training Notebook** trained on 578,448 genuine Indian AWS observations.
-2. Highlight that the solution is containerized, lightweight, and operating live in production.
-3. Conclude with: *"SkyGuard AI transforms weather station quality control from reactive error logging to intelligent, physics-informed, proactive operational assurance."*
+### Phase 5: Technical Evidence & Jury Verification Page (Minute 3:45 - 5:00)
+1. Navigate to the **Scientific Evidence Tab (`/validation`)** or query `/api/verification`.
+2. Present the audited evidence table:
+   * **578,448 NOAA ISD Historical Observations** (2022–2024).
+   * **4 Spatial Holdout Stations** ($32,340$ rows) with zero spatial data leakage.
+   * **In-Process CPU Latency**: **`3.16 ms median`** (p95: `5.17 ms`, 288 evals/sec).
+   * **Empirical False Alarm Rate**: **`0.0028` FA/station-day** on holdout stations.
+   * **100% Parameter Provenance** in versioned YAML configurations.
+3. Conclude with: *"SkyGuard AI provides IMD with a scientifically defensible, transparent, and proactive operational quality control platform that stops false alarms during severe weather while isolating genuine sensor degradation."*

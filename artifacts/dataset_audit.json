@@ -1,0 +1,192 @@
+{
+  "audit_timestamp_utc": "2026-09-26T10:00:05.641109+00:00",
+  "audit_system": "SkyGuard AI Production MLOps Verifier",
+  "version": "1.2.0",
+  "datasets": {
+    "primary_historical_dataset": {
+      "file_path": "data\\archive\\legacy_noaa_aws\\aws_observations_2022_2024.csv",
+      "file_size_bytes": 114660436,
+      "file_size_mb": 109.35,
+      "total_rows": 578448,
+      "columns": [
+        "station_id",
+        "timestamp_utc",
+        "year",
+        "cluster",
+        "evaluation_role",
+        "station_name",
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "temperature_c",
+        "temperature_quality",
+        "dew_point_c",
+        "dew_point_quality",
+        "relative_humidity_pct",
+        "pressure_hpa",
+        "pressure_source",
+        "pressure_quality",
+        "source",
+        "report_type"
+      ],
+      "column_count": 19,
+      "unique_stations_count": 24,
+      "unique_stations_list": [
+        "42131099999",
+        "42181099999",
+        "42182099999",
+        "42189099999",
+        "42348099999",
+        "42361099999",
+        "42705699999",
+        "43021099999",
+        "43086099999",
+        "43128099999",
+        "43128599999",
+        "43181099999",
+        "43213099999",
+        "43233099999",
+        "43245099999",
+        "43275099999",
+        "43278099999",
+        "43279099999",
+        "43284099999",
+        "43295099999",
+        "43302599999",
+        "43321099999",
+        "43329099999",
+        "43331099999"
+      ],
+      "date_range": {
+        "start": "2022-01-01",
+        "end": "2024-12-31"
+      },
+      "holdout_stations": {
+        "configured_holdouts": [
+          "43086099999",
+          "43233099999",
+          "43331099999",
+          "42131099999"
+        ],
+        "holdout_row_counts": {
+          "43086099999": 8478,
+          "43233099999": 7338,
+          "43331099999": 8208,
+          "42131099999": 8316
+        },
+        "total_holdout_rows": 32340
+      },
+      "provenance_classification": "HISTORICAL_SURFACE_OBSERVATIONS (NOAA ISD exchanged via WMO GTS)",
+      "audit_duration_seconds": 1.98
+    },
+    "imd_aws_master_catalog": {
+      "file_path": "data\\stations\\imd_aws_master.csv",
+      "file_size_bytes": 106327,
+      "total_stations": 1153,
+      "columns": [
+        "station_id",
+        "station_name",
+        "state",
+        "latitude",
+        "longitude",
+        "elevation_m",
+        "wigos_id",
+        "wmo_id",
+        "icao",
+        "network_type",
+        "primary_provider",
+        "is_reference_only"
+      ],
+      "state_count": 37,
+      "states_represented": [
+        "ANDAMAN_AND_NICOBAR",
+        "ANDHRA_PRADESH",
+        "ARUNACHAL_PRADESH",
+        "ASSAM",
+        "BIHAR",
+        "CHANDIGARH",
+        "CHHATTISGARH",
+        "DADRA_AND_NAGAR_HAVELI",
+        "DAMAN_AND_DIU",
+        "DELHI",
+        "GOA",
+        "GUJARAT",
+        "HARYANA",
+        "HIMACHAL_PRADESH",
+        "JAMMU_AND_KASHMIR",
+        "JHARKHAND",
+        "KARNATAKA",
+        "KERALA",
+        "LADAKH",
+        "LAKSHADWEEP",
+        "MADHYA_PRADESH",
+        "MAHARASHTRA",
+        "MANIPUR",
+        "MEGHALAYA",
+        "MIZORAM",
+        "NAGALAND",
+        "ODISHA",
+        "PUDUCHERRY",
+        "PUNJAB",
+        "RAJASTHAN",
+        "SIKKIM",
+        "TAMIL_NADU",
+        "TELANGANA",
+        "TRIPURA",
+        "UTTARAKHAND",
+        "UTTAR_PRADESH",
+        "WEST_BENGAL"
+      ],
+      "provenance_classification": "METADATA_CATALOG (Official IMD AWS Master Station List)"
+    },
+    "official_imd_telemetry": {
+      "file_path": "data\\processed\\official_imd_aws_observations.csv",
+      "file_size_bytes": 111428,
+      "total_rows": 961,
+      "provenance_classification": "OPERATIONAL_IMD_AWS_TELEMETRY"
+    },
+    "synthetic_benchmark_splits": {
+      "directory": "data\\labelled",
+      "files": {
+        "episodes.csv": {
+          "file_size_bytes": 111644,
+          "file_size_mb": 0.11,
+          "rows": 559,
+          "column_count": 13
+        },
+        "manifest.csv": {
+          "file_size_bytes": 581,
+          "file_size_mb": 0.0,
+          "rows": 5,
+          "column_count": 4
+        },
+        "station_test.csv": {
+          "file_size_bytes": 3016655,
+          "file_size_mb": 2.88,
+          "rows": 10516,
+          "column_count": 35
+        },
+        "time_test.csv": {
+          "file_size_bytes": 52947177,
+          "file_size_mb": 50.49,
+          "rows": 182276,
+          "column_count": 35
+        },
+        "train.csv": {
+          "file_size_bytes": 52275296,
+          "file_size_mb": 49.85,
+          "rows": 182362,
+          "column_count": 35
+        },
+        "validation.csv": {
+          "file_size_bytes": 52875178,
+          "file_size_mb": 50.43,
+          "rows": 181470,
+          "column_count": 35
+        }
+      },
+      "provenance_classification": "SYNTHETIC_FAULT_BENCHMARK (Controlled offline injection for ML comparator testing)",
+      "scientific_disclaimer": "Labels are synthetically injected anomalies over historical weather observations. Not certified field failure tags."
+    }
+  }
+}

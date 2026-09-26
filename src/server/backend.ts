@@ -42,6 +42,11 @@ export function backendCandidates(): URL[] {
       // A malformed deployment variable must not disable the verified fallback.
     }
   }
+  try {
+    candidates.push(normalizedBackend('http://127.0.0.1:8000'));
+  } catch {
+    // Ignore URL parse error
+  }
   candidates.push(normalizedBackend(CANONICAL_SKYGUARD_API_URL));
   return candidates.filter((candidate, index, all) =>
     all.findIndex(other => other.origin === candidate.origin && other.pathname === candidate.pathname) === index

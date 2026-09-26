@@ -32,6 +32,13 @@ class ProviderName(str, Enum):
     OPEN_METEO_REFERENCE = "OPEN_METEO_REFERENCE"
 
 
+class DataProvenanceType(str, Enum):
+    REAL_HISTORICAL = "REAL_HISTORICAL"
+    REAL_OPERATIONAL = "REAL_OPERATIONAL"
+    SYNTHETIC_BENCHMARK = "SYNTHETIC_BENCHMARK"
+    REANALYSIS_REFERENCE = "REANALYSIS_REFERENCE"
+
+
 class RHSource(str, Enum):
     OBSERVED = "OBSERVED"
     DERIVED = "DERIVED"
@@ -93,12 +100,21 @@ class ObservationRecord:
     source_url: str = ""
     message_id: str = ""
     schema_version: str = "1.0"
+    data_provenance_type: str = DataProvenanceType.REAL_OPERATIONAL.value
     raw_payload_json: str = field(default="", repr=False)
 
     def __post_init__(self):
         self.provider_station_id = self.provider_station_id or self.station_id
         self.canonical_station_id = self.canonical_station_id or self.station_id
         self.ingestion_timestamp_utc = self.ingestion_timestamp_utc or self.retrieved_at_utc
+
+        if not self.data_provenance_type:
+            if self.is_model_field:
+                self.data_provenance_type = DataProvenanceType.REANALYSIS_REFERENCE.value
+            elif self.source_type == SourceType.CONTROLLED_SIMULATION.value:
+                self.data_provenance_type = DataProvenanceType.SYNTHETIC_BENCHMARK.value
+            else:
+                self.data_provenance_type = DataProvenanceType.REAL_OPERATIONAL.value
 
         if not self.humidity_observation_type or self.humidity_observation_type == HumidityObservationType.UNAVAILABLE.value:
             if self.relative_humidity_pct is None:

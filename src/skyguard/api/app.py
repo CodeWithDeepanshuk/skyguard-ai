@@ -822,6 +822,31 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             "status": "ready"
         }
 
+    @app.get("/api/verification")
+    def get_verification_report() -> dict[str, object]:
+        """Serve the official scientific verification report and audited artifacts."""
+        artifacts_dir = root / "artifacts"
+        master_json = artifacts_dir / "SKYGUARD_VERIFICATION_REPORT.json"
+        if master_json.exists():
+            try:
+                return json.loads(master_json.read_text(encoding="utf-8"))
+            except Exception as exc:
+                return {"error": f"Failed to parse verification report: {exc}"}
+        return {"error": "Verification report artifact not found. Run scripts/verify_skyguard.py to generate."}
+
+    @app.get("/api/verification/{artifact_name}")
+    def get_verification_artifact(artifact_name: str) -> Any:
+        """Serve specific verification artifacts (dataset_audit, inference_benchmark, false_alarm_evaluation, fault_classes)."""
+        clean_name = artifact_name.replace(".json", "")
+        artifacts_dir = root / "artifacts"
+        target_path = artifacts_dir / f"{clean_name}.json"
+        if target_path.exists() and target_path.is_file():
+            try:
+                return json.loads(target_path.read_text(encoding="utf-8"))
+            except Exception as exc:
+                return {"error": f"Failed to read artifact: {exc}"}
+        return JSONResponse({"error": f"Artifact {artifact_name} not found"}, status_code=404)
+
     @app.post("/api/anomaly/predict")
     def predict_anomaly(payload: dict[str, object]) -> Any:
         try:
@@ -844,6 +869,9 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 "decision": result.decision,
                 "severity": result.severity,
                 "root_cause": result.root_cause,
+                "root_cause_explanation": result.root_cause_explanation,
+                "fault_signature_hypothesis": result.fault_signature_hypothesis,
+                "recommended_technician_action": result.recommended_technician_action,
                 "confidence_type": "empirical_calibrated_evidence_score",
                 "evidence": {
                     "neural_reconstruction_score": result.neural_score,

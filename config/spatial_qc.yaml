@@ -1,0 +1,100 @@
+version: "1.2.0"
+config_name: "spatial_qc"
+description: "Centralized configuration for Concentric Multi-Radius Spatial Neighbor QC Engine"
+last_updated: "2026-09-26"
+
+tier1:
+  radius_km:
+    value: 20.0
+    unit: "km"
+    type: "configurable_engineering_parameter"
+    source: "SkyGuard Multi-Radius Spatial Architecture"
+    rationale: "Immediate microscale boundary layer radius where adjacent stations at similar altitude exhibit strong thermodynamic coupling."
+    validation_status: "requires_empirical_optimization"
+  temperature_tolerance_c:
+    value: 2.0
+    unit: "degC"
+    type: "configurable_engineering_parameter"
+    source: "IMD AWS peer divergence experimental tolerance"
+    rationale: "Under 20 km, lapse-rate adjusted temperature difference exceeding 2.0°C indicates probable sensor anomaly or localized microburst."
+    validation_status: "requires_empirical_optimization"
+
+tier2:
+  radius_km:
+    value: 50.0
+    unit: "km"
+    type: "configurable_engineering_parameter"
+    source: "SkyGuard Multi-Radius Spatial Architecture"
+    rationale: "Local mesoscale-gamma radius providing peer confirmation when no Tier 1 station exists."
+    validation_status: "requires_empirical_optimization"
+  temperature_tolerance_c:
+    value: 3.5
+    unit: "degC"
+    type: "configurable_engineering_parameter"
+    source: "IMD AWS peer divergence experimental tolerance"
+    rationale: "Allowable variance across 20-50 km accounts for terrain heterogeneity and modest local microclimates."
+    validation_status: "requires_empirical_optimization"
+
+tier3:
+  radius_km:
+    value: 100.0
+    unit: "km"
+    type: "configurable_engineering_parameter"
+    source: "SkyGuard Multi-Radius Spatial Architecture"
+    rationale: "Regional mesoscale-beta radius constraint boundary and synoptic front detection zone."
+    validation_status: "requires_empirical_optimization"
+  temperature_tolerance_c:
+    value: 5.0
+    unit: "degC"
+    type: "configurable_engineering_parameter"
+    source: "IMD AWS peer divergence experimental tolerance"
+    rationale: "Maximum allowable temperature gradient across 100 km under undisturbed synoptic conditions."
+    validation_status: "requires_empirical_optimization"
+
+elevation_lapse_rate:
+  lapse_rate_c_per_m:
+    value: -0.0065
+    unit: "degC/m"
+    type: "scientific_constant"
+    source: "ICAO Standard Atmosphere / WMO International Meteorological Tables"
+    rationale: "Global average environmental lapse rate (-6.5°C per 1,000 m elevation change) applied to reduce peer observations to target elevation."
+    validation_status: "scientifically_established"
+
+coastal:
+  tolerance_buffer_c:
+    value: 1.5
+    unit: "degC"
+    type: "configurable_engineering_parameter"
+    source: "IMD Coastal Boundary Layer Study"
+    rationale: "Tolerance buffer granted across coastal-inland boundary to account for maritime thermal moderation and sea-breeze fronts."
+    validation_status: "requires_empirical_optimization"
+  cross_boundary_weight_penalty:
+    value: 0.6
+    unit: "ratio"
+    type: "configurable_engineering_parameter"
+    source: "SkyGuard Spatial Weighting Heuristic"
+    rationale: "Down-weights cross-boundary neighbor influence in spatial median calculation to prevent marine layer contamination of inland baselines."
+    validation_status: "requires_empirical_optimization"
+
+synoptic_weather:
+  coherence_ratio_threshold:
+    value: 0.50
+    unit: "ratio"
+    type: "configurable_engineering_parameter"
+    source: "WMO Spatial Consistency Guidelines / SkyGuard Front Detector"
+    rationale: "If 50% or more of surrounding Tier 3 neighbors show synchronous rapid drop (<= -3.0°C), classify as GENUINE_WEATHER_EVENT and suppress hardware fault."
+    validation_status: "calibrated_on_benchmark"
+  min_drop_magnitude_c:
+    value: 3.0
+    unit: "degC"
+    type: "configurable_engineering_parameter"
+    source: "Indian Thunderstorm Gust Front Studies"
+    rationale: "Minimum temporal temperature drop required to qualify as a synoptic or mesoscale convective outflow."
+    validation_status: "requires_empirical_optimization"
+  min_peer_count:
+    value: 2
+    unit: "count"
+    type: "configurable_engineering_parameter"
+    source: "Spatial Consensus Minimum Quorum"
+    rationale: "Minimum number of Tier 3 peers required to confirm a regional weather event."
+    validation_status: "requires_empirical_optimization"

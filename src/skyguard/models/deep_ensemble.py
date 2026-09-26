@@ -39,6 +39,20 @@ from skyguard.spatial.spatial_qc import (
     MultiRadiusSpatialQcEngine,
     MultiRadiusQcResult,
 )
+from skyguard.config import get_model_fusion_config
+
+_FUSION_CFG = get_model_fusion_config()
+_W_NEURAL = float(_FUSION_CFG.get("fusion_weights", {}).get("neural_reconstruction", {}).get("value", 0.40))
+_W_DRIFT = float(_FUSION_CFG.get("fusion_weights", {}).get("drift_heuristic", {}).get("value", 0.35))
+_W_SPATIAL = float(_FUSION_CFG.get("fusion_weights", {}).get("spatial_consensus", {}).get("value", 0.25))
+
+_OP_THRESHOLD = float(_FUSION_CFG.get("thresholds", {}).get("operational_anomaly_threshold", {}).get("value", 0.6845))
+_NEURAL_OFFSET = float(_FUSION_CFG.get("thresholds", {}).get("neural_effective_loss_offset", {}).get("value", 1.80))
+_NEURAL_SCALE = float(_FUSION_CFG.get("thresholds", {}).get("neural_sigmoid_scale", {}).get("value", 2.50))
+_DRIFT_THRESHOLD = float(_FUSION_CFG.get("thresholds", {}).get("drift_metric_threshold", {}).get("value", 0.95))
+_DRIFT_SCALE = float(_FUSION_CFG.get("thresholds", {}).get("drift_sigmoid_scale", {}).get("value", 3.00))
+_FREEZE_COUNT_THRESHOLD = int(_FUSION_CFG.get("thresholds", {}).get("freeze_consecutive_count", {}).get("value", 5))
+_CUSUM_DRIFT_LIMIT = float(_FUSION_CFG.get("thresholds", {}).get("cusum_drift_statistic_limit", {}).get("value", 2.50))
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_NEURAL_WEIGHTS = ROOT / "models" / "spatio_temporal_neural_engine.pt"
@@ -226,6 +240,8 @@ class EnsembleResult:
     climate_zone: str = ""
     is_coastal: bool = False
     synoptic_weather_detected: bool = False
+    fault_signature_hypothesis: str = ""
+    recommended_technician_action: str = ""
 
 
 class DeepEnsembleDetector:
@@ -466,7 +482,7 @@ class DeepEnsembleDetector:
 
         spatial_coupling = max_abs_z / 3.0
         effective_loss = max(0.0, res_norm - 1.5) + 0.6 * spatial_coupling
-        neural_score = float(1.0 / (1.0 + math.exp(-2.5 * (effective_loss - 1.8))))
+        neural_score = float(1.0 / (1.0 + math.exp(-_NEURAL_SCALE * (effective_loss - _NEURAL_OFFSET))))
         neural_score = max(0.012, min(0.992, neural_score))
 
         # --------------------------------------------------------------------
@@ -484,15 +500,15 @@ class DeepEnsembleDetector:
         drift_metric = max(
             abs(z_t) / 3.5 if has_t else 0.0,
             abs(z_p) / 3.5 if has_p else 0.0,
-            freeze_count / 6.0 if freeze_count >= 5 else 0.0,
-            drift_cusum / 8.0 if drift_cusum >= 2.5 else 0.0,
+            freeze_count / 6.0 if freeze_count >= _FREEZE_COUNT_THRESHOLD else 0.0,
+            drift_cusum / 8.0 if drift_cusum >= _CUSUM_DRIFT_LIMIT else 0.0,
         )
-        drift_heuristic_score = max(0.010, min(0.990, float(1.0 / (1.0 + math.exp(-3.0 * (drift_metric - 0.95))))))
+        drift_heuristic_score = max(0.010, min(0.990, float(1.0 / (1.0 + math.exp(-_DRIFT_SCALE * (drift_metric - _DRIFT_THRESHOLD))))))
 
         # --------------------------------------------------------------------
         # Stream 4: Multi-Evidence Ensemble Fusion
         # --------------------------------------------------------------------
-        evidence_score = round(0.40 * neural_score + 0.35 * drift_heuristic_score + 0.25 * spatial_score, 4)
+        evidence_score = round(_W_NEURAL * neural_score + _W_DRIFT * drift_heuristic_score + _W_SPATIAL * spatial_score, 4)
         evidence_score = max(0.0120, min(0.9980, evidence_score))
 
         # --------------------------------------------------------------------
@@ -528,12 +544,18 @@ class DeepEnsembleDetector:
                     target_temporal_delta = None
 
         # 1. Deterministic Regional Physical Possibility Limits across India
+        is_mslp = (
+            str(target_station.get("pressure_source") or "").lower() == "slp"
+            or str(target_station.get("pressure_type") or "").lower() in ("slp", "mslp")
+            or (has_p and float(p_raw) > 960.0 and elev_target > 350.0)
+        )
         phys_valid, phys_param, phys_reason = check_regional_physical_bounds(
             temperature_c=float(t_raw) if has_t else None,
             pressure_hpa=float(p_raw) if has_p else None,
             humidity_pct=float(rh_raw) if has_rh else None,
             bounds=region_profile,
             elevation_m=elev_target,
+            is_mslp=is_mslp,
         )
 
         # 2. Concentric Multi-Radius Spatial QC (<20km, <50km, <100km)
@@ -603,6 +625,33 @@ class DeepEnsembleDetector:
         else:
             neighbor_evidence = top_peers_p or top_peers_t or top_peers_rh or valid_neighbors_p[:12] or valid_neighbors_t[:12] or []
 
+        # Scientific Reframing: Construct Fault Signature Hypothesis and Actionable Guidance
+        if decision == "SENSOR_FAULT":
+            if "physical_bounds" in root_cause:
+                fault_hypothesis = f"Fault Signature Hypothesis: {phys_param.capitalize() if phys_param else 'Sensor'} Physical Domain Boundary Violation"
+                technician_action = "Inspect sensor physical wiring, analog input channel terminals, and sensor body for open/short circuit."
+            elif "stuck" in root_cause or "flatline" in root_cause:
+                fault_hypothesis = "Fault Signature Hypothesis: Sensor Flatline / Analog-to-Digital Converter Freeze"
+                technician_action = "Check sensor bus communication, verify supply voltage, and inspect data logger input channel."
+            elif "pressure" in root_cause:
+                fault_hypothesis = "Fault Signature Hypothesis: Barometric Pressure Offset against Regional Altimeter Consensus"
+                technician_action = "Check barometer port vent tube for obstruction; compare reading against calibrated travelling standard barometer."
+            elif "humidity" in root_cause:
+                fault_hypothesis = "Fault Signature Hypothesis: Relative Humidity Sensor Saturation / Polymer Contamination"
+                technician_action = "Inspect capacitive sensor protective filter cap for particulate contamination; calibrate against psychrometer."
+            elif "temperature" in root_cause:
+                fault_hypothesis = "Fault Signature Hypothesis: Temperature Outlier / Radiation Shield Aspiration Deficiency"
+                technician_action = "Inspect multi-plate radiation shield for dust clogging; verify calibration against certified reference thermometer."
+            else:
+                fault_hypothesis = f"Fault Signature Hypothesis: {root_cause.replace('_', ' ').title()}"
+                technician_action = "Perform routine diagnostic inspection of sensor harness, logger input ports, and local electrical ground."
+        elif decision == "GENUINE_WEATHER_EVENT":
+            fault_hypothesis = "Atmospheric Event: Coherent Mesoscale / Synoptic Weather Front"
+            technician_action = "Zero sensor maintenance required. Multi-station coherent step change confirmed by regional peers."
+        else:
+            fault_hypothesis = "Nominal Operation: Peer-Verified Multi-Tier Consensus"
+            technician_action = "No action required. Sensor operating within regional climatological and spatial tolerances."
+
         neighbor_count = max(len(valid_neighbors_t), len(valid_neighbors_p), len(valid_neighbors_rh))
         return EnsembleResult(
             station_id=sid,
@@ -627,4 +676,6 @@ class DeepEnsembleDetector:
             climate_zone=region_profile.zone_name,
             is_coastal=is_coastal,
             synoptic_weather_detected=qc_res.synoptic_weather_system_detected,
+            fault_signature_hypothesis=fault_hypothesis,
+            recommended_technician_action=technician_action,
         )

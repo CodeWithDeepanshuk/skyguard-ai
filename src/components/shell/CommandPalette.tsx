@@ -8,6 +8,7 @@ import {
   BrainCircuit, 
   Command, 
   Database, 
+  FlaskConical, 
   RadioTower, 
   Search, 
   ShieldAlert, 
@@ -53,10 +54,11 @@ export function CommandPalette({ isOpen, onClose, stations = [], onSelectStation
 
   const quickLinks = [
     { name: 'National Command Centre', href: '/', icon: RadioTower, desc: 'Live India AWS map and active intelligence' },
-    { name: 'AWS Network Table & Map', href: '/stations', icon: RadioTower, desc: 'Browse all 1,008 catalog stations' },
+    { name: 'AWS Network Table & Map', href: '/stations', icon: RadioTower, desc: 'Browse all 1,153 catalog stations' },
     { name: 'Incident Command & Persistence', href: '/incidents', icon: Activity, desc: 'Investigate confirmed anomaly episodes' },
     { name: 'Scientific Analytics & Ablation', href: '/analytics', icon: BarChart3, desc: 'Precision, recall, holdouts & ablation ladder' },
-    { name: '25-Gate Operational Matrix', href: '/validation', icon: ShieldCheck, desc: '100% passing operational gatekeeper' },
+    { name: 'Scientific Evidence Matrix', href: '/validation', icon: ShieldCheck, desc: 'Audited empirical metrics and verification reports' },
+    { name: 'Jury Demonstration Sandbox', href: '/jury-demo', icon: FlaskConical, desc: 'Interactive controlled fault injection & concentric spatial consensus demo' },
     { name: 'Data Sources & Provenance', href: '/data-sources', icon: Database, desc: 'Multi-provider ingestion pipeline' },
     { name: 'Model Architecture & Graph', href: '/model', icon: BrainCircuit, desc: '3-parameter TCN, Spatial QC, and Specialists' },
   ];

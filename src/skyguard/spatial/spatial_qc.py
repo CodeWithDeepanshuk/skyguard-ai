@@ -25,23 +25,30 @@ from skyguard.quality.indian_regional_bounds import (
     is_coastal_location,
 )
 
-# Standard Environmental Lapse Rate (-6.5°C / km)
-LAPSE_RATE_C_PER_M = -0.0065
+from skyguard.config import get_spatial_qc_config
 
-# Tier distance boundaries (km)
-TIER1_MAX_KM = 20.0
-TIER2_MAX_KM = 50.0
-TIER3_MAX_KM = 100.0
+_SPATIAL_CFG = get_spatial_qc_config()
 
-# Base temperature tolerances (°C) per tier
+# Standard Environmental Lapse Rate (-6.5°C / km) loaded from centralized config
+LAPSE_RATE_C_PER_M = float(_SPATIAL_CFG.get("elevation_lapse_rate", {}).get("lapse_rate_c_per_m", {}).get("value", -0.0065))
+
+# Tier distance boundaries (km) loaded from centralized config
+TIER1_MAX_KM = float(_SPATIAL_CFG.get("tier1", {}).get("radius_km", {}).get("value", 20.0))
+TIER2_MAX_KM = float(_SPATIAL_CFG.get("tier2", {}).get("radius_km", {}).get("value", 50.0))
+TIER3_MAX_KM = float(_SPATIAL_CFG.get("tier3", {}).get("radius_km", {}).get("value", 100.0))
+
+# Base temperature tolerances (°C) per tier loaded from centralized config
 TEMP_TOLERANCE = {
-    "tier1_20km": 2.0,   # Expected <= 1-2°C
-    "tier2_50km": 3.5,   # Expected <= 3.5°C
-    "tier3_100km": 5.0,  # Max allowed difference <= 5.0°C
+    "tier1_20km": float(_SPATIAL_CFG.get("tier1", {}).get("temperature_tolerance_c", {}).get("value", 2.0)),
+    "tier2_50km": float(_SPATIAL_CFG.get("tier2", {}).get("temperature_tolerance_c", {}).get("value", 3.5)),
+    "tier3_100km": float(_SPATIAL_CFG.get("tier3", {}).get("temperature_tolerance_c", {}).get("value", 5.0)),
 }
 
-# Cross-coastal boundary tolerance buffer
-COASTAL_TRANSITION_BUFFER_C = 1.5
+# Cross-coastal boundary tolerance buffer and weights loaded from centralized config
+COASTAL_TRANSITION_BUFFER_C = float(_SPATIAL_CFG.get("coastal", {}).get("tolerance_buffer_c", {}).get("value", 1.5))
+CROSS_COASTAL_WEIGHT_PENALTY = float(_SPATIAL_CFG.get("coastal", {}).get("cross_boundary_weight_penalty", {}).get("value", 0.6))
+SYNOPTIC_COHERENCE_MIN = float(_SPATIAL_CFG.get("synoptic_weather", {}).get("coherence_ratio_threshold", {}).get("value", 0.50))
+SYNOPTIC_MIN_DROP = float(_SPATIAL_CFG.get("synoptic_weather", {}).get("min_drop_magnitude_c", {}).get("value", 3.0))
 
 
 def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -258,7 +265,7 @@ class MultiRadiusSpatialQcEngine:
             adj_values = []
             for p in all_valid_t:
                 dist_factor = 1.0 / (max(p["distance_km"], 2.0) ** 1.5)
-                coastal_factor = 0.6 if p["cross_coastal_boundary"] else 1.0
+                coastal_factor = CROSS_COASTAL_WEIGHT_PENALTY if p["cross_coastal_boundary"] else 1.0
                 weights.append(dist_factor * coastal_factor)
                 adj_values.append(p["lapse_adjusted_temp_c"])
 
@@ -284,7 +291,7 @@ class MultiRadiusSpatialQcEngine:
             ]
             if len(all_valid_t) >= 3:
                 coherence_ratio = len(matching) / len(all_valid_t)
-                if coherence_ratio >= 0.50:
+                if coherence_ratio >= SYNOPTIC_COHERENCE_MIN:
                     weather_system_detected = True
 
         # Check spatial discrepancy conditions

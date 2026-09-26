@@ -1176,6 +1176,8 @@ def create_v1_router(
                                 "z_spatial": abs(ens_res.z_scores.get(aff_param, 0.0)),
                                 "root_cause": ens_res.root_cause,
                                 "explanation": ens_res.root_cause_explanation,
+                                "fault_signature_hypothesis": ens_res.fault_signature_hypothesis,
+                                "recommended_technician_action": ens_res.recommended_technician_action,
                                 "anomaly_score": ens_res.evidence_score,
                                 "fault_probability": None,
                                 "is_calibrated": False,

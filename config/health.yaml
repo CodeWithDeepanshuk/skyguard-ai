@@ -1,0 +1,56 @@
+version: "1.2.0"
+config_name: "health"
+description: "Centralized configuration for Sensor Health Scoring and Proactive Degradation Tracking"
+last_updated: "2026-09-26"
+
+health_index:
+  healthy_threshold:
+    value: 85.0
+    unit: "index_points"
+    type: "configurable_engineering_parameter"
+    source: "Operational Maintenance Policy"
+    rationale: "Stations scoring >= 85 are categorized as NOMINAL (routine scheduled inspection only)."
+    validation_status: "engineering_convention"
+  degraded_threshold:
+    value: 60.0
+    unit: "index_points"
+    type: "configurable_engineering_parameter"
+    source: "Operational Maintenance Policy"
+    rationale: "Stations scoring 60-84 are categorized as DEGRADING (14-day proactive maintenance window)."
+    validation_status: "engineering_convention"
+  critical_threshold:
+    value: 60.0
+    unit: "index_points"
+    type: "configurable_engineering_parameter"
+    source: "Operational Maintenance Policy"
+    rationale: "Stations scoring < 60 are categorized as CRITICAL (urgent technician dispatch required)."
+    validation_status: "engineering_convention"
+  rolling_window_days:
+    value: 7
+    unit: "days"
+    type: "configurable_engineering_parameter"
+    source: "WMO Rolling QC Performance Window"
+    rationale: "7-day moving average smooths diurnal variance while capturing persistent transducer degradation."
+    validation_status: "engineering_convention"
+  penalties:
+    drift_penalty_per_sigma:
+      value: 12.0
+      unit: "points_per_sigma"
+      type: "configurable_engineering_parameter"
+      source: "Health Scoring Heuristic"
+      rationale: "Penalty subtracted from 100 for each standard deviation of systematic calibration bias."
+      validation_status: "engineering_default"
+    missing_packet_penalty_per_pct:
+      value: 1.5
+      unit: "points_per_pct"
+      type: "configurable_engineering_parameter"
+      source: "GPRS / Data Link SLA Policy"
+      rationale: "Penalty subtracted for communication dropouts and missing telemetry packets."
+      validation_status: "engineering_default"
+    residual_variance_penalty_per_deg:
+      value: 8.0
+      unit: "points_per_degC"
+      type: "configurable_engineering_parameter"
+      source: "Spatial Agreement Health Heuristic"
+      rationale: "Penalty subtracted for unexplained spatial peer divergence."
+      validation_status: "engineering_default"
