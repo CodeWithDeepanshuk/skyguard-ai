@@ -828,8 +828,20 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 "spatial_consensus_score": result.spatial_score,
                 "expected_values": result.expected_values,
                 "residuals": result.residuals,
-                "neighbor_count": result.neighbor_count
+                "neighbor_count": result.neighbor_count,
+                "tier1_20km": result.tier1_20km,
+                "tier2_50km": result.tier2_50km,
+                "tier3_100km": result.tier3_100km,
+                "climate_zone": result.climate_zone,
+                "is_coastal": result.is_coastal,
+                "synoptic_weather_detected": result.synoptic_weather_detected,
             },
+            "tier1_20km": result.tier1_20km,
+            "tier2_50km": result.tier2_50km,
+            "tier3_100km": result.tier3_100km,
+            "climate_zone": result.climate_zone,
+            "is_coastal": result.is_coastal,
+            "synoptic_weather_detected": result.synoptic_weather_detected,
             "model_version": "production-2026.1.0"
         }
 

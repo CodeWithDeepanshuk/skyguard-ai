@@ -414,7 +414,7 @@
                 </div>
                 <div class="param-footer">
                   <span>Trend: <b id="temp-trend">↗ +0.3°C/h</b></span>
-                  <span>Baseline: 34.0–38.5°C</span>
+                  <span id="temp-spatial-info" title="Lapse-compensated spatial consensus across concentric 20/50/100km radii">Consensus: <b id="temp-consensus-val">—</b></span>
                 </div>
               </div>
 
@@ -429,7 +429,7 @@
                 </div>
                 <div class="param-footer">
                   <span>Trend: <b id="press-trend">→ Stable</b></span>
-                  <span>Baseline: 1002–1012 hPa</span>
+                  <span id="press-spatial-info" title="Altimeter-reduced spatial consensus across regional AWS network">Consensus: <b id="press-consensus-val">—</b></span>
                 </div>
               </div>
 
@@ -444,7 +444,7 @@
                 </div>
                 <div class="param-footer">
                   <span>Trend: <b id="humid-trend">↘ -1.5%/h</b></span>
-                  <span>Baseline: 45–85% RH</span>
+                  <span id="humid-spatial-info" title="Distance-weighted spatial consensus across regional AWS network">Consensus: <b id="humid-consensus-val">—</b></span>
                 </div>
               </div>
             </div>
@@ -452,13 +452,13 @@
             <!-- Event Consistency & Nearby Station Consensus -->
             <div class="consensus-banner">
               <div class="consensus-item">
-                <span class="consensus-label">Event Consistency Safeguard:</span>
-                <span class="consensus-badge regional" id="event-consistency-badge">Likely Sensor Fault</span>
-                <span id="event-consistency-text" style="color:#475569;">8 of 9 nearby stations are stable; deviation appears isolated.</span>
+                <span class="consensus-label">Spatial Neighbor QC:</span>
+                <span class="consensus-badge regional" id="event-consistency-badge">Consensus Normal</span>
+                <span id="event-consistency-text" style="color:#475569;">Concentric checks (&lt;20km: max Δ≤2°C, &lt;50km: Δ≤3.5°C, &lt;100km: Δ≤5°C) with lapse rate correction.</span>
               </div>
               <div class="consensus-item">
-                <span class="consensus-label">Fault Probability:</span>
-                <strong id="current-probability">—</strong>
+                <span class="consensus-label">Physical Possibility:</span>
+                <strong id="regional-bounds-tag" style="color:#0F172A; font-size:12px;">Verified Physical Bounds</strong>
                 <small id="current-decision" style="color:#64748B;">Nominal</small>
               </div>
             </div>
@@ -518,6 +518,38 @@
                   <div style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:10px; text-align:center;">
                     <span style="font-size:11px; color:#64748B; font-weight:600; display:block;">Temporal Z-Score</span>
                     <strong id="madis-ztemporal" style="font-size:15px; color:#D97706;">—</strong>
+                  </div>
+                </div>
+
+                <!-- Concentric Multi-Radius Spatial QC Breakdown (<20km, <50km, <100km) -->
+                <div id="spatial-concentric-container" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:8px; padding:12px; margin-bottom:12px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <div style="font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.5px;">
+                      Concentric Multi-Radius QC Rings (&lt;20 km, &lt;50 km, &lt;100 km)
+                    </div>
+                    <span id="synoptic-weather-flag" class="severity-pill healthy" style="font-size:10px;">Front Detection: Coherent</span>
+                  </div>
+                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px;" id="spatial-concentric-grid">
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:8px;" id="tier1-box">
+                      <div style="font-size:11px; font-weight:600; color:#0F172A;">Tier 1 (&lt; 20 km)</div>
+                      <div style="font-size:10px; color:#64748B;">Tolerance: &le; 2.0°C (1–2°C)</div>
+                      <div style="font-size:12px; font-weight:700; color:#0F172A; margin-top:4px;" id="tier1-val">—</div>
+                    </div>
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:8px;" id="tier2-box">
+                      <div style="font-size:11px; font-weight:600; color:#0F172A;">Tier 2 (20 – 50 km)</div>
+                      <div style="font-size:10px; color:#64748B;">Tolerance: &le; 3.5°C</div>
+                      <div style="font-size:12px; font-weight:700; color:#0F172A; margin-top:4px;" id="tier2-val">—</div>
+                    </div>
+                    <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px; padding:8px;" id="tier3-box">
+                      <div style="font-size:11px; font-weight:600; color:#0F172A;">Tier 3 (50 – 100 km)</div>
+                      <div style="font-size:10px; color:#64748B;">Tolerance: &le; 5.0°C (Max)</div>
+                      <div style="font-size:12px; font-weight:700; color:#0F172A; margin-top:4px;" id="tier3-val">—</div>
+                    </div>
+                  </div>
+                  <div style="margin-top:8px; font-size:11px; color:#64748B; display:flex; gap:16px; flex-wrap:wrap;" id="terrain-coastal-info">
+                    <span>Lapse Correction: <b>-6.5°C / 1000m</b></span>
+                    <span>Terrain: <b id="station-terrain-type">Inland Continental</b></span>
+                    <span>Regional Bounds: <b id="regional-temp-range">—</b></span>
                   </div>
                 </div>
 

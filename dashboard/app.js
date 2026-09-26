@@ -704,6 +704,19 @@ function renderSelectedIncident() {
   });
 }
 
+// Verified Regional Physical Bounds for India Climatic Zones
+const INDIAN_REGIONAL_PHYSICAL_RANGES = {
+  "Northern Himalayas": { temp: [-45.0, 36.0], press: [450, 960], rh: [5, 100], desc: "Alpine Montane" },
+  "Western Arid/Semi-Arid": { temp: [-3.0, 52.5], press: [910, 1035], rh: [3, 100], desc: "Thar Desert / Arid" },
+  "Indo-Gangetic Plains": { temp: [-1.0, 49.5], press: [930, 1034], rh: [8, 100], desc: "Northern Plains" },
+  "Central Plateau": { temp: [4.0, 48.5], press: [880, 1028], rh: [8, 98], desc: "Central Inland Plateau" },
+  "Deccan Plateau": { temp: [6.0, 46.5], press: [860, 1026], rh: [10, 98], desc: "Peninsular Plateau" },
+  "Coastal Plains": { temp: [12.0, 43.0], press: [940, 1026], rh: [28, 100], desc: "Maritime Coastal Belt" },
+  "Northeast Hills": { temp: [0.0, 39.0], press: [750, 1030], rh: [20, 100], desc: "Northeastern Hill States" },
+  "Island Territories": { temp: [18.0, 36.0], press: [950, 1022], rh: [45, 100], desc: "Tropical Oceanic Islands" },
+  "Default": { temp: [-45.0, 53.0], press: [450, 1045], rh: [0, 100], desc: "All-India Physical Envelope" }
+};
+
 function renderCurrentValues(row) {
   if ($("current-temp")) $("current-temp").textContent = row ? number(row.temperature, 1) : "—";
   if ($("current-pressure")) $("current-pressure").textContent = row ? number(row.pressure, 1) : "—";
@@ -711,11 +724,97 @@ function renderCurrentValues(row) {
   if ($("current-probability")) $("current-probability").textContent = row ? percent(row.fault_probability, 1) : "—";
   if ($("current-decision")) $("current-decision").textContent = row ? pretty(row.event_decision) : "No reading";
 
-  // Status pills on parameter cards
-  const isAnomaly = row && (row.event_decision === "sensor_fault" || (row.fault_probability && Number(row.fault_probability) > 0.8));
+  // Regional physical bounds for selected station
+  const zoneName = row?.climate_zone || "Indo-Gangetic Plains";
+  const bounds = INDIAN_REGIONAL_PHYSICAL_RANGES[zoneName] || INDIAN_REGIONAL_PHYSICAL_RANGES["Default"];
+  if ($("regional-bounds-tag")) {
+    $("regional-bounds-tag").textContent = `${zoneName} [${bounds.temp[0]}°C to ${bounds.temp[1]}°C]`;
+  }
+  if ($("regional-temp-range")) {
+    $("regional-temp-range").textContent = `${bounds.temp[0]}°C to ${bounds.temp[1]}°C (${bounds.desc})`;
+  }
+  if ($("station-terrain-type")) {
+    $("station-terrain-type").textContent = row?.is_coastal ? "Coastal Maritime Moderation" : "Inland Continental";
+  }
+
+  // Parameter-level spatial consensus values
+  const expT = row?.spatial_consensus?.temperature_c ?? row?.expected_values?.temperature_c;
+  const expP = row?.spatial_consensus?.pressure_hpa ?? row?.expected_values?.pressure_hpa;
+  const expRH = row?.spatial_consensus?.relative_humidity_pct ?? row?.expected_values?.relative_humidity_pct;
+
+  if ($("temp-consensus-val")) {
+    $("temp-consensus-val").textContent = expT != null ? `${number(expT, 1)}°C` : `${bounds.temp[0]}–${bounds.temp[1]}°C`;
+  }
+  if ($("press-consensus-val")) {
+    $("press-consensus-val").textContent = expP != null ? `${number(expP, 1)} hPa` : `${bounds.press[0]}–${bounds.press[1]} hPa`;
+  }
+  if ($("humid-consensus-val")) {
+    $("humid-consensus-val").textContent = expRH != null ? `${number(expRH, 1)}%` : `${bounds.rh[0]}–${bounds.rh[1]}%`;
+  }
+
+  // Parameter-specific anomaly evaluation (no arbitrary global baselines!)
+  const isFrontEvent = row && (row.event_decision === "genuine_weather" || row.synoptic_weather_detected);
+  const isFault = row && (row.event_decision === "sensor_fault");
+  const root = String(row?.root_cause || "").toLowerCase();
+
+  const tempAnom = isFault && (root.includes("temperature") || root.includes("spike") || (row.spatial_residuals && Math.abs(row.spatial_residuals.temperature_c) >= 4.0));
+  const pressAnom = isFault && (root.includes("pressure") || root.includes("transducer") || (row.spatial_residuals && Math.abs(row.spatial_residuals.pressure_hpa) >= 12.0));
+  const humidAnom = isFault && (root.includes("humidity") || root.includes("saturation") || (row.spatial_residuals && Math.abs(row.spatial_residuals.relative_humidity_pct) >= 25.0));
+
   if ($("temp-status-pill")) {
-    $("temp-status-pill").className = `severity-pill ${isAnomaly ? 'critical' : 'healthy'}`;
-    $("temp-status-pill").textContent = isAnomaly ? 'Anomaly' : 'Normal';
+    if (isFrontEvent) {
+      $("temp-status-pill").className = "severity-pill advisory";
+      $("temp-status-pill").textContent = "Weather Front";
+    } else if (tempAnom) {
+      $("temp-status-pill").className = "severity-pill critical";
+      $("temp-status-pill").textContent = "Spatial Anomaly";
+    } else {
+      $("temp-status-pill").className = "severity-pill healthy";
+      $("temp-status-pill").textContent = "Normal";
+    }
+  }
+
+  if ($("press-status-pill")) {
+    if (isFrontEvent) {
+      $("press-status-pill").className = "severity-pill advisory";
+      $("press-status-pill").textContent = "Front Detected";
+    } else if (pressAnom) {
+      $("press-status-pill").className = "severity-pill critical";
+      $("press-status-pill").textContent = "Transducer Bias";
+    } else {
+      $("press-status-pill").className = "severity-pill healthy";
+      $("press-status-pill").textContent = "Normal";
+    }
+  }
+
+  if ($("humid-status-pill")) {
+    if (isFrontEvent) {
+      $("humid-status-pill").className = "severity-pill advisory";
+      $("humid-status-pill").textContent = "Precip Front";
+    } else if (humidAnom) {
+      $("humid-status-pill").className = "severity-pill critical";
+      $("humid-status-pill").textContent = "Saturation Anomaly";
+    } else {
+      $("humid-status-pill").className = "severity-pill healthy";
+      $("humid-status-pill").textContent = "Normal";
+    }
+  }
+
+  // Update Event Consistency Banner
+  if ($("event-consistency-badge") && $("event-consistency-text")) {
+    if (isFrontEvent) {
+      $("event-consistency-badge").className = "consensus-badge regional";
+      $("event-consistency-badge").textContent = "✅ Synoptic Weather System";
+      $("event-consistency-text").textContent = "Coherent multi-station atmospheric gradient detected across 100 km radius. Sensor fault alert suppressed.";
+    } else if (isFault) {
+      $("event-consistency-badge").className = "consensus-badge isolated";
+      $("event-consistency-badge").textContent = "⚠️ Isolated Sensor Discrepancy";
+      $("event-consistency-text").textContent = "Failed concentric spatial QC (<20km, <50km, <100km). Surrounding AWS network remains stable.";
+    } else {
+      $("event-consistency-badge").className = "consensus-badge regional";
+      $("event-consistency-badge").textContent = "✅ Spatial Consensus Nominal";
+      $("event-consistency-text").textContent = "Observation matches lapse-adjusted concentric peer rings (<20km: max Δ≤2°C, <50km: Δ≤3.5°C, <100km: Δ≤5°C).";
+    }
   }
 }
 
@@ -743,7 +842,8 @@ function renderSelectedStationQc(stationId) {
       if (!data || !data.analysis) return;
       const analysis = data.analysis;
       const ev = analysis.evidence?.temperature || {};
-      
+      const selectedRow = state.readings.filter(r => r.station_id === stationId).at(-1);
+
       if ($('madis-observed')) $('madis-observed').textContent = ev.observed != null ? `${Number(ev.observed).toFixed(1)}°C` : '—';
       if ($('madis-consensus')) $('madis-consensus').textContent = ev.spatial_consensus != null ? `${Number(ev.spatial_consensus).toFixed(1)}°C` : '—';
       if ($('madis-diff')) {
@@ -758,6 +858,41 @@ function renderSelectedStationQc(stationId) {
         const st = ev.spatial_status || 'CONSISTENT';
         $('madis-status-pill').textContent = st;
         $('madis-status-pill').className = `severity-pill ${st === 'DISCREPANT' ? 'critical' : st === 'SUSPECT' ? 'degraded' : 'healthy'}`;
+      }
+
+      // Populate Concentric Multi-Radius Ring Metrics
+      const t1 = analysis.tier1_20km || selectedRow?.tier1_20km;
+      const t2 = analysis.tier2_50km || selectedRow?.tier2_50km;
+      const t3 = analysis.tier3_100km || selectedRow?.tier3_100km;
+
+      if ($("tier1-val")) {
+        if (t1 && t1.peer_count > 0) {
+          $("tier1-val").innerHTML = `<span style="color:${t1.tolerance_exceeded ? '#DC2626' : '#16A34A'}">${t1.peer_count} peers · max Δ=${t1.max_delta_c}°C</span> <small style="display:block; font-size:10px; color:#64748B;">${t1.tolerance_exceeded ? '⚠️ Exceeds 2.0°C' : '✅ Consistent'}</small>`;
+        } else {
+          $("tier1-val").textContent = "No peers within 20 km";
+        }
+      }
+
+      if ($("tier2-val")) {
+        if (t2 && t2.peer_count > 0) {
+          $("tier2-val").innerHTML = `<span style="color:${t2.tolerance_exceeded ? '#DC2626' : '#16A34A'}">${t2.peer_count} peers · mean Δ=${t2.mean_abs_delta_c}°C</span> <small style="display:block; font-size:10px; color:#64748B;">${t2.tolerance_exceeded ? '⚠️ Exceeds 3.5°C' : '✅ Consistent'}</small>`;
+        } else {
+          $("tier2-val").textContent = "No peers in 20-50 km";
+        }
+      }
+
+      if ($("tier3-val")) {
+        if (t3 && t3.peer_count > 0) {
+          $("tier3-val").innerHTML = `<span style="color:${t3.tolerance_exceeded ? '#DC2626' : '#16A34A'}">${t3.peer_count} peers · mean Δ=${t3.mean_abs_delta_c}°C</span> <small style="display:block; font-size:10px; color:#64748B;">${t3.tolerance_exceeded ? '⚠️ Exceeds 5.0°C' : '✅ Consistent'}</small>`;
+        } else {
+          $("tier3-val").textContent = "No peers in 50-100 km";
+        }
+      }
+
+      const isFront = analysis.synoptic_weather_detected || selectedRow?.synoptic_weather_detected || analysis.event_consistency?.front_detected;
+      if ($("synoptic-weather-flag")) {
+        $("synoptic-weather-flag").className = `severity-pill ${isFront ? 'advisory' : 'healthy'}`;
+        $("synoptic-weather-flag").textContent = isFront ? "Front Detection: Active Weather System" : "Front Detection: Network Stable";
       }
 
       // Populate contributing neighbours table

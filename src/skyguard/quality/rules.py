@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from math import isfinite
 from .models import Alert, Observation, QualityThresholds
+from skyguard.quality.indian_regional_bounds import INDIAN_CLIMATE_BOUNDS
 
 
 SENSORS = (
@@ -31,12 +32,23 @@ def check_physical_bounds(observation: Observation, thresholds: QualityThreshold
         "slp", "sea_level_pressure", "ma1_altimeter", "qnh",
         "dwd_station_pressure_reduced_to_msl", "metar_qnh",
     }
-    pressure_lower = thresholds.pressure_min_hpa if sea_level else thresholds.station_pressure_min_hpa
-    pressure_upper = thresholds.pressure_max_hpa if sea_level else thresholds.station_pressure_max_hpa
+    # Check if observation specifies an Indian climate zone
+    reg_bounds = INDIAN_CLIMATE_BOUNDS.get(observation.cluster)
+    if not reg_bounds and hasattr(observation, "state"):
+        reg_bounds = INDIAN_CLIMATE_BOUNDS.get(getattr(observation, "state"))
+
+    t_min = reg_bounds.temp_min_c if reg_bounds else thresholds.temperature_min_c
+    t_max = reg_bounds.temp_max_c if reg_bounds else thresholds.temperature_max_c
+
+    pressure_lower = (reg_bounds.mslp_min_hpa if reg_bounds else thresholds.pressure_min_hpa) if sea_level else (reg_bounds.station_pressure_min_hpa if reg_bounds else thresholds.station_pressure_min_hpa)
+    pressure_upper = (reg_bounds.mslp_max_hpa if reg_bounds else thresholds.pressure_max_hpa) if sea_level else (reg_bounds.station_pressure_max_hpa if reg_bounds else thresholds.station_pressure_max_hpa)
+    rh_min = reg_bounds.humidity_min_pct if reg_bounds else thresholds.humidity_min_pct
+    rh_max = reg_bounds.humidity_max_pct if reg_bounds else thresholds.humidity_max_pct
+
     bounds = (
-        ("temperature", observation.temperature_c, thresholds.temperature_min_c, thresholds.temperature_max_c, "°C"),
+        ("temperature", observation.temperature_c, t_min, t_max, "°C"),
         ("pressure", observation.pressure_hpa, pressure_lower, pressure_upper, "hPa"),
-        ("humidity", observation.relative_humidity_pct, thresholds.humidity_min_pct, thresholds.humidity_max_pct, "%"),
+        ("humidity", observation.relative_humidity_pct, rh_min, rh_max, "%"),
     )
     for sensor, value, lower, upper, unit in bounds:
         if value is not None and not isfinite(value):

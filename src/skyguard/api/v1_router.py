@@ -1102,13 +1102,21 @@ def create_v1_router(
                         )
 
                         reading["anomaly_score"] = ens_res.evidence_score
-                        reading["event_decision"] = "sensor_fault" if ens_res.decision == "SENSOR_FAULT" else "nominal"
+                        reading["event_decision"] = "sensor_fault" if ens_res.decision == "SENSOR_FAULT" else ("genuine_weather" if ens_res.decision == "GENUINE_WEATHER_EVENT" else "nominal")
                         reading["fault_probability"] = None  # Explicitly uncalibrated
                         reading["is_calibrated"] = False
                         reading["calibration_status"] = "NOT_CALIBRATED"
                         reading["weather_probability"] = None
                         reading["neighbor_count"] = ens_res.neighbor_count
                         reading["neighbor_evidence"] = ens_res.neighbor_evidence
+                        reading["tier1_20km"] = ens_res.tier1_20km
+                        reading["tier2_50km"] = ens_res.tier2_50km
+                        reading["tier3_100km"] = ens_res.tier3_100km
+                        reading["climate_zone"] = ens_res.climate_zone
+                        reading["is_coastal"] = ens_res.is_coastal
+                        reading["synoptic_weather_detected"] = ens_res.synoptic_weather_detected
+                        reading["spatial_consensus"] = ens_res.expected_values
+                        reading["spatial_residuals"] = ens_res.residuals
                         reading["ml_scores"] = {
                             "neural_autoencoder_score": ens_res.neural_score,
                             "drift_heuristic_score": ens_res.tree_score,
@@ -1132,11 +1140,17 @@ def create_v1_router(
                             "neighbor_evidence": ens_res.neighbor_evidence,
                             "neighbor_count": ens_res.neighbor_count,
                             "expected_values": ens_res.expected_values,
+                            "tier1_20km": ens_res.tier1_20km,
+                            "tier2_50km": ens_res.tier2_50km,
+                            "tier3_100km": ens_res.tier3_100km,
+                            "climate_zone": ens_res.climate_zone,
+                            "is_coastal": ens_res.is_coastal,
+                            "synoptic_weather_detected": ens_res.synoptic_weather_detected,
                             "ml_scores": reading["ml_scores"],
                         }
 
-                        # If anomalous, record incident
-                        if ens_res.evidence_score >= 0.65 or ens_res.decision == "SENSOR_FAULT":
+                        # If genuine sensor fault, record incident
+                        if ens_res.decision == "SENSOR_FAULT":
                             aff_param = "pressure" if (abs(ens_res.z_scores.get("pressure", 0)) > 3.0 or (reading.get("pressure_hpa") or 0) > 1075) else "temperature" if abs(ens_res.z_scores.get("temperature", 0)) > 3.0 else "humidity"
                             obs_val = reading.get("pressure_hpa") if aff_param == "pressure" else reading.get("temperature_c") if aff_param == "temperature" else reading.get("relative_humidity_pct")
                             exp_val = ens_res.expected_values.get(aff_param, obs_val)

@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import math
 import os
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -18,6 +18,17 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from skyguard.quality.indian_regional_bounds import (
+    RegionalBounds,
+    classify_indian_region,
+    check_regional_physical_bounds,
+    is_coastal_location,
+)
+from skyguard.spatial.spatial_qc import (
+    MultiRadiusSpatialQcEngine,
+    MultiRadiusQcResult,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_NEURAL_WEIGHTS = ROOT / "models" / "spatio_temporal_neural_engine.pt"
@@ -194,6 +205,12 @@ class EnsembleResult:
     neighbor_count: int
     confidence: float
     neighbor_evidence: List[Dict[str, Any]] = field(default_factory=list)
+    tier1_20km: Dict[str, Any] = field(default_factory=dict)
+    tier2_50km: Dict[str, Any] = field(default_factory=dict)
+    tier3_100km: Dict[str, Any] = field(default_factory=dict)
+    climate_zone: str = ""
+    is_coastal: bool = False
+    synoptic_weather_detected: bool = False
 
 
 class DeepEnsembleDetector:
@@ -454,30 +471,71 @@ class DeepEnsembleDetector:
         evidence_score = max(0.0120, min(0.9980, evidence_score))
 
         # --------------------------------------------------------------------
-        # Stream 5: Explainable Physical Diagnostic Root Cause
         # --------------------------------------------------------------------
-        # Only evaluate parameters that were ACTUALLY OBSERVED
-        if has_p and (p_target < 800.0 or p_target > 1075.0):
+        # Stream 5: Regional Physical Possibility & Concentric Multi-Radius Spatial QC
+        # --------------------------------------------------------------------
+        region_profile = classify_indian_region(
+            lat=target_lat,
+            lon=target_lon,
+            elev_m=elev_target,
+            state=str(target_station.get("state") or ""),
+            climate_zone_hint=str(target_station.get("climate_zone") or ""),
+        )
+        is_coastal = is_coastal_location(
+            target_lat,
+            target_lon,
+            str(target_station.get("state") or ""),
+            str(target_station.get("district") or ""),
+        )
+
+        target_temporal_delta = None
+        if history_24h and len(history_24h) >= 1 and has_t:
+            prev_t_val = history_24h[-1].get("temperature_c") if history_24h[-1].get("temperature_c") is not None else history_24h[-1].get("temperature")
+            if prev_t_val is not None:
+                try:
+                    target_temporal_delta = float(t_raw) - float(prev_t_val)
+                except (ValueError, TypeError):
+                    target_temporal_delta = None
+
+        # 1. Deterministic Regional Physical Possibility Limits across India
+        phys_valid, phys_param, phys_reason = check_regional_physical_bounds(
+            temperature_c=float(t_raw) if has_t else None,
+            pressure_hpa=float(p_raw) if has_p else None,
+            humidity_pct=float(rh_raw) if has_rh else None,
+            bounds=region_profile,
+            elevation_m=elev_target,
+        )
+
+        # 2. Concentric Multi-Radius Spatial QC (<20km, <50km, <100km)
+        spatial_qc_engine = MultiRadiusSpatialQcEngine()
+        qc_res = spatial_qc_engine.evaluate(
+            target_station=target_station,
+            neighbors=neighbor_stations,
+            target_temporal_delta=target_temporal_delta,
+        )
+
+        if not phys_valid:
             decision = "SENSOR_FAULT"
             severity = "CRITICAL"
-            root_cause = "pressure_physical_bounds_violation"
-            explanation = f"Observed barometric pressure {p_target:.1f} hPa exceeds surface atmospheric physical boundaries [800 - 1075 hPa]."
+            root_cause = f"{phys_param}_physical_bounds_violation"
+            explanation = phys_reason or f"Observed parameter violates verified physical boundaries for {region_profile.zone_name}."
             evidence_score = 0.9950
             confidence = evidence_score
-        elif has_t and (t_target < -25.0 or t_target > 55.0):
-            decision = "SENSOR_FAULT"
-            severity = "CRITICAL"
-            root_cause = "temperature_physical_bounds_violation"
-            explanation = f"Observed temperature {t_target:.1f}°C exceeds surface atmospheric limits [-25°C to 55°C]."
-            evidence_score = 0.9950
-            confidence = evidence_score
-        elif has_t and abs(z_t) >= 4.5 and abs(res_t) >= 4.5 and len(valid_neighbors_t) >= 3:
-            decision = "SENSOR_FAULT"
-            severity = "CRITICAL" if abs(z_t) >= 6.0 else "HIGH"
-            root_cause = "temperature_spike_deviation"
-            explanation = f"Observed temperature {t_target:.1f}°C deviates by {abs(z_t):.1f}σ ({res_t:+.1f}°C) from lapse-compensated regional consensus ({exp_t:.1f}°C)."
-            evidence_score = max(evidence_score, min(0.99, 0.78 + (abs(z_t) - 4.5) * 0.04))
-            confidence = round(evidence_score, 4)
+        elif qc_res.spatial_fault_suspected:
+            if qc_res.synoptic_weather_system_detected:
+                decision = "GENUINE_WEATHER_EVENT"
+                severity = "ADVISORY"
+                root_cause = "synoptic_weather_front"
+                explanation = qc_res.explanation
+                evidence_score = max(0.08, min(0.35, evidence_score * 0.35))
+                confidence = round(1.0 - evidence_score, 4)
+            else:
+                decision = "SENSOR_FAULT"
+                severity = qc_res.severity
+                root_cause = qc_res.root_cause
+                explanation = qc_res.explanation
+                evidence_score = max(evidence_score, 0.88 if severity == "CRITICAL" else 0.76)
+                confidence = round(evidence_score, 4)
         elif has_p and abs(z_p) >= 4.5 and abs(res_p) >= 12.0 and len(valid_neighbors_p) >= 3:
             decision = "SENSOR_FAULT"
             severity = "HIGH"
@@ -503,7 +561,7 @@ class DeepEnsembleDetector:
             decision = "NORMAL"
             severity = "NOMINAL"
             root_cause = "nominal_spatial_consensus"
-            explanation = f"Sensors match elevation-adjusted regional spatial consensus within {max_abs_z:.2f} robust MAD scales."
+            explanation = f"Sensors match elevation-adjusted regional spatial consensus ({region_profile.zone_name}) across 20/50/100 km concentric radii within verified tolerances."
             confidence = round(1.0 - evidence_score, 4)
 
         if "pressure" in root_cause.lower():
@@ -533,4 +591,10 @@ class DeepEnsembleDetector:
             neighbor_count=neighbor_count,
             confidence=round(confidence, 4),
             neighbor_evidence=neighbor_evidence,
+            tier1_20km=asdict(qc_res.tier1_20km),
+            tier2_50km=asdict(qc_res.tier2_50km),
+            tier3_100km=asdict(qc_res.tier3_100km),
+            climate_zone=region_profile.zone_name,
+            is_coastal=is_coastal,
+            synoptic_weather_detected=qc_res.synoptic_weather_system_detected,
         )
