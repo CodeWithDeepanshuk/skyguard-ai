@@ -13,6 +13,7 @@ import hashlib
 import json
 import math
 import os
+import zoneinfo
 import time
 import urllib.error
 import urllib.parse
@@ -29,6 +30,9 @@ from skyguard.providers.base import (
     SourceType,
     WeatherProvider,
 )
+
+IST = zoneinfo.ZoneInfo("Asia/Kolkata")
+UTC = zoneinfo.ZoneInfo("UTC")
 
 
 AWS_ENDPOINT = "https://api.imd.gov.in/api/v1/aws_data"
@@ -59,17 +63,32 @@ def _records(payload: Any) -> List[Dict[str, Any]]:
     return []
 
 
+def parse_imd_record_timestamp(raw_ts: str) -> str:
+    """
+    Parses naive IST timestamp from IMD API ('YYYY-MM-DD HH:MM:SS')
+    and returns standard UTC ISO string.
+    """
+    clean_ts = raw_ts.replace("Z", "").strip()
+    dt_naive = datetime.fromisoformat(clean_ts)
+    
+    # 1. Attach Indian Standard Time (IST)
+    dt_ist = dt_naive.replace(tzinfo=IST)
+    
+    # 2. Convert to UTC
+    dt_utc = dt_ist.astimezone(UTC)
+    return dt_utc.isoformat()
+
 def _timestamp_utc(row: Dict[str, Any]) -> str:
     date = str(row.get("DATE") or row.get("Date") or "").strip()
     clock = str(row.get("TIME") or row.get("Time") or "").strip()
     if not date:
         raise ValueError("IMD AWS row has no observation date")
-    value = f"{date} {clock or '00:00:00'}"
-    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
-    if parsed.tzinfo is None:
-        # IMD's public AWS field reference specifies UTC for observation time.
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    value = f"{date} {clock or '00:00:00'}".strip()
+    # Normalize naive IST timestamp to UTC to avoid 330-minute lag
+    dt_iso = parse_imd_record_timestamp(value)
+    dt_obj = datetime.fromisoformat(dt_iso)
+    return dt_obj.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
 
 
 class IMDAWSAPIProvider(WeatherProvider):
