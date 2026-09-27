@@ -73,3 +73,7 @@ aws_observations_*.csv
 !data/demo/*.csv.gz
 !data/incidents/*.jsonl.gz
 !data/archive/legacy_noaa_aws/*.csv.gz
+
+# Local build / training temp
+.codex-build/
+.venv-training/

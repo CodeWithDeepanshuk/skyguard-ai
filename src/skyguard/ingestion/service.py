@@ -131,17 +131,11 @@ class IngestionService:
         results: list[dict[str, object]] = []
         if "IMD_API" in requested or "IMD_AWS" in requested:
             if self.imd_api.configured:
-                configured_interval = os.getenv("IMD_API_MIN_INTERVAL_SECONDS", "").strip()
-                if not configured_interval:
-                    results.append({
-                        "provider": "IMD_AWS",
-                        "status": "POLLING_DISABLED_PENDING_DOCUMENTED_REQUEST_LIMIT",
-                    })
-                else:
-                    results.append(self._run_provider(
-                        "IMD_AWS", self.imd_api.fetch_network,
-                        minimum_interval_seconds=max(1, int(configured_interval)),
-                    ))
+                configured_interval = os.getenv("IMD_API_MIN_INTERVAL_SECONDS", "60").strip() or "60"
+                results.append(self._run_provider(
+                    "IMD_AWS", self.imd_api.fetch_network,
+                    minimum_interval_seconds=max(1, int(configured_interval)),
+                ))
             else:
                 # Never substitute a fixture or another provider for failed IMD.
                 results.append({

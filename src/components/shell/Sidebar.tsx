@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { 
   Activity, 
   BarChart3, 
+  BookOpen,
   BrainCircuit, 
   ChevronLeft, 
   ChevronRight, 
@@ -38,6 +39,7 @@ export function Sidebar({ collapsed, setCollapsed, mobileOpen = false, onCloseMo
 
   const navItems: NavItem[] = [
     { name: 'Command Centre', href: '/', icon: LayoutDashboard },
+    { name: 'Project Explainer', href: '/project-explainer', icon: BookOpen, badge: 'GUIDE', badgeColor: 'bg-emerald-100 text-emerald-800 font-bold' },
     { name: 'AWS Network', href: '/stations', icon: RadioTower },
     { name: 'Incidents', href: '/incidents', icon: Activity },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },

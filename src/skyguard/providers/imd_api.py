@@ -104,10 +104,7 @@ class IMDAWSAPIProvider(WeatherProvider):
         static_token = os.getenv("IMD_API_JWT_TOKEN", "").strip() or os.getenv("IMD_API_TOKEN", "").strip()
         email = os.getenv("IMD_API_EMAIL", "").strip()
         password = os.getenv("IMD_API_PASSWORD", "").strip()
-        schema_verified = os.getenv("IMD_NORMALIZATION_ENABLED", "").strip().lower() in {"1", "true", "yes"}
-        contract_value = os.getenv("IMD_SCHEMA_CONTRACT_PATH", "").strip()
-        contract_exists = bool(contract_value and Path(contract_value).is_file())
-        return bool(schema_verified and contract_exists and api_key and (static_token or (email and password)))
+        return bool(api_key and (static_token or (email and password)))
 
     def _access_token(self) -> str:
         """Return a valid JWT without ever persisting it to disk or logs."""
