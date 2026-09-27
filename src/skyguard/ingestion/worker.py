@@ -32,7 +32,7 @@ def forward_to_render(
         },
         "records": records,
     }
-    body = json.dumps(payload).encode("utf-8")
+    body = json.dumps(payload, default=str).encode("utf-8")
     req = urllib.request.Request(
         endpoint,
         data=body,
@@ -45,7 +45,7 @@ def forward_to_render(
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=45) as resp:
+        with urllib.request.urlopen(req, timeout=60) as resp:
             resp_data = json.loads(resp.read().decode("utf-8"))
             print(f"[+] Render Ingestion Webhook Success: {resp_data.get('status')} | Inserted: {resp_data.get('inserted')} | Duplicates: {resp_data.get('duplicates')}", flush=True)
     except Exception as exc:
@@ -58,7 +58,7 @@ def main() -> None:
     parser.add_argument("--loop", action="store_true", help="Continue polling after each completed run")
     parser.add_argument("--interval-seconds", type=int, default=900)
     parser.add_argument("--forward-to-render", default=os.getenv("RENDER_URL", "https://skyguard-ai-wbm9.onrender.com"))
-    parser.add_argument("--token", default=os.getenv("SKYGUARD_INGESTION_TOKEN", "sih26073_secure_gateway_token_2026"))
+    parser.add_argument("--token", default=os.getenv("SKYGUARD_INGESTION_TOKEN", "sih26073_secure_token_2026"))
     args = parser.parse_args()
     providers = [item for item in args.providers.split(",") if item.strip()]
     service = IngestionService()
@@ -71,20 +71,22 @@ def main() -> None:
                 if latest:
                     formatted = [
                         {
-                            "station_id": r.get("canonical_station_id") or r.get("provider_station_id"),
-                            "station_name": r.get("station_name"),
-                            "latitude": r.get("latitude"),
-                            "longitude": r.get("longitude"),
-                            "elevation_m": r.get("elevation_m"),
-                            "temperature_c": r.get("temperature_c"),
-                            "pressure_hpa": r.get("pressure_hpa"),
-                            "relative_humidity_pct": r.get("relative_humidity_pct"),
-                            "timestamp_utc": r.get("observation_timestamp_utc"),
-                            "provider": r.get("provider", "IMD_AWS"),
+                            "station_id": str(r.get("canonical_station_id") or r.get("provider_station_id") or "").strip(),
+                            "station_name": str(r.get("station_name") or ""),
+                            "latitude": float(r["latitude"]) if r.get("latitude") is not None else None,
+                            "longitude": float(r["longitude"]) if r.get("longitude") is not None else None,
+                            "elevation_m": float(r["elevation_m"]) if r.get("elevation_m") is not None else None,
+                            "temperature_c": float(r["temperature_c"]) if r.get("temperature_c") is not None else None,
+                            "pressure_hpa": float(r["pressure_hpa"]) if r.get("pressure_hpa") is not None else None,
+                            "relative_humidity_pct": float(r["relative_humidity_pct"]) if r.get("relative_humidity_pct") is not None else None,
+                            "timestamp_utc": r["observation_timestamp_utc"].isoformat() if hasattr(r.get("observation_timestamp_utc"), "isoformat") else str(r.get("observation_timestamp_utc") or ""),
+                            "provider": str(r.get("provider") or "IMD_AWS"),
                         }
                         for r in latest
+                        if (r.get("canonical_station_id") or r.get("provider_station_id"))
                     ]
-                    watermark = str(latest[0].get("observation_timestamp_utc") or "")
+                    first_ts = latest[0].get("observation_timestamp_utc")
+                    watermark = first_ts.isoformat() if hasattr(first_ts, "isoformat") else str(first_ts or "")
                     forward_to_render(formatted, args.forward_to_render, args.token, watermark)
             except Exception as fwd_err:
                 print(f"[-] Forwarding error: {fwd_err}", flush=True)

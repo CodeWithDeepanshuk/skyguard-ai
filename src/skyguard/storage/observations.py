@@ -158,24 +158,34 @@ class ObservationStore:
         with self._connection() as connection:
             cursor = connection.cursor()
             for record in items:
-                cursor.execute(sql, self._record_values(record))
-                if cursor.rowcount > 0:
-                    inserted += 1
-                if record.raw_payload_json:
+                try:
                     if self.backend == "postgresql":
-                        cursor.execute(
-                            "INSERT INTO raw_payloads(raw_payload_hash,provider,payload_json,first_seen_at_utc) "
-                            "VALUES (%s,%s,%s::jsonb,%s) ON CONFLICT(raw_payload_hash) DO NOTHING",
-                            (record.raw_source_hash, record.provider, record.raw_payload_json, record.ingestion_timestamp_utc),
-                        )
+                        with connection.savepoint():
+                            cursor.execute(sql, self._record_values(record))
+                            if cursor.rowcount > 0:
+                                inserted += 1
+                            if record.raw_payload_json:
+                                cursor.execute(
+                                    "INSERT INTO raw_payloads(raw_payload_hash,provider,payload_json,first_seen_at_utc) "
+                                    "VALUES (%s,%s,%s::jsonb,%s) ON CONFLICT(raw_payload_hash) DO NOTHING",
+                                    (record.raw_source_hash, record.provider, record.raw_payload_json, record.ingestion_timestamp_utc),
+                                )
+                                if cursor.rowcount > 0:
+                                    raw_inserted += 1
                     else:
-                        cursor.execute(
-                            "INSERT OR IGNORE INTO raw_payloads(raw_payload_hash,provider,payload_json,first_seen_at_utc) "
-                            "VALUES (?,?,?,?)",
-                            (record.raw_source_hash, record.provider, record.raw_payload_json, record.ingestion_timestamp_utc),
-                        )
-                    if cursor.rowcount > 0:
-                        raw_inserted += 1
+                        cursor.execute(sql, self._record_values(record))
+                        if cursor.rowcount > 0:
+                            inserted += 1
+                        if record.raw_payload_json:
+                            cursor.execute(
+                                "INSERT OR IGNORE INTO raw_payloads(raw_payload_hash,provider,payload_json,first_seen_at_utc) "
+                                "VALUES (?,?,?,?)",
+                                (record.raw_source_hash, record.provider, record.raw_payload_json, record.ingestion_timestamp_utc),
+                            )
+                            if cursor.rowcount > 0:
+                                raw_inserted += 1
+                except Exception:
+                    continue
         return {
             "fetched": len(items), "inserted": inserted,
             "duplicates": len(items) - inserted, "raw_payloads": raw_inserted,
@@ -232,7 +242,7 @@ class ObservationStore:
                     f"SELECT MAX(observation_timestamp_utc) FROM observations WHERE canonical_station_id={parameter}",
                     (station_id,),
                 ).fetchone()
-                val = row_max[0] if row_max else None
+                val = (list(row_max.values())[0] if isinstance(row_max, Mapping) else row_max[0]) if row_max else None
                 if val:
                     if isinstance(val, str):
                         end_dt = datetime.fromisoformat(val.replace("Z", "+00:00"))
@@ -292,7 +302,7 @@ class ObservationStore:
                     f"SELECT MAX(observation_timestamp_utc) FROM observations WHERE canonical_station_id={parameter}",
                     (station_id,),
                 ).fetchone()
-                max_str = row_max[0] if (row_max and row_max[0]) else None
+                max_str = (list(row_max.values())[0] if isinstance(row_max, Mapping) else row_max[0]) if (row_max and (row_max.values() if isinstance(row_max, Mapping) else row_max)) else None
                 if max_str:
                     try:
                         end_dt = datetime.fromisoformat(str(max_str).replace("Z", "+00:00"))
@@ -326,7 +336,8 @@ class ObservationStore:
 
             # 3. Total count
             count_sql = f"SELECT COUNT(*) FROM observations WHERE {where_str}"
-            total_count = connection.execute(count_sql, tuple(params)).fetchone()[0]
+            cnt_row = connection.execute(count_sql, tuple(params)).fetchone()
+            total_count = int(list(cnt_row.values())[0] if isinstance(cnt_row, Mapping) else cnt_row[0]) if cnt_row else 0
 
             # 4. Fetch chronological observations
             query_sql = f"""
@@ -344,8 +355,13 @@ class ObservationStore:
                 FROM observations WHERE canonical_station_id={parameter}
             """
             b_row = connection.execute(bounds_sql, (station_id,)).fetchone()
-            oldest_overall = b_row[0] if (b_row and b_row[0]) else None
-            newest_overall = b_row[1] if (b_row and b_row[1]) else None
+            if b_row:
+                vals = list(b_row.values()) if isinstance(b_row, Mapping) else list(b_row)
+                oldest_overall = vals[0] if len(vals) > 0 and vals[0] else None
+                newest_overall = vals[1] if len(vals) > 1 and vals[1] else None
+            else:
+                oldest_overall = None
+                newest_overall = None
 
             now_utc = datetime.now(timezone.utc)
             freshness_m = None

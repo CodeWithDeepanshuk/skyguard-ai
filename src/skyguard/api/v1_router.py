@@ -1017,21 +1017,27 @@ def create_v1_router(
         receipt_store = store.append(accepted)
         watermark = max((r.timestamp_utc for r in accepted), default="")
         if watermark:
-            store.set_watermark("IMD_AWS", watermark, {"fetched": len(records_in), "accepted": len(accepted)})
+            try:
+                store.set_watermark("IMD_AWS", watermark, {"fetched": len(records_in), "accepted": len(accepted)})
+            except Exception as wm_err:
+                logger.warning("Watermark update skipped: %s", wm_err)
 
-        store.finish_run(
-            run_id,
-            status="SUCCESS",
-            fetched_count=len(records_in),
-            inserted_count=receipt_store["inserted"],
-            duplicate_count=receipt_store["duplicates"],
-            dead_letter_count=dead_letters,
-            metadata={
-                "watermark_utc": watermark,
-                "payload_sha256": raw_receipt.get("payload_sha256"),
-                "gateway_provenance": "ORACLE_CLOUD_GATEWAY",
-            },
-        )
+        try:
+            store.finish_run(
+                run_id,
+                status="SUCCESS",
+                fetched_count=len(records_in),
+                inserted_count=receipt_store.get("inserted", 0),
+                duplicate_count=receipt_store.get("duplicates", 0),
+                dead_letter_count=dead_letters,
+                metadata={
+                    "watermark_utc": watermark,
+                    "payload_sha256": raw_receipt.get("payload_sha256"),
+                    "gateway_provenance": "ORACLE_CLOUD_GATEWAY",
+                },
+            )
+        except Exception as fr_err:
+            logger.warning("Finish run update skipped: %s", fr_err)
 
         # Archive raw receipt and payload to data/raw/imd_aws/ if filesystem allows
         try:
@@ -1116,7 +1122,7 @@ def create_v1_router(
 
                     for reading in new_readings:
                         sid = reading["station_id"]
-                        stn_history = store.history(sid, hours=24, limit=50)
+                        stn_history: list[dict[str, Any]] = []
 
                         target_dict = {
                             "station_id": sid,
