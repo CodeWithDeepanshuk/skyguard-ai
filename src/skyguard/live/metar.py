@@ -101,8 +101,11 @@ class MetarLiveService:
         return stations
 
     def _load_expected_intervals(self) -> dict[str, float]:
-        report = json.loads((self.root / "reports" / "qc_baseline.json").read_text(encoding="utf-8"))
-        return {key: float(value) for key, value in report["expected_interval_minutes"].items()}
+        report_path = self.root / "reports" / "qc_baseline.json"
+        if report_path.exists():
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            return {key: float(value) for key, value in report.get("expected_interval_minutes", {}).items()}
+        return {"temperature": 15.0, "pressure": 15.0, "humidity": 15.0}
 
     def _load_cache(self) -> dict[str, object]:
         target = self.cache_path
