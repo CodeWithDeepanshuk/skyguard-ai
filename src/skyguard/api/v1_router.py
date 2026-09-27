@@ -366,9 +366,9 @@ def create_v1_router(
         reference_recs = pair["reference_model"]
 
         # Pull from local ObservationStore if WIS2/METAR is empty for this station
-        if not observed_recs and store:
+        if not observed_recs and observation_store:
             try:
-                hist = store.history(station.station_id, hours=hours, relative_to_latest=True)
+                hist = observation_store.history(station.station_id, hours=hours, relative_to_latest=True)
                 if hist:
                     observed_recs = [
                         ObservationRecord(
