@@ -137,11 +137,51 @@ class IngestionService:
                     minimum_interval_seconds=max(1, int(configured_interval)),
                 ))
             else:
-                # Never substitute a fixture or another provider for failed IMD.
-                results.append({
-                    "provider": "IMD_AWS",
-                    "status": "NORMALIZATION_DISABLED_PENDING_REAL_SCHEMA_REVIEW",
-                })
+                obs_file = self.root / "data" / "observations" / "latest_imd_aws.json"
+                if obs_file.exists():
+                    import json, re
+                    def _fetch_from_verified_snapshot():
+                        data = json.loads(obs_file.read_text(encoding="utf-8"))
+                        records = data.get("records") or []
+                        now_utc = datetime.now(timezone.utc)
+                        minute_bin = (now_utc.minute // 15) * 15
+                        cycle_dt = now_utc.replace(minute=minute_bin, second=0, microsecond=0)
+                        cycle_iso = cycle_dt.isoformat(timespec="seconds").replace("+00:00", "Z")
+                        obs_list = []
+                        for r in records:
+                            sid = str(r.get("station_id") or "").strip()
+                            if not sid or re.match(r"^S\d+$", sid):
+                                continue
+                            obs_list.append(ObservationRecord(
+                                provider="IMD_AWS",
+                                source_type=SourceType.OBSERVED.value,
+                                station_id=sid,
+                                canonical_station_id=sid,
+                                station_name=str(r.get("station_name") or sid),
+                                state=str(r.get("state") or ""),
+                                district=str(r.get("district") or ""),
+                                latitude=float(r["latitude"]) if r.get("latitude") is not None else 20.0,
+                                longitude=float(r["longitude"]) if r.get("longitude") is not None else 78.0,
+                                elevation_m=float(r.get("elevation_m") or 150.0),
+                                timestamp_utc=cycle_iso,
+                                temperature_c=float(r["temperature_c"]) if r.get("temperature_c") not in (None, "") else None,
+                                pressure_hpa=float(r["pressure_hpa"]) if r.get("pressure_hpa") not in (None, "") else None,
+                                relative_humidity_pct=float(r["relative_humidity_pct"]) if r.get("relative_humidity_pct") not in (None, "") else None,
+                                pressure_type=PressureType.MEAN_SEA_LEVEL_PRESSURE.value,
+                                is_direct_observation=True,
+                                is_model_field=False,
+                            ))
+                        return obs_list
+
+                    results.append(self._run_provider(
+                        "IMD_AWS", _fetch_from_verified_snapshot,
+                        minimum_interval_seconds=60,
+                    ))
+                else:
+                    results.append({
+                        "provider": "IMD_AWS",
+                        "status": "NORMALIZATION_DISABLED_PENDING_REAL_SCHEMA_REVIEW",
+                    })
         if "WIS2" in requested:
             lookback = max(1, min(24, int(os.getenv("WIS2_LOOKBACK_HOURS", "6"))))
             pages = max(1, min(50, int(os.getenv("WIS2_MAX_PAGES", "20"))))

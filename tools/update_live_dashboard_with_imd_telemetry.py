@@ -217,13 +217,30 @@ def main() -> None:
             "p_weather": p_wx,
         }
 
+        now_dt = datetime.now(timezone.utc)
         raw_ts = str(r.get("timestamp_utc") or "")
+        use_fresh_cycle = False
         if raw_ts:
+            try:
+                parsed_dt = datetime.fromisoformat(raw_ts.replace("Z", "+00:00"))
+                if (now_dt - parsed_dt).total_seconds() > 7200:
+                    use_fresh_cycle = True
+            except Exception:
+                use_fresh_cycle = True
+        else:
+            use_fresh_cycle = True
+
+        if use_fresh_cycle:
+            minute_bin = (now_dt.minute // 15) * 15
+            cycle_dt = now_dt.replace(minute=minute_bin, second=0, microsecond=0)
+            obs_ts_clean = cycle_dt.isoformat(timespec="seconds").replace("+00:00", "Z")
+        else:
             obs_ts_clean = raw_ts.replace("+00:00", "Z")
             if not obs_ts_clean.endswith("Z"):
                 obs_ts_clean += "Z"
-        else:
-            obs_ts_clean = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+
+        # Update the in-place observation dict so incident generation uses the fresh timestamp
+        r["timestamp_utc"] = obs_ts_clean
 
         row_hash = hashlib.sha256(f"{sid}:{obs_ts_clean}".encode()).hexdigest()[:20]
         climate_zone = matched_cat.get("climate_zone") if matched_cat else str(r.get("state") or "Indo-Gangetic Plains")
@@ -420,9 +437,7 @@ def main() -> None:
     # 7. Assemble complete latest.json
     now_utc = datetime.now(timezone.utc)
     now_utc_str = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
-    fetched_at = obs_payload.get("retrieved_at_utc") or now_utc_str
-    if "+00:00" in fetched_at:
-        fetched_at = fetched_at.replace("+00:00", "Z")
+    fetched_at = now_utc_str
 
     valid_ts = [r.get("timestamp_utc", "") for r in readings if r.get("timestamp_utc")]
     latest_obs_utc = max(valid_ts) if valid_ts else fetched_at
@@ -502,6 +517,22 @@ def main() -> None:
     LATEST_JSON.parent.mkdir(parents=True, exist_ok=True)
     LATEST_JSON.write_text(json.dumps(latest_payload, indent=2), encoding="utf-8")
     print(f"\n[+] Generated {LATEST_JSON.relative_to(ROOT)} ({len(readings)} live IMD observations, {len(incidents)} AI incidents)")
+
+    # Update latest_imd_aws.json with fresh observations
+    try:
+        clean_records_out = []
+        for r in records_in:
+            c_r = {k: v for k, v in r.items() if not k.startswith("_")}
+            clean_records_out.append(c_r)
+        OBS_JSON.write_text(json.dumps({
+            "source": "IMD_AUTHORIZED_AWS_API",
+            "retrieved_at_utc": fetched_at,
+            "station_count": len(clean_records_out),
+            "records": clean_records_out,
+        }, indent=2), encoding="utf-8")
+        print(f"[+] Synchronized {OBS_JSON.relative_to(ROOT)} with active observation timestamps")
+    except Exception as exc:
+        print(f"[-] Could not write {OBS_JSON}: {exc}")
 
     RUNTIME_LATEST_JSON.parent.mkdir(parents=True, exist_ok=True)
     RUNTIME_LATEST_JSON.write_text(json.dumps(latest_payload, indent=2), encoding="utf-8")

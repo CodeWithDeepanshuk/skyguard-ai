@@ -1,5 +1,5 @@
 {
-  "evaluation_timestamp_utc": "2026-09-26T10:01:34.704883+00:00",
+  "evaluation_timestamp_utc": "2026-09-26T12:28:21.044689+00:00",
   "dataset_name": "station_test.csv (Spatial Holdout Benchmark)",
   "total_samples": 10516,
   "unique_stations": 4,

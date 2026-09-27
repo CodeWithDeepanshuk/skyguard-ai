@@ -1,6 +1,6 @@
 # SkyGuard AI: Empirical False Alarm Rate (FAR) Evaluation Report
 
-**Execution Timestamp**: `2026-09-26T10:01:34.704883+00:00`  
+**Execution Timestamp**: `2026-09-26T12:28:21.044689+00:00`  
 **Evaluated Split**: `station_test.csv (Spatial Holdout Benchmark)`  
 
 ## 1. Truth in Metrics: Reconciling Scientific Claims

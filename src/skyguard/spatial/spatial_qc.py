@@ -306,6 +306,11 @@ class MultiRadiusSpatialQcEngine:
         if (t1_violation or (t2_violation and t3_violation) or (t3_violation and abs(z_spatial) >= 3.5)):
             spatial_fault_suspected = True
 
+        t_disp = f"{t_target:.1f}°C" if t_target is not None else "N/A"
+        cons_disp = f"{consensus_temp:.1f}°C" if consensus_temp is not None else "N/A"
+        res_disp = f"{consensus_res:+.1f}°C" if consensus_res is not None else "N/A"
+        z_disp = f"{z_spatial:+.1f}σ" if z_spatial is not None else "0.0σ"
+
         # Final decision synthesis
         if spatial_fault_suspected:
             if weather_system_detected:
@@ -313,7 +318,7 @@ class MultiRadiusSpatialQcEngine:
                 severity = "ADVISORY"
                 root_cause = "synoptic_weather_front"
                 explanation = (
-                    f"Temperature shift of {consensus_res:+.1f}°C is corroborated by "
+                    f"Temperature shift of {res_disp} is corroborated by "
                     f"{coherence_ratio * 100:.0f}% of surrounding stations within 100 km. "
                     "Classified as genuine meteorological front; hardware fault alert suppressed."
                 )
@@ -330,8 +335,8 @@ class MultiRadiusSpatialQcEngine:
                     peers_desc.append(f"<100km: mean Δ={t3_summary.mean_abs_delta_c}°C (tol {t3_summary.tolerance_c}°C)")
 
                 explanation = (
-                    f"Observed temperature {t_target:.1f}°C deviates from lapse-adjusted spatial consensus "
-                    f"({consensus_temp:.1f}°C) by {consensus_res:+.1f}°C ({z_spatial:+.1f}σ). "
+                    f"Observed temperature {t_disp} deviates from lapse-adjusted spatial consensus "
+                    f"({cons_disp}) by {res_disp} ({z_disp}). "
                     f"Multi-radius check failed [{', '.join(peers_desc)}]. "
                     f"No multi-station weather system detected."
                 )
@@ -345,8 +350,8 @@ class MultiRadiusSpatialQcEngine:
             severity = "NOMINAL"
             root_cause = "spatial_consensus_confirmed"
             explanation = (
-                f"Temperature {t_target:.1f}°C matches lapse-adjusted spatial consensus "
-                f"({consensus_temp:.1f}°C, {total_peers} peers across 20/50/100 km) within verified WMO tolerances."
+                f"Temperature {t_disp} matches lapse-adjusted spatial consensus "
+                f"({cons_disp}, {total_peers} peers across 20/50/100 km) within verified WMO tolerances."
             )
 
         return MultiRadiusQcResult(

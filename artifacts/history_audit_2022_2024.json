@@ -1,0 +1,52 @@
+{
+  "path": "data\\archive\\legacy_noaa_aws\\aws_observations_2022_2024.csv.gz",
+  "sha256": "31efe25eb7951c61b133199f1069e498ec02f7c6f77be643d51c88325f6a2829",
+  "rows": 578448,
+  "stations": 24,
+  "start": "2022-01-01 00:00:00+00:00",
+  "end": "2024-12-31 23:30:00+00:00",
+  "invalid_timestamps": 0,
+  "duplicate_station_times": 0,
+  "years": {
+    "2022": {
+      "rows": 193807,
+      "stations": 24,
+      "raw_csv_files": 37
+    },
+    "2023": {
+      "rows": 191849,
+      "stations": 24,
+      "raw_csv_files": 37
+    },
+    "2024": {
+      "rows": 192792,
+      "stations": 24,
+      "raw_csv_files": 43
+    }
+  },
+  "missing": {
+    "temperature_c": 104,
+    "pressure_hpa": 8619,
+    "relative_humidity_pct": 246
+  },
+  "pressure_sources": {
+    "ma1_altimeter": 415243,
+    "slp": 154586,
+    "MISSING": 8619
+  },
+  "evaluation_roles": {
+    "development": 546108,
+    "station_holdout": 32340
+  },
+  "sources": {
+    "NOAA/NCEI Global Hourly ISD 2022": 193807,
+    "NOAA/NCEI Global Hourly ISD 2024": 192792,
+    "NOAA/NCEI Global Hourly ISD 2023": 191849
+  },
+  "limitations": [
+    "NOAA/NCEI Indian surface-station archive; not direct IMD AWS API history.",
+    "SLP and MA1 altimeter are different pressure quantities and must not be mixed.",
+    "No maintenance-confirmed fault labels in this archive.",
+    "Raw file counts do not establish usable station coverage before parsing."
+  ]
+}

@@ -1,6 +1,6 @@
 # SkyGuard AI: Detectable Fault Classes & Diagnostic Signatures
 
-**Audit Timestamp**: `2026-09-26T10:01:35.955714+00:00`  
+**Audit Timestamp**: `2026-09-26T12:28:38.244342+00:00`  
 **Total Registered Signatures**: **9 classes** (8 sensor faults, 1 genuine weather front discriminator)  
 
 ## Master Fault Classification Matrix

@@ -1,18 +1,18 @@
 # SkyGuard AI: Inference Latency Benchmark Report
 
-**Execution Timestamp**: `2026-09-26T10:00:29.667980+00:00`  
+**Execution Timestamp**: `2026-09-26T12:28:05.960032+00:00`  
 **Sample Size**: `1,000 iterations`  
 
 ## 1. Algorithmic In-Process CPU Execution Latency
 
 | Metric | Value | Budget / SLA Target | Operational Status |
 | :--- | :--- | :--- | :--- |
-| **Median Latency** | **`8.455 ms`** | $< 10.0\text{ ms}$ | **PASSED (Optimal)** |
-| **Mean Latency** | `8.705 ms` (±`2.186`) | $< 15.0\text{ ms}$ | **PASSED (Optimal)** |
-| **95th Percentile (p95)** | **`10.142 ms`** | $< 25.0\text{ ms}$ | **PASSED (Optimal)** |
-| **99th Percentile (p99)** | `20.912 ms` | $< 50.0\text{ ms}$ | **PASSED (Optimal)** |
-| **Throughput** | **`114.8 evals/sec`** | $> 100\text{ evals/sec}$ | **PASSED** |
-| **Min / Max Latency** | `4.545 ms` / `39.721 ms` | N/A | Normal Variance |
+| **Median Latency** | **`2.258 ms`** | $< 10.0\text{ ms}$ | **PASSED (Optimal)** |
+| **Mean Latency** | `2.274 ms` (±`0.565`) | $< 15.0\text{ ms}$ | **PASSED (Optimal)** |
+| **95th Percentile (p95)** | **`3.207 ms`** | $< 25.0\text{ ms}$ | **PASSED (Optimal)** |
+| **99th Percentile (p99)** | `3.612 ms` | $< 50.0\text{ ms}$ | **PASSED (Optimal)** |
+| **Throughput** | **`439.4 evals/sec`** | $> 100\text{ evals/sec}$ | **PASSED** |
+| **Min / Max Latency** | `1.238 ms` / `5.228 ms` | N/A | Normal Variance |
 
 ## 2. Architectural Latency Disaggregation
 

@@ -983,17 +983,22 @@ def create_v1_router(
                 continue
             ts_utc = str(ts_raw)
 
+            station_name_val = str(item.get("station_name") or (getattr(official, "station_name", None) or sid)).strip()
+            state_val = str(item.get("state") or getattr(official, "state", "") or "").strip()
+            district_val = str(item.get("district") or getattr(official, "district", "") or "").strip()
+            elev_val = getattr(official, "elevation_m", None) if official else None
+
             rec = ObservationRecord(
                 provider="IMD_AWS",
                 source_type=SourceType.OBSERVED.value,
                 station_id=sid,
                 canonical_station_id=sid,
-                station_name=str(item.get("station_name") or (official.station_name if official else sid)).strip(),
-                state=str(item.get("state") or (official.state if official else "")).strip(),
-                district=str(item.get("district") or (official.district if official else "")).strip(),
+                station_name=station_name_val,
+                state=state_val,
+                district=district_val,
                 latitude=lat_f,
                 longitude=lon_f,
-                elevation_m=float(official.elevation_m) if official and official.elevation_m is not None else None,
+                elevation_m=float(elev_val) if elev_val is not None else None,
                 timestamp_utc=ts_utc,
                 temperature_c=temp_c,
                 pressure_hpa=press_hpa,

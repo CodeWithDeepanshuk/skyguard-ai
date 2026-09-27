@@ -8,6 +8,7 @@ import logging
 import os
 import time
 import urllib.request
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from skyguard.ingestion import IngestionService
@@ -67,26 +68,49 @@ def main() -> None:
         print(json.dumps(result, indent=2, default=str), flush=True)
         if args.forward_to_render:
             try:
+                now_utc = datetime.now(timezone.utc)
+                minute_bin = (now_utc.minute // 15) * 15
+                cycle_dt = now_utc.replace(minute=minute_bin, second=0, microsecond=0)
+                cycle_iso = cycle_dt.isoformat(timespec="seconds").replace("+00:00", "Z")
+
                 latest = service.store.latest_observations(limit=1500, provider="IMD_AWS")
                 if latest:
-                    formatted = [
-                        {
-                            "station_id": str(r.get("canonical_station_id") or r.get("provider_station_id") or "").strip(),
-                            "station_name": str(r.get("station_name") or ""),
+                    import re
+                    formatted = []
+                    for r in latest:
+                        sid = str(r.get("canonical_station_id") or r.get("provider_station_id") or "").strip()
+                        if not sid or re.match(r"^S\d+$", sid):
+                            continue
+
+                        raw_ts = r.get("observation_timestamp_utc")
+                        ts_str = raw_ts.isoformat() if hasattr(raw_ts, "isoformat") else str(raw_ts or "")
+                        use_cycle = False
+                        if ts_str:
+                            try:
+                                dt = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+                                if (now_utc - dt).total_seconds() > 7200:
+                                    use_cycle = True
+                            except Exception:
+                                use_cycle = True
+                        else:
+                            use_cycle = True
+
+                        final_ts = cycle_iso if use_cycle else ts_str
+
+                        formatted.append({
+                            "station_id": sid,
+                            "station_name": str(r.get("station_name") or sid),
                             "latitude": float(r["latitude"]) if r.get("latitude") is not None else None,
                             "longitude": float(r["longitude"]) if r.get("longitude") is not None else None,
                             "elevation_m": float(r["elevation_m"]) if r.get("elevation_m") is not None else None,
-                            "temperature_c": float(r["temperature_c"]) if r.get("temperature_c") is not None else None,
-                            "pressure_hpa": float(r["pressure_hpa"]) if r.get("pressure_hpa") is not None else None,
-                            "relative_humidity_pct": float(r["relative_humidity_pct"]) if r.get("relative_humidity_pct") is not None else None,
-                            "timestamp_utc": r["observation_timestamp_utc"].isoformat() if hasattr(r.get("observation_timestamp_utc"), "isoformat") else str(r.get("observation_timestamp_utc") or ""),
+                            "temperature_c": float(r["temperature_c"]) if r.get("temperature_c") not in (None, "") else None,
+                            "pressure_hpa": float(r["pressure_hpa"]) if r.get("pressure_hpa") not in (None, "") else None,
+                            "relative_humidity_pct": float(r["relative_humidity_pct"]) if r.get("relative_humidity_pct") not in (None, "") else None,
+                            "timestamp_utc": final_ts,
                             "provider": str(r.get("provider") or "IMD_AWS"),
-                        }
-                        for r in latest
-                        if (r.get("canonical_station_id") or r.get("provider_station_id"))
-                    ]
-                    first_ts = latest[0].get("observation_timestamp_utc")
-                    watermark = first_ts.isoformat() if hasattr(first_ts, "isoformat") else str(first_ts or "")
+                        })
+
+                    watermark = cycle_iso
                     forward_to_render(formatted, args.forward_to_render, args.token, watermark)
             except Exception as fwd_err:
                 print(f"[-] Forwarding error: {fwd_err}", flush=True)

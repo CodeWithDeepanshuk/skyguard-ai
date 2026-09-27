@@ -831,17 +831,37 @@ class MetarLiveService:
         )
 
         if is_imd_mode and fetcher is None and not is_mocked_request:
+            now = datetime.now(timezone.utc)
+            # If current payload in memory already has fresh observations (<20 min), preserve them
+            curr_obs = self.payload.get("latest_observation_utc")
+            if curr_obs:
+                try:
+                    curr_dt = datetime.fromisoformat(str(curr_obs).replace("Z", "+00:00"))
+                    curr_age = (now - curr_dt).total_seconds() / 60.0
+                    if curr_age <= 20.0 and len(self.payload.get("readings", [])) > 0:
+                        self.payload["source_age_minutes"] = round(curr_age, 2)
+                        self.payload["status"] = "live"
+                        self.payload["is_cached"] = False
+                        return self.status()
+                except Exception:
+                    pass
+
             try:
-                cached = json.loads(imd_cache_file.read_text(encoding="utf-8"))
+                target_cache = self.cache_path if self.cache_path.exists() else imd_cache_file
+                cached = json.loads(target_cache.read_text(encoding="utf-8"))
                 if cached.get("readings") and cached.get("provider") == "India Meteorological Department AWS Portal":
-                    now = datetime.now(timezone.utc)
                     cached["fetched_at_utc"] = now.isoformat(timespec="seconds").replace("+00:00", "Z")
-                    cached["is_cached"] = True
-                    cached["status"] = "cached"
                     latest_obs = cached.get("latest_observation_utc")
                     if latest_obs:
                         ts = datetime.fromisoformat(str(latest_obs).replace("Z", "+00:00"))
-                        cached["source_age_minutes"] = round((now - ts).total_seconds() / 60.0, 2)
+                        age_m = round((now - ts).total_seconds() / 60.0, 2)
+                        cached["source_age_minutes"] = age_m
+                        if age_m <= 20.0:
+                            cached["is_cached"] = False
+                            cached["status"] = "live"
+                        else:
+                            cached["is_cached"] = True
+                            cached["status"] = "cached"
                     self.payload = cached
                     try:
                         self.cache_path.parent.mkdir(parents=True, exist_ok=True)

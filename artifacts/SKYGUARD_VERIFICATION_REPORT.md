@@ -1,8 +1,8 @@
 # SkyGuard AI: Master Scientific Verification & Audit Report
 
 **Smart India Hackathon 2026** | **Problem Statement**: 26073  
-**Verification Execution Timestamp**: `2026-09-26T10:01:36.003850+00:00`  
-**Total Audit Duration**: `90.55 seconds`  
+**Verification Execution Timestamp**: `2026-09-26T12:28:38.378075+00:00`  
+**Total Audit Duration**: `40.97 seconds`  
 
 ## 1. Executive Ground-Truth Summary
 
@@ -11,8 +11,8 @@
 | **Primary Dataset Size** | **578,448 observations** | NOAA ISD Indian Stations Archive (2022–2024) | **VERIFIED** |
 | **AWS Station Master** | **1,153 stations** | Official IMD AWS Master Catalog across 37 States/UTs | **VERIFIED** |
 | **Spatial Holdout Isolation** | **4 stations** (32,340 rows) | Zero spatial data leakage; unseen during model training | **VERIFIED** |
-| **Algorithmic Latency (Median)** | **`8.455 ms`** | 1,000 continuous local CPU evaluations | **VERIFIED** |
-| **Algorithmic Latency (p95)** | **`10.142 ms`** | 95th percentile under continuous load | **VERIFIED** |
+| **Algorithmic Latency (Median)** | **`2.258 ms`** | 1,000 continuous local CPU evaluations | **VERIFIED** |
+| **Algorithmic Latency (p95)** | **`3.207 ms`** | 95th percentile under continuous load | **VERIFIED** |
 | **False Alarms per Station-Day** | **`0.0028`** | Measured over 1,416 station-days on spatial holdout | **VERIFIED** |
 | **Holdout Precision** | **`86.21%`** | Empirical positive predictive value on benchmark split | **VERIFIED** |
 | **Physical Range Filter FAR** | **`0.000391`** | Deterministic physical bounds filter on valid data | **VERIFIED** |
