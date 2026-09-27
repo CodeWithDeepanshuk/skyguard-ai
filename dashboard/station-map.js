@@ -115,6 +115,10 @@ window.SkyGuardMap = (() => {
     },
 
     add(station, record, selected, onSelect, options = {}) {
+      // Exclude synthetic test dummy stations
+      const sid = String(station.station_id || '').trim();
+      if (!sid || /^S\d+$/i.test(sid)) return;
+
       const lat = Number(station.latitude), lon = Number(station.longitude);
       if (!Number.isFinite(lat) || !Number.isFinite(lon) || Math.abs(lat) > 90 || Math.abs(lon) > 180) return;
       bounds.extend([lat, lon]);
@@ -125,32 +129,46 @@ window.SkyGuardMap = (() => {
         station.evaluation_role === 'station_holdout'
       );
 
-      const statusMap = {
-        healthy: '#16A34A',
-        monitor: '#F59E0B',
-        watch: '#F59E0B',
-        degrading: '#EA580C',
-        critical: '#DC2626',
-        sensor_fault: '#DC2626'
-      };
-
       const isReferenceOnly = Boolean(
         station.is_reference_only ||
         record.is_reference_only ||
         record.source_type === 'REFERENCE_MODEL'
       );
 
-      const isCritical = record.status === 'critical' || record.status === 'sensor_fault' || record.has_active_fault;
-      const markerColor = isReferenceOnly 
-        ? '#0284C7' 
-        : (statusMap[record.status] || (isBenchmark ? '#2563EB' : (zoneColors[station.climate_zone] || '#64748B')));
+      // Strict clear visual contract:
+      // Green = Verified healthy fetched station location
+      // Red = Weather station with sensor fault, anomaly, or critical problem (Calibrated Detection)
+      // Blue = Independent NWP Reference Model
+      const isCritical = Boolean(
+        record.status === 'critical' || 
+        record.status === 'sensor_fault' || 
+        record.status === 'degraded' ||
+        record.has_active_fault ||
+        (record.score != null && Number(record.score) < 70) ||
+        (record.label && (
+          record.label.includes('Fault') || 
+          record.label.includes('Critical') || 
+          record.label.includes('Anomaly') ||
+          record.label.includes('Problem')
+        ))
+      );
+
+      let markerColor;
+      if (isReferenceOnly) {
+        markerColor = '#0284C7'; // Blue for independent NWP reference model
+      } else if (isCritical) {
+        markerColor = '#DC2626'; // Vibrant Red for stations with problems / sensor faults
+      } else {
+        markerColor = '#16A34A'; // Pure Vibrant Green for all normal fetched station locations
+      }
+
       const label = `${station.station_name} (${station.icao || station.station_id})${isReferenceOnly ? ' [REFERENCE MODEL]' : ''}`;
       const zoneTag = station.climate_zone || 'India AWS';
       const coordinate = `${Math.abs(lat).toFixed(4)}°${lat >= 0 ? 'N' : 'S'}, ${Math.abs(lon).toFixed(4)}°${lon >= 0 ? 'E' : 'W'}`;
 
       const pulseClass = isCritical ? ' anomaly-pulsing' : '';
-      const iconSize = isBenchmark || isCritical ? [18, 18] : [13, 13];
-      const anchorSize = isBenchmark || isCritical ? [9, 9] : [6.5, 6.5];
+      const iconSize = isCritical ? [15, 15] : [10, 10];
+      const anchorSize = isCritical ? [7.5, 7.5] : [5, 5];
 
       const icon = L.divIcon({
         className: 'station-div-icon',
@@ -159,11 +177,18 @@ window.SkyGuardMap = (() => {
         html: `<div class="station-marker-pin${pulseClass}${selected ? ' active' : ''}" style="--marker-color:${markerColor}; width:${iconSize[0]}px; height:${iconSize[1]}px; border-radius:${isReferenceOnly ? '2px' : '50%'};"></div>`
       });
 
-      const marker = L.marker([lat, lon], { icon, title: label, keyboard: true }).addTo(markers);
+      const marker = L.marker([lat, lon], { 
+        icon, 
+        title: label, 
+        keyboard: true,
+        zIndexOffset: isCritical ? 1000 : 0
+      }).addTo(markers);
 
       const health = isReferenceOnly 
         ? 'Independent Reference Model' 
-        : (record.label || record.status || (station.is_active_2024_plus ? 'Active 2024+' : 'AWS Station'));
+        : (isCritical 
+            ? (record.label || 'Calibrated Sensor Fault') 
+            : 'Verified Nominal (Operational)');
       const score = isReferenceOnly ? ' (Open-Meteo)' : (record.score == null ? '' : ` · Health: ${Number(record.score).toFixed(1)}/100`);
       const tempRead = record.temperature != null ? ` · Temp: <b>${record.temperature}°C</b>` : '';
 
@@ -186,7 +211,12 @@ window.SkyGuardMap = (() => {
             });
 
       if (fullMarkers) {
-        const fullM = L.marker([lat, lon], { icon, title: label, keyboard: true }).addTo(fullMarkers);
+        const fullM = L.marker([lat, lon], { 
+          icon, 
+          title: label, 
+          keyboard: true,
+          zIndexOffset: isCritical ? 1000 : 0
+        }).addTo(fullMarkers);
         fullM.bindTooltip(tooltipContent, { className: 'light-map-tooltip', direction: 'top', offset: [0, -8] })
              .on('click', () => onSelect());
       }

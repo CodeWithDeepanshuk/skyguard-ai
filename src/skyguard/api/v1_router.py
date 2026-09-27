@@ -15,6 +15,7 @@ import json
 import logging
 import math
 import os
+import re
 import threading
 import time
 from collections import defaultdict
@@ -923,7 +924,7 @@ def create_v1_router(
                 dead_letters += 1
                 continue
             sid = str(item.get("station_id") or item.get("ID") or item.get("CALL_SIGN") or "").strip()
-            if not sid:
+            if not sid or re.match(r"^S\d+$", sid):
                 dead_letters += 1
                 continue
 
@@ -1108,9 +1109,15 @@ def create_v1_router(
                 except Exception:
                     source_age_m = 0.0
 
-                existing_dict = {str(r.get("station_id") or ""): r for r in live_obj.payload.get("readings", [])}
+                existing_dict = {
+                    str(r.get("station_id") or ""): r 
+                    for r in live_obj.payload.get("readings", [])
+                    if not re.match(r"^S\d+$", str(r.get("station_id") or "").strip())
+                }
                 for r in new_readings:
-                    existing_dict[str(r.get("station_id") or "")] = r
+                    sid_str = str(r.get("station_id") or "").strip()
+                    if not re.match(r"^S\d+$", sid_str):
+                        existing_dict[sid_str] = r
                 merged_readings = list(existing_dict.values())
 
                 # Real ML Model & Spatial QC Execution using PyTorch CausalTCN & Multi-Evidence Ensemble

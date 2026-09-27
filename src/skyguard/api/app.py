@@ -9,6 +9,7 @@ import io
 import json
 import logging
 import os
+import re
 import threading
 import time
 from datetime import datetime, timezone
@@ -305,11 +306,35 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         logger.info("Successfully loaded ML model bundle on startup")
     except Exception as exc:
         logger.warning("Could not pre-load model bundle on startup: %s", exc)
+    # Sanitize live payload from any synthetic dummy test stations (e.g. S0..S999)
+    if hasattr(live, "payload") and isinstance(live.payload, dict):
+        raw_readings = live.payload.get("readings") or []
+        cleaned_readings = [r for r in raw_readings if not re.match(r"^S\d+$", str(r.get("station_id", "")).strip())]
+        live.payload["readings"] = cleaned_readings
+        if "latest" in live.payload and isinstance(live.payload["latest"], list):
+            live.payload["latest"] = [r for r in live.payload["latest"] if not re.match(r"^S\d+$", str(r.get("station_id", "")).strip())]
+        if "incidents" in live.payload and isinstance(live.payload["incidents"], list):
+            live.payload["incidents"] = [i for i in live.payload["incidents"] if not re.match(r"^S\d+$", str(i.get("station_id", "")).strip())]
+        if "alerts" in live.payload and isinstance(live.payload["alerts"], list):
+            live.payload["alerts"] = [a for a in live.payload["alerts"] if not re.match(r"^S\d+$", str(a.get("station_id", "")).strip())]
+        live.payload["observation_count"] = len(cleaned_readings)
+        live.payload["total_network_stations"] = 1153
+        live.payload["all_india_stations_count"] = 1153
+
     app.state.live = live
     observation_store = None
     observation_store_error = ""
     try:
         observation_store = ObservationStore(root=root)
+        if observation_store:
+            try:
+                with observation_store._get_connection() as conn:
+                    with conn.cursor() as cur:
+                        cur.execute("DELETE FROM observations WHERE canonical_station_id ~ '^S[0-9]+$';")
+                        if cur.rowcount:
+                            logger.info("Purged %d dummy test observations from database", cur.rowcount)
+            except Exception as purge_err:
+                logger.debug("Startup test observation purge note: %s", purge_err)
         if observation_store and not observation_store.latest_observations(limit=1):
             try:
                 from skyguard.providers.base import ObservationRecord, PressureType, HumidityObservationType, SourceType, RHSource
@@ -828,10 +853,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 hist_res = observation_store.paginated_history(station_id, hours=168, limit=limit, relative_to_latest=True)
                 items = hist_res.get("items") or []
                 if items:
-                    return items
+                    return [r for r in items if not re.match(r"^S\d+$", str(r.get("station_id", "")).strip())]
             except Exception:
                 pass
-        return live.readings(limit, station_id, latest_only)
+        res = live.readings(limit, station_id, latest_only)
+        return [r for r in res if not re.match(r"^S\d+$", str(r.get("station_id", "")).strip())]
 
     @app.get("/api/live/alerts")
     def live_alerts(

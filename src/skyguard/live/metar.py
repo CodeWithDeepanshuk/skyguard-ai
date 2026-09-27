@@ -12,6 +12,7 @@ import hashlib
 import json
 import math
 import os
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
@@ -1013,6 +1014,7 @@ class MetarLiveService:
 
     def readings(self, limit: int = 500, station_id: str | None = None, latest_only: bool = False) -> list[dict[str, object]]:
         rows = list(self.payload.get("latest" if latest_only else "readings", []))
+        rows = [row for row in rows if not re.match(r"^S\d+$", str(row.get("station_id", "")).strip())]
         if station_id:
             rows = [row for row in rows if str(row.get("station_id")) == station_id]
         return sorted(rows, key=lambda row: str(row.get("timestamp_utc", "")), reverse=True)[:limit]

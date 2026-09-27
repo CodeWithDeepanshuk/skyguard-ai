@@ -40,6 +40,17 @@ const state = {
   importQcResults: null,
 };
 
+function isDummyTestStation(stationId) {
+  if (!stationId) return true;
+  const s = String(stationId).trim();
+  if (s.length < 2 || (s[0] !== 'S' && s[0] !== 's')) return false;
+  for (let i = 1; i < s.length; i++) {
+    const ch = s.charCodeAt(i);
+    if (ch < 48 || ch > 57) return false;
+  }
+  return true;
+}
+
 function getQC() {
   if (typeof window !== "undefined" && window.SkyGuardQC) return window.SkyGuardQC;
   if (typeof globalThis !== "undefined" && globalThis.SkyGuardQC) return globalThis.SkyGuardQC;
@@ -291,17 +302,17 @@ async function refreshOfficialLive(force = true) {
     ]);
     if (state.mode !== "live" || revision !== state.viewRevision) return;
     state.liveStatus = status;
-    state.readings = readings.map(parseReading);
-    state.alerts = alerts;
-    state.incidents = liveIncidents || [];
+    state.readings = readings.map(parseReading).filter(r => !isDummyTestStation(r.station_id));
+    state.alerts = (alerts || []).filter(a => !isDummyTestStation(a.station_id));
+    state.incidents = (liveIncidents || []).filter(i => !isDummyTestStation(i.station_id));
 
     // Ensure all reporting live stations are indexed in state.stations for full observability
-    const existingStnMap = new Map((state.stations || []).map(s => [s.station_id, s]));
+    const existingStnMap = new Map((state.stations || []).filter(s => !isDummyTestStation(s.station_id)).map(s => [s.station_id, s]));
     const liveStations = [];
     const seenLiveStns = new Set();
 
     state.readings.forEach(r => {
-      if (!r.station_id || seenLiveStns.has(r.station_id)) return;
+      if (!r.station_id || isDummyTestStation(r.station_id) || seenLiveStns.has(r.station_id)) return;
       seenLiveStns.add(r.station_id);
       const existing = existingStnMap.get(r.station_id);
       liveStations.push({
@@ -322,7 +333,20 @@ async function refreshOfficialLive(force = true) {
     });
 
     if (liveStations.length > 0) {
-      state.stations = liveStations;
+      const validLiveMap = new Map(liveStations.map(s => [s.station_id, s]));
+      const updated = (state.stations || [])
+        .filter(st => !isDummyTestStation(st.station_id))
+        .map(st => {
+          const liveStn = validLiveMap.get(st.station_id);
+          return liveStn ? { ...st, ...liveStn } : st;
+        });
+      const updatedSet = new Set(updated.map(s => s.station_id));
+      liveStations.forEach(st => {
+        if (!updatedSet.has(st.station_id)) {
+          updated.push(st);
+        }
+      });
+      state.stations = updated.filter(st => !isDummyTestStation(st.station_id));
     }
 
     if (!state.selectedStation) {
@@ -382,7 +406,7 @@ function renderLiveStatus(status) {
   if ($("replay-position")) $("replay-position").textContent = `${number(status.observation_count)} ${status.simulation_active ? 'simulation' : 'source'} observations`;
   if ($("replay-throughput")) $("replay-throughput").textContent = `${status.is_cached ? "Cached" : "Fetched"} ${formatTime(status.fetched_at_utc)} UTC · ${ageLabel(status.fetched_at_utc)}`;
   
-  const label = status.simulation_active ? "Simulation" : status.error ? "Source unavailable" : status.is_cached ? "Cached Snapshot" : status.observation_count ? "Fetched" : "No reports";
+  const label = status.simulation_active ? "Simulation" : status.error ? "Source unavailable" : status.is_cached ? "Cached" : status.observation_count ? "Fetched" : "No reports";
   if ($("replay-state")) $("replay-state").textContent = state.busyDepth ? "Processing" : label;
   
   // Provenance Badge updates - strictly reflecting observation freshness
@@ -461,25 +485,30 @@ function healthByStation() {
   if (state.mode === 'live') {
     const faultStationIds = new Set();
     (state.incidents || []).forEach(inc => {
-      if (inc.station_id) faultStationIds.add(String(inc.station_id));
-      if (inc.provider_station_id) faultStationIds.add(String(inc.provider_station_id));
-      if (inc.catalog_station_id) faultStationIds.add(String(inc.catalog_station_id));
+      if (inc.station_id && !isDummyTestStation(inc.station_id)) faultStationIds.add(String(inc.station_id));
+      if (inc.provider_station_id && !isDummyTestStation(inc.provider_station_id)) faultStationIds.add(String(inc.provider_station_id));
+      if (inc.catalog_station_id && !isDummyTestStation(inc.catalog_station_id)) faultStationIds.add(String(inc.catalog_station_id));
     });
     (state.alerts || []).forEach(alt => {
-      if (alt.station_id) faultStationIds.add(String(alt.station_id));
+      if (alt.station_id && !isDummyTestStation(alt.station_id)) faultStationIds.add(String(alt.station_id));
     });
 
     for (const station of state.stations) {
+      if (isDummyTestStation(station.station_id)) continue;
       const sid = String(station.station_id);
       const latest = (state.readings || []).find(row => String(row.station_id) === sid || String(row.provider_station_id) === sid || String(row.catalog_station_id) === sid);
-      const isFault = faultStationIds.has(sid) || (latest && latest.event_decision === 'sensor_fault');
+      const isFault = faultStationIds.has(sid) || (latest && (
+        latest.event_decision === 'sensor_fault' || 
+        (latest.anomaly_score != null && Number(latest.anomaly_score) >= 0.5) ||
+        Boolean(latest.has_active_fault)
+      ));
       const faultProb = latest ? Number(latest.fault_probability ?? (isFault ? 0.95 : 0.02)) : (isFault ? 0.95 : 0.02);
       const computedScore = isFault ? Math.max(10, Math.min(30, Math.round((1 - faultProb) * 100))) : Math.max(90, Math.min(99, Math.round((1 - faultProb) * 100)));
 
       result[sid] = {
         score: computedScore,
         status: isFault ? 'critical' : 'healthy',
-        label: isFault ? 'Sensor Fault (Verified by ML)' : 'Verified Nominal (Passed ML & QC)',
+        label: isFault ? 'Sensor Fault (Calibrated Anomaly)' : 'Verified Nominal (Operational)',
         timestamp: latest?.timestamp_utc,
         temperature: latest?.temperature ?? latest?.temperature_c,
         detail: typeof stationSupport !== 'undefined' ? stationSupport(station, state.stations, state.readings).text : ''
@@ -488,9 +517,16 @@ function healthByStation() {
     return result;
   }
   for (const row of state.health) {
+    if (isDummyTestStation(row.station_id)) continue;
     const score = Number(row.health_score);
     if (!result[row.station_id] || score < result[row.station_id].score) {
-      result[row.station_id] = { score, status: row.status, sensor: row.sensor, label: row.status === 'healthy' ? 'Verified Nominal' : (row.status === 'critical' ? 'Sensor Fault' : 'Degraded') };
+      const isFault = row.status === 'critical' || row.status === 'sensor_fault' || row.status === 'degraded' || score < 60;
+      result[row.station_id] = { 
+        score, 
+        status: isFault ? 'critical' : 'healthy', 
+        sensor: row.sensor, 
+        label: isFault ? 'Sensor Fault (Calibrated Anomaly)' : 'Verified Nominal (Operational)' 
+      };
     }
   }
   return result;
@@ -505,6 +541,7 @@ function renderNetwork() {
   const query = (state.searchQuery || "").trim().toLowerCase();
 
   const filteredStations = (state.stations || []).filter((st) => {
+    if (isDummyTestStation(st.station_id)) return false;
     if (netFilter === "benchmark") {
       const isBench = st.is_benchmark == 1 || st.evaluation_role === "development" || st.evaluation_role === "station_holdout";
       if (!isBench) return false;
@@ -1285,10 +1322,10 @@ function renderIncident(incident) {
     $("incident-explanation").textContent = incident.explanation || `Anomaly detected on ${stn}. Telemetry flagged for diagnostic review.`;
   }
   if ($("fault-confidence")) {
-    $("fault-confidence").textContent = percent(incident.confidence || incident.anomaly_score, 1);
+    $("fault-confidence").textContent = isNom ? "—" : percent(incident.confidence ?? incident.anomaly_score ?? incident.fault_probability, 1);
   }
   if ($("root-confidence")) {
-    $("root-confidence").textContent = percent(incident.confidence || incident.anomaly_score, 1);
+    $("root-confidence").textContent = isNom ? "—" : percent(incident.confidence ?? incident.root_cause_confidence ?? incident.anomaly_score ?? incident.fault_probability, 1);
   }
   if ($("affected-sensor")) {
     $("affected-sensor").textContent = (incident.affected_sensors || [sensor]).map(pretty).join(", ") || (isNom ? "None (All Healthy)" : "Unknown");
@@ -3263,14 +3300,15 @@ async function initialize() {
       api("/api/sensor-health"),
     ]);
     state.summary = summary;
-    state.stations = stations;
-    state.health = health;
+    state.stations = (stations || []).filter(st => !isDummyTestStation(st.station_id));
+    state.health = (health || []).filter(h => !isDummyTestStation(h.station_id));
     state.publicMode = healthCheck.public_read_only === true;
 
-    const benchStations = stations.filter(st => st.is_benchmark == 1 || st.evaluation_role === 'development' || st.evaluation_role === 'station_holdout');
+    const validStations = state.stations;
+    const benchStations = validStations.filter(st => st.is_benchmark == 1 || st.evaluation_role === 'development' || st.evaluation_role === 'station_holdout');
     const benchOptions = benchStations.map(st => `<option value="${esc(st.station_id)}">⭐ ${esc(st.station_name)} (${esc(st.icao || st.station_id)})</option>`).join('');
 
-    const zones = [...new Set(stations.map(st => st.climate_zone || 'Other'))].sort();
+    const zones = [...new Set(validStations.map(st => st.climate_zone || 'Other'))].sort();
     const zoneOptgroups = zones.map(z => {
       const zStations = stations.filter(st => (st.climate_zone || 'Other') === z && !(st.is_benchmark == 1 || st.evaluation_role === 'development' || st.evaluation_role === 'station_holdout'));
       if (!zStations.length) return '';
