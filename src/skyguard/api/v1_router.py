@@ -333,16 +333,29 @@ def create_v1_router(
             "neighbors": neighbors,
         }
 
+    @router.get("/stations/{station_id}/traces")
     @router.get("/stations/{station_id}/history")
     def get_station_history_triplet(
         station_id: str,
-        hours: int = Query(24, ge=1, le=72),
+        hours: int = Query(24, ge=1, le=168),
+        window: Optional[str] = Query(None, description="Selectable time window: '1h', '6h', '24h', '7d'"),
     ) -> Dict[str, Any]:
         """Return 3 synchronized traces for comparison:
         1. observed: direct physical station observations
         2. reference_model: independent numerical weather model field
         3. neighbor_consensus: distance-weighted spatial median of neighbouring stations
         """
+        if window:
+            w = window.strip().lower()
+            if w == "1h":
+                hours = 1
+            elif w == "6h":
+                hours = 6
+            elif w == "24h":
+                hours = 24
+            elif w == "7d":
+                hours = 168
+
         station = registry.get_station(station_id)
         if not station:
             raise HTTPException(status_code=404, detail=f"Station '{station_id}' not found")
@@ -351,6 +364,29 @@ def create_v1_router(
         pair = manager.fetch_history_triplet(station.station_id, hours=hours)
         observed_recs = pair["observed"]
         reference_recs = pair["reference_model"]
+
+        # Pull from local ObservationStore if WIS2/METAR is empty for this station
+        if not observed_recs and store:
+            try:
+                hist = store.history(station.station_id, hours=hours, relative_to_latest=True)
+                if hist:
+                    observed_recs = [
+                        ObservationRecord(
+                            provider=h.get("provider", "IMD_AWS"),
+                            source_type="OBSERVED",
+                            station_id=station.station_id,
+                            canonical_station_id=station.station_id,
+                            timestamp_utc=h["observation_timestamp_utc"],
+                            temperature_c=h.get("temperature_c"),
+                            pressure_hpa=h.get("pressure_hpa"),
+                            relative_humidity_pct=h.get("relative_humidity_pct"),
+                            is_direct_observation=True,
+                        )
+                        for h in hist
+                    ]
+            except Exception:
+                pass
+
         # Scientific provenance guarantee: never silently substitute reference model for in-situ observations
         if not observed_recs:
             observed_recs = []
@@ -850,7 +886,7 @@ def create_v1_router(
         authorization: Optional[str] = Header(None),
         x_ingestion_token: Optional[str] = Header(None),
     ) -> Dict[str, Any]:
-        """Authenticated webhook endpoint receiving live official IMD observations from the Oracle Cloud Gateway."""
+        """Authenticated webhook endpoint receiving live official IMD observations from the EC2 Gateway."""
         expected = os.getenv("SKYGUARD_INGESTION_TOKEN", "").strip()
         if not expected:
             raise HTTPException(status_code=503, detail="SKYGUARD_INGESTION_TOKEN is not configured on the receiver.")
