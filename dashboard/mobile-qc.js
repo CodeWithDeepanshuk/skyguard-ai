@@ -538,8 +538,8 @@
     exportAsCSV: function (incidentsToExport = this.incidents) {
       const headers = [
         'Incident ID', 'Station ID', 'Station Name', 'Sensor', 'Severity',
-        'Fault Pattern', 'Status', 'Grouped Readings', 'First Observed (UTC)',
-        'Latest Observed (UTC)', 'Observed Reading', 'Expected Reference',
+        'Fault Pattern', 'Status', 'Grouped Readings', 'First Observed (IST)',
+        'Latest Observed (IST)', 'Observed Reading', 'Expected Reference',
         'Deviation (Residual)', 'Spatial Z-Score (Sigma)', 'Fault Probability (%)',
         'Weather Coherence (%)', 'Sensor Model', 'WMO Specification',
         'Failure Mode', 'LightGBM ML Score', 'PyTorch CausalTCN Score',

@@ -84,8 +84,17 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
   // Metadata Banner: Observation count, oldest and newest times, source provenance, and freshness
   const oldestTime = validRows.length ? Math.min(...validRows.map(r => Date.parse(r.timestamp_utc))) : null;
   const newestTime = validRows.length ? Math.max(...validRows.map(r => Date.parse(r.timestamp_utc))) : null;
-  const oldestStr = oldestTime ? new Date(oldestTime).toISOString().replace('T', ' ').slice(0, 16) + ' UTC' : '—';
-  const newestStr = newestTime ? new Date(newestTime).toISOString().replace('T', ' ').slice(0, 16) + ' UTC' : '—';
+  const formatIST = (t) => {
+    if (!t) return '—';
+    try {
+      const d = new Date(t);
+      const datePart = d.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric' });
+      const timePart = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata', hour12: false });
+      return `${datePart} ${timePart} IST`;
+    } catch(e) { return '—'; }
+  };
+  const oldestStr = oldestTime ? formatIST(oldestTime) : '—';
+  const newestStr = newestTime ? formatIST(newestTime) : '—';
   const obsCount = validRows.length;
   const nowMs = Date.now();
   const feedAgeMin = newestTime ? Math.round((nowMs - newestTime) / 60000) : null;
@@ -279,7 +288,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       fill: '#64748B',
       'font-weight': '700',
       'font-size': '10px'
-    }, 'Time (UTC) ▶'));
+    }, 'Time (IST) ▶'));
 
     // 3. Time labels & Broad X-axis Ticks
     const numXSteps = 4;
@@ -310,8 +319,8 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
 
       const dateObj = new Date(tVal);
       const timeStr = activeWindow === '7d'
-        ? `${dateObj.getDate()} ${dateObj.toLocaleString('en-IN', { month: 'short' })}`
-        : dateObj.toISOString().slice(11, 16) + ' UTC';
+        ? `${dateObj.getDate()} ${dateObj.toLocaleString('en-IN', { month: 'short', timeZone: 'Asia/Kolkata' })}`
+        : dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata', hour12: false }) + ' IST';
 
       svg.appendChild(element('text', {
         x: px,
@@ -394,7 +403,7 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
         banner.className = `chart-inspect-banner ${isFault ? 'anomaly-active' : 'inspected'}`;
         banner.innerHTML = `
           <div class="inspect-detail-row">
-            <span class="inspect-pill-time">🕒 ${timeUtcStr} (${istStr})</span>
+            <span class="inspect-pill-time">🕒 ${istStr}</span>
             <span class="inspect-pill-metric"><strong>${title}:</strong> ${Number(pointVal).toFixed(1)} ${unit}</span>
             <span class="inspect-pill-status ${isFault ? 'critical' : 'nominal'}">
               ${isFault ? '⚠️ SUSPECTED SENSOR ANOMALY' : '✓ Nominal Telemetry'}
@@ -448,8 +457,8 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       dot.addEventListener('click', handleTrigger);
       dot.addEventListener('touchstart', handleTrigger, { passive: true });
 
-      const tooltipTime = new Date(t).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
-      dot.appendChild(element('title', {}, `${tooltipTime} UTC: ${Number(val).toFixed(1)} ${unit}${isFault ? ' (ANOMALY DETECTED)' : ''}`));
+      const tooltipTime = new Date(t).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata', hour12: false });
+      dot.appendChild(element('title', {}, `${tooltipTime} IST: ${Number(val).toFixed(1)} ${unit}${isFault ? ' (ANOMALY DETECTED)' : ''}`));
       svg.appendChild(dot);
     });
 

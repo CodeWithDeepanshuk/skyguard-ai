@@ -177,6 +177,27 @@ function pretty(value) {
 
 function formatTime(value) {
   if (!value) return "—";
+  try {
+    let dateStr = String(value).trim();
+    if (!dateStr.endsWith("Z") && !dateStr.includes("+") && !dateStr.includes(" ")) {
+      dateStr += "Z";
+    }
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      const parts = new Intl.DateTimeFormat("en-IN", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+      }).formatToParts(d);
+      const m = {};
+      parts.forEach(p => m[p.type] = p.value);
+      return `${m.year}-${m.month}-${m.day} ${m.hour}:${m.minute}`;
+    }
+  } catch (e) {}
   return String(value).replace("T", " ").replace("Z", "").slice(0, 16);
 }
 
@@ -388,7 +409,7 @@ function ageLabel(value) {
 function renderLiveStatus(status) {
   if ($('hero-live-count')) $('hero-live-count').textContent = number(status.observation_count);
   if ($('hero-live-stations')) $('hero-live-stations').textContent = number(status.reporting_stations);
-  if ($('hero-live-time')) $('hero-live-time').textContent = `${status.is_cached ? 'Cached' : 'Fetched'} ${formatTime(status.fetched_at_utc)} UTC`;
+  if ($('hero-live-time')) $('hero-live-time').textContent = `${status.is_cached ? 'Cached' : 'Fetched'} ${formatTime(status.fetched_at_utc)} IST`;
   
   const totalConfigured = status.all_india_stations_count || status.total_network_stations || 1153;
   const reportingCount = status.reporting_stations || status.observation_count || 0;
@@ -404,7 +425,7 @@ function renderLiveStatus(status) {
   if ($("live-interpretation")) $("live-interpretation").textContent = status.interpretation || "Official IMD observations with cached offline fallback.";
   if ($("progress-bar")) $("progress-bar").style.width = status.observation_count ? "100%" : "0%";
   if ($("replay-position")) $("replay-position").textContent = `${number(status.observation_count)} ${status.simulation_active ? 'simulation' : 'source'} observations`;
-  if ($("replay-throughput")) $("replay-throughput").textContent = `${status.is_cached ? "Cached" : "Fetched"} ${formatTime(status.fetched_at_utc)} UTC · ${ageLabel(status.fetched_at_utc)}`;
+  if ($("replay-throughput")) $("replay-throughput").textContent = `${status.is_cached ? "Cached" : "Fetched"} ${formatTime(status.fetched_at_utc)} IST · ${ageLabel(status.fetched_at_utc)}`;
   
   const label = status.simulation_active ? "Simulation" : status.error ? "Source unavailable" : status.is_cached ? "Cached" : status.observation_count ? "Fetched" : "No reports";
   if ($("replay-state")) $("replay-state").textContent = state.busyDepth ? "Processing" : label;
@@ -665,7 +686,7 @@ function renderTraceFreshness() {
     $("trace-status").textContent = state.mode !== 'live' ? 'OFFLINE REPLAY' : !latest ? 'NO OBSERVATIONS AVAILABLE' : state.liveStatus?.simulation_active ? 'SIMULATION · MODIFIED DATA' : state.liveStatus?.is_cached ? `CACHED ${stnType}` : stnType;
   }
   if ($("trace-time")) {
-    $("trace-time").textContent = latest ? `Observed ${formatTime(latest.timestamp_utc)} UTC${state.mode === 'live' ? ` · ${ageLabel(latest.timestamp_utc)} · Fetched ${formatTime(state.liveStatus?.fetched_at_utc)} UTC` : ' · Historical scenario time'}` : 'This catalog station has no received observations. Health cannot be determined.';
+    $("trace-time").textContent = latest ? `Observed ${formatTime(latest.timestamp_utc)} IST${state.mode === 'live' ? ` · ${ageLabel(latest.timestamp_utc)} · Fetched ${formatTime(state.liveStatus?.fetched_at_utc)} IST` : ' · Historical scenario time'}` : 'This catalog station has no received observations. Health cannot be determined.';
   }
 }
 
@@ -1213,7 +1234,7 @@ function renderAlertQueue() {
           <small>${esc(alert.explanation || "Telemetry flagged for review.")}</small>
         </div>
         <div class="anomaly-card-footer">
-          <span>${formatTime(alert.timestamp_utc)} UTC</span>
+          <span>${formatTime(alert.timestamp_utc)} IST</span>
           <span class="anomaly-action-link">View Details →</span>
         </div>
       </div>`;
@@ -1316,7 +1337,7 @@ function renderIncident(incident) {
 
   const incTimestamp = incident.timestamp_utc || incident.detected_timestamp_utc || incident.latest_time_utc || incident.start_time_utc;
   if ($("incident-record-time")) {
-    $("incident-record-time").textContent = `${state.mode === 'live' ? (incident.simulation ? 'Simulation Advisory' : isNom ? 'Validated Telemetry' : 'Live Advisory') : 'Historical Benchmark Evidence'} · ${formatTime(incTimestamp)} UTC`;
+    $("incident-record-time").textContent = `${state.mode === 'live' ? (incident.simulation ? 'Simulation Advisory' : isNom ? 'Validated Telemetry' : 'Live Advisory') : 'Historical Benchmark Evidence'} · ${formatTime(incTimestamp)} IST`;
   }
   if ($("incident-explanation")) {
     $("incident-explanation").textContent = incident.explanation || `Anomaly detected on ${stn}. Telemetry flagged for diagnostic review.`;
@@ -1504,7 +1525,7 @@ function renderIncident(incident) {
       timeline.innerHTML = `
         <div style="display:flex; gap:8px; align-items:flex-start;">
           <span style="color:#2563EB; font-weight:700;">●</span>
-          <div><strong>Observation Received:</strong> Telemetry evaluated for single observation timestamp at ${t0} UTC.</div>
+          <div><strong>Observation Received:</strong> Telemetry evaluated for single observation timestamp at ${t0} IST.</div>
         </div>
         <div style="display:flex; gap:8px; align-items:flex-start;">
           <span style="color:#DC2626; font-weight:700;">●</span>
@@ -1523,11 +1544,11 @@ function renderIncident(incident) {
         </div>
         <div style="display:flex; gap:8px; align-items:flex-start;">
           <span style="color:#F59E0B; font-weight:700;">●</span>
-          <div><strong>Initial Anomaly Onset:</strong> First abnormal deviation detected at ${tStart} UTC.</div>
+          <div><strong>Initial Anomaly Onset:</strong> First abnormal deviation detected at ${tStart} IST.</div>
         </div>
         <div style="display:flex; gap:8px; align-items:flex-start;">
           <span style="color:#DC2626; font-weight:700;">●</span>
-          <div><strong>Consensus Breach:</strong> Spatial residual exceeded consensus threshold at ${t0} UTC.</div>
+          <div><strong>Consensus Breach:</strong> Spatial residual exceeded consensus threshold at ${t0} IST.</div>
         </div>
         <div style="display:flex; gap:8px; align-items:flex-start;">
           <span style="color:#2563EB; font-weight:700;">●</span>
@@ -1675,7 +1696,7 @@ function renderStationCards() {
     const tempVal = tVal != null ? `${number(tVal, 1)}°C` : "—";
     const pressVal = pVal != null ? `${number(pVal, 1)} hPa` : "—";
     const humidVal = rhVal != null ? `${number(rhVal, 1)}%` : "—";
-    const timeStr = latestR?.timestamp_utc ? formatTime(latestR.timestamp_utc) + " UTC" : "No telemetry in snapshot";
+    const timeStr = latestR?.timestamp_utc ? formatTime(latestR.timestamp_utc) + " IST" : "No telemetry in snapshot";
 
     return `
       <article class="station-card${cardBorderClass}${isSelected ? ' selected' : ''}" data-station-id="${esc(stn.station_id)}">
@@ -1884,7 +1905,7 @@ function renderGroupedIncidents() {
             <div class="incident-card-footer">
               <div class="incident-meta-text">
                 <span>📊 ${inc.readings_count || 1} observations grouped</span>
-                <span>⏱️ Latest: ${formatTime(inc.latest_time_utc || inc.start_time_utc)} UTC</span>
+                <span>⏱️ Latest: ${formatTime(inc.latest_time_utc || inc.start_time_utc)} IST</span>
               </div>
               <div class="incident-button-group">
                 <button class="incident-action-btn primary" onclick="SkyGuardApp.openAlertDrawerById('${esc(inc.incident_id)}')" type="button">Inspect Triad ➔</button>
