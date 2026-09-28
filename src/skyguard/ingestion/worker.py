@@ -46,7 +46,7 @@ def forward_to_render(
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=60) as resp:
+        with urllib.request.urlopen(req, timeout=180) as resp:
             resp_data = json.loads(resp.read().decode("utf-8"))
             print(f"[+] Render Ingestion Webhook Success: {resp_data.get('status')} | Inserted: {resp_data.get('inserted')} | Duplicates: {resp_data.get('duplicates')}", flush=True)
     except Exception as exc:
