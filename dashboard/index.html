@@ -946,23 +946,25 @@
 
           <div class="overview-split" style="grid-template-columns: 1fr 1fr;">
             <article class="panel">
-              <div class="panel-header"><div class="panel-title">Inference Engine Specs</div></div>
+              <div class="panel-header"><div class="panel-title">Inference Engine Specs (SIH 26073)</div></div>
               <div class="panel-body" style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
-                <div style="display:flex; justify-content:space-between;"><span>Model Architecture:</span><strong>Phase 10 Hybrid Challenger + Event Gate</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>Detector Variables:</span><strong>Temperature, Pressure (MSLP), Relative Humidity</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>Spatial Consensus:</span><strong>IDW + Median Neighbor Residual (>8σ)</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>Temporal Rolling Window:</span><strong>Strict Causal Lags (No future leakage)</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>Timezone Status:</span><strong>Fail-Closed Gate Active (Unconfirmed)</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Model Architecture:</span><strong>LightGBM + Causal TCN + Isolation Forest Ensemble</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Detector Variables:</span><strong>Strict 3-Sensor: Temp (°C), Pressure (hPa/MSLP), RH (%)</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Spatial Consensus:</span><strong>Spatial Buddy (<150 km) + Barometric MSLP Normalization</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Temporal Rolling Window:</span><strong>Strict Causal Lags + Two-Sided CUSUM (k=0.5, h=3.5)</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Explainability Engine:</span><strong>TreeSHAP 12-Class Physical Root-Cause Triage</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Timezone Status:</span><strong>Synchronized IST (UTC+05:30) Normalized to UTC</strong></div>
               </div>
             </article>
 
             <article class="panel">
               <div class="panel-header"><div class="panel-title">Operational Telemetry Pipeline</div></div>
               <div class="panel-body" style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
-                <div style="display:flex; justify-content:space-between;"><span>Live Telemetry Source:</span><strong>Official AviationWeather.gov METAR + Open-Meteo</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>National Scale Target:</span><strong>1,008 AWS Stations</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>Catalog Stations:</span><strong>543 Active Stations Across India</strong></div>
-                <div style="display:flex; justify-content:space-between;"><span>API Gateway:</span><strong>FastAPI (Python 3.11 / 3.14 Compatible)</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Live Telemetry Source:</span><strong>Official IMD AWS API (api.imd.gov.in) via AWS EC2</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>National Scale Target:</span><strong>1,153 Official IMD AWS Stations (28 States & 8 UTs)</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Catalog Stations:</span><strong>1,153 Active Stations Across India</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>Egress Ingestion Gateway:</span><strong>AWS EC2 Static IP Gateway (Elastic IP: 65.0.154.119)</strong></div>
+                <div style="display:flex; justify-content:space-between;"><span>API & Backend Service:</span><strong>FastAPI + Render Managed PostgreSQL</strong></div>
                 <div style="display:flex; justify-content:space-between;"><span>Deployment Target:</span><strong>Render Production Cloud Service</strong></div>
               </div>
             </article>

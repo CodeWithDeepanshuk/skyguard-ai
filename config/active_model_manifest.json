@@ -385,7 +385,7 @@
       "pressure_hpa",
       "relative_humidity_pct"
     ],
-    "live_source": "AviationWeather.gov METAR; periodic terminal observations, not raw IMD AWS telemetry",
+    "live_source": "Official IMD AWS API (api.imd.gov.in) via AWS EC2 Static Gateway; 15-minute live observations",
     "relative_humidity": "Derived upstream from temperature/dew point; dew point excluded from detector features",
     "live_pressure": "METAR QNH hPa; historical pressure compatibility remains an R1 audit item",
     "temporal_and_spatial": "Existing feature implementations preserved; causal and source-contract audit remains open",
