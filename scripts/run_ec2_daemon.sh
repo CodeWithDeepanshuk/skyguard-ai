@@ -10,6 +10,7 @@ elif [ -f ".venv/bin/activate" ]; then
     source .venv/bin/activate
 fi
 
+export PYTHONPATH="$DIR/src:${PYTHONPATH:-}"
 export RENDER_URL="${RENDER_URL:-https://skyguard-ai-wbm9.onrender.com}"
 export SKYGUARD_INGESTION_TOKEN="${SKYGUARD_INGESTION_TOKEN:-sih26073_secure_token_2026}"
 export DATABASE_URL="${DATABASE_URL:-postgresql://skyguard_db_user:OHoTCrHQU7LYMX8zUSzmfGP06zBrrta0@dpg-dasf6m0473hc7381lk9g-a.singapore-postgres.render.com/skyguard_db}"
