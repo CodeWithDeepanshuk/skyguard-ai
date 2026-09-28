@@ -441,7 +441,7 @@ class ObservationStore:
 
     def set_watermark(self, provider: str, watermark_utc: str, metadata: Optional[dict[str, Any]] = None) -> None:
         parameter = "%s" if self.backend == "postgresql" else "?"
-        values = (provider, watermark_utc, _now(), json.dumps(metadata or {}))
+        values = (provider, watermark_utc, _now(), json.dumps(metadata or {}, default=str))
         if self.backend == "postgresql":
             sql = (
                 "INSERT INTO provider_watermarks(provider,watermark_utc,updated_at_utc,metadata_json) "

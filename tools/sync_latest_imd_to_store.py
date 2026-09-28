@@ -186,7 +186,7 @@ def main() -> None:
         }
         req = urllib.request.Request(
             endpoint,
-            data=json.dumps(payload).encode("utf-8"),
+            data=json.dumps(payload, default=str).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
                 "User-Agent": "SkyGuard-Collector/1.0",
@@ -196,7 +196,7 @@ def main() -> None:
             method="POST",
         )
         try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
+            with urllib.request.urlopen(req, timeout=180) as resp:
                 resp_json = json.loads(resp.read().decode("utf-8"))
                 print(f"[+] Render Ingestion Response: {resp_json}")
         except Exception as exc:
