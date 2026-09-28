@@ -27,6 +27,22 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
+# Automatically load .env for EC2 cron jobs and command line runners
+env_file = ROOT / ".env"
+if env_file.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(env_file)
+    except ImportError:
+        pass
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            k, v = k.strip(), v.strip().strip("'\"")
+            if k not in os.environ:
+                os.environ[k] = v
+
 from skyguard.evaluation.benchmark_suite import BenchmarkSuite
 from skyguard.ingestion.service import IngestionService
 from skyguard.providers.imd_api import IMDAWSAPIProvider
@@ -38,10 +54,10 @@ logger = logging.getLogger("imd_pipeline")
 
 
 def run_ingest(store: ObservationStore, fixture: IMDFixtureProvider, live_api: IMDAWSAPIProvider) -> dict:
-    mode = os.getenv("SKYGUARD_DATA_SOURCE_MODE", "FIXTURE_REPLAY").upper()
-    is_live = mode == "LIVE_IMD_AWS" and live_api.configured
+    mode = os.getenv("SKYGUARD_DATA_SOURCE_MODE", "").upper()
+    is_live = live_api.configured or mode in ("LIVE_IMD_AWS", "LIVE", "IMD")
 
-    logger.info("Starting IMD AWS Ingestion. Mode: %s (Authorized Live: %s)", mode, is_live)
+    logger.info("Starting IMD AWS Ingestion. Mode: %s (Authorized Live: %s)", mode or "AUTO", is_live)
     service = IngestionService(store=store, root=ROOT)
     
     if is_live:
