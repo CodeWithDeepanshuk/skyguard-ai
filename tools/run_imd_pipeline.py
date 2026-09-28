@@ -71,7 +71,7 @@ def run_ingest(store: ObservationStore, fixture: IMDFixtureProvider, live_api: I
             "fixture_is_live_observation": False,
         }
 
-    logger.info("Ingestion completed: %s", json.dumps(result, indent=2))
+    logger.info("Ingestion completed: %s", json.dumps(result, indent=2, default=str))
     return result
 
 
