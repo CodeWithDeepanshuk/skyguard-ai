@@ -435,6 +435,65 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
             and int(status.get("observation_count") or 0) > 0
         )
 
+    def sync_live_from_store() -> bool:
+        if not observation_store:
+            return False
+        try:
+            latest_db_rows = observation_store.latest_observations(limit=2500)
+            if not latest_db_rows:
+                return False
+            cleaned = []
+            for r in latest_db_rows:
+                sid = str(r.get("canonical_station_id") or r.get("station_id") or "").strip()
+                if not sid or re.match(r"^S\d+$", sid):
+                    continue
+                ts = str(r.get("observation_timestamp_utc") or r.get("timestamp_utc") or "").strip()
+                cleaned.append({
+                    "station_id": sid,
+                    "canonical_station_id": sid,
+                    "timestamp_utc": ts,
+                    "temperature": r.get("temperature_c"),
+                    "temperature_c": r.get("temperature_c"),
+                    "pressure": r.get("pressure_hpa"),
+                    "pressure_hpa": r.get("pressure_hpa"),
+                    "humidity": r.get("relative_humidity_pct"),
+                    "relative_humidity_pct": r.get("relative_humidity_pct"),
+                    "station_name": str(r.get("station_name") or sid),
+                    "latitude": r.get("latitude"),
+                    "longitude": r.get("longitude"),
+                    "elevation_m": r.get("elevation_m"),
+                    "state": str(r.get("state") or ""),
+                    "district": str(r.get("district") or ""),
+                    "climate_zone": str(r.get("climate_zone") or r.get("state") or ""),
+                    "provider": "India Meteorological Department AWS Portal",
+                    "source_type": "observed",
+                })
+            if cleaned:
+                live.payload["readings"] = cleaned
+                live.payload["latest"] = cleaned
+                now_utc = datetime.now(timezone.utc)
+                max_ts = max((r["timestamp_utc"] for r in cleaned if r.get("timestamp_utc")), default="")
+                if max_ts:
+                    live.payload["latest_observation_utc"] = max_ts
+                    try:
+                        dt_max = datetime.fromisoformat(max_ts.replace("Z", "+00:00"))
+                        if dt_max.tzinfo is None:
+                            dt_max = dt_max.replace(tzinfo=timezone.utc)
+                        age_m = max(0.0, round((now_utc - dt_max.astimezone(timezone.utc)).total_seconds() / 60.0, 2))
+                        live.payload["source_age_minutes"] = age_m
+                        live.payload["is_cached"] = (age_m > 20.0)
+                        live.payload["status"] = "live" if age_m <= 20.0 else "delayed"
+                    except Exception:
+                        pass
+                live.payload["observation_count"] = len(cleaned)
+                live.payload["reporting_stations"] = len(cleaned)
+                live.payload["provider"] = "India Meteorological Department AWS Portal"
+                live.payload["fetched_at_utc"] = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
+                return True
+        except Exception as e:
+            logger.warning("sync_live_from_store failed: %s", e)
+        return False
+
     def bootstrap_live_source() -> dict[str, object]:
         """Self-heal the observed feed after a Render Free cold restart.
 
@@ -443,6 +502,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         one official-source refresh. Concurrent requests wait for that refresh
         instead of each launching another external request.
         """
+        sync_live_from_store()
         status = live.status()
         if not public_mode or live_contract_ready(status):
             return status
@@ -832,9 +892,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         if not refresh_lock.acquire(blocking=False):
             return {**live.status(), "refresh_in_progress": True}
         try:
-            if public_mode and time.monotonic() - last_refresh_attempt[0] < 300:
-                return {**live.status(), "refresh_throttled": True, "refresh_interval_seconds": 300}
+            if public_mode and time.monotonic() - last_refresh_attempt[0] < 5:
+                return {**live.status(), "refresh_throttled": True, "refresh_interval_seconds": 5}
             last_refresh_attempt[0] = time.monotonic()
+            if sync_live_from_store():
+                return live.status()
             return live.refresh(hours)
         except Exception as error:
             raise HTTPException(status_code=502, detail=f"Live observation refresh failed: {error}") from error

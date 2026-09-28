@@ -314,6 +314,13 @@ async function refreshOfficialLive(force = true) {
   const revision = state.viewRevision;
   state.liveFetching = true;
   setBusy(true);
+  const btn = $("refresh-live");
+  if (btn) {
+    btn.style.opacity = "0.6";
+    btn.style.pointerEvents = "none";
+    const icon = btn.querySelector("svg, span");
+    if (icon) icon.style.animation = "spin 0.8s linear infinite";
+  }
   try {
     const status = force ? await api("/api/live/refresh?hours=24", { method: "POST" }) : await api("/api/live/status");
     const [readings, alerts, liveIncidents] = await Promise.all([
@@ -391,6 +398,12 @@ async function refreshOfficialLive(force = true) {
   } finally {
     state.liveFetching = false;
     setBusy(false);
+    if (btn) {
+      btn.style.opacity = "1";
+      btn.style.pointerEvents = "auto";
+      const icon = btn.querySelector("svg, span");
+      if (icon) icon.style.animation = "";
+    }
   }
 }
 
@@ -2323,9 +2336,9 @@ function renderDataset() {
 function scheduleLiveRefresh() {
   window.clearInterval(state.liveTimer);
   state.liveTimer = null;
-  // Official IMD AWS 15-minute telemetry update cadence (900,000 ms)
+  // Automatically poll every 30 seconds for live updates from PostgreSQL/EC2 gateway
   if (state.mode === 'live') {
-    state.liveTimer = window.setInterval(() => refreshOfficialLive(false), 900000);
+    state.liveTimer = window.setInterval(() => refreshOfficialLive(true), 30000);
   }
 }
 
