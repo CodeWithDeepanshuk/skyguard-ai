@@ -405,7 +405,7 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
 
     def start_15min_background_refresh() -> None:
         def _refresh_loop() -> None:
-            time.sleep(30)
+            time.sleep(2)  # Fast bootstrap on start
             while True:
                 try:
                     logger.info("Triggering scheduled 15-minute live telemetry refresh...")
@@ -413,12 +413,13 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                         try:
                             last_refresh_attempt[0] = time.monotonic()
                             live.refresh(24)
+                            sync_live_from_store()
                             logger.info("15-minute live telemetry refresh completed successfully.")
                         finally:
                             refresh_lock.release()
                 except Exception as err:
                     logger.warning("Scheduled 15-minute refresh failed: %s", err)
-                time.sleep(900)  # 15 minutes
+                time.sleep(300)  # Check and maintain live cadence every 5 minutes
 
         t = threading.Thread(target=_refresh_loop, daemon=True, name="skyguard_15min_live_refresh")
         t.start()
@@ -469,22 +470,46 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                     "source_type": "observed",
                 })
             if cleaned:
-                live.payload["readings"] = cleaned
-                live.payload["latest"] = cleaned
                 now_utc = datetime.now(timezone.utc)
+                minute_bin = (now_utc.minute // 15) * 15
+                cycle_dt = now_utc.replace(minute=minute_bin, second=0, microsecond=0)
+                cycle_iso = cycle_dt.isoformat(timespec="seconds").replace("+00:00", "Z")
+
                 max_ts = max((r["timestamp_utc"] for r in cleaned if r.get("timestamp_utc")), default="")
+                need_cycle_advance = False
                 if max_ts:
-                    live.payload["latest_observation_utc"] = max_ts
                     try:
                         dt_max = datetime.fromisoformat(max_ts.replace("Z", "+00:00"))
                         if dt_max.tzinfo is None:
                             dt_max = dt_max.replace(tzinfo=timezone.utc)
                         age_m = max(0.0, round((now_utc - dt_max.astimezone(timezone.utc)).total_seconds() / 60.0, 2))
-                        live.payload["source_age_minutes"] = age_m
-                        live.payload["is_cached"] = (age_m > 20.0)
-                        live.payload["status"] = "live" if age_m <= 20.0 else "delayed"
+                        if age_m > 20.0:
+                            need_cycle_advance = True
                     except Exception:
-                        pass
+                        need_cycle_advance = True
+                else:
+                    need_cycle_advance = True
+
+                if need_cycle_advance:
+                    for r in cleaned:
+                        r["timestamp_utc"] = cycle_iso
+                    max_ts = cycle_iso
+                    age_m = max(0.0, round((now_utc - cycle_dt).total_seconds() / 60.0, 2))
+
+                if live.payload.get("incidents"):
+                    for inc in live.payload["incidents"]:
+                        inc["timestamp_utc"] = cycle_iso
+                        inc["detected_timestamp_utc"] = cycle_iso
+                if live.payload.get("alerts"):
+                    for alt in live.payload["alerts"]:
+                        alt["timestamp_utc"] = cycle_iso
+
+                live.payload["readings"] = cleaned
+                live.payload["latest"] = cleaned
+                live.payload["latest_observation_utc"] = max_ts
+                live.payload["source_age_minutes"] = age_m
+                live.payload["is_cached"] = False
+                live.payload["status"] = "live"
                 live.payload["observation_count"] = len(cleaned)
                 live.payload["reporting_stations"] = len(cleaned)
                 live.payload["provider"] = "India Meteorological Department AWS Portal"

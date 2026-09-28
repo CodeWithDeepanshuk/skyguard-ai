@@ -1045,16 +1045,16 @@ function getFilteredStations() {
     const isFault = activeFaultStationIds.has(stn.station_id);
     const isDegraded = degradedStationIds.has(stn.station_id);
     const latestR = latestReadings.get(stn.station_id);
-    const hasObs = !!latestR && !!latestR.timestamp_utc;
-    const obsAgeMs = hasObs ? (now - Date.parse(latestR.timestamp_utc)) : Infinity;
-    const isStale = !hasObs || obsAgeMs > 3600000;
+    const hasObs = !!latestR && (latestR.temperature != null || latestR.temperature_c != null || latestR.pressure != null || latestR.pressure_hpa != null || latestR.humidity != null || latestR.relative_humidity_pct != null);
 
     countAll++;
     if (isFault) countCritical++;
     if (isDegraded && !isFault) countWatch++;
-    if (hasObs && !isFault && !isDegraded && !isStale) countHealthy++;
-    if (isStale) countOffline++;
-    if (!hasObs) countMissing++;
+    if (hasObs && !isFault && !isDegraded) countHealthy++;
+    if (!hasObs) {
+      countOffline++;
+      countMissing++;
+    }
   }
 
   if ($("pill-count-all")) $("pill-count-all").textContent = number(countAll);
@@ -1068,15 +1068,12 @@ function getFilteredStations() {
     const isFault = activeFaultStationIds.has(stn.station_id);
     const isDegraded = degradedStationIds.has(stn.station_id);
     const latestR = latestReadings.get(stn.station_id);
-    const hasObs = !!latestR && !!latestR.timestamp_utc;
-    const obsAgeMs = hasObs ? (now - Date.parse(latestR.timestamp_utc)) : Infinity;
-    const isStale = !hasObs || obsAgeMs > 3600000;
+    const hasObs = !!latestR && (latestR.temperature != null || latestR.temperature_c != null || latestR.pressure != null || latestR.pressure_hpa != null || latestR.humidity != null || latestR.relative_humidity_pct != null);
 
     if (filter === "critical") return isFault;
     if (filter === "watch") return isDegraded && !isFault;
-    if (filter === "healthy") return hasObs && !isFault && !isDegraded && !isStale;
-    if (filter === "offline") return isStale;
-    if (filter === "missing") return !hasObs;
+    if (filter === "healthy") return hasObs && !isFault && !isDegraded;
+    if (filter === "offline" || filter === "missing") return !hasObs;
     return true;
   });
 
@@ -1192,11 +1189,8 @@ function renderReadings() {
       statusClass = "monitor";
       statusLabel = "No Telemetry";
     } else {
-      const ageMs = Date.now() - Date.parse(r.timestamp_utc);
-      if (ageMs > 3600000) {
-        statusClass = "monitor";
-        statusLabel = "Stale";
-      }
+      statusClass = "healthy";
+      statusLabel = "Healthy";
     }
 
     const tVal = r?.temperature ?? r?.temperature_c;
@@ -1696,10 +1690,7 @@ function renderStationCards() {
     } else if (!hasObs) {
       statusPill = `<span class="severity-pill monitor" style="background:#F1F5F9; color:#64748B;">❓ No Telemetry</span>`;
     } else {
-      const ageMs = Date.now() - Date.parse(latestR.timestamp_utc);
-      if (ageMs > 3600000) {
-        statusPill = `<span class="severity-pill monitor">📡 Stale (${ageLabel(latestR.timestamp_utc)})</span>`;
-      }
+      statusPill = `<span class="severity-pill healthy">✓ Healthy</span>`;
     }
 
     const tVal = latestR?.temperature ?? latestR?.temperature_c;

@@ -223,7 +223,7 @@ def main() -> None:
         if raw_ts:
             try:
                 parsed_dt = datetime.fromisoformat(raw_ts.replace("Z", "+00:00"))
-                if (now_dt - parsed_dt).total_seconds() > 7200:
+                if (now_dt - parsed_dt).total_seconds() > 900:
                     use_fresh_cycle = True
             except Exception:
                 use_fresh_cycle = True

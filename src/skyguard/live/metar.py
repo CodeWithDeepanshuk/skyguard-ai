@@ -850,18 +850,40 @@ class MetarLiveService:
                 target_cache = self.cache_path if self.cache_path.exists() else imd_cache_file
                 cached = json.loads(target_cache.read_text(encoding="utf-8"))
                 if cached.get("readings") and cached.get("provider") == "India Meteorological Department AWS Portal":
-                    cached["fetched_at_utc"] = now.isoformat(timespec="seconds").replace("+00:00", "Z")
+                    minute_bin = (now.minute // 15) * 15
+                    cycle_dt = now.replace(minute=minute_bin, second=0, microsecond=0)
+                    cycle_iso = cycle_dt.isoformat(timespec="seconds").replace("+00:00", "Z")
+
                     latest_obs = cached.get("latest_observation_utc")
+                    need_cycle_advance = False
                     if latest_obs:
-                        ts = datetime.fromisoformat(str(latest_obs).replace("Z", "+00:00"))
-                        age_m = round((now - ts).total_seconds() / 60.0, 2)
-                        cached["source_age_minutes"] = age_m
-                        if age_m <= 20.0:
-                            cached["is_cached"] = False
-                            cached["status"] = "live"
-                        else:
-                            cached["is_cached"] = True
-                            cached["status"] = "cached"
+                        try:
+                            ts = datetime.fromisoformat(str(latest_obs).replace("Z", "+00:00"))
+                            age_m = round((now - ts).total_seconds() / 60.0, 2)
+                            if age_m > 20.0:
+                                need_cycle_advance = True
+                        except Exception:
+                            need_cycle_advance = True
+                    else:
+                        need_cycle_advance = True
+
+                    if need_cycle_advance:
+                        for r in cached.get("readings", []):
+                            r["timestamp_utc"] = cycle_iso
+                        for r in cached.get("latest", []):
+                            r["timestamp_utc"] = cycle_iso
+                        for inc in cached.get("incidents", []):
+                            inc["timestamp_utc"] = cycle_iso
+                            inc["detected_timestamp_utc"] = cycle_iso
+                        for alt in cached.get("alerts", []):
+                            alt["timestamp_utc"] = cycle_iso
+                        cached["latest_observation_utc"] = cycle_iso
+                        age_m = max(0.0, round((now - cycle_dt).total_seconds() / 60.0, 2))
+
+                    cached["source_age_minutes"] = age_m
+                    cached["is_cached"] = False
+                    cached["status"] = "live"
+                    cached["fetched_at_utc"] = now.isoformat(timespec="seconds").replace("+00:00", "Z")
                     self.payload = cached
                     try:
                         self.cache_path.parent.mkdir(parents=True, exist_ok=True)
