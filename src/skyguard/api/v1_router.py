@@ -1061,6 +1061,13 @@ def create_v1_router(
         except Exception as exc:
             logger.warning("Filesystem write skipped for raw payload: %s", exc)
 
+        # Continuously archive 15-minute observations for scheduled 30-day neural retraining
+        try:
+            from skyguard.storage.continuous_archive import archive_observation_batch
+            archive_observation_batch(records_in)
+        except Exception as arch_err:
+            logger.warning("Continuous archive batch save note: %s", arch_err)
+
         # Update in-memory live service and disk cache so website immediately serves the new observations
         inference_results: Dict[str, Any] = {}
         try:
@@ -1355,5 +1362,11 @@ def create_v1_router(
             parameter_filter=parameter,
         )
         return res
+
+    @router.get("/archive/status")
+    def get_continuous_archive_status() -> dict[str, object]:
+        """Expose 30-day continuous IMD AWS observation archive accumulation progress for neural retraining."""
+        from skyguard.storage.continuous_archive import get_archive_status
+        return get_archive_status()
 
     return router

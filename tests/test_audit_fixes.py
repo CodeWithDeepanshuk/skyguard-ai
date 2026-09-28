@@ -45,8 +45,10 @@ def test_station_catalog_and_counts_reconciliation():
 def test_freshness_strictly_derived_from_provider_timestamp():
     """Verify that an observation feed from 6 hours ago cannot show 100% freshness or 0 stale stations."""
     live = MetarLiveService(ROOT)
-    # Simulate status evaluated at current time against the 10:00:00Z observation timestamp
-    simulated_now = datetime(2026, 9, 25, 16, 30, 0, tzinfo=timezone.utc)
+    # Simulate status evaluated 6.5 hours after the observation feed
+    obs_time_raw = live.payload.get("latest_observation_utc") or "2026-09-25T10:00:00Z"
+    obs_time = datetime.fromisoformat(str(obs_time_raw).replace("Z", "+00:00"))
+    simulated_now = obs_time + timedelta(hours=6, minutes=30)
     status = live.status(now=simulated_now)
 
     assert status["source_age_minutes"] is not None

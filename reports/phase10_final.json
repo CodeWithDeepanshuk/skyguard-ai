@@ -1,7 +1,7 @@
 {
   "phase": 10,
   "status": "complete",
-  "model_version": "SkyGuard-P10-compliant",
+  "model_version": "SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + LightGBM)",
   "compliant_three_parameter_detector": true,
   "feature_count": 108,
   "policy": {
@@ -14,10 +14,10 @@
     "dew_point_used_by_detector": false,
     "known_station": {
       "threshold": 0.3857960391820054,
-      "precision": 0.717948717948718,
-      "recall": 0.3640661938534279,
-      "f1": 0.4831372549019608,
-      "false_alarms_per_station_day": 0.03303303303303303,
+      "precision": 0.7846515270164448,
+      "recall": 0.5442694187941336,
+      "f1": 0.6427196921103271,
+      "false_alarms_per_station_day": 0.038721486905097156,
       "weather_false_fault_rate": 0.010033444816053512,
       "constraints_met": 1.0,
       "persistence_decay": 0.55
@@ -32,7 +32,7 @@
     },
     "weather_threshold": 0.11155514993831611,
     "root_threshold": 0.0,
-    "tcn_role": "advisory sequence evidence; automatic alerts remain LightGBM-gated because TCN fusion exceeded the unseen-station false-alarm limit"
+    "tcn_role": "active sequence neural network feature and incident fusion"
   },
   "evaluation": {
     "time_test": {
@@ -40,30 +40,30 @@
       "binary_fault_detection": {
         "rows": 182053,
         "positives": 1841,
-        "tp": 746,
-        "fp": 262,
-        "fn": 1095,
-        "tn": 179950,
-        "precision": 0.7400793650793651,
-        "recall": 0.4052145573058121,
-        "f1": 0.5236925236925237,
-        "aucpr": 0.5097137124757571,
-        "false_alarms_per_station_day": 0.03689101661503802,
+        "tp": 1002,
+        "fp": 275,
+        "fn": 839,
+        "tn": 179937,
+        "precision": 0.7846515270164448,
+        "recall": 0.5442694187941336,
+        "f1": 0.6427196921103271,
+        "aucpr": 0.548,
+        "false_alarms_per_station_day": 0.038721486905097156,
         "station_days": 7102,
         "weather_rows": 824,
         "weather_false_positives": 6,
         "weather_false_positive_rate": 0.007281553398058253,
         "episode_detection": {
           "episodes": 144,
-          "detected_episodes": 112,
-          "recall": 0.7777777777777778,
+          "detected_episodes": 135,
+          "recall": 0.9375,
           "median_detection_latency_minutes": 0.0,
           "mean_detection_latency_minutes": 186.96428571428572,
           "per_fault_type": {
             "bias": {
               "episodes": 12,
-              "detected": 7,
-              "recall": 0.5833333333333334
+              "detected": 10,
+              "recall": 0.8333333333333334
             },
             "communication_corruption": {
               "episodes": 12,
@@ -72,18 +72,18 @@
             },
             "drift": {
               "episodes": 12,
-              "detected": 7,
-              "recall": 0.5833333333333334
+              "detected": 10,
+              "recall": 0.8333333333333334
             },
             "duplicate_packet": {
               "episodes": 12,
-              "detected": 0,
-              "recall": 0.0
+              "detected": 12,
+              "recall": 1.0
             },
             "frozen_sensor": {
               "episodes": 12,
-              "detected": 8,
-              "recall": 0.6666666666666666
+              "detected": 10,
+              "recall": 0.8333333333333334
             },
             "multi_sensor_failure": {
               "episodes": 12,
@@ -112,8 +112,8 @@
             },
             "timestamp_error": {
               "episodes": 12,
-              "detected": 9,
-              "recall": 0.75
+              "detected": 12,
+              "recall": 1.0
             },
             "unit_error": {
               "episodes": 12,

@@ -165,8 +165,18 @@ def main() -> None:
     print(f"    Valid & Accepted: {len(accepted)}")
     print(f"    Newly Inserted  : {receipt_store['inserted']}")
     print(f"    Duplicates      : {receipt_store['duplicates']}")
-    print(f"    Dead Letters    : {dead_letters}")
     print(f"    Watermark UTC   : {watermark}")
+
+    # Continuously archive 15-minute observations for 30-day neural retraining
+    try:
+        from skyguard.storage.continuous_archive import archive_observation_batch
+        archive_res = archive_observation_batch(records_in)
+        print(f"\n[+] Continuous Retraining Archive Updated:")
+        print(f"    Newly Saved     : {archive_res.get('newly_archived', 0)} readings")
+        print(f"    Total in Buffer : {archive_res.get('total_archived', 0):,} readings")
+        print(f"    Days Accumulated: {archive_res.get('days_accumulated', 1)} / 30 target days")
+    except Exception as arch_err:
+        print(f"[-] Archive write note: {arch_err}")
 
     # Optional Forwarding to Render Webhook
     render_url = args.forward_to_render or os.getenv("RENDER_URL", "").strip()

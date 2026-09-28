@@ -512,8 +512,15 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 live.payload["status"] = "live"
                 live.payload["observation_count"] = len(cleaned)
                 live.payload["reporting_stations"] = len(cleaned)
-                live.payload["provider"] = "India Meteorological Department AWS Portal"
                 live.payload["fetched_at_utc"] = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
+
+                # Continuously archive 15-minute readings for 30-day neural retraining
+                try:
+                    from skyguard.storage.continuous_archive import archive_observation_batch
+                    archive_observation_batch(cleaned)
+                except Exception as arch_err:
+                    logger.debug("Continuous live archive note: %s", arch_err)
+
                 return True
         except Exception as e:
             logger.warning("sync_live_from_store failed: %s", e)

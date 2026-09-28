@@ -111,6 +111,15 @@ def main() -> None:
                         })
 
                     watermark = cycle_iso
+
+                    # Continuously save 15-minute observations for 30-day retraining
+                    try:
+                        from skyguard.storage.continuous_archive import archive_observation_batch
+                        archive_res = archive_observation_batch(formatted)
+                        print(f"[+] Archived {archive_res.get('newly_archived', 0)} readings for 30-day retraining (Total: {archive_res.get('total_archived', 0):,})", flush=True)
+                    except Exception as arch_err:
+                        print(f"[-] Archive write note: {arch_err}", flush=True)
+
                     forward_to_render(formatted, args.forward_to_render, args.token, watermark)
             except Exception as fwd_err:
                 print(f"[-] Forwarding error: {fwd_err}", flush=True)
