@@ -14,6 +14,7 @@ import csv
 from dataclasses import asdict, dataclass
 import math
 from pathlib import Path
+import re
 from typing import Any, Dict, List, Optional
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -258,12 +259,21 @@ class MasterStationRegistry:
             for s in sorted(self.stations.values(), key=lambda x: x.station_id):
                 writer.writerow(s.to_dict())
 
-    def get_station(self, station_id: str) -> Optional[StationMetadata]:
+    def get_station(
+        self,
+        station_id: str,
+        station_name: str = "",
+        lat: Optional[float] = None,
+        lon: Optional[float] = None,
+    ) -> Optional[StationMetadata]:
         sid = station_id.strip()
         if sid in self.stations:
             return self.stations[sid]
         sid_upper = sid.upper()
         sid_clean = sid.split()[0].strip()
+        name_clean = station_name.upper().strip() if station_name else ""
+        name_words = set(re.findall(r"[A-Z0-9]+", name_clean))
+
         for s in self.stations.values():
             if (
                 s.station_id.upper() == sid_upper
@@ -273,6 +283,25 @@ class MasterStationRegistry:
                 or (s.wigos_id and (s.wigos_id == sid or s.wigos_id.endswith(sid[:5])))
             ):
                 return s
+            if name_clean and (name_clean == s.station_name.upper() or (len(name_clean) >= 4 and name_clean in s.station_name.upper())):
+                return s
+            if name_words and any(w in s.station_name.upper() for w in name_words if len(w) >= 5):
+                if lat is not None and lon is not None:
+                    if haversine_km(lat, lon, s.latitude, s.longitude) <= 15.0:
+                        return s
+
+        if lat is not None and lon is not None:
+            # Spatial proximity fallback (< 3.0 km) for co-located IMD AWS sensors
+            closest_stn = None
+            min_d = 3.0
+            for s in self.stations.values():
+                d = haversine_km(lat, lon, s.latitude, s.longitude)
+                if d < min_d:
+                    min_d = d
+                    closest_stn = s
+            if closest_stn:
+                return closest_stn
+
         return None
 
     def list_stations(

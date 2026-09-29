@@ -47,7 +47,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1045.0,
         station_pressure_min_hpa=450.0,  # At 3,000m-4,500m ASL station pressure is 500-700 hPa
         station_pressure_max_hpa=960.0,
-        humidity_min_pct=5.0,
+        humidity_min_pct=1.0,
         humidity_max_pct=100.0,
         high_altitude=True,
         description="Alpine/Montane Himalayan region (Ladakh, J&K, HP, Uttarakhand)",
@@ -60,7 +60,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1035.0,
         station_pressure_min_hpa=910.0,
         station_pressure_max_hpa=1035.0,
-        humidity_min_pct=3.0,  # Extreme pre-monsoon dry air (May/June afternoons)
+        humidity_min_pct=1.0,  # Extreme pre-monsoon dry air (May/June afternoons)
         humidity_max_pct=100.0,
         description="Thar Desert and arid northwest (Rajasthan, Kutch, North Gujarat)",
     ),
@@ -72,7 +72,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1034.0,
         station_pressure_min_hpa=930.0,
         station_pressure_max_hpa=1034.0,
-        humidity_min_pct=8.0,
+        humidity_min_pct=2.0,
         humidity_max_pct=100.0,
         description="Fertile northern plains (Delhi, Punjab, Haryana, UP, Bihar, WB)",
     ),
@@ -84,7 +84,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1030.0,
         station_pressure_min_hpa=880.0,
         station_pressure_max_hpa=1028.0,
-        humidity_min_pct=8.0,
+        humidity_min_pct=2.0,
         humidity_max_pct=100.0,
         description="Central inland plateau (Madhya Pradesh, Chhattisgarh, Vidarbha)",
     ),
@@ -96,7 +96,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1028.0,
         station_pressure_min_hpa=860.0,  # Elevated plateau (Bangalore ~920m ASL, ~910 hPa)
         station_pressure_max_hpa=1026.0,
-        humidity_min_pct=10.0,
+        humidity_min_pct=2.0,
         humidity_max_pct=100.0,
         description="Peninsular interior plateau (Karnataka, Telangana, Rayalaseema)",
     ),
@@ -108,7 +108,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1026.0,
         station_pressure_min_hpa=940.0,
         station_pressure_max_hpa=1026.0,
-        humidity_min_pct=28.0,  # Maritime moisture buffer
+        humidity_min_pct=10.0,  # Maritime moisture buffer
         humidity_max_pct=100.0,
         coastal=True,
         description="Maritime coastal belt (Konkan, Malabar, Coromandel, Odisha coast)",
@@ -121,8 +121,9 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1030.0,
         station_pressure_min_hpa=750.0,  # Shillong/Meghalaya plateau (1500m ASL)
         station_pressure_max_hpa=1030.0,
-        humidity_min_pct=20.0,
+        humidity_min_pct=2.0,
         humidity_max_pct=100.0,
+        high_altitude=True,
         description="Northeastern hill states (Assam, Meghalaya, Arunachal, Nagaland)",
     ),
     "Island Territories": RegionalBounds(
@@ -133,7 +134,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         mslp_max_hpa=1022.0,
         station_pressure_min_hpa=950.0,
         station_pressure_max_hpa=1022.0,
-        humidity_min_pct=45.0,
+        humidity_min_pct=20.0,
         humidity_max_pct=100.0,
         coastal=True,
         description="Oceanic islands (Andaman & Nicobar, Lakshadweep)",
@@ -210,7 +211,7 @@ def classify_indian_region(
             return INDIAN_CLIMATE_BOUNDS["Northern Himalayas"]
 
     # 4. Northeast Hills
-    if (lon > 88.5 and lat > 21.5) or any(s in st_clean for s in ["assam", "meghalaya", "arunachal", "nagaland", "manipur", "mizoram", "tripura"]):
+    if (lon > 88.5 and lat > 21.5) or any(s in st_clean for s in ["sikkim", "assam", "meghalaya", "arunachal", "nagaland", "manipur", "mizoram", "tripura"]):
         return INDIAN_CLIMATE_BOUNDS["Northeast Hills"]
 
     # 5. Coastal Plains
@@ -266,17 +267,27 @@ def check_regional_physical_bounds(
 
     # 3. Pressure check (elevation aware)
     if pressure_hpa is not None and not math.isnan(pressure_hpa):
-        if is_mslp or abs(elevation_m) < 30.0:
+        is_mountain_zone = bounds.zone_name in ("Northern Himalayas", "Northeast Hills") or bounds.high_altitude
+
+        if is_mslp and not (is_mountain_zone and pressure_hpa < 960.0):
             p_min, p_max = bounds.mslp_min_hpa, bounds.mslp_max_hpa
             label = "MSLP"
-        else:
+        elif elevation_m and abs(elevation_m) >= 30.0:
             # Approximate expected station pressure given elevation
             # Standard barometric reduction: P ~ 1013.25 * (1 - 2.25577e-5 * h)^5.25588
             dh = max(0.0, elevation_m)
             expected_p_at_elev = 1013.25 * math.pow(max(0.1, 1.0 - 2.25577e-5 * dh), 5.25588)
-            p_min = max(350.0, expected_p_at_elev - 60.0)
-            p_max = min(1085.0, expected_p_at_elev + 60.0)
+            p_min = max(350.0, expected_p_at_elev - 65.0)
+            p_max = min(1085.0, expected_p_at_elev + 65.0)
             label = f"Station Pressure at {elevation_m:.0f}m ASL"
+        elif is_mountain_zone:
+            # High altitude station without explicit elevation metadata: evaluate against regional station pressure limits
+            p_min = bounds.station_pressure_min_hpa
+            p_max = bounds.station_pressure_max_hpa
+            label = f"Mountain Station Pressure ({bounds.zone_name})"
+        else:
+            p_min, p_max = bounds.mslp_min_hpa, bounds.mslp_max_hpa
+            label = "MSLP"
 
         if pressure_hpa < p_min or pressure_hpa > p_max:
             return (

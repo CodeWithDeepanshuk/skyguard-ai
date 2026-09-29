@@ -1017,9 +1017,21 @@ def create_v1_router(
                 dead_letters += 1
                 continue
 
-            official = registry.get_station(sid)
-            lat = item.get("latitude")
-            lon = item.get("longitude")
+            s_name = str(item.get("station_name") or sid).strip()
+            raw_lat = item.get("latitude")
+            raw_lon = item.get("longitude")
+            cand_lat = None
+            cand_lon = None
+            if raw_lat is not None and raw_lon is not None:
+                try:
+                    cand_lat = float(raw_lat)
+                    cand_lon = float(raw_lon)
+                except (TypeError, ValueError):
+                    pass
+
+            official = registry.get_station(sid, station_name=s_name, lat=cand_lat, lon=cand_lon)
+            lat = raw_lat
+            lon = raw_lon
 
             # Backfill verified coordinates from master registry if omitted in IMD observation
             if lat is None or lon is None:

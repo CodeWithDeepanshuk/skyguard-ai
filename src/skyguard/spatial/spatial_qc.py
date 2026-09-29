@@ -160,13 +160,14 @@ class MultiRadiusSpatialQcEngine:
 
         lat_target = float(target_station.get("latitude") or 20.0)
         lon_target = float(target_station.get("longitude") or 78.0)
-        elev_target = float(target_station.get("elevation_m") or 0.0)
+        raw_target_elev = target_station.get("elevation_m")
+        elev_target = float(raw_target_elev) if raw_target_elev is not None and str(raw_target_elev).strip() != "" else None
         state_target = str(target_station.get("state") or "")
         district_target = str(target_station.get("district") or "")
         cz_hint = str(target_station.get("climate_zone") or "")
 
         target_coastal = is_coastal_location(lat_target, lon_target, state_target, district_target)
-        region_profile = classify_indian_region(lat_target, lon_target, elev_target, state_target, cz_hint)
+        region_profile = classify_indian_region(lat_target, lon_target, elev_target if elev_target is not None else 0.0, state_target, cz_hint)
 
         # Partition neighbors into concentric tiers
         t1_peers: List[Dict[str, Any]] = []
@@ -188,22 +189,26 @@ class MultiRadiusSpatialQcEngine:
             if dist > TIER3_MAX_KM:
                 continue
 
-            n_elev = float(n.get("elevation_m") or 0.0)
+            raw_n_elev = n.get("elevation_m")
+            n_elev = float(raw_n_elev) if raw_n_elev is not None and str(raw_n_elev).strip() != "" else None
             n_coastal = is_coastal_location(n_lat, n_lon, str(n.get("state") or ""), str(n.get("district") or ""))
             cross_coastal = (target_coastal != n_coastal)
 
             n_t_raw = n.get("temperature_c") if n.get("temperature_c") is not None else n.get("temperature")
             if n_t_raw is not None and not math.isnan(float(n_t_raw)):
                 n_t = float(n_t_raw)
-                # Apply environmental lapse rate adjustment
-                adj_t = adjust_temperature_for_lapse(n_t, n_elev, elev_target)
+                # Apply environmental lapse rate adjustment only when both elevations are known
+                if elev_target is not None and n_elev is not None:
+                    adj_t = adjust_temperature_for_lapse(n_t, n_elev, elev_target)
+                else:
+                    adj_t = n_t
                 abs_delta = abs(t_target - adj_t) if t_target is not None else 0.0
 
                 peer_info = {
                     "station_id": nid,
                     "station_name": str(n.get("station_name") or nid),
                     "distance_km": round(dist, 1),
-                    "elevation_m": round(n_elev, 1),
+                    "elevation_m": round(n_elev, 1) if n_elev is not None else None,
                     "raw_temp_c": round(n_t, 1),
                     "lapse_adjusted_temp_c": round(adj_t, 1),
                     "absolute_delta_c": round(abs_delta, 1),

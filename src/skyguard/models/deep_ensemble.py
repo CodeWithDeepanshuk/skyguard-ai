@@ -242,6 +242,10 @@ class EnsembleResult:
     synoptic_weather_detected: bool = False
     fault_signature_hypothesis: str = ""
     recommended_technician_action: str = ""
+    affected_parameter: Optional[str] = None
+    affected_observed_value: Optional[float] = None
+    affected_expected_value: Optional[float] = None
+    affected_residual: Optional[float] = None
 
 
 class DeepEnsembleDetector:
@@ -311,7 +315,8 @@ class DeepEnsembleDetector:
         t_target = float(t_raw) if has_t else 25.0
         p_target = float(p_raw) if has_p else 1008.0
         rh_target = float(rh_raw) if has_rh else 60.0
-        elev_target = float(target_station.get("elevation_m") or 150.0)
+        raw_target_elev = target_station.get("elevation_m")
+        elev_target = float(raw_target_elev) if raw_target_elev is not None and str(raw_target_elev).strip() != "" else None
 
         # --------------------------------------------------------------------
         # Stream 1: Spatial Buddy Consensus with Elevation Lapse Correction
@@ -333,13 +338,17 @@ class DeepEnsembleDetector:
             dist = haversine_distance_km(target_lat, target_lon, n_lat, n_lon)
             if dist > 300.0:
                 continue
-            elev_n = float(n.get("elevation_m") or 150.0)
+            raw_elev_n = n.get("elevation_m")
+            elev_n = float(raw_elev_n) if raw_elev_n is not None and str(raw_elev_n).strip() != "" else None
             s_name = str(n.get("station_name") or nid)
             ts_n = str(n.get("timestamp_utc") or "")
 
             n_t = n.get("temperature_c") if n.get("temperature_c") is not None else n.get("temperature")
             if n_t is not None and str(n_t).strip() != "" and not (isinstance(n_t, float) and math.isnan(float(n_t))):
-                adj_t = adjust_temperature_for_elevation(float(n_t), elev_n, elev_target)
+                if elev_target is not None and elev_n is not None:
+                    adj_t = adjust_temperature_for_elevation(float(n_t), elev_n, elev_target)
+                else:
+                    adj_t = float(n_t)
                 valid_neighbors_t.append({
                     "station_id": nid,
                     "station_name": s_name,
@@ -347,13 +356,16 @@ class DeepEnsembleDetector:
                     "observed_value": round(float(n_t), 1),
                     "adjusted_value": round(adj_t, 1),
                     "timestamp_utc": ts_n,
-                    "adjustment_method": "Environmental Lapse Rate (-6.5°C/km)",
+                    "adjustment_method": "Environmental Lapse Rate (-6.5°C/km)" if (elev_target is not None and elev_n is not None) else "Direct Spatial Buddy",
                     "parameter": "temperature",
                 })
 
             n_p = n.get("pressure_hpa") if n.get("pressure_hpa") is not None else n.get("pressure")
             if n_p is not None and str(n_p).strip() != "" and not (isinstance(n_p, float) and math.isnan(float(n_p))):
-                adj_p = adjust_pressure_for_elevation(float(n_p), elev_n, elev_target)
+                if elev_target is not None and elev_n is not None:
+                    adj_p = adjust_pressure_for_elevation(float(n_p), elev_n, elev_target)
+                else:
+                    adj_p = float(n_p)
                 valid_neighbors_p.append({
                     "station_id": nid,
                     "station_name": s_name,
@@ -361,7 +373,7 @@ class DeepEnsembleDetector:
                     "observed_value": round(float(n_p), 1),
                     "adjusted_value": round(adj_p, 1),
                     "timestamp_utc": ts_n,
-                    "adjustment_method": "Barometric Altimeter Reduction",
+                    "adjustment_method": "Barometric Altimeter Reduction" if (elev_target is not None and elev_n is not None) else "Direct Spatial Buddy",
                     "parameter": "pressure",
                 })
 
@@ -520,7 +532,7 @@ class DeepEnsembleDetector:
         region_profile = classify_indian_region(
             lat=target_lat,
             lon=target_lon,
-            elev_m=elev_target,
+            elev_m=elev_target if elev_target is not None else 0.0,
             state=str(target_station.get("state") or ""),
             climate_zone_hint=str(target_station.get("climate_zone") or ""),
         )
@@ -549,7 +561,7 @@ class DeepEnsembleDetector:
         is_mslp = (
             str(target_station.get("pressure_source") or "").lower() in ("slp", "mslp", "imd_aws_direct_mslp")
             or str(target_station.get("pressure_type") or "").lower() in ("slp", "mslp", "mean_sea_level_pressure")
-            or (has_p and float(p_raw) > 995.0 and elev_target > 350.0)
+            or (has_p and float(p_raw) > 995.0 and elev_target is not None and elev_target > 350.0)
         )
         phys_valid, phys_param, phys_reason = check_regional_physical_bounds(
             temperature_c=float(t_raw) if has_t else None,
@@ -600,7 +612,7 @@ class DeepEnsembleDetector:
         elif has_rh and abs(z_rh) >= 4.8 and abs(res_rh) >= 25.0 and len(valid_neighbors_rh) >= 3:
             decision = "SENSOR_FAULT"
             severity = "MEDIUM"
-            root_cause = "relative_humidity_saturation"
+            root_cause = "relative_humidity_saturation" if (rh_target is not None and rh_target >= 98.0) else "relative_humidity_spatial_discrepancy"
             explanation = f"Observed humidity {rh_target:.0f}% deviates by {abs(z_rh):.1f}σ from spatial consensus ({exp_rh:.0f}%)."
             evidence_score = max(evidence_score, 0.7650)
             confidence = round(evidence_score, 4)
@@ -618,12 +630,63 @@ class DeepEnsembleDetector:
             explanation = f"Sensors match elevation-adjusted regional spatial consensus ({region_profile.zone_name}) across 20/50/100 km concentric radii within verified tolerances."
             confidence = round(1.0 - evidence_score, 4)
 
-        if "pressure" in root_cause.lower():
+        # Strict affected parameter determination among active, reported sensors
+        affected_param: Optional[str] = None
+        obs_val: Optional[float] = None
+        exp_val: Optional[float] = None
+        res_val: Optional[float] = None
+
+        if decision == "SENSOR_FAULT":
+            if not phys_valid and phys_param:
+                affected_param = phys_param
+                if phys_param == "temperature":
+                    obs_val = float(t_raw) if has_t else None
+                    exp_val = round(exp_t, 1)
+                    res_val = round(res_t, 2)
+                elif phys_param == "pressure":
+                    obs_val = float(p_raw) if has_p else None
+                    exp_val = round(exp_p, 1)
+                    res_val = round(res_p, 2)
+                elif phys_param == "humidity":
+                    obs_val = float(rh_raw) if has_rh else None
+                    exp_val = round(exp_rh, 1)
+                    res_val = round(res_rh, 2)
+            elif "pressure" in root_cause.lower():
+                affected_param = "pressure" if has_p else None
+                obs_val = float(p_raw) if has_p else None
+                exp_val = round(exp_p, 1)
+                res_val = round(res_p, 2)
+            elif "humid" in root_cause.lower():
+                affected_param = "humidity" if has_rh else None
+                obs_val = float(rh_raw) if has_rh else None
+                exp_val = round(exp_rh, 1)
+                res_val = round(res_rh, 2)
+            elif "temp" in root_cause.lower() or "freeze" in root_cause.lower() or "flatline" in root_cause.lower():
+                affected_param = "temperature" if has_t else None
+                obs_val = float(t_raw) if has_t else None
+                exp_val = round(exp_t, 1)
+                res_val = round(res_t, 2)
+            else:
+                # Spatial consensus or general fault: pick reported sensor with max absolute Z score
+                cand_z = []
+                if has_t: cand_z.append(("temperature", abs(z_t), float(t_raw), round(exp_t, 1), round(res_t, 2)))
+                if has_p: cand_z.append(("pressure", abs(z_p), float(p_raw), round(exp_p, 1), round(res_p, 2)))
+                if has_rh: cand_z.append(("humidity", abs(z_rh), float(rh_raw), round(exp_rh, 1), round(res_rh, 2)))
+                if cand_z:
+                    cand_z.sort(key=lambda x: x[1], reverse=True)
+                    best_param, best_z, best_obs, best_exp, best_res = cand_z[0]
+                    affected_param = best_param
+                    obs_val = best_obs
+                    exp_val = best_exp
+                    res_val = best_res
+
+        # Strict neighbor evidence alignment
+        if affected_param == "pressure":
             neighbor_evidence = top_peers_p or valid_neighbors_p[:12]
-        elif "temperature" in root_cause.lower():
-            neighbor_evidence = top_peers_t or valid_neighbors_t[:12]
-        elif "humidity" in root_cause.lower():
+        elif affected_param == "humidity":
             neighbor_evidence = top_peers_rh or valid_neighbors_rh[:12]
+        elif affected_param == "temperature":
+            neighbor_evidence = top_peers_t or valid_neighbors_t[:12]
         else:
             neighbor_evidence = top_peers_p or top_peers_t or top_peers_rh or valid_neighbors_p[:12] or valid_neighbors_t[:12] or []
 
@@ -680,4 +743,8 @@ class DeepEnsembleDetector:
             synoptic_weather_detected=qc_res.synoptic_weather_system_detected,
             fault_signature_hypothesis=fault_hypothesis,
             recommended_technician_action=technician_action,
+            affected_parameter=affected_param,
+            affected_observed_value=obs_val,
+            affected_expected_value=exp_val,
+            affected_residual=res_val,
         )

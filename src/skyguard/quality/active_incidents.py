@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from skyguard.models.deep_ensemble import DeepEnsembleDetector
+from skyguard.stations.registry import MasterStationRegistry
 
 
 def evaluate_active_network_incidents(
@@ -23,6 +24,7 @@ def evaluate_active_network_incidents(
         return [], []
 
     detector = DeepEnsembleDetector(root)
+    registry = MasterStationRegistry(root=root)
     valid_readings = [
         r for r in readings
         if not re.match(r"^S\d+$", str(r.get("station_id") or "").strip())
@@ -30,9 +32,9 @@ def evaluate_active_network_incidents(
 
     now_utc_str = override_timestamp_utc or datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
-    active_incidents: List[Dict[str, Any]] = []
-    active_alerts: List[Dict[str, Any]] = []
-
+    # Pre-normalize all stations with verified registry metadata (elevation, coordinates, administrative state)
+    # This ensures spatial buddy checks and environmental lapse-rate corrections operate on consistent peer elevations
+    normalized_readings: List[Dict[str, Any]] = []
     for r in valid_readings:
         sid = str(r.get("station_id") or "").strip()
         if not sid:
@@ -46,25 +48,62 @@ def evaluate_active_network_incidents(
         if t_val is None and p_val is None and rh_val is None:
             continue
 
-        target_dict = {
-            "station_id": sid,
-            "station_name": str(r.get("station_name") or sid),
-            "latitude": float(r.get("latitude") or 20.0),
-            "longitude": float(r.get("longitude") or 78.0),
-            "elevation_m": float(r.get("elevation_m") or 150.0),
-            "temperature": float(t_val) if t_val is not None else None,
-            "pressure": float(p_val) if p_val is not None else None,
-            "humidity": float(rh_val) if rh_val is not None else None,
-            "state": str(r.get("state") or ""),
-            "district": str(r.get("district") or ""),
-            "climate_zone": str(r.get("climate_zone") or ""),
-            "timestamp_utc": r.get("timestamp_utc") or now_utc_str,
-        }
+        raw_lat = r.get("latitude")
+        raw_lon = r.get("longitude")
+        lat_val = float(raw_lat) if raw_lat is not None and str(raw_lat).strip() != "" else None
+        lon_val = float(raw_lon) if raw_lon is not None and str(raw_lon).strip() != "" else None
+        s_name = str(r.get("station_name") or sid)
+
+        elev_val = None
+        raw_elev = r.get("elevation_m")
+        if raw_elev is not None and str(raw_elev).strip() != "":
+            try:
+                elev_val = float(raw_elev)
+            except (ValueError, TypeError):
+                elev_val = None
+
+        stn_meta = None
+        if elev_val is None or lat_val is None or lon_val is None:
+            stn_meta = registry.get_station(sid, station_name=s_name, lat=lat_val, lon=lon_val)
+            if stn_meta:
+                if elev_val is None and stn_meta.elevation_m is not None and stn_meta.elevation_m > 0:
+                    elev_val = stn_meta.elevation_m
+                if lat_val is None:
+                    lat_val = stn_meta.latitude
+                if lon_val is None:
+                    lon_val = stn_meta.longitude
+
+        norm_r = dict(r)
+        norm_r["station_id"] = sid
+        norm_r["station_name"] = s_name
+        norm_r["latitude"] = lat_val if lat_val is not None else 20.0
+        norm_r["longitude"] = lon_val if lon_val is not None else 78.0
+        norm_r["elevation_m"] = elev_val
+        norm_r["temperature"] = float(t_val) if t_val is not None else None
+        norm_r["temperature_c"] = float(t_val) if t_val is not None else None
+        norm_r["pressure"] = float(p_val) if p_val is not None else None
+        norm_r["pressure_hpa"] = float(p_val) if p_val is not None else None
+        norm_r["humidity"] = float(rh_val) if rh_val is not None else None
+        norm_r["relative_humidity_pct"] = float(rh_val) if rh_val is not None else None
+        norm_r["state"] = str(r.get("state") or (stn_meta.state if stn_meta else ""))
+        norm_r["district"] = str(r.get("district") or (getattr(stn_meta, "district", "") if stn_meta else ""))
+        norm_r["climate_zone"] = str(r.get("climate_zone") or "")
+        norm_r["timestamp_utc"] = r.get("timestamp_utc") or now_utc_str
+        norm_r["_orig_reading"] = r
+
+        normalized_readings.append(norm_r)
+
+    active_incidents: List[Dict[str, Any]] = []
+    active_alerts: List[Dict[str, Any]] = []
+
+    for target_dict in normalized_readings:
+        sid = target_dict["station_id"]
+        r = target_dict["_orig_reading"]
 
         # Run real multi-stream ensemble detector (Neural TCN, MADIS consensus, physical bounds)
         ens_res = detector.detect(
             target=target_dict,
-            neighbors=valid_readings,
+            neighbors=normalized_readings,
             history_24h=[],
         )
 
@@ -81,33 +120,32 @@ def evaluate_active_network_incidents(
         r["spatial_residuals"] = ens_res.residuals
 
         if ens_res.decision == "SENSOR_FAULT":
-            rc = ens_res.root_cause.lower()
-            if "pressure" in rc or abs(ens_res.z_scores.get("pressure", 0.0)) >= 3.0:
-                aff_param = "pressure"
+            aff_param = ens_res.affected_parameter
+            obs_numeric = ens_res.affected_observed_value
+
+            # If no parameter was actually reported with an anomaly, do not generate a false incident
+            if not aff_param or obs_numeric is None:
+                continue
+
+            if aff_param == "pressure":
                 aff_name = "pressure"
-                obs_numeric = float(p_val) if p_val is not None else 1013.25
                 unit = "hPa"
-            elif "humid" in rc or abs(ens_res.z_scores.get("humidity", 0.0)) >= 3.0:
-                aff_param = "humidity"
+            elif aff_param == "humidity":
                 aff_name = "relative_humidity"
-                obs_numeric = float(rh_val) if rh_val is not None else 65.0
                 unit = "%"
             else:
-                aff_param = "temperature"
                 aff_name = "temperature"
-                obs_numeric = float(t_val) if t_val is not None else 25.0
                 unit = "°C"
 
-            exp_key = "temperature_c" if aff_param == "temperature" else "pressure_hpa" if aff_param == "pressure" else "relative_humidity_pct"
-            z_key = f"{aff_param}_z"
-
-            exp_numeric = ens_res.expected_values.get(exp_key, ens_res.expected_values.get(aff_param, obs_numeric))
-            if exp_numeric is not None:
-                exp_numeric = round(float(exp_numeric), 1)
-            else:
+            exp_numeric = ens_res.affected_expected_value
+            if exp_numeric is None:
                 exp_numeric = obs_numeric
 
-            res_numeric = round(obs_numeric - exp_numeric, 1)
+            res_numeric = ens_res.affected_residual
+            if res_numeric is None:
+                res_numeric = round(obs_numeric - exp_numeric, 1)
+
+            z_key = f"{aff_param}_z"
             z_spatial = round(abs(ens_res.z_scores.get(z_key, ens_res.z_scores.get(aff_param, 0.0))), 2)
             if z_spatial == 0.0 and abs(res_numeric) > 0.0:
                 z_spatial = round(min(8.0, abs(res_numeric) / 1.5), 2)
@@ -146,6 +184,7 @@ def evaluate_active_network_incidents(
                 "affected_sensors": [aff_name],
                 "observed_value": f"{obs_numeric} {unit}",
                 "observed_value_numeric": obs_numeric,
+                "unit": unit,
                 "expected_value": exp_numeric,
                 "residual": res_numeric,
                 "z_spatial": z_spatial,
