@@ -328,6 +328,8 @@ class DeepEnsembleDetector:
                 continue
             n_lat = float(n.get("latitude") or 20.0)
             n_lon = float(n.get("longitude") or 78.0)
+            if abs(target_lat - n_lat) > 2.8 or abs(target_lon - n_lon) > 3.2:
+                continue
             dist = haversine_distance_km(target_lat, target_lon, n_lat, n_lon)
             if dist > 300.0:
                 continue

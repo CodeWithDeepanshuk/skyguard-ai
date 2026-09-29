@@ -182,6 +182,8 @@ class MultiRadiusSpatialQcEngine:
 
             n_lat = float(n.get("latitude") or 20.0)
             n_lon = float(n.get("longitude") or 78.0)
+            if abs(lat_target - n_lat) > 1.0 or abs(lon_target - n_lon) > 1.2:
+                continue
             dist = float(n.get("distance_km") or haversine_km(lat_target, lon_target, n_lat, n_lon))
             if dist > TIER3_MAX_KM:
                 continue

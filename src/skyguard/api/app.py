@@ -489,18 +489,23 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                     age_m = max(0.0, round((now_utc - cycle_dt).total_seconds() / 60.0, 2))
 
                 # Dynamically calculate genuine active incidents and alerts across all reporting stations
-                try:
-                    from skyguard.quality.active_incidents import evaluate_active_network_incidents
-                    active_incidents, active_alerts = evaluate_active_network_incidents(
-                        cleaned, root, override_timestamp_utc=max_ts or cycle_iso
-                    )
-                    live.payload["incidents"] = active_incidents
-                    live.payload["alerts"] = active_alerts
-                    live.payload["model_alert_count"] = len(active_alerts)
-                    live.payload["quality_alert_count"] = len(active_alerts)
-                    live.payload["incident_shadow_active_count"] = len(active_incidents)
-                except Exception as eval_err:
-                    logger.warning("Active network incident dynamic calculation error in sync_live_from_store: %s", eval_err)
+                # Cache results for current observation timestamp cycle to avoid redundant re-evaluations
+                cached_incidents = live.payload.get("incidents")
+                last_eval_ts = getattr(live, "_last_eval_ts", None)
+                if not cached_incidents or last_eval_ts != (max_ts or cycle_iso):
+                    try:
+                        from skyguard.quality.active_incidents import evaluate_active_network_incidents
+                        active_incidents, active_alerts = evaluate_active_network_incidents(
+                            cleaned, root, override_timestamp_utc=max_ts or cycle_iso
+                        )
+                        live.payload["incidents"] = active_incidents
+                        live.payload["alerts"] = active_alerts
+                        live.payload["model_alert_count"] = len(active_alerts)
+                        live.payload["quality_alert_count"] = len(active_alerts)
+                        live.payload["incident_shadow_active_count"] = len(active_incidents)
+                        live._last_eval_ts = (max_ts or cycle_iso)
+                    except Exception as eval_err:
+                        logger.warning("Active network incident dynamic calculation error in sync_live_from_store: %s", eval_err)
 
                 live.payload["readings"] = cleaned
                 live.payload["latest"] = cleaned
