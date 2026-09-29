@@ -450,7 +450,7 @@ def create_v1_router(
 
     @router.get("/stations/{station_id}/qc")
     def get_station_quality_control(station_id: str) -> Dict[str, Any]:
-        """Run NOAA MADIS-grade spatial buddy check and 3-evidence anomaly analysis."""
+        """Run NOAA MADIS-grade spatial buddy check, concentric rings (<20km, <50km, <100km), and 3-evidence anomaly analysis."""
         station = registry.get_station(station_id)
         if not station:
             raise HTTPException(status_code=404, detail=f"Station '{station_id}' not found")
@@ -459,7 +459,30 @@ def create_v1_router(
         obs = manager.fetch_observation(station.station_id)
         ref = manager.fetch_reference(station.station_id)
 
-        # If direct physical observation is not in WIS2/METAR, use reference model baseline
+        # If direct physical observation is not in WIS2/METAR, check ObservationStore or reference model baseline
+        if not obs:
+            if observation_store:
+                try:
+                    latest_recs = observation_store.history(station.station_id, hours=24, limit=1)
+                    if latest_recs:
+                        r0 = latest_recs[-1]
+                        obs = ObservationRecord(
+                            provider=r0.get("provider", "IMD_AWS"),
+                            source_type="OBSERVED",
+                            station_id=station.station_id,
+                            canonical_station_id=station.station_id,
+                            timestamp_utc=r0.get("observation_timestamp_utc") or r0.get("timestamp_utc") or "",
+                            latitude=station.latitude,
+                            longitude=station.longitude,
+                            elevation_m=station.elevation_m,
+                            temperature_c=r0.get("temperature_c"),
+                            pressure_hpa=r0.get("pressure_hpa"),
+                            relative_humidity_pct=r0.get("relative_humidity_pct"),
+                            is_direct_observation=True,
+                        )
+                except Exception:
+                    pass
+
         if not obs:
             if ref:
                 obs = ref
@@ -470,17 +493,21 @@ def create_v1_router(
         history_pair = manager.fetch_history_triplet(station.station_id, hours=12)
         history = history_pair["observed"] or history_pair["reference_model"]
 
-        # Fetch neighbours
-        neighbors = graph.get_neighbors(station.station_id, k=5)
+        # Fetch up to 25 neighbours across concentric radii (<20km, <50km, <100km)
+        neighbors = graph.get_neighbors(station.station_id, k=25)
         neighbor_obs = []
         for nb in neighbors:
             nb_obs = manager.fetch_observation(nb["station_id"])
             if nb_obs:
                 neighbor_obs.append({
                     "station_id": nb["station_id"],
-                    "station_name": nb["station_name"],
+                    "station_name": nb.get("station_name") or nb["station_id"],
                     "distance_km": nb["distance_km"],
-                    "elevation_m": nb["elevation_m"],
+                    "elevation_m": nb.get("elevation_m") or 0.0,
+                    "latitude": nb.get("latitude") or 20.0,
+                    "longitude": nb.get("longitude") or 78.0,
+                    "state": nb.get("state") or "",
+                    "district": nb.get("district") or "",
                     "temperature_c": nb_obs.temperature_c,
                     "relative_humidity_pct": nb_obs.relative_humidity_pct,
                     "pressure_hpa": nb_obs.pressure_hpa,
@@ -495,10 +522,72 @@ def create_v1_router(
             reference_record=ref,
         )
 
+        analysis_dict = result.to_dict()
+
+        # Run Concentric Multi-Radius Spatial QC Engine (<20 km, <50 km, <100 km)
+        try:
+            from skyguard.spatial.spatial_qc import MultiRadiusSpatialQcEngine
+            spatial_engine = MultiRadiusSpatialQcEngine()
+            spatial_res = spatial_engine.evaluate(
+                target_station={
+                    "station_id": station.station_id,
+                    "station_name": station.station_name,
+                    "latitude": station.latitude,
+                    "longitude": station.longitude,
+                    "elevation_m": station.elevation_m,
+                    "state": station.state,
+                    "temperature_c": obs.temperature_c,
+                    "pressure_hpa": obs.pressure_hpa,
+                    "relative_humidity_pct": obs.relative_humidity_pct,
+                },
+                neighbors=neighbor_obs,
+            )
+            sp_dict = spatial_res.to_dict()
+            analysis_dict["tier1_20km"] = sp_dict["tier1_20km"]
+            analysis_dict["tier2_50km"] = sp_dict["tier2_50km"]
+            analysis_dict["tier3_100km"] = sp_dict["tier3_100km"]
+            analysis_dict["total_neighbors_evaluated"] = sp_dict["total_neighbors_evaluated"]
+            analysis_dict["synoptic_weather_detected"] = sp_dict["synoptic_weather_system_detected"]
+            analysis_dict["spatial_qc_decision"] = sp_dict["decision"]
+            analysis_dict["spatial_qc_explanation"] = sp_dict["explanation"]
+
+            # Guarantee evidence.temperature has genuine MADIS metrics
+            temp_ev = analysis_dict.setdefault("evidence", {}).setdefault("temperature", {})
+            if temp_ev.get("spatial_consensus") is None and sp_dict.get("consensus_temperature_c") is not None:
+                temp_ev["spatial_consensus"] = sp_dict["consensus_temperature_c"]
+                temp_ev["spatial_difference"] = sp_dict["consensus_residual_c"]
+                temp_ev["effective_sigma"] = sp_dict["effective_sigma_t"]
+                temp_ev["z_spatial"] = sp_dict["z_spatial_t"]
+                temp_ev["spatial_status"] = "DISCREPANT" if sp_dict["spatial_fault_suspected"] else "CONSISTENT"
+
+            # Populate buddy check details neighbors if needed
+            b_temp = analysis_dict.setdefault("buddy_check_details", {}).setdefault("temperature", {})
+            if not b_temp.get("neighbors"):
+                all_peers = (
+                    sp_dict["tier1_20km"]["peers"] +
+                    sp_dict["tier2_50km"]["peers"] +
+                    sp_dict["tier3_100km"]["peers"]
+                )
+                if all_peers:
+                    tot_weight = sum(1.0 / max(0.5, p["distance_km"]) for p in all_peers)
+                    b_temp["neighbors"] = [
+                        {
+                            "station_id": p["station_id"],
+                            "station_name": p["station_name"],
+                            "distance_km": p["distance_km"],
+                            "raw_value": p["raw_temp_c"],
+                            "adjusted_value": p["lapse_adjusted_temp_c"],
+                            "weight": round((1.0 / max(0.5, p["distance_km"])) / tot_weight, 4) if tot_weight > 0 else 0.1,
+                        }
+                        for p in all_peers
+                    ]
+        except Exception:
+            pass
+
         return {
             "station": station.to_dict(),
             "telemetry": obs.to_dict(),
-            "analysis": result.to_dict(),
+            "analysis": analysis_dict,
         }
 
     @router.get("/anomalies")

@@ -239,6 +239,9 @@ function parseReading(row) {
   try { parsed = { ...row, ...JSON.parse(row.payload_json || "{}") }; }
   catch { parsed = row; }
 
+  parsed.station_id = parsed.station_id || parsed.canonical_station_id || parsed.provider_station_id;
+  parsed.timestamp_utc = parsed.timestamp_utc || parsed.observation_timestamp_utc || parsed.timestamp;
+
   const t = parsed.temperature_c ?? parsed.temperature ?? parsed.temp;
   const p = parsed.pressure_hpa ?? parsed.pressure ?? parsed.press ?? parsed.altim;
   const rh = parsed.relative_humidity_pct ?? parsed.humidity ?? parsed.rh;
@@ -383,6 +386,12 @@ async function refreshOfficialLive(force = true) {
     renderLiveStatus(status);
     renderNetwork();
     renderReadings();
+    if (state.selectedStation) {
+      loadStationHistory(state.selectedStation, window.currentSensorTimeWindow || '24h');
+      if (typeof renderSelectedStationQc === 'function') {
+        renderSelectedStationQc(state.selectedStation);
+      }
+    }
     renderAlertQueue();
     renderKpis();
     renderFullAnomalies();
@@ -640,13 +649,19 @@ function renderNetwork() {
 
 async function loadStationHistory(stationId, range = '24h') {
   if (!stationId) return;
+  const hoursMap = { '1h': 1, '6h': 6, '24h': 24, '7d': 168 };
+  const hours = hoursMap[String(range).toLowerCase()] || 24;
+  window.currentSensorTimeWindow = range;
+
   const endpoint = state.mode === 'live'
-    ? `/api/v1/observations/history?station_id=${encodeURIComponent(stationId)}&range=${encodeURIComponent(range)}&limit=500`
-    : `/api/readings?station_id=${encodeURIComponent(stationId)}&limit=500`;
+    ? `/api/v1/observations/history?station_id=${encodeURIComponent(stationId)}&range=${encodeURIComponent(range)}&limit=1000`
+    : `/api/readings?station_id=${encodeURIComponent(stationId)}&limit=1000`;
   try {
     const res = await api(endpoint);
     let rows = [];
-    if (res && res.readings && Array.isArray(res.readings)) {
+    if (res && res.items && Array.isArray(res.items)) {
+      rows = res.items;
+    } else if (res && res.readings && Array.isArray(res.readings)) {
       rows = res.readings;
     } else if (Array.isArray(res)) {
       rows = res;
@@ -659,10 +674,11 @@ async function loadStationHistory(stationId, range = '24h') {
     }
   } catch (err) {
     try {
-      const fallbackEndpoint = `/api/live/readings?station_id=${encodeURIComponent(stationId)}&range=${encodeURIComponent(range)}&limit=500`;
+      const fallbackEndpoint = `/api/live/readings?station_id=${encodeURIComponent(stationId)}&range=${encodeURIComponent(range)}&limit=1000`;
       const fallbackRows = await api(fallbackEndpoint);
-      if (Array.isArray(fallbackRows) && fallbackRows.length) {
-        const parsed = fallbackRows.map(parseReading);
+      const rows = Array.isArray(fallbackRows) ? fallbackRows : fallbackRows?.readings || fallbackRows?.items || [];
+      if (rows.length) {
+        const parsed = rows.map(parseReading);
         state.readings = [...state.readings.filter(r => r.station_id !== stationId), ...parsed];
         renderNetwork();
         renderReadings();
@@ -670,6 +686,20 @@ async function loadStationHistory(stationId, range = '24h') {
     } catch (e) {
       console.warn("Could not load station history trace", e);
     }
+  }
+
+  // Also fetch and update synchronized 3-trace comparison (observed, reference model, neighbor consensus)
+  if (typeof fetch !== 'undefined') {
+    fetch(`/api/v1/stations/${encodeURIComponent(stationId)}/history?hours=${hours}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data && data.traces) {
+          currentStationTriplet = data.traces;
+          const stationRows = state.readings.filter(r => r.station_id === stationId);
+          drawSensorChart(stationRows, currentStationTriplet);
+        }
+      })
+      .catch(() => {});
   }
 }
 
@@ -894,8 +924,11 @@ let currentStationTriplet = null;
 function renderSelectedStationQc(stationId) {
   if (!stationId || typeof fetch === 'undefined') return;
 
-  // 1. Fetch 3-Trace synchronized history
-  fetch(`/api/v1/stations/${encodeURIComponent(stationId)}/history?hours=24`)
+  const hoursMap = { '1h': 1, '6h': 6, '24h': 24, '7d': 168 };
+  const h = hoursMap[String(window.currentSensorTimeWindow || '24h').toLowerCase()] || 24;
+
+  // 1. Fetch 3-Trace synchronized history for current window
+  fetch(`/api/v1/stations/${encodeURIComponent(stationId)}/history?hours=${h}`)
     .then(r => r.ok ? r.json() : null)
     .then(data => {
       if (data && data.traces) {
@@ -906,7 +939,7 @@ function renderSelectedStationQc(stationId) {
     })
     .catch(() => {});
 
-  // 2. Fetch NOAA MADIS Buddy Check & 3-Evidence QC
+  // 2. Fetch NOAA MADIS Buddy Check & 3-Evidence QC & Concentric Rings
   fetch(`/api/v1/stations/${encodeURIComponent(stationId)}/qc`)
     .then(r => r.ok ? r.json() : null)
     .then(data => {
@@ -915,23 +948,29 @@ function renderSelectedStationQc(stationId) {
       const ev = analysis.evidence?.temperature || {};
       const selectedRow = state.readings.filter(r => r.station_id === stationId).at(-1);
 
-      if ($('madis-observed')) $('madis-observed').textContent = ev.observed != null ? `${Number(ev.observed).toFixed(1)}°C` : '—';
-      if ($('madis-consensus')) $('madis-consensus').textContent = ev.spatial_consensus != null ? `${Number(ev.spatial_consensus).toFixed(1)}°C` : '—';
+      const obsVal = ev.observed ?? selectedRow?.temperature ?? selectedRow?.temperature_c;
+      const consVal = ev.spatial_consensus ?? analysis.consensus_temperature_c ?? analysis.spatial_consensus_temperature_c;
+      const diffVal = ev.spatial_difference ?? analysis.consensus_residual_c;
+      const sigmaVal = ev.effective_sigma ?? analysis.effective_sigma_t;
+      const zSpatialVal = ev.z_spatial ?? analysis.z_spatial_t;
+      const zTemporalVal = ev.z_temporal ?? 0.0;
+
+      if ($('madis-observed')) $('madis-observed').textContent = obsVal != null ? `${Number(obsVal).toFixed(1)}°C` : '—';
+      if ($('madis-consensus')) $('madis-consensus').textContent = consVal != null ? `${Number(consVal).toFixed(1)}°C` : '—';
       if ($('madis-diff')) {
-        const d = ev.spatial_difference;
-        $('madis-diff').textContent = d != null ? `${d >= 0 ? '+' : ''}${Number(d).toFixed(1)}°C` : '—';
+        $('madis-diff').textContent = diffVal != null ? `${diffVal >= 0 ? '+' : ''}${Number(diffVal).toFixed(1)}°C` : '—';
       }
-      if ($('madis-sigma')) $('madis-sigma').textContent = ev.effective_sigma != null ? `±${Number(ev.effective_sigma).toFixed(2)}` : '—';
-      if ($('madis-zspatial')) $('madis-zspatial').textContent = ev.z_spatial != null ? Number(ev.z_spatial).toFixed(2) : '—';
-      if ($('madis-ztemporal')) $('madis-ztemporal').textContent = ev.z_temporal != null ? Number(ev.z_temporal).toFixed(2) : '—';
+      if ($('madis-sigma')) $('madis-sigma').textContent = sigmaVal != null ? `±${Number(sigmaVal).toFixed(2)}` : '—';
+      if ($('madis-zspatial')) $('madis-zspatial').textContent = zSpatialVal != null ? Number(zSpatialVal).toFixed(2) : '—';
+      if ($('madis-ztemporal')) $('madis-ztemporal').textContent = zTemporalVal != null ? Number(zTemporalVal).toFixed(2) : '—';
 
       if ($('madis-status-pill')) {
-        const st = ev.spatial_status || 'CONSISTENT';
+        const st = ev.spatial_status || (analysis.spatial_qc_decision === 'SENSOR_FAULT' ? 'DISCREPANT' : 'CONSISTENT');
         $('madis-status-pill').textContent = st;
         $('madis-status-pill').className = `severity-pill ${st === 'DISCREPANT' ? 'critical' : st === 'SUSPECT' ? 'degraded' : 'healthy'}`;
       }
 
-      // Populate Concentric Multi-Radius Ring Metrics
+      // Populate Concentric Multi-Radius Ring Metrics (<20km, <50km, <100km)
       const t1 = analysis.tier1_20km || selectedRow?.tier1_20km;
       const t2 = analysis.tier2_50km || selectedRow?.tier2_50km;
       const t3 = analysis.tier3_100km || selectedRow?.tier3_100km;
@@ -966,19 +1005,37 @@ function renderSelectedStationQc(stationId) {
         $("synoptic-weather-flag").textContent = isFront ? "Front Detection: Active Weather System" : "Front Detection: Network Stable";
       }
 
-      // Populate contributing neighbours table
+      // Populate contributing neighbours table with distance-weighted robust values
       const listHost = $('madis-neighbors-list');
       const details = analysis.buddy_check_details?.temperature;
-      if (listHost && details && details.neighbors && details.neighbors.length) {
+      let neighborList = (details && details.neighbors && details.neighbors.length) ? details.neighbors : [];
+      if (!neighborList.length) {
+        const peers = [
+          ...(t1?.peers || []),
+          ...(t2?.peers || []),
+          ...(t3?.peers || []),
+        ];
+        if (peers.length) {
+          const totW = peers.reduce((sum, p) => sum + (1.0 / Math.max(0.5, p.distance_km || 1.0)), 0);
+          neighborList = peers.map(p => ({
+            station_name: p.station_name || p.station_id,
+            distance_km: p.distance_km,
+            raw_value: p.raw_temp_c,
+            adjusted_value: p.lapse_adjusted_temp_c,
+            weight: totW > 0 ? (1.0 / Math.max(0.5, p.distance_km || 1.0)) / totW : 0.1
+          }));
+        }
+      }
+      if (listHost && neighborList.length) {
         let html = '<div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:8px; font-weight:600; color:#64748B; border-bottom:1px solid #F1F5F9; padding-bottom:4px; font-size:11px;">';
         html += '<span>Station</span><span>Distance</span><span>Raw</span><span>Lapse-Adjusted</span><span>Weight</span></div>';
-        details.neighbors.forEach(n => {
+        neighborList.forEach(n => {
           html += `<div style="display:grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap:8px; padding:4px 0; border-bottom:1px solid #F8FAFC; font-size:11px;">
             <strong>${n.station_name}</strong>
             <span>${n.distance_km} km</span>
-            <span>${n.raw_value}°C</span>
-            <span style="color:#0D9488; font-weight:600;">${n.adjusted_value}°C</span>
-            <span style="color:#64748B;">${(n.weight * 100).toFixed(1)}%</span>
+            <span>${n.raw_value != null ? n.raw_value + '°C' : '—'}</span>
+            <span style="color:#0D9488; font-weight:600;">${n.adjusted_value != null ? n.adjusted_value + '°C' : '—'}</span>
+            <span style="color:#64748B;">${n.weight != null ? (n.weight * 100).toFixed(1) + '%' : '—'}</span>
           </div>`;
         });
         listHost.innerHTML = html;

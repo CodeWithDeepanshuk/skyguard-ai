@@ -85,6 +85,37 @@ class WeatherProviderManager:
 
     def fetch_observation(self, station_id: str) -> Optional[ObservationRecord]:
         """Fetch the highest-priority genuine direct physical observation."""
+        # 0. Check live ingested observations snapshot
+        live_p = self.root / "data" / "live" / "latest.json"
+        if live_p.exists():
+            try:
+                import json
+                data = json.loads(live_p.read_text(encoding="utf-8"))
+                readings = data.get("readings") or data.get("latest") or []
+                for r in readings:
+                    sid = r.get("station_id") or r.get("canonical_station_id")
+                    if sid == station_id and (r.get("temperature_c") is not None or r.get("temperature") is not None):
+                        t = r.get("temperature_c") if r.get("temperature_c") is not None else r.get("temperature")
+                        p = r.get("pressure_hpa") if r.get("pressure_hpa") is not None else r.get("pressure")
+                        rh = r.get("relative_humidity_pct") if r.get("relative_humidity_pct") is not None else r.get("humidity")
+                        lat, lon = self.get_station_coords(station_id)
+                        return ObservationRecord(
+                            provider=r.get("provider", "IMD_AWS"),
+                            source_type=SourceType.OBSERVED.value,
+                            station_id=station_id,
+                            canonical_station_id=station_id,
+                            timestamp_utc=r.get("timestamp_utc") or r.get("observation_timestamp_utc") or "",
+                            latitude=lat or r.get("latitude"),
+                            longitude=lon or r.get("longitude"),
+                            elevation_m=r.get("elevation_m"),
+                            temperature_c=float(t) if t is not None else None,
+                            pressure_hpa=float(p) if p is not None else None,
+                            relative_humidity_pct=float(rh) if rh is not None else None,
+                            is_direct_observation=True,
+                        )
+            except Exception:
+                pass
+
         # 1. Check the credentialed IMD AWS/ARG API.
         rec = self.imd_api.fetch_current(station_id)
         if rec and rec.temperature_c is not None:
@@ -120,10 +151,38 @@ class WeatherProviderManager:
         """Fetch synchronous history traces: observed and independent reference model."""
         lat, lon = self.get_station_coords(station_id)
 
-        # 1. Observed history
+        # 0. Check durable ObservationStore for genuine live telemetry history
         observed_list: List[ObservationRecord] = []
-        # Try WIS2
-        observed_list = self.wis2.fetch_history(station_id, hours=hours)
+        try:
+            from skyguard.storage.observations import ObservationStore
+            store = ObservationStore(root=self.root)
+            hist = store.paginated_history(station_id, hours=hours, limit=1000, relative_to_latest=True)
+            items = hist.get("items") or []
+            if items:
+                observed_list = [
+                    ObservationRecord(
+                        provider=h.get("provider", "IMD_AWS"),
+                        source_type=SourceType.OBSERVED.value,
+                        station_id=station_id,
+                        canonical_station_id=station_id,
+                        timestamp_utc=h.get("observation_timestamp_utc") or h.get("timestamp_utc") or "",
+                        latitude=lat,
+                        longitude=lon,
+                        elevation_m=h.get("elevation_m"),
+                        temperature_c=float(h["temperature_c"]) if h.get("temperature_c") is not None else None,
+                        pressure_hpa=float(h["pressure_hpa"]) if h.get("pressure_hpa") is not None else None,
+                        relative_humidity_pct=float(h["relative_humidity_pct"]) if h.get("relative_humidity_pct") is not None else None,
+                        is_direct_observation=True,
+                    )
+                    for h in items
+                    if h.get("temperature_c") is not None or h.get("pressure_hpa") is not None or h.get("relative_humidity_pct") is not None
+                ]
+        except Exception:
+            pass
+
+        # If empty, try WIS2
+        if not observed_list:
+            observed_list = self.wis2.fetch_history(station_id, hours=hours)
         # If empty, try METAR
         if not observed_list:
             observed_list = self.metar.fetch_history(station_id, hours=hours)

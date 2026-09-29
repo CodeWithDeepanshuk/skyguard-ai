@@ -212,6 +212,12 @@ class ObservationStore:
         for key in ("is_direct_observation", "is_interpolated", "is_model_field"):
             if key in output:
                 output[key] = bool(output[key])
+        if "canonical_station_id" in output and "station_id" not in output:
+            output["station_id"] = output["canonical_station_id"]
+        elif "provider_station_id" in output and "station_id" not in output:
+            output["station_id"] = output["provider_station_id"]
+        if "observation_timestamp_utc" in output and "timestamp_utc" not in output:
+            output["timestamp_utc"] = output["observation_timestamp_utc"]
         return output
 
     def latest_observations(self, *, limit: int = 2000, provider: Optional[str] = None) -> list[dict[str, Any]]:

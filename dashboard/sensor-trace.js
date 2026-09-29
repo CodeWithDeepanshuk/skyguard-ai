@@ -27,7 +27,8 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
     return node;
   };
 
-  const rawValidRows = (rows || []).filter(r => Number.isFinite(Date.parse(r.timestamp_utc)));
+  const getTs = r => (r && (r.timestamp_utc || r.observation_timestamp_utc || r.timestamp)) || '';
+  const rawValidRows = (rows || []).map(r => ({ ...r, timestamp_utc: getTs(r) })).filter(r => Number.isFinite(Date.parse(r.timestamp_utc)));
 
   // Time window filter
   const windowMillis = {
@@ -36,6 +37,13 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
     '24h': 24 * 3600000,
     '7d': 7 * 24 * 3600000,
   }[activeWindow] || (24 * 3600000);
+
+  const maxGapThreshold = {
+    '1h': 90 * 60 * 1000,
+    '6h': 3 * 3600 * 1000,
+    '24h': 6 * 3600 * 1000,
+    '7d': 24 * 3600 * 1000,
+  }[activeWindow] || (6 * 3600 * 1000);
 
   let maxTime = rawValidRows.length ? Math.max(...rawValidRows.map(r => Date.parse(r.timestamp_utc))) : Date.now();
   const minTimeCutoff = maxTime - windowMillis;
@@ -344,8 +352,8 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
         const val = valueGetter(r);
         const t = Date.parse(r.timestamp_utc);
         if (!numeric(val) || !Number.isFinite(t)) { pen = false; return; }
-        // Break line across missing telemetry gaps (> 45 minutes)
-        if (lastT !== null && (t - lastT) > 45 * 60 * 1000) {
+        // Break line across missing telemetry gaps based on window span
+        if (lastT !== null && (t - lastT) > maxGapThreshold) {
           pen = false;
         }
         lastT = t;
@@ -424,8 +432,8 @@ window.renderSensorTrace = (rows, activeParameter = 'all', tripletTraces = null,
       const t = Date.parse(r.timestamp_utc);
       if (!numeric(val) || !Number.isFinite(t)) { pen = false; return; }
 
-      // Gap detection: break path line across gaps (> 45 min for a 15-min feed)
-      if (lastObsTime !== null && (t - lastObsTime) > 45 * 60 * 1000) {
+      // Gap detection: break path line across gaps based on window span
+      if (lastObsTime !== null && (t - lastObsTime) > maxGapThreshold) {
         pen = false;
       }
       lastObsTime = t;
