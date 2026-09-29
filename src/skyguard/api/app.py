@@ -488,13 +488,19 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                     max_ts = cycle_iso
                     age_m = max(0.0, round((now_utc - cycle_dt).total_seconds() / 60.0, 2))
 
-                if live.payload.get("incidents"):
-                    for inc in live.payload["incidents"]:
-                        inc["timestamp_utc"] = cycle_iso
-                        inc["detected_timestamp_utc"] = cycle_iso
-                if live.payload.get("alerts"):
-                    for alt in live.payload["alerts"]:
-                        alt["timestamp_utc"] = cycle_iso
+                # Dynamically calculate genuine active incidents and alerts across all reporting stations
+                try:
+                    from skyguard.quality.active_incidents import evaluate_active_network_incidents
+                    active_incidents, active_alerts = evaluate_active_network_incidents(
+                        cleaned, root, override_timestamp_utc=max_ts or cycle_iso
+                    )
+                    live.payload["incidents"] = active_incidents
+                    live.payload["alerts"] = active_alerts
+                    live.payload["model_alert_count"] = len(active_alerts)
+                    live.payload["quality_alert_count"] = len(active_alerts)
+                    live.payload["incident_shadow_active_count"] = len(active_incidents)
+                except Exception as eval_err:
+                    logger.warning("Active network incident dynamic calculation error in sync_live_from_store: %s", eval_err)
 
                 live.payload["readings"] = cleaned
                 live.payload["latest"] = cleaned
@@ -505,6 +511,12 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 live.payload["observation_count"] = len(cleaned)
                 live.payload["reporting_stations"] = len(cleaned)
                 live.payload["fetched_at_utc"] = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
+
+                if hasattr(live, "cache_path") and live.cache_path:
+                    try:
+                        live.cache_path.write_text(json.dumps(live.payload, default=str), encoding="utf-8")
+                    except Exception as cache_err:
+                        logger.debug("Live cache write note in sync_live_from_store: %s", cache_err)
 
                 # Continuously archive 15-minute readings for 30-day neural retraining
                 try:

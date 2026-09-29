@@ -85,7 +85,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         station_pressure_min_hpa=880.0,
         station_pressure_max_hpa=1028.0,
         humidity_min_pct=8.0,
-        humidity_max_pct=98.0,
+        humidity_max_pct=100.0,
         description="Central inland plateau (Madhya Pradesh, Chhattisgarh, Vidarbha)",
     ),
     "Deccan Plateau": RegionalBounds(
@@ -97,7 +97,7 @@ INDIAN_CLIMATE_BOUNDS: Dict[str, RegionalBounds] = {
         station_pressure_min_hpa=860.0,  # Elevated plateau (Bangalore ~920m ASL, ~910 hPa)
         station_pressure_max_hpa=1026.0,
         humidity_min_pct=10.0,
-        humidity_max_pct=98.0,
+        humidity_max_pct=100.0,
         description="Peninsular interior plateau (Karnataka, Telangana, Rayalaseema)",
     ),
     "Coastal Plains": RegionalBounds(
@@ -170,13 +170,13 @@ def is_coastal_location(lat: float, lon: float, state: str = "", district: str =
         return True
 
     # Coordinate boundaries for Indian coastline within ~40 km of sea
-    # West Coast (Arabian Sea)
-    if 8.0 <= lat <= 20.5 and 72.0 <= lon <= 74.0:
+    # West Coast (Arabian Sea & Kerala)
+    if 8.0 <= lat <= 20.5 and 72.0 <= lon <= 77.5:
         return True
     if 20.5 <= lat <= 23.5 and 68.5 <= lon <= 73.0:  # Gujarat coast
         return True
-    # East Coast (Bay of Bengal)
-    if 8.0 <= lat <= 14.0 and 78.5 <= lon <= 80.5:   # Tamil Nadu coast
+    # East Coast (Bay of Bengal & Tamil Nadu)
+    if 8.0 <= lat <= 14.0 and 77.0 <= lon <= 80.5:   # Tamil Nadu & southern tip
         return True
     if 14.0 <= lat <= 19.5 and 80.0 <= lon <= 85.5:  # Andhra coast
         return True
@@ -226,7 +226,7 @@ def classify_indian_region(
         return INDIAN_CLIMATE_BOUNDS["Indo-Gangetic Plains"]
 
     # 8. Deccan Plateau (Peninsular South Interior)
-    if (12.0 <= lat < 20.0 and 74.0 <= lon <= 80.0) or any(s in st_clean for s in ["karnataka", "telangana", "rayalaseema"]):
+    if (8.0 <= lat < 21.0 and 74.0 <= lon <= 80.5) or any(s in st_clean for s in ["karnataka", "telangana", "rayalaseema", "andhra", "tamil nadu", "tamilnadu", "kerala"]):
         return INDIAN_CLIMATE_BOUNDS["Deccan Plateau"]
 
     # 9. Central Plateau

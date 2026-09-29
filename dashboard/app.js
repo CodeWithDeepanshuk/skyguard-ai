@@ -1966,7 +1966,7 @@ function renderGroupedIncidents() {
             <div class="incident-card-footer">
               <div class="incident-meta-text">
                 <span>📊 ${inc.readings_count || 1} observations grouped</span>
-                <span>⏱️ Latest: ${formatTime(inc.latest_time_utc || inc.start_time_utc)} IST</span>
+                <span>⏱️ Latest: ${formatTime(inc.latest_time_utc || inc.start_time_utc || inc.timestamp_utc || inc.detected_timestamp_utc)} IST</span>
               </div>
               <div class="incident-button-group">
                 <button class="incident-action-btn primary" onclick="SkyGuardApp.openAlertDrawerById('${esc(inc.incident_id)}')" type="button">Inspect Triad ➔</button>

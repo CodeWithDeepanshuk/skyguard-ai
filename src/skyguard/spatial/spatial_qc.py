@@ -302,8 +302,14 @@ class MultiRadiusSpatialQcEngine:
         # Condition C: Tier 3 (<100km) peers exist and mean delta > 5.0°C
         t3_violation = t3_summary.peer_count >= 3 and t3_summary.tolerance_exceeded
 
+        # NOAA MADIS standard: A spatial buddy check fault requires statistically significant
+        # consensus deviation (|z_spatial| >= 3.0σ AND |consensus_res| >= 3.5°C), corroborated by concentric tier violations
         spatial_fault_suspected = False
-        if (t1_violation or (t2_violation and t3_violation) or (t3_violation and abs(z_spatial) >= 3.5)):
+        if abs(z_spatial) >= 3.0 and abs(consensus_res or 0.0) >= 3.5:
+            if t1_violation or (t2_violation and t3_violation) or (t3_violation and abs(z_spatial) >= 3.5):
+                spatial_fault_suspected = True
+        elif t1_summary.peer_count >= 1 and t1_summary.max_delta_c >= 6.0 and abs(z_spatial) >= 2.5:
+            # Extreme local discrepancy (>6°C within 20km)
             spatial_fault_suspected = True
 
         t_disp = f"{t_target:.1f}°C" if t_target is not None else "N/A"
@@ -330,7 +336,7 @@ class MultiRadiusSpatialQcEngine:
                 if t1_summary.peer_count > 0:
                     peers_desc.append(f"<20km: max Δ={t1_summary.max_delta_c}°C (tol {t1_summary.tolerance_c}°C)")
                 if t2_summary.peer_count > 0:
-                    peers_desc.append(f"<50km: mean Δ={t1_summary.mean_abs_delta_c}°C (tol {t2_summary.tolerance_c}°C)")
+                    peers_desc.append(f"<50km: mean Δ={t2_summary.mean_abs_delta_c}°C (tol {t2_summary.tolerance_c}°C)")
                 if t3_summary.peer_count > 0:
                     peers_desc.append(f"<100km: mean Δ={t3_summary.mean_abs_delta_c}°C (tol {t3_summary.tolerance_c}°C)")
 

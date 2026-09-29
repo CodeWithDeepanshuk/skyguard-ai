@@ -1354,15 +1354,16 @@ def create_v1_router(
 
                 merged_readings = list(existing_dict.values())
 
-                existing_incidents = {str(i.get("station_id")): i for i in live_obj.payload.get("incidents", [])}
-                for inc in new_incidents:
-                    existing_incidents[str(inc["station_id"])] = inc
-                merged_incidents = list(existing_incidents.values())
-
-                existing_alerts = {str(a.get("alert_id")): a for a in live_obj.payload.get("alerts", [])}
-                for al in new_alerts:
-                    existing_alerts[str(al["alert_id"])] = al
-                merged_alerts = list(existing_alerts.values())
+                # Dynamically calculate genuine active incidents and alerts across all reporting stations
+                try:
+                    from skyguard.quality.active_incidents import evaluate_active_network_incidents
+                    merged_incidents, merged_alerts = evaluate_active_network_incidents(
+                        merged_readings, root, override_timestamp_utc=latest_obs_str
+                    )
+                except Exception as eval_err:
+                    logger.warning("Active network incident dynamic calculation error: %s", eval_err)
+                    merged_incidents = live_obj.payload.get("incidents", [])
+                    merged_alerts = live_obj.payload.get("alerts", [])
 
                 total_catalog = int(live_obj.payload.get("total_network_stations") or 1153)
                 reporting_stations = sum(

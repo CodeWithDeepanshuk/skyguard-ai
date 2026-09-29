@@ -80,9 +80,9 @@ export interface LiveIncidentItem {
   evidence?: Array<{ sensor: string; signal: string; score: number }>;
 }
 
-let cachedLocalLive: { readings: Map<string, any>; rawList: any[]; fetchedAt: number } | null = null;
+let cachedLocalLive: { readings: Map<string, any>; rawList: any[]; incidentsList: any[]; fetchedAt: number } | null = null;
 
-function readLocalLatestJson(): { readings: Map<string, any>; rawList: any[] } {
+function readLocalLatestJson(): { readings: Map<string, any>; rawList: any[]; incidentsList: any[] } {
   const now = Date.now();
   if (cachedLocalLive && now - cachedLocalLive.fetchedAt < 30_000) {
     return cachedLocalLive;
@@ -90,10 +90,14 @@ function readLocalLatestJson(): { readings: Map<string, any>; rawList: any[] } {
   const file = path.join(process.cwd(), 'data', 'live', 'latest.json');
   const map = new Map<string, any>();
   const rawList: any[] = [];
+  let incidentsList: any[] = [];
   if (fs.existsSync(file)) {
     try {
       const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
       const readings = Array.isArray(parsed.stations) ? parsed.stations : Array.isArray(parsed.readings) ? parsed.readings : [];
+      if (Array.isArray(parsed.incidents)) {
+        incidentsList = parsed.incidents;
+      }
       for (const r of readings) {
         if (r.station_id) {
           rawList.push(r);
@@ -108,7 +112,7 @@ function readLocalLatestJson(): { readings: Map<string, any>; rawList: any[] } {
       // Fallback cleanly
     }
   }
-  cachedLocalLive = { readings: map, rawList, fetchedAt: now };
+  cachedLocalLive = { readings: map, rawList, incidentsList, fetchedAt: now };
   return cachedLocalLive;
 }
 
@@ -327,11 +331,55 @@ export async function getOperationalIncidents(limit = 100): Promise<LiveIncident
   const incidents: LiveIncidentItem[] = [];
   const seenIds = new Set<string>();
 
-  // 1. Primary: Extract genuine ML evaluated sensor faults from 1,008 AWS network
+  // 1. Primary: Extract genuine ML evaluated sensor incidents from parsed.incidents in latest.json
   const local = readLocalLatestJson();
   const catalog = readStationCatalog();
   const catalogMap = new Map(catalog.map((c) => [c.station_id, c]));
 
+  if (local.incidentsList && local.incidentsList.length > 0) {
+    for (const inc of local.incidentsList) {
+      if (incidents.length >= limit) break;
+      if (seenIds.has(inc.station_id)) continue;
+      seenIds.add(inc.station_id);
+
+      const meta = catalogMap.get(inc.station_id) || {};
+      const param = inc.affected_parameter || inc.sensor || 'temperature';
+      const obsNum = typeof inc.observed_value_numeric === 'number' ? inc.observed_value_numeric : Number(inc.observed_value);
+      const expNum = typeof inc.expected_value === 'number' ? inc.expected_value : Number(inc.expected_value);
+      const resNum = typeof inc.residual === 'number' ? inc.residual : Number(inc.residual);
+      const unit = param === 'pressure' ? 'hPa' : (param === 'humidity' || param === 'relative_humidity') ? '%' : '°C';
+
+      incidents.push({
+        incident_id: inc.incident_id || `INC-${inc.station_id}`,
+        station_id: inc.station_id,
+        station_name: inc.station_name || meta.station_name || inc.station_id,
+        latitude: Number(inc.latitude || meta.latitude || 20.0),
+        longitude: Number(inc.longitude || meta.longitude || 78.0),
+        fault_class: inc.fault_class || inc.root_cause || 'Sensor Fault',
+        root_cause: inc.root_cause,
+        fault_probability: typeof inc.anomaly_score === 'number' ? inc.anomaly_score : 0.95,
+        severity: String(inc.severity || 'HIGH').toUpperCase(),
+        confidence: typeof inc.confidence === 'number' ? inc.confidence : 0.95,
+        anomaly_score: typeof inc.anomaly_score === 'number' ? inc.anomaly_score : 0.95,
+        status: inc.active ? 'CONFIRMED' : 'DETECTED',
+        detected_timestamp_utc: inc.timestamp_utc || inc.detected_timestamp_utc || new Date().toISOString(),
+        duration_minutes: inc.duration_minutes || 15,
+        affected_parameter: param,
+        affected_sensors: Array.isArray(inc.affected_sensors) ? inc.affected_sensors : [param],
+        explanation: inc.explanation || 'Anomaly detected with spatial neighbor consensus veto.',
+        source_provenance: 'Official IMD AWS Telemetry (Deep Ensemble)',
+        model_version: 'SkyGuard-I12-Neural-Engine (PyTorch CausalTCN + Deep Ensemble)',
+        observed_value: inc.observed_value || (Number.isFinite(obsNum) ? `${obsNum.toFixed(1)} ${unit}` : undefined),
+        expected_value: Number.isFinite(expNum) ? `${expNum.toFixed(1)} ${unit}` : undefined,
+        residual: Number.isFinite(resNum) ? `${resNum > 0 ? '+' : ''}${resNum.toFixed(1)} ${unit}` : undefined,
+        evidence: Array.isArray(inc.neighbor_evidence) && inc.neighbor_evidence.length > 0
+          ? inc.neighbor_evidence.map((p: any) => ({ sensor: param, signal: 'spatial_peer_residual', score: Math.abs(Number(p.residual || 0)) }))
+          : [{ sensor: param, signal: 'spatial_peer_residual', score: Math.abs(Number(inc.z_spatial || 3.0)) }],
+      });
+    }
+  }
+
+  // Fallback: If no incidentsList, extract from raw readings
   for (const r of local.rawList) {
     if (incidents.length >= limit) break;
     if (seenIds.has(r.station_id)) continue;

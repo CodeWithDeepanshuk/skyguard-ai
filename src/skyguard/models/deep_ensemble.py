@@ -545,9 +545,9 @@ class DeepEnsembleDetector:
 
         # 1. Deterministic Regional Physical Possibility Limits across India
         is_mslp = (
-            str(target_station.get("pressure_source") or "").lower() == "slp"
-            or str(target_station.get("pressure_type") or "").lower() in ("slp", "mslp")
-            or (has_p and float(p_raw) > 960.0 and elev_target > 350.0)
+            str(target_station.get("pressure_source") or "").lower() in ("slp", "mslp", "imd_aws_direct_mslp")
+            or str(target_station.get("pressure_type") or "").lower() in ("slp", "mslp", "mean_sea_level_pressure")
+            or (has_p and float(p_raw) > 995.0 and elev_target > 350.0)
         )
         phys_valid, phys_param, phys_reason = check_regional_physical_bounds(
             temperature_c=float(t_raw) if has_t else None,
