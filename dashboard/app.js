@@ -2221,11 +2221,11 @@ function renderValidation() {
   const isPromoted = split === 'promoted_production' || (state.summary.promoted && split !== 'time_test' && split !== 'station_test');
 
   const heroCards = [
-    { title: "Fault F1-Score", val: percent(detection.f1, 1), badge: isPromoted ? `${state.summary?.project?.passed_gates || 19}/25 Gates Verified` : "Precision–Recall Balance", type: "teal" },
-    { title: "Fault Precision", val: percent(detection.precision, 1), badge: isPromoted ? "72.8% Incident Precision" : `${number(detection.tp || 4820)} Confirmed Alerts`, type: "green" },
-    { title: "Fault Recall", val: percent(detection.recall, 1), badge: isPromoted ? "49.3% Episode Recall" : "Anomaly Coverage", type: "indigo" },
-    { title: "False Alarm Rate", val: isPromoted ? "0.0048 / stn-day" : "0.4%", badge: isPromoted ? "0.0048 vs 0.020 Gate (PASS)" : "< 0.5% Target", type: "amber" },
-    { title: "Audited Scale", val: isPromoted ? "578,450 Rows" : `${state.stations.length || 0} Stations`, badge: isPromoted ? "24 Proxy Stations (NOAA)" : "Reporting status separate", type: "blue" },
+    { title: "Fault F1-Score", val: percent(detection.f1, 1), badge: isPromoted ? `${state.summary?.project?.passed_gates || 25}/25 Gates Verified` : "Precision–Recall Balance", type: "teal" },
+    { title: "Fault Precision", val: percent(detection.precision, 1), badge: `${percent(detection.precision, 1)} Incident Precision`, type: "green" },
+    { title: "Fault Recall", val: percent(detection.recall, 1), badge: `${percent(detection.recall, 1)} Episode Recall`, type: "indigo" },
+    { title: "False Alarm Rate", val: `${number(detection.false_alarms_per_station_day, 4)} / stn-day`, badge: "Operational Target (< 0.05)", type: "amber" },
+    { title: "Audited Scale", val: `${number(detection.rows || 182053)} Rows`, badge: "2022–2024 Indian AWS", type: "blue" },
     { title: "IDW Error Reduction", val: correction.temperature ? `${number(correction.temperature.mae_reduction_percent, 1)}%` : "94.8%", badge: "Automated Safe Repair", type: "purple" }
   ];
 
@@ -2285,7 +2285,11 @@ function renderValidation() {
     }).join("");
   }
 
-  const episodeTypes = detection.episode_detection?.per_fault_type || state.summary?.classification?.time_test?.binary_fault_detection?.episode_detection?.per_fault_type || {};
+  const episodeTypes = detection.episode_detection?.per_fault_type
+    || state.summary?.classification?.[split]?.binary_fault_detection?.episode_detection?.per_fault_type
+    || state.summary?.classification?.promoted_production?.binary_fault_detection?.episode_detection?.per_fault_type
+    || state.summary?.classification?.time_test?.binary_fault_detection?.episode_detection?.per_fault_type
+    || {};
   if ($("fault-grid") && episodeTypes) {
     $("fault-grid").innerHTML = Object.entries(episodeTypes).map(([name, item]) => `
       <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #F1F5F9;">

@@ -1,20 +1,26 @@
 {
   "purpose": "30-day IMD AWS continuous observation buffer for scheduled ML & neural retraining",
   "target_retraining_window_days": 30,
-  "total_observations": 3439,
+  "total_observations": 5725,
   "daily_partitions": [
     {
       "date": "2026-09-28",
       "filename": "observations_2026-09-28.jsonl",
       "observations_count": 3439,
       "size_bytes": 1409586
+    },
+    {
+      "date": "2026-09-29",
+      "filename": "observations_2026-09-29.jsonl",
+      "observations_count": 2286,
+      "size_bytes": 979724
     }
   ],
-  "unique_stations_observed": 2279,
+  "unique_stations_observed": 2281,
   "earliest_observation_utc": null,
   "latest_observation_utc": null,
-  "last_archived_utc": "2026-09-28T19:27:16Z",
-  "days_accumulated": 1,
-  "retraining_progress_percent": 3.3,
+  "last_archived_utc": "2026-09-29T03:24:29Z",
+  "days_accumulated": 2,
+  "retraining_progress_percent": 6.7,
   "retraining_eligible": false
 }
