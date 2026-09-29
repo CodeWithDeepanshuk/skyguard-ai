@@ -10,6 +10,8 @@ data/raw_imd/
 data/processed_imd/
 data/imd_authorized/
 data/archive/pre_imd_api_*/
+data/archive/imd_aws_continuous/*
+!data/archive/imd_aws_continuous/.gitkeep
 data/benchmark_injected/
 data/derived_features/
 models/iteration13/
