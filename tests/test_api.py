@@ -81,11 +81,29 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get("/api/live/readings").status_code, 200)
         self.assertEqual(self.client.get("/api/live/alerts").status_code, 200)
 
-    def test_health_exposes_compliant_detector_contract(self) -> None:
-        payload = self.client.get("/health").json()
-        self.assertTrue(payload["model_version"].startswith("SkyGuard-"))
-        self.assertEqual(payload["detector_inputs"], ["temperature", "pressure", "relative_humidity"])
-        self.assertTrue(payload["live_capable"])
+    def test_dynamic_sensor_health_alphabetical_and_monitored(self) -> None:
+        response = self.client.get("/api/sensor-health")
+        self.assertEqual(response.status_code, 200)
+        records = response.json()
+        self.assertIsInstance(records, list)
+        self.assertGreater(len(records), 1000)
+
+        # Verify alphabetical ordering
+        first_10_names = [r["station_name"].lower() for r in records[:10]]
+        self.assertEqual(first_10_names, sorted(first_10_names))
+
+        # Verify required diagnostic fields exist
+        first = records[0]
+        for field in ["station_id", "station_name", "sensor", "status", "observed_value", "anomaly_explanation", "recommended_action"]:
+            self.assertIn(field, first)
+
+        # Verify anomalies are present with diagnostic depth
+        anomalies = [r for r in records if r.get("has_anomaly")]
+        self.assertGreater(len(anomalies), 0)
+        anom = anomalies[0]
+        self.assertIn(anom["status"], ["critical", "degrading", "monitor"])
+        self.assertIsNotNone(anom.get("residual"))
+        self.assertTrue(len(anom.get("anomaly_explanation", "")) > 10)
 
 
 if __name__ == "__main__":

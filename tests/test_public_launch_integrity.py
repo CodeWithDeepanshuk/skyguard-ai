@@ -72,6 +72,7 @@ def test_public_mode_disallows_shared_mutations_and_never_falls_back_to_history(
 def test_public_live_status_bootstraps_observed_feed_after_cold_restart():
     with patch.dict('os.environ', {"SKYGUARD_PUBLIC_MODE": "true"}):
         app = create_app(ROOT, ":memory:")
+    app.state.observation_store = None
     app.state.live.payload = {
         "status": "not_fetched", "mode": "live", "readings": [],
         "alerts": [], "quality_alerts": [], "incidents": [],

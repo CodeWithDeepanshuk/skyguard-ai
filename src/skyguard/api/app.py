@@ -429,10 +429,11 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         )
 
     def sync_live_from_store() -> bool:
-        if not observation_store:
+        store = getattr(app.state, "observation_store", None)
+        if not store:
             return False
         try:
-            latest_db_rows = observation_store.latest_observations(limit=2500)
+            latest_db_rows = store.latest_observations(limit=2500)
             if not latest_db_rows:
                 return False
             cleaned = []
@@ -513,6 +514,8 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
                 live.payload["source_age_minutes"] = age_m
                 live.payload["is_cached"] = False
                 live.payload["status"] = "live"
+                live.payload["provider"] = "India Meteorological Department AWS Portal"
+                live.payload["presentation_contract"] = LIVE_PRESENTATION_CONTRACT
                 live.payload["observation_count"] = len(cleaned)
                 live.payload["reporting_stations"] = len(cleaned)
                 live.payload["fetched_at_utc"] = now_utc.isoformat(timespec="seconds").replace("+00:00", "Z")
@@ -784,10 +787,20 @@ def create_app(root: Path = ROOT, database: str | Path | None = None) -> FastAPI
         return read_jsonl(root / "data" / "incidents" / "time_test_repair_actions.jsonl.gz", limit)
 
     @app.get("/api/sensor-health")
-    def sensor_health() -> list[dict[str, str]]:
+    def sensor_health() -> list[dict[str, object]]:
+        try:
+            from skyguard.health.network_health import generate_network_sensor_health
+            records = generate_network_sensor_health(root)
+            if records:
+                return records
+        except Exception as exc:
+            logger.warning("Dynamic sensor health generation error: %s", exc)
+
         path = root / "data" / "incidents" / "time_test_sensor_health.csv"
-        with path.open("r", encoding="utf-8", newline="") as handle:
-            return list(csv.DictReader(handle))
+        if path.exists():
+            with path.open("r", encoding="utf-8", newline="") as handle:
+                return list(csv.DictReader(handle))
+        return []
 
     @app.get("/api/metrics")
     def metrics() -> dict[str, object]:

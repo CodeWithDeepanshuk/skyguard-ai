@@ -738,42 +738,167 @@
         </section>
 
         <!-- ==================================================================
-             TAB 5: SENSOR HEALTH (Predictive Maintenance Registry)
+             TAB 5: SENSOR HEALTH (Predictive Maintenance & Real-Time Diagnostics)
              ================================================================== -->
         <section class="tab-pane" id="tab-health">
-          <div class="page-header">
+          <div class="page-header" style="flex-wrap:wrap; gap:16px;">
             <div>
-              <h2 class="page-title">Sensor Health & Predictive Maintenance</h2>
-              <p class="page-subtitle">Ranked by lowest health score first to prioritize preventive maintenance</p>
+              <h2 class="page-title">Sensor Health &amp; Real-Time Operational Diagnostics</h2>
+              <p class="page-subtitle">Continuous WMO/IMD telemetry verification across all 1,153+ observed weather stations. Sorted alphabetically (A to Z) by default.</p>
             </div>
-            <div class="pill-group" id="health-filter">
-              <button class="toolbar-pill active" data-filter="all" type="button">All</button>
-              <button class="toolbar-pill" data-filter="critical" type="button">Critical</button>
-              <button class="toolbar-pill" data-filter="degrading" type="button">Degrading</button>
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <span class="live-pill" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; padding:5px 14px; border-radius:20px; background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE;">
+                <span class="live-dot" style="width:8px; height:8px; border-radius:50%; background:#2563EB;"></span>
+                Continuous Real-Time Telemetry
+              </span>
             </div>
           </div>
 
+          <!-- Real-Time Health Summary KPI Cards -->
+          <div class="kpi-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 20px;">
+            <article class="kpi-card" style="border-top-color:#2563EB;">
+              <div class="kpi-label">
+                <span>Total Monitored Sensors</span>
+                <span class="kpi-badge" style="background:#EFF6FF; color:#2563EB;">1,153+ AWS</span>
+              </div>
+              <strong class="kpi-value" id="health-kpi-total">3,459</strong>
+              <div class="kpi-subtext">Temperature, Pressure &amp; Humidity</div>
+            </article>
+
+            <article class="kpi-card" style="border-top-color:#7C3AED;">
+              <div class="kpi-label">
+                <span>Active Anomaly Flags</span>
+                <span class="kpi-badge" style="background:#F5F3FF; color:#7C3AED;">Spatial &amp; Physical</span>
+              </div>
+              <strong class="kpi-value" id="health-kpi-anomalies" style="color:#7C3AED;">0</strong>
+              <div class="kpi-subtext">Peer Residual / Boundary Breaches</div>
+            </article>
+
+            <article class="kpi-card" style="border-top-color:#DC2626;">
+              <div class="kpi-label">
+                <span>Critical Health (&lt;35)</span>
+                <span class="kpi-badge" style="background:#FEF2F2; color:#DC2626;">Urgent</span>
+              </div>
+              <strong class="kpi-value" id="health-kpi-critical" style="color:#DC2626;">0</strong>
+              <div class="kpi-subtext">Immediate Field Recalibration</div>
+            </article>
+
+            <article class="kpi-card" style="border-top-color:#D97706;">
+              <div class="kpi-label">
+                <span>Degrading Sensors (35–60)</span>
+                <span class="kpi-badge" style="background:#FFFBEB; color:#D97706;">Pre-Failure</span>
+              </div>
+              <strong class="kpi-value" id="health-kpi-degrading" style="color:#D97706;">0</strong>
+              <div class="kpi-subtext">Proactive Maintenance Horizon</div>
+            </article>
+
+            <article class="kpi-card" style="border-top-color:#16A34A;">
+              <div class="kpi-label">
+                <span>Nominal / Healthy (&gt;90)</span>
+                <span class="kpi-badge" style="background:#F0FDF4; color:#16A34A;">Optimal</span>
+              </div>
+              <strong class="kpi-value" id="health-kpi-healthy" style="color:#16A34A;">0</strong>
+              <div class="kpi-subtext">Within Certified WMO Limits</div>
+            </article>
+          </div>
+
+          <!-- Interactive Search, Filtering, and Sorting Controls -->
+          <article class="panel" style="margin-bottom: 20px;">
+            <div class="panel-body" style="display:flex; flex-direction:column; gap:14px; padding:16px 20px;">
+              <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+                <div style="position:relative; flex:1; min-width:280px;">
+                  <input type="text" id="health-search-input" placeholder="🔍 Search weather station by name, station ID, state, or district..." class="global-search-input" style="width:100%; height:40px; border-radius:8px; padding-left:14px; font-size:13px; border:1px solid #CBD5E1;" />
+                  <button id="health-search-clear" type="button" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:#94A3B8; cursor:pointer; font-size:14px; display:none;" title="Clear search">✕</button>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <label for="health-sort-select" style="font-size:12px; font-weight:600; color:#475569; white-space:nowrap;">Sort by:</label>
+                  <select id="health-sort-select" class="map-select" style="height:40px; border-radius:8px; font-size:12px; border:1px solid #CBD5E1; background:#FFF; color:#1E293B; cursor:pointer; padding:0 12px;">
+                    <option value="alpha-asc" selected>Station Name (A → Z) [Default]</option>
+                    <option value="alpha-desc">Station Name (Z → A)</option>
+                    <option value="score-asc">Health Score (Lowest / At Risk First)</option>
+                    <option value="score-desc">Health Score (Highest First)</option>
+                    <option value="residual-desc">Spatial Consensus Departure (|Δ| Highest First)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; border-top:1px solid #F1F5F9; padding-top:12px;">
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748B; letter-spacing:0.04em;">Status Filter:</span>
+                  <div class="pill-group" id="health-filter">
+                    <button class="toolbar-pill active" data-filter="all" type="button">All (<span id="health-count-all">0</span>)</button>
+                    <button class="toolbar-pill" data-filter="anomalies" type="button" style="color:#7C3AED;">Active Anomalies ⚠️ (<span id="health-count-anomalies">0</span>)</button>
+                    <button class="toolbar-pill" data-filter="critical" type="button" style="color:#DC2626;">Critical 🔴 (<span id="health-count-critical">0</span>)</button>
+                    <button class="toolbar-pill" data-filter="degrading" type="button" style="color:#D97706;">Degrading 🟠 (<span id="health-count-degrading">0</span>)</button>
+                    <button class="toolbar-pill" data-filter="healthy" type="button" style="color:#16A34A;">Healthy 🟢 (<span id="health-count-healthy">0</span>)</button>
+                  </div>
+                </div>
+
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <span style="font-size:11px; font-weight:700; text-transform:uppercase; color:#64748B; letter-spacing:0.04em;">Sensor Type:</span>
+                  <div class="pill-group" id="health-sensor-filter">
+                    <button class="toolbar-pill active" data-sensor="all" type="button">All Sensors</button>
+                    <button class="toolbar-pill" data-sensor="temperature" type="button">Temperature 🌡️</button>
+                    <button class="toolbar-pill" data-sensor="pressure" type="button">Pressure 🧭</button>
+                    <button class="toolbar-pill" data-sensor="humidity" type="button">Humidity 💧</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Sensor Health Data Table Panel -->
           <article class="panel">
+            <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center; padding:14px 20px;">
+              <div class="panel-title" id="health-table-title" style="font-size:14px; font-weight:700; color:#0F172A;">
+                Observed Station Sensor Health Registry
+              </div>
+              <div id="health-pagination-info" style="font-size:12px; color:#64748B; font-weight:500;">
+                Showing 1–50 of 3,459 sensors
+              </div>
+            </div>
+
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th>Station</th>
-                    <th>Sensor</th>
+                    <th style="min-width:200px;">Station &amp; Network ID</th>
+                    <th>Sensor Type</th>
+                    <th>Observed Telemetry</th>
                     <th>Health Score</th>
                     <th>Status</th>
-                    <th>Trend</th>
-                    <th>Projected · 7d</th>
-                    <th>Horizon</th>
-                    <th>Incidents</th>
-                    <th>Last Incident</th>
-                    <th>Recommended Action</th>
+                    <th>Consensus Departure (Δ)</th>
+                    <th>Spatial Z-Score</th>
+                    <th>Active Anomaly Flag</th>
+                    <th style="text-align:center; min-width:140px;">Diagnostic &amp; Action</th>
                   </tr>
                 </thead>
                 <tbody id="health-body">
                   <!-- Populated dynamically -->
                 </tbody>
               </table>
+            </div>
+
+            <!-- Pagination Controls Footer -->
+            <div class="panel-footer" id="health-pagination-bar" style="display:flex; justify-content:space-between; align-items:center; padding:12px 20px; border-top:1px solid #E2E8F0; background:#FAFAFA; flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:12px; color:#64748B;">Per Page:</span>
+                <select id="health-page-size" class="map-select" style="height:32px; font-size:12px; padding:0 8px; border-radius:6px; border:1px solid #CBD5E1; background:#FFF;">
+                  <option value="50" selected>50 rows</option>
+                  <option value="100">100 rows</option>
+                  <option value="250">250 rows</option>
+                  <option value="all">Show All</option>
+                </select>
+              </div>
+
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button id="health-page-first" class="sim-btn secondary" type="button" style="height:32px; padding:0 10px; font-size:12px;">⏮ First</button>
+                <button id="health-page-prev" class="sim-btn secondary" type="button" style="height:32px; padding:0 10px; font-size:12px;">◀ Prev</button>
+                <span id="health-page-current" style="font-size:12px; font-weight:600; color:#1E293B; padding:0 10px;">Page 1 of 70</span>
+                <button id="health-page-next" class="sim-btn secondary" type="button" style="height:32px; padding:0 10px; font-size:12px;">Next ▶</button>
+                <button id="health-page-last" class="sim-btn secondary" type="button" style="height:32px; padding:0 10px; font-size:12px;">Last ⏭</button>
+              </div>
             </div>
           </article>
         </section>
@@ -1390,8 +1515,10 @@
     </div>
 
     <!-- Drawer Footer Actions -->
-    <div class="drawer-footer">
-      <button class="sim-btn inject" id="drawer-ack-btn" type="button">✓ Acknowledge Alert</button>
+    <div class="drawer-footer" style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="sim-btn secondary" id="drawer-view-map-btn" type="button" style="font-size:12px;">🗺️ View on Map</button>
+      <button class="sim-btn secondary" id="drawer-view-trace-btn" type="button" style="font-size:12px;">📈 View Sensor Trace</button>
+      <button class="sim-btn inject" id="drawer-ack-btn" type="button">✓ Acknowledge</button>
       <button class="sim-btn restore" id="drawer-resolve-btn" type="button" style="background:#16A34A; color:#FFFFFF; border-color:#16A34A;">✓ Mark Resolved</button>
       <button class="sim-btn restore" id="drawer-close-action-btn" type="button">Close</button>
     </div>
